@@ -4,13 +4,13 @@
 \alias{new_sim}
 \title{Initialize a new simulation object}
 \usage{
-new_sim()
+new_sim(config = NA)
 }
 \arguments{
 \item{config}{A list. Contains simulation configuration information}
 }
 \value{
-A simulation object
+A simulation object of class "simba"
 }
 \description{
 Initialize a new simulation object
