@@ -1,0 +1,56 @@
+---
+title: "Getting started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{getting-started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse=TRUE, comment="#>")
+```
+
+`Simba` is a package for structuring, maintaining, and running statistical simulations.
+
+Here is a simple example that illustrates the basic workflow:
+
+```{r}
+library(simba)
+library(magrittr) # !!!!! Finish NAMESSPACES chapter and get rid of this
+
+sim <- new_sim()
+
+sim %<>% config(
+  num_sim = 10,
+  parallel = "none"
+)
+
+sim %<>% set_levels(
+ "rho" = c(0.1, 0.2),
+ "eta" = c(2,3)
+)
+
+# !!!!! Add this function
+sim %<>% add_dataset_creator(
+  "create",
+  function(sigma) {
+    x <- runif(10)
+    y <- 4*x + rnorm(10, mean=0, sd=sigma)
+    return (data.frame(x=x,y=y))
+  }
+)
+
+# !!!!! Add this function
+sim %<>% add_method(
+  "linear regression",
+  function(data) {
+    model <- lm(y~x, data=data)
+    return (model$coefficients[["x"]])
+  }
+)
+
+```
+
+By convention, we use the pipe operators (`%>%` and `%<>%`) from the `magrittr` package; if you are unfamiliar with the pipe operator, check out the [magrittr documentation](https://magrittr.tidyverse.org/).
+
