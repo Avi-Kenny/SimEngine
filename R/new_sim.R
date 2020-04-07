@@ -5,26 +5,18 @@
 #' @examples
 #' sim <- new_sim()
 #' @export
-new_sim <- function(config=NA) {
+new_sim <- function() {
 
   sim_obj <- list(
-
     "config" = list(
-      "num_sim" = 5,
+      "num_sim" = 1,
       "datasets" = "many",
       "parallel" = "inner"
     ),
-
-    "levels" = list(
-      "dimension_1" = c(33,44,55),
-      "dimension_2" = c(10,100,1000)
-    ),
-
-    "constants" = list(
-      "n" = 10,
-      "constant_2" = 123
-    )
-
+    "levels" = list(),
+    "constants" = list(),
+    "creators" = list(),
+    "methods" = list()
   )
 
   class(sim_obj) <- "simba"
