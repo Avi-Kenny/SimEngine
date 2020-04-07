@@ -21,7 +21,7 @@ library(magrittr) # !!!!! Finish NAMESSPACES chapter and get rid of this
 
 sim <- new_sim()
 
-sim %<>% config(
+sim %<>% set_config(
   num_sim = 10,
   parallel = "none"
 )
@@ -31,26 +31,30 @@ sim %<>% set_levels(
  "eta" = c(2,3)
 )
 
-# !!!!! Add this function
-sim %<>% add_dataset_creator(
-  "create",
-  function(sigma) {
-    x <- runif(10)
-    y <- 4*x + rnorm(10, mean=0, sd=sigma)
+sim %<>% add_constants(
+ "k" = 44,
+ "tau" = c(0.25,0.5,0.75)
+)
+
+sim %<>% add_creator(
+  "create_rct",
+  function(n, sigma) {
+    x <- runif(n)
+    y <- 4*x + rnorm(n, mean=0, sd=sigma)
     return (data.frame(x=x,y=y))
   }
 )
 
-# !!!!! Add this function
 sim %<>% add_method(
-  "linear regression",
+  "OLS",
   function(data) {
     model <- lm(y~x, data=data)
     return (model$coefficients[["x"]])
   }
 )
 
+sim %>% run()
+
 ```
 
-By convention, we use the pipe operators (`%>%` and `%<>%`) from the `magrittr` package; if you are unfamiliar with the pipe operator, check out the [magrittr documentation](https://magrittr.tidyverse.org/).
-
+By convention, we use the pipe operators (`%>%` and `%<>%`) from the `magrittr` package; if you are unfamiliar with the pipe operator, check out the [magrittr documentation](https://magrittr.tidyverse.org/). In general, we will always use the compound pipe (`%<>%`) except for when we run the simulation with `sim %>% run()`, which uses the regular pipe (`%>%`).

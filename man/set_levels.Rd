@@ -7,14 +7,14 @@
 set_levels(sim_obj, ...)
 }
 \arguments{
-\item{sim_obj}{A simulation object returned by new_sim()}
+\item{sim_obj}{A simulation object created by new_sim()}
 
 \item{...}{One or more key-value pairs representing simulation levels (see
-below).}
+below)}
 }
 \value{
-The supplied simulation object with the old set of levels replaced
-    with the new set.
+The original simulation object with the old set of levels replaced
+    with the new set
 }
 \description{
 Set simulation levels

@@ -4,7 +4,7 @@
 \alias{new_sim}
 \title{Initialize a new simulation object}
 \usage{
-new_sim(config = NA)
+new_sim()
 }
 \arguments{
 \item{config}{A list. Contains simulation configuration information}
