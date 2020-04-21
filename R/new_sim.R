@@ -14,9 +14,9 @@ new_sim <- function() {
       "parallel" = "inner"
     ),
     "levels" = list(),
-    "constants" = list(),
     "creators" = list(),
-    "methods" = list()
+    "methods" = list(),
+    "scripts" = list()
   )
 
   class(sim_obj) <- "simba"

@@ -16,14 +16,24 @@
 #' )
 #' !!!!! continue example
 #' @export
-add_creator <- function(sim_obj, name, fn) UseMethod("add_creator")
+add_creator <- function(sim_obj, ...) UseMethod("add_creator")
 
 #' @export
-add_creator.simba <- function(sim_obj, name, fn) {
+add_creator.simba <- function(sim_obj, ...) {
 
   if (class(sim_obj)!="simba") {
     stop("`sim_obj` must be an object of class 'simba', returned by new_sim()")
   }
+
+  if (length(list(...))==1) {
+    name <- deparse(substitute(...))
+    fn <- list(...)[[1]]
+  }
+  if (length(list(...))==2) {
+    name <- list(...)[[1]]
+    fn <- list(...)[[2]]
+  }
+
   if (!(is.character(name) & length(name)==1)) {
     stop("`name` must be a character string")
   }
