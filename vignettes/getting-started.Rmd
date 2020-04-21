@@ -1,6 +1,6 @@
 ---
-title: "Getting started"
-output: rmarkdown::html_vignette
+title: "simba: Getting started"
+output: rmarkdown::word_document
 vignette: >
   %\VignetteIndexEntry{getting-started}
   %\VignetteEngine{knitr::rmarkdown}
@@ -11,50 +11,102 @@ vignette: >
 knitr::opts_chunk$set(collapse=TRUE, comment="#>")
 ```
 
+# Overview
+
 `Simba` is a package for structuring, maintaining, and running statistical simulations.
 
 Here is a simple example that illustrates the basic workflow:
 
 ```{r}
+
 library(simba)
 library(magrittr) # !!!!! Finish NAMESSPACES chapter and get rid of this
+library(parallel) # !!!!! Finish NAMESSPACES chapter and get rid of this
 
 sim <- new_sim()
 
 sim %<>% set_config(
-  num_sim = 10,
+  num_sim = 5,
   parallel = "none"
 )
 
 sim %<>% set_levels(
- "rho" = c(0.1, 0.2),
- "eta" = c(2,3)
-)
-
-sim %<>% add_constants(
- "k" = 44,
- "tau" = c(0.25,0.5,0.75)
+  "sample_size" = c(10, 100, 1000),
+  "lambda" = c(2,5),
+  "methods_grp_1" = c("sample_var", "sample_mean")
 )
 
 sim %<>% add_creator(
-  "create_rct",
-  function(n, sigma) {
-    x <- runif(n)
-    y <- 4*x + rnorm(n, mean=0, sd=sigma)
-    return (data.frame(x=x,y=y))
+  "create_poisson_data",
+  function(n, lambda) {
+    x <- rpois(n=n, lambda=lambda)
+    return (x)
   }
 )
 
 sim %<>% add_method(
-  "OLS",
-  function(data) {
-    model <- lm(y~x, data=data)
-    return (model$coefficients[["x"]])
+  "sample_mean",
+  function(x) {
+    return ( mean(x) )
   }
 )
 
-sim %>% run()
+sim %<>% add_method(
+  "sample_var",
+  function(x) {
+    return ( var(x) )
+  }
+)
+
+sim %<>% add_script(
+  "script_1",
+  function(L) { # !!!!! Consider not making this a function of L and just relying on this being run in a specific environment
+    
+    data <- create_poisson_data(L$sample_size, L$lambda)
+    
+    estimate <- use_method(L$methods_grp_1, data)
+    
+    time <- Sys.time()
+
+    # `results` should be a list of key-value pairs
+    return (list(
+      "estimate" = estimate,
+      "time" = time
+    ))
+
+  }
+)
+
+# !!!!! Pipe results to something
+results <- sim %>% run("script_1")
+print(head(results))
 
 ```
 
-By convention, we use the pipe operators (`%>%` and `%<>%`) from the `magrittr` package; if you are unfamiliar with the pipe operator, check out the [magrittr documentation](https://magrittr.tidyverse.org/). In general, we will always use the compound pipe (`%<>%`) except for when we run the simulation with `sim %>% run()`, which uses the regular pipe (`%>%`).
+Above, by convention, we use the pipe operators (`%>%` and `%<>%`) from the `magrittr` package; if you are unfamiliar with the pipe operator, check out the [magrittr documentation](https://magrittr.tidyverse.org/). In general, we will always use the compound pipe (`%<>%`) except for when we run the simulation with `sim %>% run()`, which uses the regular pipe (`%>%`).
+
+# Using previously-defined functions
+
+Above, we created new functions and named them "create_rct" and "OLS". It's also easy to use previously-defined functions. You can give the functions a new name, or use the name of the function.
+
+```{r}
+
+create_rct <- function(n, sigma) {
+  x <- runif(n)
+  y <- 4*x + rnorm(n, mean=0, sd=sigma)
+  return (data.frame(x=x,y=y))
+}
+
+ols <-   function(data) {
+  model <- lm(y~x, data=data)
+  return (model$coefficients[["x"]])
+}
+
+sim %<>% add_creator(create_rct)
+sim %<>% add_method(ols)
+
+```
+
+
+
+
