@@ -4,7 +4,7 @@
 \alias{add_creator}
 \title{Add a "creator" function}
 \usage{
-add_creator(sim_obj, name, fn)
+add_creator(sim_obj, ...)
 }
 \arguments{
 \item{sim_obj}{A simulation object created by new_sim()}

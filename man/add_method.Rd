@@ -4,7 +4,7 @@
 \alias{add_method}
 \title{Add a "method" function}
 \usage{
-add_method(sim_obj, name, fn)
+add_method(sim_obj, ...)
 }
 \arguments{
 \item{sim_obj}{A simulation object created by new_sim()}
