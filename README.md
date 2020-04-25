@@ -1,7 +1,7 @@
-# simba <img src='man/figures/logo.png' align="right" height="140" />
+# simba <img src='man/figures/logo.png' align="right" height="150" />
 
-# Overview
+<br>
 
-simba: A simple but powerful simulation framework
+## Overview
 
-Currently in development; check back soon...
+`simba` is a simple but powerful framework for statistical simulations. Package is currently in initial development/testing; check back soon...
