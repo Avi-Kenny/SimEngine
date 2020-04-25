@@ -22,8 +22,7 @@ simulation per core. Setting to "inner" will parallelize operations
 within a single simulation. Setting to "none" will not parallelize any
 code (useful for debugging).}
 
-\item{constants}{A list containing any objects (numbers, vectors, data
-frames) that remain constant across all simulations.}
+\item{packages}{A character vector of packages to load on the cluster}
 }
 \value{
 The original simulation object with a modified configuration
