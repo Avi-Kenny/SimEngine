@@ -14,6 +14,7 @@ new_sim <- function() {
       "parallel" = "inner",
       "packages" = c()
     ),
+    "constants" = list(),
     "levels" = list("no levels"=TRUE),
     "creators" = list(),
     "methods" = list(),

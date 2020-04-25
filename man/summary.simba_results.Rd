@@ -4,7 +4,13 @@
 \alias{summary.simba_results}
 \title{Summarize simulation results}
 \usage{
-\method{summary}{simba_results}(sim_results)
+\method{summary}{simba_results}(sim_results, ...)
+}
+\arguments{
+\item{sim_results}{A simulation results object created by run()}
+
+\item{sd}{If `sd=TRUE` is passed, standard deviations are reported in
+addition to means}
 }
 \value{
 !!!!! TO DO

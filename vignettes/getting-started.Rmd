@@ -34,8 +34,11 @@ sim %<>% set_config(
 
 sim %<>% set_levels(
   "sample_size" = c(10, 100, 1000),
-  "lambda" = c(2,5),
   "methods_grp_1" = c("sample_var", "sample_mean")
+)
+
+sim %<>% add_constants(
+  "lambda" = 5
 )
 
 sim %<>% add_creator(
@@ -62,9 +65,9 @@ sim %<>% add_method(
 
 sim %<>% add_script(
   "script_1",
-  function(L) { # !!!!! Consider not making this a function of L and just relying on this being run in a specific environment
+  function(L,C) { # !!!!! Consider not making this a function of L and just relying on this being run in a specific environment
     
-    data <- create_poisson_data(L$sample_size, L$lambda)
+    data <- create_poisson_data(L$sample_size, C$lambda)
     
     estimate <- use_method(L$methods_grp_1, data)
     

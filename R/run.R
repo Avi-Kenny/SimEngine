@@ -61,17 +61,17 @@ run.simba <- function(sim_obj, script) {
   results_lists <- parLapply(cl, 1:nrow(levels_grid), function(i) {
   # results_lists <- lapply(1:nrow(levels_grid), function(i) {
 
-    # Set up levels row and run script
+    # Set up references to levels_grid row and constants
     L <- levels_grid[i,]
+    C <- sim_obj$constants
 
     # !!!!! This is janky AF. Use environments properly
     eval(parse(text=c("s_copy <-", deparse(sim_obj$scripts[[script]]))))
     eval(parse(text=c("use_method <-", deparse(use_method))))
 
-    # script_results <- sim_obj$scripts[[script]](as.list(L))
     script_results <- do.call(
       what = s_copy,
-      args = list(as.list(L)) # !!!!! This may throw a warning if script does not take any arguments
+      args = list(as.list(L), as.list(C)) # !!!!! This may throw a warning if script does not take any arguments
     )
 
     return (list(
