@@ -27,7 +27,9 @@ sim <- new_sim()
 
 sim %<>% set_config(
   num_sim = 5,
-  parallel = "none"
+  parallel = "none",
+  packages = c("magrittr", "dplyr")
+  # packages = c("magrittr")
 )
 
 sim %<>% set_levels(
@@ -67,7 +69,7 @@ sim %<>% add_script(
     estimate <- use_method(L$methods_grp_1, data)
     
     time <- Sys.time()
-
+    
     # `results` should be a list of key-value pairs
     return (list(
       "estimate" = estimate,
@@ -77,9 +79,11 @@ sim %<>% add_script(
   }
 )
 
-# !!!!! Pipe results to something
+# Run simulation
 results <- sim %>% run("script_1")
-print(head(results))
+
+# Summarize results (with standard deviations)
+summary(results, sd=TRUE)
 
 ```
 

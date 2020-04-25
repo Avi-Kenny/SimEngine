@@ -11,9 +11,10 @@ new_sim <- function() {
     "config" = list(
       "num_sim" = 1,
       "datasets" = "many",
-      "parallel" = "inner"
+      "parallel" = "inner",
+      "packages" = c()
     ),
-    "levels" = list(),
+    "levels" = list("no levels"=TRUE),
     "creators" = list(),
     "methods" = list(),
     "scripts" = list()

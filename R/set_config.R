@@ -11,8 +11,7 @@
 #'     simulation per core. Setting to "inner" will parallelize operations
 #'     within a single simulation. Setting to "none" will not parallelize any
 #'     code (useful for debugging).
-#' @param constants A list containing any objects (numbers, vectors, data
-#'     frames) that remain constant across all simulations.
+#' @param packages A character vector of packages to load on the cluster
 #' @return The original simulation object with a modified configuration
 #' @examples
 #' sim <- new_sim()
@@ -25,19 +24,15 @@ set_config <- function(sim_obj, ...) UseMethod("set_config")
 
 #' @export
 set_config.simba <- function(
-  sim_obj, num_sim=NA, datasets=NA, parallel=NA, constants=NA
+  sim_obj, num_sim=NA, datasets=NA, parallel=NA, packages=NA
 ) {
-
-  if (class(sim_obj)!="simba") {
-    stop("`sim_obj` must be an object of class 'simba', returned by new_sim()")
-  }
 
   # !!!!! Add error handing for other arguments
 
   if (!is.na(num_sim)) { sim_obj$config$num_sim = num_sim }
   if (!is.na(datasets)) { sim_obj$config$datasets = datasets }
   if (!is.na(parallel)) { sim_obj$config$parallel = parallel }
-  if (!is.na(constants)) { sim_obj$config$constants = constants }
+  if (!is.na(packages[1])) { sim_obj$config$packages = packages }
 
   return (sim_obj)
 

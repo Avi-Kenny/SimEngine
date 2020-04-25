@@ -18,10 +18,6 @@ set_levels <- function(sim_obj, ...) UseMethod("set_levels")
 #' @export
 set_levels.simba <- function(sim_obj, ...) {
 
-  if (class(sim_obj)!="simba") {
-    stop("`sim_obj` must be an object of class 'simba', returned by new_sim()")
-  }
-
   # !!!!! Add error handling for "..."
 
   if (length(list(...))==0) { stop("No levels supplied") }

@@ -5,6 +5,16 @@
 #   cat("This is my simulation object\n")
 # }
 
+# Print method for class "simba_results" [!!!!! placeholder !!!!!]
+# print.simba <- function(x) {
+#   cat("This is my simulation object\n")
+# }
+
+# Print method for class "simba_summary" [!!!!! placeholder !!!!!]
+# print.simba <- function(x) {
+#   cat("This is my simulation object\n")
+# }
+
 
 # s <- list(
 #   a = 1,
