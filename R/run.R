@@ -37,29 +37,26 @@ run.simba <- function(sim_obj, script) {
     }
   }
 
+  # Set up parallelization code
+  if (!sim_obj$config$parallel=="none") {
 
-  # !!!!! Temporary cluster code (1 of 2): START
-  packages <- sim_obj$config$packages
-  n_cores <- parallel::detectCores() - 1
-  cl <- parallel::makeCluster(n_cores)
-  cluster_export <- c("sim_obj", "levels_grid", "use_method", "packages")
-  for (obj in c("creators", "methods")) {
-    for (i in 1:length(sim_obj[[obj]])) {
-      cluster_export <- c(cluster_export, names(sim_obj[[obj]])[i])
+    packages <- sim_obj$config$packages
+    n_cores <- parallel::detectCores() - 1 # !!!!! Make this an argument
+    cl <- parallel::makeCluster(n_cores)
+    cluster_export <- c("sim_obj", "levels_grid", "use_method", "packages")
+    for (obj in c("creators", "methods")) {
+      for (i in 1:length(sim_obj[[obj]])) {
+        cluster_export <- c(cluster_export, names(sim_obj[[obj]])[i])
+      }
     }
+    envir <- environment()
+    parallel::clusterExport(cl, cluster_export, envir)
+    parallel::clusterEvalQ(cl, sapply(packages, function(p) {
+      do.call("library", list(p))
+    }))
   }
-  envir <- environment()
-  parallel::clusterExport(cl, cluster_export, envir)
-  parallel::clusterEvalQ(cl,
-    sapply(packages, function(p) { do.call("library", list(p))})
-  )
-  # !!!!! Temporary cluster code (1 of 2): END
 
-
-
-  # Run simulations
-  results_lists <- parLapply(cl, 1:nrow(levels_grid), function(i) {
-  # results_lists <- lapply(1:nrow(levels_grid), function(i) {
+  run_script <- function(i) {
 
     # Set up references to levels_grid row and constants
     L <- levels_grid[i,]
@@ -79,13 +76,18 @@ run.simba <- function(sim_obj, script) {
       "results" = script_results
     ))
 
-  })
+  }
 
+  # Run simulations
+  if (sim_obj$config$parallel=="outer") {
+    # run parallel code
+    results_lists <- parLapply(cl, 1:nrow(levels_grid), run_script)
+  } else {
+    results_lists <- lapply(1:nrow(levels_grid), run_script)
+  }
 
-  # !!!!! Temporary cluster code (2 of 2): START
-  stopCluster(cl)
-  # !!!!! Temporary cluster code (2 of 2): END
-
+  # Stop cluster
+  if (exists("cl")) { stopCluster(cl) }
 
   # Convert summary statistics to data frame
   results_df <- data.frame(
@@ -100,15 +102,9 @@ run.simba <- function(sim_obj, script) {
   # # Join `results` with `levels_grid`
   results_df <- dplyr::inner_join(levels_grid, results_df, by="sim_uid")
 
-  results <- list(
-    "raw" = results_df,
-    "config" = sim_obj$config,
-    "levels" = sim_obj$levels
-  )
-
-  class(results) <- "simba_results"
+  sim_obj$results <- results_df
 
   # Return results
-  return (results)
+  return (sim_obj)
 
 }

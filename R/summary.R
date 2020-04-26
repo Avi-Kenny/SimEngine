@@ -1,25 +1,30 @@
 #' Summarize simulation results
 #'
-#' @param sim_results A simulation results object created by run()
+#' @param sim_obj A simulation object created by new_sim()
 #' @param sd If `sd=TRUE` is passed, standard deviations are reported in
 #'     addition to means
+#' @param coverage !!!!! TO DO
 #' @return !!!!! TO DO
 #' @examples
 #' !!!!! TO DO
 #' @export
-summary.simba_results <- function(sim_results, ...) {
+summary.simba <- function(sim_obj, ...) {
+
+  if (is.null(sim_obj$results)) {
+    stop("Simulation has not been run yet")
+  }
 
   # Parse passed arguments
   # !!!!! Note, if user has referenced any variables NOT through C, R, or L, this will lead to an error
-  L <- sim_results$levels
-  C <- sim_results$constants
-  R <- as.list(results$raw)
+  L <- sim_obj$levels
+  C <- sim_obj$constants
+  R <- as.list(sim_obj$results)
 
   eval(parse(text=c("o_args <- ", deparse(substitute(list(...))))))
 
   # Parse code to print levels and calculate means
   L_names <- names(L)
-  names_raw <- names(sim_results$raw)
+  names_raw <- names(sim_obj$results)
   names_raw <- names_raw[!(names_raw %in% c(L_names, "sim_uid",
                                             "sim_id", "level_id"))]
   code_levels <- paste0("'",L_names,"'=",L_names,"[1],")
@@ -43,8 +48,8 @@ summary.simba_results <- function(sim_results, ...) {
     for (cov in o_args$coverage) {
       ci_l <- cov$estimate - 1.96*cov$se
       ci_h <- cov$estimate + 1.96*cov$se
-      sim_results$raw[[paste0("ci_l_",cov$name)]] <- ci_l
-      sim_results$raw[[paste0("ci_h_",cov$name)]] <- ci_h
+      sim_obj$results[[paste0("ci_l_",cov$name)]] <- ci_l
+      sim_obj$results[[paste0("ci_h_",cov$name)]] <- ci_h
     }
 
   }
@@ -63,24 +68,19 @@ summary.simba_results <- function(sim_results, ...) {
   } else {
     code_cov <- ""
   }
-  # !!!!! TO DO
 
   # Put code strings together
   summarize_code <- c(
     "as.data.frame(dplyr::summarize(
-       dplyr::group_by(sim_results$raw, level_id),",
+       dplyr::group_by(sim_obj$results, level_id),",
     code_levels,
     code_means,
     code_sds,
     code_cov
   )
   summarize_code <- c(summarize_code, "))")
-  s <- eval(parse(text=summarize_code))
+  summary <- eval(parse(text=summarize_code))
 
-  summary <- list("summary" = s)
-
-  class(summary) <- "simba_summary"
-
-  return (summary)
+  print(summary)
 
 }

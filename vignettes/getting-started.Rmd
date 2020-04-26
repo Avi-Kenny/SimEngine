@@ -75,7 +75,6 @@ sim %<>% add_script(
     # `results` should be a list of key-value pairs
     return (list(
       "estimate" = estimate,
-      "se" = se,
       "time" = time
     ))
 
@@ -86,11 +85,10 @@ sim %<>% add_script(
 print(sim)
 
 # Run simulation
-results <- sim %>% run("script_1")
+sim %<>% run("script_1")
 
 # Summarize results (with standard deviations)
-summary <- summary(results, sd=TRUE)
-print(summary)
+summary(sim, sd=TRUE)
 
 # !!!!! Add coverage; see z.stepped_wedge
 # summary(
@@ -102,7 +100,6 @@ print(summary)
 #   #   list(name="d", truth=L$d, estimate=R$d_hat, se=R$se_d_hat)
 #   # )
 # )
-
 
 ```
 

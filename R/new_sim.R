@@ -18,7 +18,8 @@ new_sim <- function() {
     "levels" = list("no levels"=TRUE),
     "creators" = list(),
     "methods" = list(),
-    "scripts" = list()
+    "scripts" = list(),
+    "results" = NULL
   )
 
   class(sim_obj) <- "simba"

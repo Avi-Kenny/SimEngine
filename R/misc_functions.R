@@ -39,18 +39,19 @@ print.simba <- function(sim_obj) {
       cat(paste0("    ",names(sim_obj$scripts)[i],"\n"))
     }
   }
+  # !!!!! add something for results
 }
 
-# Print method for class "simba_results"
-#' @export
-print.simba_results <- function(results) {
-  cat("Simulation results (raw):\n\n")
-  print(results$raw)
-}
-
-# Print method for class "simba_summary"
-#' @export
-print.simba_summary <- function(summary) {
-  cat("Simulation results (summary across simulations):\n\n")
-  print(summary$summary)
-}
+#' # Print method for class "simba_results"
+#' #' @export
+#' print.simba_results <- function(results) {
+#'   cat("Simulation results (raw):\n\n")
+#'   print(results$raw)
+#' }
+#'
+#' # Print method for class "simba_summary"
+#' #' @export
+#' print.simba_summary <- function(summary) {
+#'   cat("Simulation results (summary across simulations):\n\n")
+#'   print(summary$summary)
+#' }
