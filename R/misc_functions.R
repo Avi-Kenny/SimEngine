@@ -1,25 +1,56 @@
 # This section contains functions that are intentionally not documented
 
-# Print method for class "simba" [!!!!! placeholder !!!!!]
-# print.simba <- function(x) {
-#   cat("This is my simulation object\n")
-# }
+# Print method for class "simba"
+#' @export
+print.simba <- function(sim_obj) {
+  cat("Simulation object (class \"simba\")\n")
+  cat("---------------------------------\n")
+  cat("Configuration: \n")
+  for (i in 1:length(sim_obj$config)) {
+    cat(paste0("    ",names(sim_obj$config)[i],": ",sim_obj$config[i],"\n"))
+  }
+  if (length(sim_obj$levels)>0) {
+    cat("Levels: \n")
+    for (i in 1:length(sim_obj$levels)) {
+      cat(paste0("    ",names(sim_obj$levels)[i],": ",sim_obj$levels[i],"\n"))
+    }
+  }
+  if (length(sim_obj$constants)>0) {
+    cat("Constants: \n")
+    for (i in 1:length(sim_obj$constants)) {
+      cat(paste0("    ",names(sim_obj$constants)[i],"\n"))
+    }
+  }
+  if (length(sim_obj$creators)>0) {
+    cat("Creators: \n")
+    for (i in 1:length(sim_obj$creators)) {
+      cat(paste0("    ",names(sim_obj$creators)[i],"\n"))
+    }
+  }
+  if (length(sim_obj$methods)>0) {
+    cat("Methods: \n")
+    for (i in 1:length(sim_obj$methods)) {
+      cat(paste0("    ",names(sim_obj$methods)[i],"\n"))
+    }
+  }
+  if (length(sim_obj$scripts)>0) {
+    cat("Scripts: \n")
+    for (i in 1:length(sim_obj$scripts)) {
+      cat(paste0("    ",names(sim_obj$scripts)[i],"\n"))
+    }
+  }
+}
 
-# Print method for class "simba_results" [!!!!! placeholder !!!!!]
-# print.simba <- function(x) {
-#   cat("This is my simulation object\n")
-# }
+# Print method for class "simba_results"
+#' @export
+print.simba_results <- function(results) {
+  cat("Simulation results (raw):\n\n")
+  print(results$raw)
+}
 
-# Print method for class "simba_summary" [!!!!! placeholder !!!!!]
-# print.simba <- function(x) {
-#   cat("This is my simulation object\n")
-# }
-
-
-# s <- list(
-#   a = 1,
-#   fns = list(
-#     "t-test" = (function(){print("I did a t test")}),
-#     "anova" = (function(){print("I did an anova")})
-#   )
-# )
+# Print method for class "simba_summary"
+#' @export
+print.simba_summary <- function(summary) {
+  cat("Simulation results (summary across simulations):\n\n")
+  print(summary$summary)
+}

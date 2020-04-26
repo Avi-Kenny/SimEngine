@@ -29,7 +29,6 @@ sim %<>% set_config(
   num_sim = 5,
   parallel = "none",
   packages = c("magrittr", "dplyr")
-  # packages = c("magrittr")
 )
 
 sim %<>% set_levels(
@@ -76,17 +75,34 @@ sim %<>% add_script(
     # `results` should be a list of key-value pairs
     return (list(
       "estimate" = estimate,
+      "se" = se,
       "time" = time
     ))
 
   }
 )
 
+# Print simulation object
+print(sim)
+
 # Run simulation
 results <- sim %>% run("script_1")
 
 # Summarize results (with standard deviations)
-summary(results, sd=TRUE)
+summary <- summary(results, sd=TRUE)
+print(summary)
+
+# !!!!! Add coverage; see z.stepped_wedge
+# summary(
+#   results,
+#   sd = TRUE,
+#   coverage = list(name="theta", truth=L$theta, estimate=R$theta_hat, se=R$se_theta_hat)
+#   # coverage = list(
+#   #   list(name="theta", truth=L$theta, estimate=R$theta_hat, se=R$se_theta_hat),
+#   #   list(name="d", truth=L$d, estimate=R$d_hat, se=R$se_d_hat)
+#   # )
+# )
+
 
 ```
 
@@ -98,7 +114,7 @@ Above, we created new functions and named them "create_rct" and "OLS". It's also
 
 ```{r}
 
-create_rct <- function(n, sigma) {
+create_data <- function(n, sigma) {
   x <- runif(n)
   y <- 4*x + rnorm(n, mean=0, sd=sigma)
   return (data.frame(x=x,y=y))
@@ -109,11 +125,7 @@ ols <-   function(data) {
   return (model$coefficients[["x"]])
 }
 
-sim %<>% add_creator(create_rct)
+sim %<>% add_creator(create_data)
 sim %<>% add_method(ols)
 
 ```
-
-
-
-

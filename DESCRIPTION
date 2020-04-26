@@ -2,8 +2,8 @@ Package: simba
 Type: Package
 Title: A Simple But Powerful Simulation Framework
 Version: 0.1.0.9000
-Author: Avi Kenny
-Maintainer: Avi Kenny <avikenny@uw.edu>
+Authors@R: c(person("Avi", "Kenny", email = "avikenny@uw.edu", role = c("aut", "cre")),
+             person("Rachel", "Kenny", email = "rachel.leah.kenny@gmail.com", role = "ctb"))
 Description: A framework for statistical simulations. Currently
     in development
 License: GPL-3
