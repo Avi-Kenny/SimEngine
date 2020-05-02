@@ -25,13 +25,14 @@ run.simba <- function(sim_obj, script) {
   levels_grid <- cbind(1:nrow(levels_grid), levels_grid)
   names(levels_grid) <- c("sim_uid",levels_names)
 
-  # Load creators and methods
+  # Load creators/methods
   for (obj in c("creators", "methods")) {
     if (length(sim_obj[[obj]])!=0) {
       for (i in 1:length(sim_obj[[obj]])) {
         assign(
           x = names(sim_obj[[obj]])[i],
-          value = (sim_obj[[obj]])[[i]]
+          value = (sim_obj[[obj]])[[i]],
+          envir = globalenv() # !!!!! Temp fix
         )
       }
     }
@@ -44,13 +45,18 @@ run.simba <- function(sim_obj, script) {
     n_cores <- parallel::detectCores() - 1 # !!!!! Make this an argument
     cl <- parallel::makeCluster(n_cores)
     cluster_export <- c("sim_obj", "levels_grid", "use_method", "packages")
+
+    # Export creators/methods to cluster
     for (obj in c("creators", "methods")) {
-      for (i in 1:length(sim_obj[[obj]])) {
-        cluster_export <- c(cluster_export, names(sim_obj[[obj]])[i])
+      if (length(sim_obj[[obj]])!=0) {
+        for (i in 1:length(sim_obj[[obj]])) {
+          cluster_export <- c(cluster_export, names(sim_obj[[obj]])[i])
+        }
       }
     }
     envir <- environment()
     parallel::clusterExport(cl, cluster_export, envir)
+    clusterCall(cl, function(x) {.libPaths(x)}, .libPaths())
     parallel::clusterEvalQ(cl, sapply(packages, function(p) {
       do.call("library", list(p))
     }))
@@ -63,8 +69,8 @@ run.simba <- function(sim_obj, script) {
     C <- sim_obj$constants
 
     # !!!!! This is janky AF. Use environments properly
+    eval(parse(text=c("use_method <-", deparse(use_method)))) # !!!!! why is this needed?
     eval(parse(text=c("s_copy <-", deparse(sim_obj$scripts[[script]]))))
-    eval(parse(text=c("use_method <-", deparse(use_method))))
 
     script_results <- do.call(
       what = s_copy,

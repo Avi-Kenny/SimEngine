@@ -3,6 +3,10 @@
 #' @return The original simulation object with the new script function added
 #' @examples
 #' !!!!! TO DO
+#' !!!!! Script function should return a list of simple key-value pairs
+#' !!!!! Need to modify if more complicated objects are returned
+#' !!!!! Currently throws an error if there are NULL values in the list
+#' !!!!! Make "return data frame" default option and "return list" as alternate
 #' @export
 add_script <- function(sim_obj, ...) UseMethod("add_script")
 

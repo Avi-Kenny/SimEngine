@@ -14,4 +14,8 @@ Add a "simulation script" function
 }
 \examples{
 !!!!! TO DO
+!!!!! Script function should return a list of simple key-value pairs
+!!!!! Need to modify if more complicated objects are returned
+!!!!! Currently throws an error if there are NULL values in the list
+!!!!! Make "return data frame" default option and "return list" as alternate
 }

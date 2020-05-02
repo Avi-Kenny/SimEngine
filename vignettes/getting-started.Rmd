@@ -33,11 +33,13 @@ sim %<>% set_config(
 
 sim %<>% set_levels(
   "sample_size" = c(10, 100, 1000),
+  "lambda" = c(5, 10), # !!!!! testing
   "methods_grp_1" = c("sample_var", "sample_mean")
 )
 
 sim %<>% add_constants(
-  "lambda" = 5
+  "lambda2" = 4, # !!!!! testing
+  "lambda3" = 6 # !!!!! testing
 )
 
 sim %<>% add_creator(
@@ -66,15 +68,17 @@ sim %<>% add_script(
   "script_1",
   function(L,C) { # !!!!! Consider not making this a function of L and just relying on this being run in a specific environment
     
-    data <- create_poisson_data(L$sample_size, C$lambda)
+    data <- create_poisson_data(L$sample_size, L$lambda)
+    # data <- create_poisson_data(L$sample_size, C$lambda)
     
-    estimate <- use_method(L$methods_grp_1, data)
+    lambda_hat <- use_method(L$methods_grp_1, data)
     
     time <- Sys.time()
     
     # `results` should be a list of key-value pairs
+    # !!!!! Throw warning if any column names are duplicated/overwritten
     return (list(
-      "estimate" = estimate,
+      "lambda_hat" = lambda_hat,
       "time" = time
     ))
 
@@ -88,7 +92,15 @@ print(sim)
 sim %<>% run("script_1")
 
 # Summarize results (with standard deviations)
-summary(sim, sd=TRUE)
+# !!!!! Throw warning if any column names are duplicated/overwritten
+# Make it such that you can't use expressions like `truth=C$lambda` here (i.e. 
+#     you can't pass constants); instead, add constants to results data frame
+#     and reference by quotes like the others; alternatively
+summary(
+  sim,
+  sd = list(name="sd_lambda", x="lambda_hat"),
+  bias = list(name="bias_lambda", truth="lambda", estimate="lambda_hat")
+)
 
 # !!!!! Add coverage; see z.stepped_wedge
 # summary(
