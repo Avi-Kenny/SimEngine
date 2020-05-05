@@ -24,10 +24,23 @@ summary.simba <- function(sim_obj, ...) {
   # eval(parse(text=c("o_args <- ", deparse(substitute(list(...))))))
 
   # Add simulation constants to `R` data frame
-  for (i in 1:length(sim_obj$constants)) {
-    length <- nrow(R)
-    R[[names(sim_obj$constants)[[i]]]] <- sim_obj$constants[[i]]
+  # !!!!! This is problematic if constants are not numbers, strings, etc.
+  # !!!!! Temp fix: declare constants in current environment
+  # if (length(sim_obj$constants)!=0) {
+  #   for (i in 1:length(sim_obj$constants)) {
+  #     length <- nrow(R)
+  #     R[[names(sim_obj$constants)[[i]]]] <- sim_obj$constants[[i]]
+  #   }
+  # }
+  if (length(sim_obj$constants)!=0) {
+    for (i in 1:length(sim_obj$constants)) {
+      assign(
+        x = names(sim_obj$constants)[i],
+        value = (sim_obj$constants)[[i]]
+      )
+    }
   }
+
 
   # Parse code to print levels and calculate means
   # !!!!! Options should be means=TRUE (default), means=FALSE, means=list()
@@ -48,7 +61,7 @@ summary.simba <- function(sim_obj, ...) {
   # !!!!! Also add variance
 
   # Parse SD summary code
-  if (!is.null(o_args$sd)) {
+  if (!is.null(o_args$sd)) { # !!!!! be consistent about o_args$sd vs o_args[["sd"]]
     code_sd <- ""
     for (s in o_args$sd) {
       code_sd <- c(code_sd, paste0(
@@ -106,6 +119,6 @@ summary.simba <- function(sim_obj, ...) {
   summarize_code <- c(summarize_code, "))")
   summary <- eval(parse(text=summarize_code))
 
-  print(summary)
+  return (summary)
 
 }
