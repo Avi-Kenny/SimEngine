@@ -44,6 +44,7 @@ summary.simba <- function(sim_obj, ...) {
 
   # Parse code to print levels and calculate means
   # !!!!! Options should be means=TRUE (default), means=FALSE, means=list()
+  # !!!!! Add na.rm
   names_means <- names_results[!(names_results %in% c(
     names_levels, "sim_uid", "sim_id", "level_id"
   ))]
@@ -61,6 +62,7 @@ summary.simba <- function(sim_obj, ...) {
   # !!!!! Also add variance
 
   # Parse SD summary code
+  # !!!!! Add na.rm
   if (!is.null(o_args$sd)) { # !!!!! be consistent about o_args$sd vs o_args[["sd"]]
     code_sd <- ""
     for (s in o_args$sd) {
@@ -72,7 +74,8 @@ summary.simba <- function(sim_obj, ...) {
     code_sd <- ""
   }
 
-  # Calculate bias and parse coverage summary code
+  # Calculate bias and parse summary code
+  # !!!!! Add na.rm
   if (!is.null(o_args$bias)) {
     code_bias <- ""
     for (b in o_args$bias) {
@@ -85,6 +88,7 @@ summary.simba <- function(sim_obj, ...) {
   }
 
   # Calculate CIs and parse coverage sumary code
+  # Add a column to specify how many rows were omitted with na.rm
   if (!is.null(o_args$coverage)) {
 
     code_cov <- ""
@@ -95,10 +99,18 @@ summary.simba <- function(sim_obj, ...) {
       R[[paste0(".ci_l_",cov$name)]] <- ci_l
       R[[paste0(".ci_h_",cov$name)]] <- ci_h
 
+      if (!is.null(cov$na.rm) && cov$na.rm==TRUE) {
+        na_1 <- ", na.rm=TRUE),"
+        na_2 <- paste0(cov$name, "_num_na", " = sum(is.na(", cov$estimate,
+                       ") | is.na(", cov$se,")),")
+      } else {
+        na_1 <- "),"
+        na_2 <- ""
+      }
+
       code_cov <- c(code_cov, paste0(
         cov$name, " = mean(ifelse(.ci_l_", cov$name, " <= ", cov$truth,
-        " & ", cov$truth, " <= .ci_h_", cov$name, ", 1, 0)),"
-      ))
+        " & ", cov$truth, " <= .ci_h_", cov$name, ", 1, 0)", na_1, na_2))
 
     }
 

@@ -72,13 +72,21 @@ run.simba <- function(sim_obj, script) {
     eval(parse(text=c("use_method <-", deparse(use_method)))) # !!!!! why is this needed?
     eval(parse(text=c("s_copy <-", deparse(sim_obj$scripts[[script]]))))
 
-    script_results <- do.call(
-      what = s_copy,
-      args = list(as.list(L), as.list(C)) # !!!!! This may throw a warning if script does not take any arguments
+    start_time <- Sys.time()
+    script_results <- tryCatch(
+      expr = {
+        do.call(
+          s_copy,
+          args = list(as.list(L), as.list(C)) # !!!!! This may throw a warning if script does not take any arguments
+        )
+      },
+      error = function(e) { return(e) }
     )
+    runtime <- as.numeric(difftime(Sys.time(), start_time), units="secs")
 
     return (list(
       "sim_uid" = i,
+      "runtime" = runtime,
       "results" = script_results
     ))
 
@@ -95,22 +103,57 @@ run.simba <- function(sim_obj, script) {
   # Stop cluster
   if (exists("cl")) { stopCluster(cl) }
 
+  # Separate errors from results
+  results_lists_ok <- list()
+  results_lists_err <- list()
+  for (i in 1:length(results_lists)) {
+    if (is(results_lists[[i]]$results, "error")) {
+      results_lists_err[[length(results_lists_err)+1]] <- results_lists[[i]]
+    } else {
+      results_lists_ok[[length(results_lists_ok)+1]] <- results_lists[[i]]
+    }
+  }
+
   # Convert summary statistics to data frame
-  results_df <- data.frame(
-    matrix(
-      unlist(results_lists),
-      nrow = length(results_lists),
-      byrow = TRUE
+  # !!!!! Make this an option; some lists can't be copmressed into a DF
+  if (length(results_lists_ok)>0) {
+    results_df <- data.frame(
+      matrix(
+        unlist(results_lists_ok),
+        nrow = length(results_lists_ok),
+        byrow = TRUE
+      )
     )
-  )
-  names(results_df) <- c("sim_uid", names(results_lists[[1]]$results))
+    names(results_df) <- c("sim_uid", "runtime",
+                           names(results_lists_ok[[1]]$results))
+  }
+  if (length(results_lists_err)>0) {
+    errors_df <- data.frame(
+      matrix(
+        unlist(results_lists_err),
+        nrow = length(results_lists_err),
+        byrow = TRUE
+      )
+    )
+    names(errors_df) <- c("sim_uid", "runtime", "message", "call")
+  }
+  # !!!!! errors_df is not a valid data frame; parse df manually?
 
-  # # Join `results` with `levels_grid`
-  results_df <- dplyr::inner_join(levels_grid, results_df, by="sim_uid")
+  # Join results data frames with `levels_grid`and attach to sim_obj
+  if (exists("results_df")) {
+    results_df <- dplyr::inner_join(levels_grid, results_df, by="sim_uid")
+    sim_obj$results <- results_df
+  } else {
+    sim_obj$results <- NULL # !!!!! Need to distinguish "sim has not been run" from "sim was run and resulted in 100% errors"
+  }
 
-  sim_obj$results <- results_df
+  # Attach errors to sim_obj
+  if (exists("errors_df")) {
+    sim_obj$errors <- errors_df
+  } else {
+    sim_obj$errors <- "No errors"
+  }
 
-  # Return results
   return (sim_obj)
 
 }

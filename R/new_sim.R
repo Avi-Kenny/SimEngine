@@ -19,7 +19,8 @@ new_sim <- function() {
     "creators" = list(),
     "methods" = list(),
     "scripts" = list(),
-    "results" = NULL
+    "results" = NULL,
+    "errors" = NULL
   )
 
   class(sim_obj) <- "simba"

@@ -102,16 +102,8 @@ summary(
   bias = list(name="bias_lambda", truth="lambda", estimate="lambda_hat")
 )
 
-# !!!!! Add coverage; see z.stepped_wedge
-# summary(
-#   results,
-#   sd = TRUE,
-#   coverage = list(name="theta", truth=L$theta, estimate=R$theta_hat, se=R$se_theta_hat)
-#   # coverage = list(
-#   #   list(name="theta", truth=L$theta, estimate=R$theta_hat, se=R$se_theta_hat),
-#   #   list(name="d", truth=L$d, estimate=R$d_hat, se=R$se_d_hat)
-#   # )
-# )
+# !!!!! Coverage; see z.stepped_wedge
+# !!!!! Error handling
 
 ```
 
