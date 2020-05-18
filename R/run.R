@@ -115,7 +115,7 @@ run.simba <- function(sim_obj, script) {
   }
 
   # Convert summary statistics to data frame
-  # !!!!! Make this an option; some lists can't be copmressed into a DF
+  # !!!!! Make this an option; some lists can't be compressed into a DF
   if (length(results_lists_ok)>0) {
     results_df <- data.frame(
       matrix(
@@ -124,20 +124,30 @@ run.simba <- function(sim_obj, script) {
         byrow = TRUE
       )
     )
-    names(results_df) <- c("sim_uid", "runtime",
+    names(results_df) <- c("sim_uid", "runtime", # !!!!! Add error handling here if simulation script returns an improper object
                            names(results_lists_ok[[1]]$results))
   }
   if (length(results_lists_err)>0) {
+
     errors_df <- data.frame(
-      matrix(
-        unlist(results_lists_err),
-        nrow = length(results_lists_err),
-        byrow = TRUE
-      )
+      "sim_uid" = integer(),
+      "runtime" = double(),
+      "message" = character(),
+      "call" = character(),
+      stringsAsFactors=FALSE
     )
-    names(errors_df) <- c("sim_uid", "runtime", "message", "call")
+
+    for (i in 1:length(results_lists_err)) {
+      errors_df[nrow(errors_df)+1,] <- list(
+        "sim_uid" = results_lists_err[[i]]$sim_uid,
+        "runtime" = results_lists_err[[i]]$runtime,
+        "message" = results_lists_err[[i]]$results$message,
+        "call" = ifelse(is.null(results_lists_err[[i]]$results$call), NA,
+                        results_lists_err[[i]]$results$call)
+      )
+    }
+
   }
-  # !!!!! errors_df is not a valid data frame; parse df manually?
 
   # Join results data frames with `levels_grid`and attach to sim_obj
   if (exists("results_df")) {
@@ -147,8 +157,9 @@ run.simba <- function(sim_obj, script) {
     sim_obj$results <- NULL # !!!!! Need to distinguish "sim has not been run" from "sim was run and resulted in 100% errors"
   }
 
-  # Attach errors to sim_obj
+  # Join results data frames with `levels_grid`and attach to sim_obj
   if (exists("errors_df")) {
+    errors_df <- dplyr::inner_join(levels_grid, errors_df, by="sim_uid")
     sim_obj$errors <- errors_df
   } else {
     sim_obj$errors <- "No errors"
