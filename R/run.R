@@ -5,10 +5,16 @@
 #' @examples
 #' !!!!! TO DO
 #' @export
-run <- function(sim_obj, script) UseMethod("run")
+run <- function(sim_obj, script, ...) UseMethod("run")
 
 #' @export
-run.simba <- function(sim_obj, script) {
+run.simba <- function(sim_obj, script, ...) {
+
+  # o_args <- list(...)
+  # if (!is.null(o_args[[metric]])) {
+  #   # !!!!!
+  # }
+  # # !!!!! Need to move `Set up levels_grid` code to end of add_levels
 
   # Set up levels_grid
   levels_grid_1 <- expand.grid(sim_obj$levels, stringsAsFactors=FALSE)
@@ -64,6 +70,8 @@ run.simba <- function(sim_obj, script) {
 
   run_script <- function(i) {
 
+    start_time <- Sys.time()
+
     # Set up references to levels_grid row and constants
     L <- levels_grid[i,]
     C <- sim_obj$constants
@@ -72,7 +80,6 @@ run.simba <- function(sim_obj, script) {
     eval(parse(text=c("use_method <-", deparse(use_method)))) # !!!!! why is this needed?
     eval(parse(text=c("s_copy <-", deparse(sim_obj$scripts[[script]]))))
 
-    start_time <- Sys.time()
     script_results <- tryCatch(
       expr = {
         do.call(
@@ -82,7 +89,9 @@ run.simba <- function(sim_obj, script) {
       },
       error = function(e) { return(e) }
     )
-    runtime <- as.numeric(difftime(Sys.time(), start_time), units="secs")
+
+    # Also add a "total simulation runtime" variable
+    runtime <- as.numeric(difftime(Sys.time(), start_time), units="secs") # !!!!! Add note to documentation that sum of runtimes will be longer than total runtime if using parallelization
 
     return (list(
       "sim_uid" = i,
@@ -138,12 +147,18 @@ run.simba <- function(sim_obj, script) {
     )
 
     for (i in 1:length(results_lists_err)) {
+
+      if (is.null(results_lists_err[[i]]$results$call)) {
+        call <- NA
+      } else {
+        call <- deparse(results_lists_err[[i]]$results$call)
+      }
+
       errors_df[nrow(errors_df)+1,] <- list(
         "sim_uid" = results_lists_err[[i]]$sim_uid,
         "runtime" = results_lists_err[[i]]$runtime,
         "message" = results_lists_err[[i]]$results$message,
-        "call" = ifelse(is.null(results_lists_err[[i]]$results$call), NA,
-                        results_lists_err[[i]]$results$call)
+        "call" = call
       )
     }
 
