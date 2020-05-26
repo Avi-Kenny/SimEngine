@@ -1,6 +1,7 @@
 #' Add a "method" function
 #'
-#' @param sim_obj A simulation object created by new_sim()
+#' @param sim_obj A simulation object of class "simba", usually created by
+#'     new_sim()
 #' @param name A name for the method function
 #' @param fn A function that performs some analytic method. The function must
 #'     accept an object returned by a creator function as its first argument

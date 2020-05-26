@@ -1,5 +1,6 @@
 #' Use a particular creator within a simulation
 #'
+#' @param creator TO DO
 #' @return Runs the creator specified by the first argument within a simulation,
 #'     supplying all additional arguments to the creator
 #' @examples

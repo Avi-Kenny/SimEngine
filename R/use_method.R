@@ -1,5 +1,6 @@
 #' Use a particular method within a simulation
 #'
+#' @param method TO DO
 #' @return Runs the method specified by the first argument within a simulation,
 #'     supplying all additional arguments to the method
 #' @examples

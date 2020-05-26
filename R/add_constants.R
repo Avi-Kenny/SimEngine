@@ -1,6 +1,7 @@
 #' Add simulation "constants'
 #'
-#' @param sim_obj A simulation object created by new_sim()
+#' @param sim_obj A simulation object of class "simba", usually created by
+#'     new_sim()
 #' @param ... Key-value pairs will be added as "simulation constants" (i.e.
 #'     objects that don't change across simulations). Keys should be strings.
 #'     The purpose of this (rather than "hard-coding" constants in your scripts)
