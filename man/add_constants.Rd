@@ -7,7 +7,8 @@
 add_constants(sim_obj, ...)
 }
 \arguments{
-\item{sim_obj}{A simulation object created by new_sim()}
+\item{sim_obj}{A simulation object of class "simba", usually created by
+new_sim()}
 
 \item{...}{Key-value pairs will be added as "simulation constants" (i.e.
 objects that don't change across simulations). Keys should be strings.

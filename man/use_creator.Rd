@@ -6,6 +6,9 @@
 \usage{
 use_creator(creator, ...)
 }
+\arguments{
+\item{creator}{TO DO}
+}
 \value{
 Runs the creator specified by the first argument within a simulation,
     supplying all additional arguments to the creator

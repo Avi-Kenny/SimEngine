@@ -6,6 +6,10 @@
 \usage{
 add_script(sim_obj, ...)
 }
+\arguments{
+\item{sim_obj}{A simulation object of class "simba", usually created by
+new_sim()}
+}
 \value{
 The original simulation object with the new script function added
 }

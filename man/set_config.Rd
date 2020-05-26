@@ -7,7 +7,8 @@
 set_config(sim_obj, ...)
 }
 \arguments{
-\item{sim_obj}{A simulation object created by new_sim()}
+\item{sim_obj}{A simulation object of class "simba", usually created by
+new_sim()}
 
 \item{num_sim}{Number of simulations to conduct for each level combination}
 
@@ -23,6 +24,10 @@ within a single simulation. Setting to "none" will not parallelize any
 code (useful for debugging).}
 
 \item{packages}{A character vector of packages to load on the cluster}
+
+\item{stop_at_error}{Boolean (FALSE by default); if TRUE, simulation will
+stop after it encounters an error in any single run. Useful for
+debugging.}
 }
 \value{
 The original simulation object with a modified configuration

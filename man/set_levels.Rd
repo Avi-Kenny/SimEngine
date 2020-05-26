@@ -7,7 +7,8 @@
 set_levels(sim_obj, ...)
 }
 \arguments{
-\item{sim_obj}{A simulation object created by new_sim()}
+\item{sim_obj}{A simulation object of class "simba", usually created by
+new_sim()}
 
 \item{...}{One or more key-value pairs representing simulation levels (see
 below)}

@@ -6,6 +6,9 @@
 \usage{
 use_method(method, ...)
 }
+\arguments{
+\item{method}{TO DO}
+}
 \value{
 Runs the method specified by the first argument within a simulation,
     supplying all additional arguments to the method

@@ -7,7 +7,8 @@
 \method{summary}{simba}(sim_obj, ...)
 }
 \arguments{
-\item{sim_obj}{A simulation object created by new_sim()}
+\item{sim_obj}{A simulation object of class "simba", usually created by
+new_sim()}
 
 \item{sd}{If `sd=TRUE` is passed, standard deviations are reported in
 addition to means}

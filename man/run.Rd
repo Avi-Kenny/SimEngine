@@ -4,12 +4,16 @@
 \alias{run}
 \title{Run the simulation}
 \usage{
-run(sim_obj, script)
+run(sim_obj, script, ...)
 }
 \arguments{
-\item{sim_obj}{A simulation object created by new_sim()}
+\item{sim_obj}{A simulation object of class "simba", usually created by
+new_sim()}
 
 \item{script}{The name of a simulation script, added using add_script()}
+
+\item{sim_uids}{A vector of sim_uids that represent simulations to run. If
+omitted, all simulations are run.}
 }
 \description{
 Run the simulation
