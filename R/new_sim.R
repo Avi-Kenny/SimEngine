@@ -13,7 +13,8 @@ new_sim <- function() {
       "datasets" = "many",
       "parallel" = "inner",
       "packages" = c(),
-      "progress" = "none"
+      "progress" = "none",
+      "stop_at_error" = FALSE
     ),
     "constants" = list(),
     "levels" = list("no levels"=TRUE),

@@ -1,7 +1,10 @@
 #' Run the simulation
 #'
-#' @param sim_obj A simulation object created by new_sim()
+#' @param sim_obj A simulation object of class "simba", usually created by
+#'     new_sim()
 #' @param script The name of a simulation script, added using add_script()
+#' @param sim_uids A vector of sim_uids that represent simulations to run. If
+#'     omitted, all simulations are run.
 #' @examples
 #' !!!!! TO DO
 #' @export
@@ -10,26 +13,13 @@ run <- function(sim_obj, script, ...) UseMethod("run")
 #' @export
 run.simba <- function(sim_obj, script, ...) {
 
-  # o_args <- list(...)
-  # if (!is.null(o_args[[metric]])) {
-  #   # !!!!!
-  # }
-  # # !!!!! Need to move `Set up levels_grid` code to end of add_levels
-
-  # Set up levels_grid
-  levels_grid_1 <- expand.grid(sim_obj$levels, stringsAsFactors=FALSE)
-  levels_names_1 <- names(levels_grid_1)
-  levels_grid_1 <- cbind(1:nrow(levels_grid_1), levels_grid_1)
-  names(levels_grid_1) <- c("level_id", levels_names_1)
-  levels_grid <- expand.grid(list(
-    "level_id" = levels_grid_1$level_id,
-    "sim_id" = 1:sim_obj$config$num_sim
-  ))
-  levels_grid <- dplyr::inner_join(levels_grid, levels_grid_1, by="level_id")
-  levels_names <- names(levels_grid)
-  levels_grid <- dplyr::arrange(levels_grid, level_id, sim_id)
-  levels_grid <- cbind(1:nrow(levels_grid), levels_grid)
-  names(levels_grid) <- c("sim_uid",levels_names)
+  o_args <- list(...)
+  if (!is.null(o_args$sim_uids)) {
+    # !!!!! add error handling
+    sim_uids <- o_args$sim_uids
+  } else {
+    sim_uids <- 1:nrow(sim_obj$levels_grid)
+  }
 
   # Load creators/methods
   for (obj in c("creators", "methods")) {
@@ -50,7 +40,7 @@ run.simba <- function(sim_obj, script, ...) {
     packages <- sim_obj$config$packages
     n_cores <- parallel::detectCores() - 1 # !!!!! Make this an argument
     cl <- parallel::makeCluster(n_cores)
-    cluster_export <- c("sim_obj", "levels_grid", "use_method", "packages")
+    cluster_export <- c("sim_obj", "use_method", "packages")
 
     # Export creators/methods to cluster
     for (obj in c("creators", "methods")) {
@@ -73,22 +63,23 @@ run.simba <- function(sim_obj, script, ...) {
     start_time <- Sys.time()
 
     # Set up references to levels_grid row and constants
-    L <- levels_grid[i,]
+    L <- sim_obj$levels_grid[i,]
     C <- sim_obj$constants
 
     # !!!!! This is janky AF. Use environments properly
     eval(parse(text=c("use_method <-", deparse(use_method)))) # !!!!! why is this needed?
     eval(parse(text=c("s_copy <-", deparse(sim_obj$scripts[[script]]))))
 
-    script_results <- tryCatch(
-      expr = {
-        do.call(
-          s_copy,
-          args = list(as.list(L), as.list(C)) # !!!!! This may throw a warning if script does not take any arguments
-        )
-      },
-      error = function(e) { return(e) }
-    )
+    if (sim_obj$config$stop_at_error==TRUE) {
+      script_results <- do.call(s_copy, args=list(as.list(L), as.list(C))) # !!!!! This may throw a warning if script does not take any arguments
+    } else {
+      script_results <- tryCatch(
+        expr = {
+          do.call(s_copy, args=list(as.list(L), as.list(C))) # !!!!! This may throw a warning if script does not take any arguments
+        },
+        error = function(e) { return(e) }
+      )
+    }
 
     # Also add a "total simulation runtime" variable
     runtime <- as.numeric(difftime(Sys.time(), start_time), units="secs") # !!!!! Add note to documentation that sum of runtimes will be longer than total runtime if using parallelization
@@ -103,10 +94,11 @@ run.simba <- function(sim_obj, script, ...) {
 
   # Run simulations
   if (sim_obj$config$parallel=="outer") {
-    # run parallel code
-    results_lists <- parLapply(cl, 1:nrow(levels_grid), run_script)
+    # Run in parallel
+    results_lists <- parLapply(cl, sim_uids, run_script)
   } else {
-    results_lists <- lapply(1:nrow(levels_grid), run_script)
+    # Run serially
+    results_lists <- lapply(sim_uids, run_script)
   }
 
   # Stop cluster
@@ -166,7 +158,7 @@ run.simba <- function(sim_obj, script, ...) {
 
   # Join results data frames with `levels_grid`and attach to sim_obj
   if (exists("results_df")) {
-    results_df <- dplyr::inner_join(levels_grid, results_df, by="sim_uid")
+    results_df <- dplyr::inner_join(sim_obj$levels_grid, results_df, by="sim_uid")
     sim_obj$results <- results_df
   } else {
     sim_obj$results <- NULL # !!!!! Need to distinguish "sim has not been run" from "sim was run and resulted in 100% errors"
@@ -174,7 +166,7 @@ run.simba <- function(sim_obj, script, ...) {
 
   # Join results data frames with `levels_grid`and attach to sim_obj
   if (exists("errors_df")) {
-    errors_df <- dplyr::inner_join(levels_grid, errors_df, by="sim_uid")
+    errors_df <- dplyr::inner_join(sim_obj$levels_grid, errors_df, by="sim_uid")
     sim_obj$errors <- errors_df
   } else {
     sim_obj$errors <- "No errors"

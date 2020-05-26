@@ -91,6 +91,9 @@ print(sim)
 # Run simulation
 sim %<>% run("script_1")
 
+# Run only simulations with UIDs 3,6
+sim %<>% run("script_1", sim_uids=c(3,6))
+
 # Summarize results (with standard deviations)
 # !!!!! Throw warning if any column names are duplicated/overwritten
 # Make it such that you can't use expressions like `truth=C$lambda` here (i.e. 
