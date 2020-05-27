@@ -31,6 +31,7 @@ sim %<>% set_config(
   packages = c("magrittr", "dplyr")
 )
 
+# !!!!! Add list levels (see z.stepped.wedge)
 sim %<>% set_levels(
   "sample_size" = c(10, 100, 1000),
   "lambda" = c(5, 10), # !!!!! testing

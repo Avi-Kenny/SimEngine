@@ -34,6 +34,7 @@ set_config.simba <- function(
   # !!!!! Add error handing for other arguments
 
   # !!!!! Rewrite this more efficiently with `...`
+  # !!!!! Change this such that a single config parameter can be updated
 
   if (!is.na(num_sim)) { sim_obj$config$num_sim = num_sim }
   if (!is.na(stop_at_error)) { sim_obj$config$stop_at_error = stop_at_error }

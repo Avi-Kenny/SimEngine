@@ -25,8 +25,22 @@ set_levels.simba <- function(sim_obj, ...) {
   if (length(list(...))==0) { stop("No levels supplied") }
   sim_obj$levels <- list(...)
 
+  # Extract names from lists
+  levels_shallow <- list()
+  levels_types <- c() # Stores whether level is a list (TRUE) or not (FALSE)
+  for (i in 1:length(sim_obj$levels)) {
+    if (class(sim_obj$levels[[i]])=="list") {
+      levels_types <- c(levels_types, TRUE)
+      levels_shallow[[names(sim_obj$levels)[i]]] <- names(sim_obj$levels[[i]])
+    } else {
+      levels_types <- c(levels_types, FALSE)
+      levels_shallow[[names(sim_obj$levels)[i]]] <- sim_obj$levels[[i]]
+    }
+  }
+  sim_obj$levels_types <- levels_types # !!!!! Make a container for internal variables (e.g. sim_obj$internals$levels_types)
+
   # Set up levels_grid and add to sim_obj
-  levels_grid_1 <- expand.grid(sim_obj$levels, stringsAsFactors=FALSE)
+  levels_grid_1 <- expand.grid(levels_shallow, stringsAsFactors=FALSE)
   levels_names_1 <- names(levels_grid_1)
   levels_grid_1 <- cbind(1:nrow(levels_grid_1), levels_grid_1)
   names(levels_grid_1) <- c("level_id", levels_names_1)
