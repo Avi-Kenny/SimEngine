@@ -63,7 +63,14 @@ run.simba <- function(sim_obj, script, ...) {
     start_time <- Sys.time()
 
     # Set up references to levels_grid row and constants
-    L <- sim_obj$levels_grid[i,]
+    L <- as.list(sim_obj$levels_grid[i,])
+    levs <- names(sim_obj$levels)
+    for (j in 1:length(levs)) {
+      if (sim_obj$levels_types[j]) {
+        L[[levs[j]]] <- sim_obj$levels[[levs[j]]][[L[[levs[j]]]]]
+      }
+    }
+
     C <- sim_obj$constants
 
     # !!!!! This is janky AF. Use environments properly
