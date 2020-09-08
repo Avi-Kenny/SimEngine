@@ -1,68 +1,43 @@
-<p align="right">
-    <a href="https://badge.fury.io/rb/just-the-docs"><img src="https://badge.fury.io/rb/just-the-docs.svg" alt="Gem version"></a> <a href="https://github.com/pmarsceill/just-the-docs/actions?query=workflow%3A%22Master+branch+CI%22"><img src="https://github.com/pmarsceill/just-the-docs/workflows/Master%20branch%20CI/badge.svg" alt="Build status"></a>
-</p>
-<br><br>
-<p align="center">
-    <h1 align="center">Just the Docs</h1>
-    <p align="center">A modern, highly customizable, and responsive Jekyll theme for documentation with built-in search.<br>Easily hosted on GitHub Pages with few dependencies.</p>
-    <p align="center"><strong><a href="https://pmarsceill.github.io/just-the-docs/">See it in action!</a></strong></p>
-    <br><br><br>
-</p>
+# jekyll-rtd-theme
+[![](https://github.com/rundocs/jekyll-rtd-theme/workflows/CI/badge.svg)][repository]
+[![](https://img.shields.io/gem/v/jekyll-rtd-theme)][rubygem]
+[![](https://img.shields.io/gem/dt/jekyll-rtd-theme)][rubygem]
+[![](https://data.jsdelivr.com/v1/package/gh/rundocs/jekyll-rtd-theme/badge)][cdn]
+[![](https://www.codefactor.io/repository/github/rundocs/jekyll-rtd-theme/badge)][codefactor]
+[![](https://img.shields.io/badge/featured%20on-JekyllThemes-red.svg)](https://jekyll-themes.com)
+[![](https://badges.gitter.im/rundocs/jekyll-rtd-theme.svg)][gitter]
 
-![jtd](https://user-images.githubusercontent.com/896475/47384541-89053c80-d6d5-11e8-98dc-dba16e192de9.gif)
+GitHub-flavored docs theme for Jekyll, based on sphinx_rtd_theme
 
-## Installation
+<img class="shadow-box" width="50%" alt="jekyll-rtd-theme" src="https://user-images.githubusercontent.com/68011645/89026666-ad3a8680-d35b-11ea-9f4b-d3fe26ae12ed.png">
 
-Add this line to your Jekyll site's Gemfile:
-
-```ruby
-gem "just-the-docs"
+## Quick start
+```yml
+remote_theme: rundocs/jekyll-rtd-theme
 ```
+You can [generate](https://github.com/rundocs/starter-slim/generate) with the same files and folders from [rundocs/starter-slim](https://github.com/rundocs/starter-slim/)
 
-And add this line to your Jekyll site's `_config.yml`:
+## Features
+- Automatically generate nested sidebar based on directory
+- Multi-language supported
+- Search engine optimized
+- Document search (RegExp supported)
+- Support third-party comments
+- Google, Baidu, CNZZ Analytics supported
+- Just need one file `_config.yml` to configure site
 
-```yaml
-theme: just-the-docs
-```
+## Documents
+For full documentation, please refer to our website ([rundocs.io](https://rundocs.io/)) for details
 
-And then execute:
+### test
+- Latest test document: [rundocs.github.io/jekyll-rtd-theme](https://rundocs.github.io/jekyll-rtd-theme)
+- Preview debug branch, please refer to [rundocs.github.io/debug](https://rundocs.github.io/debug)
 
-    $ bundle
+## The license
+The theme is available as open source under the terms of the MIT License
 
-Or install it yourself as:
-
-    $ gem install just-the-docs
-
-## Usage
-
-[View the documentation](https://pmarsceill.github.io/just-the-docs/) for usage information.
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/pmarsceill/just-the-docs. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
-### Submitting code changes:
-
-- Open a [Pull Request](https://github.com/pmarsceill/just-the-docs/pulls)
-- Ensure all CI tests pass
-- Await code review
-- Bump the version number in `just-the-docs.gemspec` and `package.json` according to [semantic versioning](https://semver.org/).
-
-### Design and development principles of this theme:
-
-1. As few dependencies as possible
-2. No build script needed
-3. First class mobile experience
-4. Make the content shine
-
-## Development
-
-To set up your environment to develop this theme, run `bundle install`.
-
-Your theme is set up just like a normal Jekyll site! To test your theme, run `bundle exec jekyll serve` and open your browser at `http://localhost:4000`. This starts a Jekyll server using your theme. Add pages, documents, data, etc. like normal to test your theme's contents. As you make modifications to your theme and to your content, your site will regenerate and you should see the changes in the browser after a refresh, just like normal.
-
-When the theme is released, only the files in `_layouts`, `_includes`, and `_sass` tracked with Git will be released.
-
-## License
-
-The theme is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+[repository]: https://github.com/rundocs/jekyll-rtd-theme
+[rubygem]: https://rubygems.org/gems/jekyll-rtd-theme
+[cdn]: https://cdn.jsdelivr.net/gh/rundocs/jekyll-rtd-theme/
+[codefactor]: https://www.codefactor.io/repository/github/rundocs/jekyll-rtd-theme
+[gitter]: https://gitter.im/rundocs/jekyll-rtd-theme?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
