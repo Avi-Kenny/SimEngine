@@ -44,7 +44,6 @@ summary.simba <- function(sim_obj, ...) {
 
 
   # If there is only one list, wrap it in a list
-  # !!!!! Add 'mean' to this
   for (metric in c("mean", "sd", "bias", "coverage")) {
     if (!is.null(o_args[[metric]]) && !class(o_args[[metric]][[1]])=="list") {
       o_args[[metric]] <- list(o_args[[metric]])
@@ -55,13 +54,13 @@ summary.simba <- function(sim_obj, ...) {
   code_levels <- paste0("'",names_levels,"'=",names_levels,"[1],")
 
   # Parse code to print levels and calculate means
-  # !!!!! Options should be means=TRUE (default), means=FALSE, means=list()
-  # !!!!! Add na.rm
+  # !!!!! Options should be mean=TRUE (default), mean=FALSE, mean=list()
+  # !!!!! Need to do for (mean in o_args$mean) {...} (similar to below)
 
-  if (is.null(o_args$means) ||
-      (!is.null(o_args$means$all) && o_args$means$all==TRUE) ) {
+  if (is.null(o_args$mean) ||
+      (!is.null(o_args$mean[[1]]$all) && o_args$mean[[1]]$all==TRUE) ) {
 
-    if (!is.null(o_args$means$na.rm) && o_args$means$na.rm==TRUE) {
+    if (!is.null(o_args$mean[[1]]$na.rm) && o_args$mean[[1]]$na.rm==TRUE) {
       na_1 <- ", na.rm=TRUE),"
     } else {
       na_1 <- "),"
@@ -149,8 +148,16 @@ summary.simba <- function(sim_obj, ...) {
     code_cov <- ""
     for (cov in o_args$coverage) {
 
-      ci_l <- R[[cov$estimate]] - 1.96*R[[cov$se]]
-      ci_h <- R[[cov$estimate]] + 1.96*R[[cov$se]]
+      if (!is.null(cov$se)) {
+        ci_l <- R[[cov$estimate]] - 1.96*R[[cov$se]]
+        ci_h <- R[[cov$estimate]] + 1.96*R[[cov$se]]
+      }
+
+      if (!is.null(cov$lower) && !is.null(cov$upper)) {
+        ci_l <- R[[cov$lower]]
+        ci_h <- R[[cov$upper]]
+      }
+
       R[[paste0(".ci_l_",cov$name)]] <- ci_l
       R[[paste0(".ci_h_",cov$name)]] <- ci_h
 
