@@ -3,3 +3,8 @@ _site
 .jekyll-cache
 .jekyll-metadata
 vendor
+*.gem
+.bundle
+.ruby-version
+Gemfile.lock
+node_modules

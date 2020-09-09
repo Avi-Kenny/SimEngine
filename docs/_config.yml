@@ -22,19 +22,24 @@ title: simba
 email: avikenny@uw.edu
 description: >- # this means to ignore newlines until "baseurl:"
   A simple but powerful simulation framework
-baseurl: "/simba" # production
-url: "avi-kenny.github.io" # production
-#baseurl: "" # local
-#url: "" # local
+#baseurl: "/simba" # production
+#url: "avi-kenny.github.io" # production
+baseurl: "" # local
+url: "" # local
 github_username:  Avi-Kenny
-#repository: Avi-Kenny/simba.github.io
+repository: Avi-Kenny/simba.github.io
 
 # Build settings
-#theme: minima
+theme: minima
 #remote_theme: rundocs/jekyll-rtd-theme
-remote_theme: alexander-heimbuch/millidocs
+#remote_theme: alexander-heimbuch/millidocs
 plugins:
   - jekyll-feed
+
+
+logo: "/assets/images/logo.png"
+color_scheme: simba
+
 
 # Exclude from processing.
 # The following items will not be processed, by default.

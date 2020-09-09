@@ -13,7 +13,7 @@ knitr::opts_chunk$set(collapse=TRUE, comment="#>")
 
 # Overview
 
-`Simba` is a package for structuring, maintaining, and running statistical simulations.
+`Simba` is a package for structuring, maintaining, running, and debugging statistical simulations.
 
 Here is a simple example that illustrates the basic workflow:
 
