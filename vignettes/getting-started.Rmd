@@ -13,9 +13,7 @@ knitr::opts_chunk$set(collapse=TRUE, comment="#>")
 
 # Overview
 
-`Simba` is a package for structuring, maintaining, running, and debugging statistical simulations.
 
-Here is a simple example that illustrates the basic workflow:
 
 ```{r}
 
@@ -111,7 +109,7 @@ summary(
 
 ```
 
-Above, by convention, we use the pipe operators (`%>%` and `%<>%`) from the `magrittr` package; if you are unfamiliar with the pipe operator, check out the [magrittr documentation](https://magrittr.tidyverse.org/). In general, we will always use the compound pipe (`%<>%`) except for when we run the simulation with `sim %>% run()`, which uses the regular pipe (`%>%`).
+Above, by convention, we use the pipe operators (`%>%` and `%<>%`) from the `magrittr` package; if you are unfamiliar with the pipe operator, check out the [magrittr documentation](https://magrittr.tidyverse.org/).
 
 # Using previously-defined functions
 
