@@ -6,4 +6,4 @@
 
 `simba` is an open-source framework for statistical simulations in R. Package is currently in initial development/testing; check back soon...
 
-(https://avi-kenny.github.io/simba/)
+Please reference the full package documentation at avi-kenny.github.io/simba.
