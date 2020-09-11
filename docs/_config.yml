@@ -30,7 +30,7 @@ github_username:  Avi-Kenny
 repository: Avi-Kenny/simba.github.io
 
 # Build settings
-theme: minima
+#theme: minima
 #remote_theme: rundocs/jekyll-rtd-theme
 #remote_theme: alexander-heimbuch/millidocs
 plugins:

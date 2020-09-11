@@ -4,4 +4,6 @@
 
 ## Overview
 
-`simba` is a simple but powerful framework for statistical simulations. Package is currently in initial development/testing; check back soon...
+`simba` is an open-source framework for statistical simulations in R. Package is currently in initial development/testing; check back soon...
+
+(https://avi-kenny.github.io/simba/)
