@@ -23,9 +23,9 @@ email: avikenny@uw.edu
 description: >- # this means to ignore newlines until "baseurl:"
   A simple but powerful simulation framework
 baseurl: "/docs" # production
-#url: "avi-kenny.github.io/simba" # production
+url: "https://avi-kenny.github.io/simba" # production
 #baseurl: "" # local
-url: "" # local
+#url: "" # local
 github_username:  Avi-Kenny
 repository: Avi-Kenny/simba.github.io
 
