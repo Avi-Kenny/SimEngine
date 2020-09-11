@@ -1,76 +1,33 @@
----
-title: "simba: Getting started"
-output: rmarkdown::word_document
-vignette: >
-  %\VignetteIndexEntry{getting-started}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(collapse=TRUE, comment="#>")
-```
-
 # Overview
-
-
 
 ```{r}
 
-library(simba)
 library(magrittr) # !!!!! Finish NAMESSPACES chapter and get rid of this
 library(parallel) # !!!!! Finish NAMESSPACES chapter and get rid of this
 
-sim <- new_sim()
-
-sim %<>% set_config(
-  num_sim = 5,
-  parallel = "none",
-  packages = c("magrittr", "dplyr")
-)
-
 # !!!!! Add list levels (see z.stepped.wedge)
-sim %<>% set_levels(
-  "sample_size" = c(10, 100, 1000),
-  "lambda" = c(5, 10), # !!!!! testing
-  "methods_grp_1" = c("sample_var", "sample_mean")
-)
 
+# The notion of "simulation constants" is more of an organizational convenience
+#   than anything else. As one might guess, a simulation constant is something 
+#   that does not change across your entire set of simulations. You could just
+#    as easily hard-code values in your code, but it's often easier to have
+#    these declared at a separate section so that they can be easily modified if
+#    needed.
 sim %<>% add_constants(
   "lambda2" = 4, # !!!!! testing
   "lambda3" = 6 # !!!!! testing
 )
 
-sim %<>% add_creator(
-  "create_poisson_data",
-  function(n, lambda) {
-    x <- rpois(n=n, lambda=lambda)
-    return (x)
-  }
-)
-
-sim %<>% add_method(
-  "sample_mean",
-  function(x) {
-    return ( mean(x) )
-  }
-)
-
-sim %<>% add_method(
-  "sample_var",
-  function(x) {
-    return ( var(x) )
-  }
-)
+# !!!!! Links to all functions in docs
 
 sim %<>% add_script(
-  "script_1",
+  "my script",
   function(L,C) { # !!!!! Consider not making this a function of L and just relying on this being run in a specific environment
     
     data <- create_poisson_data(L$sample_size, L$lambda)
-    # data <- create_poisson_data(L$sample_size, C$lambda)
-    
-    lambda_hat <- use_method(L$methods_grp_1, data)
+
+    lambda_hat <- use_method(L$estimators, data)
+    # !!!!! Replace "use_method" with `call` or `do.call` ?????
     
     time <- Sys.time()
     
@@ -87,11 +44,10 @@ sim %<>% add_script(
 # Print simulation object
 print(sim)
 
-# Run simulation
-sim %<>% run("script_1")
+# !!!!! Copy everything in from z_stepped_wedge and z_572_paper
 
 # Run only simulations with UIDs 3,6
-sim %<>% run("script_1", sim_uids=c(3,6))
+sim %<>% run("my script", sim_uids=c(3,6))
 
 # Summarize results (with standard deviations)
 # !!!!! Throw warning if any column names are duplicated/overwritten
@@ -109,7 +65,6 @@ summary(
 
 ```
 
-Above, by convention, we use the pipe operators (`%>%` and `%<>%`) from the `magrittr` package; if you are unfamiliar with the pipe operator, check out the [magrittr documentation](https://magrittr.tidyverse.org/).
 
 # Using previously-defined functions
 

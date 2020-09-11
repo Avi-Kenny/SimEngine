@@ -9,7 +9,7 @@ new_sim <- function() {
 
   sim_obj <- list(
     "config" = list(
-      "num_sim" = 1,
+      "num_sim" = 1000,
       "datasets" = "many",
       "parallel" = "inner",
       "packages" = c(),
