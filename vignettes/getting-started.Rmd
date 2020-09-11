@@ -20,31 +20,12 @@ sim %<>% add_constants(
 
 # !!!!! Links to all functions in docs
 
-sim %<>% add_script(
-  "my script",
-  function(L,C) { # !!!!! Consider not making this a function of L and just relying on this being run in a specific environment
-    
-    data <- create_poisson_data(L$sample_size, L$lambda)
-
-    lambda_hat <- use_method(L$estimators, data)
-    # !!!!! Replace "use_method" with `call` or `do.call` ?????
-    
-    time <- Sys.time()
-    
-    # `results` should be a list of key-value pairs
-    # !!!!! Throw warning if any column names are duplicated/overwritten
-    return (list(
-      "lambda_hat" = lambda_hat,
-      "time" = time
-    ))
-
-  }
-)
-
-# Print simulation object
-print(sim)
-
 # !!!!! Copy everything in from z_stepped_wedge and z_572_paper
+
+# !!!!! Script: Throw warning if any column names are duplicated/overwritten
+
+# !!!!! Print simulation object
+print(sim)
 
 # Run only simulations with UIDs 3,6
 sim %<>% run("my script", sim_uids=c(3,6))
@@ -66,6 +47,7 @@ summary(
 ```
 
 
+
 # Using previously-defined functions
 
 Above, we created new functions and named them "create_rct" and "OLS". It's also easy to use previously-defined functions. You can give the functions a new name, or use the name of the function.
@@ -85,5 +67,83 @@ ols <-   function(data) {
 
 sim %<>% add_creator(create_data)
 sim %<>% add_method(ols)
+
+```
+
+
+
+# !!!!! TESTING 1 !!!!!
+
+```{r}
+
+sim <- new_sim()
+create_rct_data <- function (num_patients) {
+  df <- data.frame(
+    "patient_id" = integer(),
+    "group" = character(),
+    "outcome" = double(),
+    stringsAsFactors = FALSE
+  )
+  for (i in 1:num_patients) {
+    group <- ifelse(sample(c(0,1), size=1)==1, "treatment", "control")
+    treatment_effect <- ifelse(group=="treatment", -7, 0)
+    outcome <- rnorm(n=1, mean=130, sd=5) + treatment_effect
+    df[i,] <- list(i, group, outcome)
+  }
+  return (df)
+}
+sim %<>% add_creator(create_rct_data)
+rm(create_rct_data)
+estimator_1 <- function(df) {
+  n <- nrow(df)
+  true_prob <- 0.5
+  sum_t <- sum(df$outcome * (df$group=="treatment"))
+  sum_c <- sum(df$outcome * (df$group=="control"))
+  return ( sum_t/(n*true_prob) - sum_c/(n*(1-true_prob)) )
+}
+estimator_2 <- function(df) {
+  n <- nrow(df)
+  est_prob <- sum(df$group=="treatment") / n
+  sum_t <- sum(df$outcome * (df$group=="treatment"))
+  sum_c <- sum(df$outcome * (df$group=="control"))
+  return ( sum_t/(n*est_prob) - sum_c/(n*(1-est_prob)) )
+}
+sim %<>% add_method(estimator_1)
+sim %<>% add_method(estimator_2)
+rm(estimator_1)
+rm(estimator_2)
+sim %<>% set_levels(
+  estimator = c("estimator_1", "estimator_2"),
+  num_patients = c(20, 40, 80)
+)
+sim %<>% add_script(
+  "my script",
+  function() {
+    df <- create_rct_data(L$num_patients)
+    estimate <- use_method(L$estimator, df)
+    return (
+      list("estimate" = estimate)
+      # list("est"=L$estimator, "num"=L$num_patients)
+    )
+  }
+)
+sim %<>% set_config(
+  num_sim = 10,
+  parallel = "none"
+)
+sim %<>% run("my script")
+
+```
+
+
+# !!!!! TESTING 2 !!!!!
+
+```{r}
+
+# sim_obj <- new_sim()
+# sim_obj %<>% set_levels(
+#   method = c("estimator_1", "estimator_2"),
+#   num_patients = c(20, 40, 80)
+# )
 
 ```

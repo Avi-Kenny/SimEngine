@@ -18,8 +18,24 @@ run.simba <- function(sim_obj, script, ...) {
     # !!!!! add error handling
     sim_uids <- o_args$sim_uids
   } else {
-    sim_uids <- 1:nrow(sim_obj$levels_grid)
+    sim_uids <- 1:(nrow(sim_obj$levels_grid)*sim_obj$config$num_sim)
   }
+
+  # Create levels_grid_big
+  levels_grid_big <- expand.grid(list(
+    "level_id" = sim_obj$levels_grid$level_id,
+    "sim_id" = 1:sim_obj$config$num_sim
+  ))
+  levels_grid_big <- dplyr::inner_join(
+    levels_grid_big,
+    sim_obj$levels_grid,
+    by = "level_id"
+  )
+  levels_grid_big <- dplyr::arrange(levels_grid_big, level_id, sim_id)
+  names_2 <- names(levels_grid_big)
+  levels_grid_big <- cbind(1:nrow(levels_grid_big), levels_grid_big)
+  names(levels_grid_big) <- c("sim_uid", names_2)
+  sim_obj$internals$levels_grid_big <- levels_grid_big
 
   # Load creators/methods
   for (obj in c("creators", "methods")) {
@@ -62,11 +78,11 @@ run.simba <- function(sim_obj, script, ...) {
 
     start_time <- Sys.time()
 
-    # Set up references to levels_grid row and constants
-    L <- as.list(sim_obj$levels_grid[i,])
+    # Set up references to levels_grid_big row and constants
+    L <- as.list(sim_obj$internals$levels_grid_big[i,])
     levs <- names(sim_obj$levels)
     for (j in 1:length(levs)) {
-      if (sim_obj$levels_types[j]) {
+      if (sim_obj$internals$levels_types[j]) {
         L[[levs[j]]] <- sim_obj$levels[[levs[j]]][[L[[levs[j]]]]]
       }
     }
@@ -78,11 +94,15 @@ run.simba <- function(sim_obj, script, ...) {
     eval(parse(text=c("s_copy <-", deparse(sim_obj$scripts[[script]]))))
 
     if (sim_obj$config$stop_at_error==TRUE) {
-      script_results <- do.call(s_copy, args=list(as.list(L), as.list(C))) # !!!!! This may throw a warning if script does not take any arguments
+      s_copy()
+      # script_results <- do.call(s_copy)
+      # script_results <- do.call(s_copy, args=list(as.list(L), as.list(C)))
     } else {
       script_results <- tryCatch(
         expr = {
-          do.call(s_copy, args=list(as.list(L), as.list(C))) # !!!!! This may throw a warning if script does not take any arguments
+          s_copy()
+          # do.call(s_copy)
+          # do.call(s_copy, args=list(as.list(L), as.list(C)))
         },
         error = function(e) { return(e) }
       )
@@ -123,18 +143,26 @@ run.simba <- function(sim_obj, script, ...) {
   }
 
   # Convert summary statistics to data frame
-  # !!!!! Make this an option; some lists can't be compressed into a DF
+  # !!!!! In addition to sim_uid, runtime, and results, create "other" to store other non-flat info
   if (length(results_lists_ok)>0) {
-    results_df <- data.frame(
-      matrix(
-        unlist(results_lists_ok),
-        nrow = length(results_lists_ok),
-        byrow = TRUE
-      )
-    )
-    names(results_df) <- c("sim_uid", "runtime", # !!!!! Add error handling here if simulation script returns an improper object
-                           names(results_lists_ok[[1]]$results))
+
+    first <- results_lists_ok[[1]]
+    one_list <- c(list(
+      "sim_uid" = first$sim_uid,
+      "runtime" = first$runtime
+    ), first$results)
+    results_df <- as.data.frame(one_list, stringsAsFactors=FALSE)
+    results_df <- results_df[0,]
+
+    # !!!!! Speed this up ?????
+    for (i in 1:length(results_lists_ok)) {
+      r <- results_lists_ok[[i]]
+      results_df[nrow(results_df)+1,] <- c(r$sim_uid, r$runtime, r$results)
+    }
+
   }
+
+  # Convert errors to data frame
   if (length(results_lists_err)>0) {
 
     errors_df <- data.frame(
@@ -163,17 +191,25 @@ run.simba <- function(sim_obj, script, ...) {
 
   }
 
-  # Join results data frames with `levels_grid`and attach to sim_obj
+  # Join results data frames with `levels_grid_big`and attach to sim_obj
   if (exists("results_df")) {
-    results_df <- dplyr::inner_join(sim_obj$levels_grid, results_df, by="sim_uid")
+    results_df <- dplyr::inner_join(
+      sim_obj$internals$levels_grid_big,
+      results_df,
+      by = "sim_uid"
+    )
     sim_obj$results <- results_df
   } else {
     sim_obj$results <- NULL # !!!!! Need to distinguish "sim has not been run" from "sim was run and resulted in 100% errors"
   }
 
-  # Join results data frames with `levels_grid`and attach to sim_obj
+  # Join results data frames with `levels_grid_big`and attach to sim_obj
   if (exists("errors_df")) {
-    errors_df <- dplyr::inner_join(sim_obj$levels_grid, errors_df, by="sim_uid")
+    errors_df <- dplyr::inner_join(
+      sim_obj$internals$levels_grid_big,
+      errors_df,
+      by = "sim_uid"
+    )
     sim_obj$errors <- errors_df
   } else {
     sim_obj$errors <- "No errors"

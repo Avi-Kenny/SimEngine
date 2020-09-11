@@ -18,6 +18,7 @@ new_sim <- function() {
     ),
     "constants" = list(),
     "levels" = list("no levels"=TRUE),
+    "internals" = list(),
     "creators" = list(),
     "methods" = list(),
     "scripts" = list(),

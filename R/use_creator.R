@@ -8,6 +8,7 @@
 #' @export
 use_creator <- function(creator, ...) {
 
+  # !!!!! Note the reference to sim_obj is currently global
   if (length(list(...))>0) {
     result <- do.call(sim_obj$creators[[creator]], list(...))
   } else {
