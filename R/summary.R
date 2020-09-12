@@ -44,7 +44,7 @@ summary.simba <- function(sim_obj, ...) {
 
 
   # If there is only one list, wrap it in a list
-  for (metric in c("mean", "sd", "bias", "coverage")) {
+  for (metric in c("mean", "var", "sd", "bias", "coverage")) {
     if (!is.null(o_args[[metric]]) && !class(o_args[[metric]][[1]])=="list") {
       o_args[[metric]] <- list(o_args[[metric]])
     }
@@ -141,7 +141,7 @@ summary.simba <- function(sim_obj, ...) {
     code_bias <- ""
   }
 
-  # Calculate CIs and parse coverage sumary code
+  # Calculate CIs and parse coverage summary code
   # !!!!! Add a column to specify how many rows were omitted with na.rm (for other summary stats as well)
   if (!is.null(o_args$coverage)) {
 

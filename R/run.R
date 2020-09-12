@@ -13,6 +13,9 @@ run <- function(sim_obj, script, ...) UseMethod("run")
 #' @export
 run.simba <- function(sim_obj, script, ...) {
 
+  # Get reference to current environment
+  env <- environment()
+
   o_args <- list(...)
   if (!is.null(o_args$sim_uids)) {
     # !!!!! add error handling
@@ -44,7 +47,8 @@ run.simba <- function(sim_obj, script, ...) {
         assign(
           x = names(sim_obj[[obj]])[i],
           value = (sim_obj[[obj]])[[i]],
-          envir = globalenv() # !!!!! Temp fix
+          envir = env # !!!!! Testing
+          # envir = globalenv() # !!!!! Temp fix; works
         )
       }
     }
@@ -70,7 +74,7 @@ run.simba <- function(sim_obj, script, ...) {
     parallel::clusterExport(cl, cluster_export, envir)
     clusterCall(cl, function(x) {.libPaths(x)}, .libPaths())
     parallel::clusterEvalQ(cl, sapply(packages, function(p) {
-      do.call("library", list(p))
+      do.call("library", list(p)) # !!!!! Automate this by looping through loaded packages ?????
     }))
   }
 
@@ -89,27 +93,22 @@ run.simba <- function(sim_obj, script, ...) {
 
     C <- sim_obj$constants
 
-    # !!!!! This is janky AF. Use environments properly
-    eval(parse(text=c("use_method <-", deparse(use_method)))) # !!!!! why is this needed?
-    eval(parse(text=c("s_copy <-", deparse(sim_obj$scripts[[script]]))))
+    # !!!!! Revisit this line
+    eval(parse(text=c(".script_copy <-", deparse(sim_obj$scripts[[script]]))))
 
     if (sim_obj$config$stop_at_error==TRUE) {
-      s_copy()
-      # script_results <- do.call(s_copy)
-      # script_results <- do.call(s_copy, args=list(as.list(L), as.list(C)))
+      .script_copy()
     } else {
       script_results <- tryCatch(
         expr = {
-          s_copy()
-          # do.call(s_copy)
-          # do.call(s_copy, args=list(as.list(L), as.list(C)))
+          .script_copy()
         },
         error = function(e) { return(e) }
       )
     }
 
     # Also add a "total simulation runtime" variable
-    runtime <- as.numeric(difftime(Sys.time(), start_time), units="secs") # !!!!! Add note to documentation that sum of runtimes will be longer than total runtime if using parallelization
+    runtime <- as.numeric(difftime(Sys.time(), start_time), units="secs")
 
     return (list(
       "sim_uid" = i,
