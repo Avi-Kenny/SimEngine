@@ -7,17 +7,6 @@ library(parallel) # !!!!! Finish NAMESSPACES chapter and get rid of this
 
 # !!!!! Add list levels (see z.stepped.wedge)
 
-# The notion of "simulation constants" is more of an organizational convenience
-#   than anything else. As one might guess, a simulation constant is something 
-#   that does not change across your entire set of simulations. You could just
-#    as easily hard-code values in your code, but it's often easier to have
-#    these declared at a separate section so that they can be easily modified if
-#    needed.
-sim %<>% add_constants(
-  "lambda2" = 4, # !!!!! testing
-  "lambda3" = 6 # !!!!! testing
-)
-
 # !!!!! Links to all functions in docs
 
 # !!!!! Copy everything in from z_stepped_wedge and z_572_paper
@@ -27,19 +16,11 @@ sim %<>% add_constants(
 # !!!!! Print simulation object
 print(sim)
 
-# Run only simulations with UIDs 3,6
-sim %<>% run("my script", sim_uids=c(3,6))
 
-# Summarize results (with standard deviations)
-# !!!!! Throw warning if any column names are duplicated/overwritten
+# !!!!! summary(): Throw warning if any column names are duplicated/overwritten
 # Make it such that you can't use expressions like `truth=C$lambda` here (i.e. 
 #     you can't pass constants); instead, add constants to results data frame
-#     and reference by quotes like the others; alternatively
-summary(
-  sim,
-  sd = list(name="sd_lambda", x="lambda_hat"),
-  bias = list(name="bias_lambda", truth="lambda", estimate="lambda_hat")
-)
+#     and reference by quotes like the others; alternatively ...
 
 # !!!!! Coverage; see z.stepped_wedge
 # !!!!! Error handling
@@ -77,6 +58,7 @@ sim %<>% add_method(ols)
 ```{r}
 
 sim <- new_sim()
+
 create_rct_data <- function (num_patients) {
   df <- data.frame(
     "patient_id" = integer(),
@@ -92,8 +74,9 @@ create_rct_data <- function (num_patients) {
   }
   return (df)
 }
+
 sim %<>% add_creator(create_rct_data)
-rm(create_rct_data)
+
 estimator_1 <- function(df) {
   n <- nrow(df)
   true_prob <- 0.5
@@ -108,32 +91,43 @@ estimator_2 <- function(df) {
   sum_c <- sum(df$outcome * (df$group=="control"))
   return ( sum_t/(n*est_prob) - sum_c/(n*(1-est_prob)) )
 }
+
 sim %<>% add_method(estimator_1)
 sim %<>% add_method(estimator_2)
-rm(estimator_1)
-rm(estimator_2)
+
 sim %<>% set_levels(
   estimator = c("estimator_1", "estimator_2"),
-  num_patients = c(20, 40, 80)
+  num_patients = c(50, 100, 200)
 )
+
 sim %<>% add_script(
   "my script",
   function() {
     df <- create_rct_data(L$num_patients)
-    estimate <- use_method(L$estimator, df)
+    estimate <- do.call(L$estimator, list(df))
     return (
       list("estimate" = estimate)
-      # list("est"=L$estimator, "num"=L$num_patients)
     )
   }
 )
+
 sim %<>% set_config(
-  num_sim = 10,
+  num_sim = 100,
   parallel = "none"
 )
+
 sim %<>% run("my script")
 
+sim %>% summary()
+
+sim %>% summary(
+  bias = list(name="bias", truth=-7, estimate="estimate"),
+  var = list(name="var", x="estimate")
+)
+
+
 ```
+
 
 
 # !!!!! TESTING 2 !!!!!
