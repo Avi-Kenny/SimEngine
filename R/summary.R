@@ -44,7 +44,7 @@ summary.simba <- function(sim_obj, ...) {
 
 
   # If there is only one list, wrap it in a list
-  for (metric in c("mean", "var", "sd", "bias", "coverage")) {
+  for (metric in c("mean", "var", "sd", "bias", "mse", "coverage")) {
     if (!is.null(o_args[[metric]]) && !class(o_args[[metric]][[1]])=="list") {
       o_args[[metric]] <- list(o_args[[metric]])
     }
@@ -141,6 +141,28 @@ summary.simba <- function(sim_obj, ...) {
     code_bias <- ""
   }
 
+  # Calculate MSE and parse summary code
+  if (!is.null(o_args$mse)) {
+
+    code_mse <- ""
+    for (m in o_args$mse) {
+
+      if (!is.null(m$na.rm) && m$na.rm==TRUE) {
+        na_1 <- ", na.rm=TRUE),"
+      } else {
+        na_1 <- "),"
+      }
+
+      code_mse <- c(code_mse, paste0(
+        m$name, " = mean((", m$estimate, "-", m$truth, ")^2", na_1
+      ))
+
+    }
+
+  } else {
+    code_mse <- ""
+  }
+
   # Calculate CIs and parse coverage summary code
   # !!!!! Add a column to specify how many rows were omitted with na.rm (for other summary stats as well)
   if (!is.null(o_args$coverage)) {
@@ -189,6 +211,7 @@ summary.simba <- function(sim_obj, ...) {
     code_sd,
     code_var,
     code_bias,
+    code_mse,
     code_cov
   )
   summarize_code <- c(summarize_code, "))")
