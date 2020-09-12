@@ -121,10 +121,9 @@ sim %<>% run("my script")
 sim %>% summary()
 
 sim %>% summary(
-  bias = list(name="bias", truth=-7, estimate="estimate"),
-  var = list(name="var", x="estimate")
+  bias = list(name="bias_ate", truth=-7, estimate="estimate"),
+  mse = list(name="mse_ate", truth=-7, estimate="estimate")
 )
-
 
 ```
 

@@ -34,7 +34,7 @@ install_github(repo="Avi-Kenny/simba")
 
 ## Getting started
 
-The goal of a statistical simulation is often to test how a new statistical method performs against existing methods. Most statistical simulations include three basic phases: (1) generate some data, (2) run one or more methods using the generated data, and (3) compare the performance of the methods. We highly recommend reading the <a href="/docs/concepts.html" target="_blank">Simulation concepts</a> section of this site for further discussion of these phases and other high-level concepts related to designing and running simulations with **simba**.
+The goal of many statistical simulations is to test how a new statistical method performs against existing methods. Most statistical simulations include three basic phases: (1) generate some data, (2) run one or more methods using the generated data, and (3) compare the performance of the methods. We highly recommend reading the <a href="/docs/concepts.html" target="_blank">Simulation concepts</a> section of this site for further discussion of these phases and other high-level concepts related to designing and running simulations with **simba**.
 
 To briefly illustrate how these phases are implemented using **simba**, we will use the example of estimating the average treatment effect of a drug in the context of a randomized controlled trial (RCT).
 
@@ -176,19 +176,19 @@ Once the simulations have finished, use the *summary()* function to calculate co
 
 ```R
 sim %>% summary(
-  bias = list(name="bias", truth=-7, estimate="estimate"),
-  var = list(name="var", x="estimate")
+  bias = list(name="bias_ate", truth=-7, estimate="estimate"),
+  mse = list(name="mse_ate", truth=-7, estimate="estimate")
 )
-#>   level_id   estimator num_patients mean_runtime mean_estimate          var         bias
-#> 1        1 estimator_1           50  0.004488251     -8.320855 1355.5371012 -1.320855233
-#> 2        2 estimator_2           50  0.004399462     -7.156358    2.1606873 -0.156357690
-#> 3        3 estimator_1          100  0.007916110     -6.384224  684.2514978  0.615775791
-#> 4        4 estimator_2          100  0.007845819     -7.112489    0.8511682 -0.112489162
-#> 5        5 estimator_1          200  0.015240951     -5.300457  295.4703541  1.699543025
-#> 6        6 estimator_2          200  0.015177331     -7.008880    0.5924621 -0.008880099
+#>   level_id   estimator num_patients mean_runtime mean_estimate        bias          mse
+#> 1        1 estimator_1           50  0.004853940     -4.086867  2.91313267 1221.3380496
+#> 2        2 estimator_2           50  0.004429979     -7.116263 -0.11626316    1.9830060
+#> 3        3 estimator_1          100  0.008662744    -12.559415 -5.55941452  614.2357481
+#> 4        4 estimator_2          100  0.008607748     -7.057722 -0.05772176    0.9293629
+#> 5        5 estimator_1          200  0.018162758     -6.771745  0.22825547  376.3410262
+#> 6        6 estimator_2          200  0.016390090     -6.795681  0.20431877    0.5332393
 ```
 
-You can also access the results for individual simulation replicates.
+In this example, we see that the MSE of estimator 1 is much higher and that MSE decreases with increasing sample size for both estimators, as expected. You can also access the results for individual simulation replicates.
 
 ```R
 head(sim$results)
