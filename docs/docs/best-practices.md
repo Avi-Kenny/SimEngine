@@ -5,7 +5,7 @@ nav_order: 7
 permalink: /best-practices/
 ---
 
-# Beset practices
+# Best practices
 {: .fs-9 }
 
 ---

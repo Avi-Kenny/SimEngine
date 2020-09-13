@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Configutarion
+title: Configuration
 nav_order: 4
 permalink: /configuration/
 ---
