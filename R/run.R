@@ -29,6 +29,7 @@ run.simba <- function(sim_obj, script, ...) {
     "level_id" = sim_obj$levels_grid$level_id,
     "sim_id" = 1:sim_obj$config$num_sim
   ))
+
   levels_grid_big <- dplyr::inner_join(
     levels_grid_big,
     sim_obj$levels_grid,
@@ -60,7 +61,7 @@ run.simba <- function(sim_obj, script, ...) {
     packages <- sim_obj$config$packages
     n_cores <- parallel::detectCores() - 1 # !!!!! Make this an argument
     cl <- parallel::makeCluster(n_cores)
-    cluster_export <- c("sim_obj", "use_method", "packages")
+    cluster_export <- c("sim_obj", "packages")
 
     # Export creators/methods to cluster
     for (obj in c("creators", "methods")) {
@@ -93,7 +94,7 @@ run.simba <- function(sim_obj, script, ...) {
 
     C <- sim_obj$constants
 
-    # !!!!! Revisit this line
+    # Declare script copy dynamically (!!!!! Revisit this)
     eval(parse(text=c(".script_copy <-", deparse(sim_obj$scripts[[script]]))))
 
     if (sim_obj$config$stop_at_error==TRUE) {
@@ -141,9 +142,21 @@ run.simba <- function(sim_obj, script, ...) {
     }
   }
 
+  # Generate completion message
+  num_ok <- length(results_lists_ok)
+  num_err <- length(results_lists_err)
+  pct_err <- round((100*num_err)/(num_err+num_ok),0)
+  if (pct_err==0) {
+    comp_msg <- "Done. No errors detected."
+  } else {
+    comp_msg <- paste0(
+      "Done. Errors detected in ", pct_err, "% of simulation replicates."
+    )
+  }
+
   # Convert summary statistics to data frame
   # !!!!! In addition to sim_uid, runtime, and results, create "other" to store other non-flat info
-  if (length(results_lists_ok)>0) {
+  if (num_ok>0) {
 
     first <- results_lists_ok[[1]]
     one_list <- c(list(
@@ -162,7 +175,7 @@ run.simba <- function(sim_obj, script, ...) {
   }
 
   # Convert errors to data frame
-  if (length(results_lists_err)>0) {
+  if (num_err>0) {
 
     errors_df <- data.frame(
       "sim_uid" = integer(),
@@ -213,6 +226,8 @@ run.simba <- function(sim_obj, script, ...) {
   } else {
     sim_obj$errors <- "No errors"
   }
+
+  cat(comp_msg)
 
   return (sim_obj)
 

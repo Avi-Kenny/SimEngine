@@ -12,7 +12,11 @@
 summary.simba <- function(sim_obj, ...) {
 
   if (is.null(sim_obj$results)) {
-    stop("Simulation has not been run yet")
+    if (is.null(sim_obj$errors)) {
+      stop("Simulation has not been run yet.")
+    } else {
+      stop("100% of simulations had errors.")
+    }
   }
 
   # Parse passed arguments
@@ -51,9 +55,13 @@ summary.simba <- function(sim_obj, ...) {
   }
 
   # Parse code to display levels
-  code_levels <- paste0("'",names_levels,"'=",names_levels,"[1],")
+  if (is.null(sim$levels$`no levels`)) {
+    code_levels <- paste0("'",names_levels,"'=`",names_levels,"`[1],")
+  } else {
+    code_levels <- ""
+  }
 
-  # Parse code to print levels and calculate means
+  # Parse code to calculate means
   # !!!!! Options should be mean=TRUE (default), mean=FALSE, mean=list()
   # !!!!! Need to do for (mean in o_args$mean) {...} (similar to below)
 

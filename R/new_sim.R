@@ -11,14 +11,18 @@ new_sim <- function() {
     "config" = list(
       "num_sim" = 1000,
       "datasets" = "many",
-      "parallel" = "inner",
+      "parallel" = "none",
       "packages" = c(),
       "progress" = "none",
       "stop_at_error" = FALSE
     ),
     "constants" = list(),
     "levels" = list("no levels"=TRUE),
-    "internals" = list(),
+    "levels_grid" = data.frame("level_id"=1),
+    "internals" = list(
+      "levels_types" = FALSE,
+      "levels_shallow" = list("no levels"=TRUE)
+    ),
     "creators" = list(),
     "methods" = list(),
     "scripts" = list(),
