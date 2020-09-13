@@ -2,10 +2,10 @@
 layout: default
 title: Home
 nav_order: 1
-description: "simba: an open-source framework for statistical simulations in R"
 permalink: /
-last_modified_date: 2020-04-27T17:54:08+0000
 ---
+
+<!-- description: "simba: an open-source framework for statistical simulations in R" -->
 
 <img src="assets/images/logo.png" align="right" alt="simba" style="height:150px">
 
@@ -153,7 +153,7 @@ Your script should always return a named list, although your list can be complex
 
 ### 6) Set the simulation configuration
 
-This controls options related to your entire simulation, such as the number of simulation replicates to run for each level combination and how to <a href="/docs/parallel.html" target="_blank">parallelize</a> your code. This is discussed in detail on the <a href="/docs/configuration.html" target="_blank">Configuration</a> page.
+This controls options related to your entire simulation, such as the number of simulation replicates to run for each level combination and how to <a href="/docs/parallel.html" target="_blank">parallelize</a> your code. This is discussed in detail on the <a href="/docs/configuration.html" target="_blank">Configuration</a> page. To speed things up, we will set *num_sim* to 100, and so **simba** will run a total of 600 simulation replicates (100 for each level combination).
 
 ```R
 sim %<>% set_config(
@@ -164,10 +164,11 @@ sim %<>% set_config(
 
 ### 7) Run the simulation
 
-All 6,000 replicates are run at once and results are stored in the simulation object.
+All 600 replicates are run at once and results are stored in the simulation object.
 
 ```R
 sim %<>% run("my script")
+#> "Done. No errors detected."
 ```
 
 ### 8) View and summarize results
@@ -179,7 +180,7 @@ sim %>% summary(
   bias = list(name="bias_ate", truth=-7, estimate="estimate"),
   mse = list(name="mse_ate", truth=-7, estimate="estimate")
 )
-#>   level_id   estimator num_patients mean_runtime mean_estimate        bias          mse
+#>   level_id   estimator num_patients mean_runtime mean_estimate    bias_ate      mse_ate
 #> 1        1 estimator_1           50  0.004853940     -4.086867  2.91313267 1221.3380496
 #> 2        2 estimator_2           50  0.004429979     -7.116263 -0.11626316    1.9830060
 #> 3        3 estimator_1          100  0.008662744    -12.559415 -5.55941452  614.2357481
@@ -188,7 +189,9 @@ sim %>% summary(
 #> 6        6 estimator_2          200  0.016390090     -6.795681  0.20431877    0.5332393
 ```
 
-In this example, we see that the MSE of estimator 1 is much higher and that MSE decreases with increasing sample size for both estimators, as expected. You can also access the results for individual simulation replicates.
+In this example, we see that the MSE of estimator 1 is much higher than that of estimator 2 and that MSE decreases with increasing sample size for both estimators, as expected.
+
+You can also directly access the results for individual simulation replicates.
 
 ```R
 head(sim$results)

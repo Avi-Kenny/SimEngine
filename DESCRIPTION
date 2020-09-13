@@ -15,5 +15,6 @@ Imports:
 Suggests: 
     parallel,
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 2.1.0)
 VignetteBuilder: knitr
