@@ -29,27 +29,82 @@ print(sim)
 
 
 
-# Using previously-defined functions
-
-Above, we created new functions and named them "create_rct" and "OLS". It's also easy to use previously-defined functions. You can give the functions a new name, or use the name of the function.
+# Minimal working example of cluster-parallelized simulation
 
 ```{r}
 
-create_data <- function(n, sigma) {
-  x <- runif(n)
-  y <- 4*x + rnorm(n, mean=0, sd=sigma)
-  return (data.frame(x=x,y=y))
-}
+sim <- new_sim()
 
-ols <-   function(data) {
-  model <- lm(y~x, data=data)
-  return (model$coefficients[["x"]])
+create_rct_data <- function (num_patients) {
+  df <- data.frame(
+    "patient_id" = integer(),
+    "group" = character(),
+    "outcome" = double(),
+    stringsAsFactors = FALSE
+  )
+  for (i in 1:num_patients) {
+    group <- ifelse(sample(c(0,1), size=1)==1, "treatment", "control")
+    treatment_effect <- ifelse(group=="treatment", -7, 0)
+    outcome <- rnorm(n=1, mean=130, sd=5) + treatment_effect
+    df[i,] <- list(i, group, outcome)
+  }
+  return (df)
 }
+sim %<>% add_creator(create_rct_data)
 
-sim %<>% add_creator(create_data)
-sim %<>% add_method(ols)
+estimator_1 <- function(df) {
+  n <- nrow(df)
+  true_prob <- 0.5
+  sum_t <- sum(df$outcome * (df$group=="treatment"))
+  sum_c <- sum(df$outcome * (df$group=="control"))
+  return ( sum_t/(n*true_prob) - sum_c/(n*(1-true_prob)) )
+}
+estimator_2 <- function(df) {
+  n <- nrow(df)
+  est_prob <- sum(df$group=="treatment") / n
+  sum_t <- sum(df$outcome * (df$group=="treatment"))
+  sum_c <- sum(df$outcome * (df$group=="control"))
+  return ( sum_t/(n*est_prob) - sum_c/(n*(1-est_prob)) )
+}
+sim %<>% add_method(estimator_1)
+sim %<>% add_method(estimator_2)
+
+sim %<>% set_levels(
+  estimator = c("estimator_1", "estimator_2"),
+  num_patients = c(50, 200, 1000)
+)
+
+sim %<>% add_script(
+  "my parallel script",
+  function() {
+    df <- create_rct_data(L$num_patients)
+    estimate <- do.call(L$estimator, list(df))
+    return (
+      list("estimate" = estimate)
+    )
+  }
+)
+
+sim %<>% set_config(
+  num_sim = 10,
+  parallel = "outer"
+)
+
+sim %<>% run("my parallel script")
 
 ```
+
+
+!!!!! MISC !!!!!
+
+We recommend the compact syntax above, but it sometimes may be useful to create a function and add it to your simulation object afterwards.
+
+```{r}
+my_function <- function (n_patients) {...}
+sim %<>% add_creator("create_rct_data", my_function)
+```
+
+For simple simulations, you will often write creators that return dataframes, but you can return more complex objects, such as a list of multiple dataframes, a network data structure, etc.
 
 
 

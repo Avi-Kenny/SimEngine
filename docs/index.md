@@ -153,12 +153,12 @@ Your script should always return a named list, although your list can be complex
 
 ### 6) Set the simulation configuration
 
-This controls options related to your entire simulation, such as the number of simulation replicates to run for each level combination and how to <a href="/docs/parallel.html" target="_blank">parallelize</a> your code. This is discussed in detail on the <a href="/docs/configuration.html" target="_blank">Configuration</a> page. To speed things up, we will set *num_sim* to 100, and so **simba** will run a total of 600 simulation replicates (100 for each level combination).
+This controls options related to your entire simulation, such as the number of simulation replicates to run for each level combination and how to <a href="/docs/parallel.html" target="_blank">parallelize</a> your code. This is discussed in detail on the <a href="/docs/configuration.html" target="_blank">Configuration</a> page. We set *num_sim* to 10, and so **simba** will run a total of 60 simulation replicates (10 for each level combination).
 
 ```R
 sim %<>% set_config(
-  num_sim = 100,
-  parallel = "none"
+  num_sim = 10,
+  parallel = "outer"
 )
 ```
 
@@ -209,19 +209,3 @@ head(sim$results)
 ## About this project
 
 simba was created and is maintained by <a href="https://github.com/Avi-Kenny" target="_blank">Avi Kenny</a>. The package is licensed using the <a href="https://github.com/Avi-Kenny/simba/blob/master/LICENSE.txt" target="_blank">GNU General Public Licence (GPL) V3</a>.
-
-
-<!--
-
-!!!!! ARCHIVE !!!!!
-
-We recommend the compact syntax above, but it sometimes may be useful to create a function and add it to your simulation object afterwards.
-
-```R
-my_function <- function (n_patients) {...}
-sim %<>% add_creator("create_rct_data", my_function)
-```
-
-For simple simulations, you will often write creators that return dataframes, but you can return more complex objects, such as a list of multiple dataframes, a network data structure, etc.
-
--->
