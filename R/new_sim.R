@@ -12,6 +12,7 @@ new_sim <- function() {
       "num_sim" = 1000,
       "datasets" = "many",
       "parallel" = "none",
+      "parallel_cores" = 0,
       "packages" = c(),
       "progress" = "none",
       "stop_at_error" = FALSE

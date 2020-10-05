@@ -16,6 +16,8 @@ run.simba <- function(sim_obj, script, ...) {
   # Get reference to current environment
   env <- environment()
 
+  sim_obj$internals$start_time <- Sys.time()
+
   o_args <- list(...)
   if (!is.null(o_args$sim_uids)) {
     # !!!!! add error handling
@@ -48,8 +50,7 @@ run.simba <- function(sim_obj, script, ...) {
         assign(
           x = names(sim_obj[[obj]])[i],
           value = (sim_obj[[obj]])[[i]],
-          envir = env # !!!!! Testing
-          # envir = globalenv() # !!!!! Temp fix; works
+          envir = env
         )
       }
     }
@@ -57,9 +58,23 @@ run.simba <- function(sim_obj, script, ...) {
 
   # Set up parallelization code
   if (!sim_obj$config$parallel=="none") {
+    # !!!!! Should this apply only to "inner" parallelization ?????
 
     packages <- sim_obj$config$packages
-    n_cores <- parallel::detectCores() - 1 # !!!!! Make this an argument
+    n_available_cores <- parallel::detectCores()
+    if (sim_obj$config$parallel_cores==0) {
+      # !!!!! If detectCores() runs on a different machine than the code runs on, this will be problematic
+      n_cores <- n_available_cores - 1
+    } else {
+      if (sim_obj$config$parallel_cores>n_available_cores) {
+        n_cores <- n_available_cores
+        warning(paste(sim_obj$config$parallel_cores, "cores requested but only",
+                      n_available_cores, "cores available"))
+      } else {
+        n_cores <- sim_obj$config$parallel_cores
+      }
+    }
+
     cl <- parallel::makeCluster(n_cores)
     cluster_export <- c("sim_obj", "packages")
 
@@ -71,11 +86,10 @@ run.simba <- function(sim_obj, script, ...) {
         }
       }
     }
-    envir <- environment()
-    parallel::clusterExport(cl, cluster_export, envir)
+    parallel::clusterExport(cl, cluster_export, env)
     clusterCall(cl, function(x) {.libPaths(x)}, .libPaths())
     parallel::clusterEvalQ(cl, sapply(packages, function(p) {
-      do.call("library", list(p)) # !!!!! Automate this by looping through loaded packages ?????
+      do.call("library", list(p))
     }))
   }
 
@@ -142,15 +156,21 @@ run.simba <- function(sim_obj, script, ...) {
     }
   }
 
+  sim_obj$internals$end_time <- Sys.time()
+  sim_obj$internals$total_runtime <- as.numeric(
+    difftime(sim_obj$internals$end_time, sim_obj$internals$start_time),
+    units = "secs"
+  )
+
   # Generate completion message
   num_ok <- length(results_lists_ok)
   num_err <- length(results_lists_err)
   pct_err <- round((100*num_err)/(num_err+num_ok),0)
   if (pct_err==0) {
-    comp_msg <- "Done. No errors detected."
+    comp_msg <- "Done. No errors detected.\n"
   } else {
     comp_msg <- paste0(
-      "Done. Errors detected in ", pct_err, "% of simulation replicates."
+      "Done. Errors detected in ", pct_err, "% of simulation replicates.\n"
     )
   }
 
@@ -226,6 +246,8 @@ run.simba <- function(sim_obj, script, ...) {
   } else {
     sim_obj$errors <- "No errors"
   }
+
+
 
   cat(comp_msg)
 
