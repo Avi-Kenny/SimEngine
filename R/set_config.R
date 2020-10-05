@@ -20,27 +20,29 @@
 #' @examples
 #' sim <- new_sim()
 #' sim %<>% set_config(
-#'   num_sim = 10,
-#'   parallel = "none"
+#'   num_sim = 10
 #' )
 #' @export
 set_config <- function(sim_obj, ...) UseMethod("set_config")
 
 #' @export
-set_config.simba <- function(
-  sim_obj, num_sim=NA, datasets=NA, parallel=NA, packages=NA, stop_at_error=NA
-) {
+set_config.simba <- function(sim_obj, ...) {
 
-  # !!!!! Add error handing for other arguments
+  o_args <- list(...)
 
-  # !!!!! Rewrite this more efficiently with `...`
-  # !!!!! Change this such that a single config parameter can be updated
+  if (length(o_args)==0) { stop("No configuration options specified") }
 
-  if (!is.na(num_sim)) { sim_obj$config$num_sim = num_sim }
-  if (!is.na(stop_at_error)) { sim_obj$config$stop_at_error = stop_at_error }
-  if (!is.na(datasets)) { sim_obj$config$datasets = datasets }
-  if (!is.na(parallel)) { sim_obj$config$parallel = parallel }
-  if (!is.na(packages[1])) { sim_obj$config$packages = packages }
+  for (i in 1:length(o_args)) {
+    name <- names(o_args[i])
+    value <- o_args[[i]]
+    if (!(name %in% c("num_sim", "stop_at_error", "datasets", "parallel",
+                      "parallel_cores", "packages"))) {
+      stop(paste0("'",name,"' is not a valid configuration option."))
+      # !!!!! Add additional error handling for each config option
+    } else {
+      sim_obj$config[[name]] = value
+    }
+  }
 
   return (sim_obj)
 
