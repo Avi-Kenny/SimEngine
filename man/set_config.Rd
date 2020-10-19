@@ -28,6 +28,9 @@ code (useful for debugging).}
 \item{stop_at_error}{Boolean (FALSE by default); if TRUE, simulation will
 stop after it encounters an error in any single run. Useful for
 debugging.}
+
+\item{dir}{Directory (given as a character string) where simulation files
+should be stored; defaults to current working directory}
 }
 \value{
 The original simulation object with a modified configuration
@@ -38,7 +41,6 @@ Modify the simulation configuration
 \examples{
 sim <- new_sim()
 sim \%<>\% set_config(
-  num_sim = 10,
-  parallel = "none"
+  num_sim = 10
 )
 }

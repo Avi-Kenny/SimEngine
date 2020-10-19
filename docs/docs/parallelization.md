@@ -83,11 +83,11 @@ print(sim$total_runtime) # !!!!!
 
 ; in most cases, the sum of the runtimes will be greater, indicating a gain in efficiency. However, there is "overhead" associated with parallelizing, especially if you are using a multi-user cluster computing system where there is a lot of competition for nodes.
 
-## Parallelization within a cluster computing environment
+## Parallelization within a cluster computing system
 
-Although the situation becomes a bit more complicated when using a cluster computing environment (CCE), **simba** is built to streamline this process as much as possible. Before diving in, it is important to understand the basic workflow with a CCE. A CCE is a supercomputer that consists of a number of nodes, each of which may have multiple cores. A user will typically log into the head node of the CCE via SSH or an SSH client (such as PuTTY). Once logged into the head node, the user will submit jobs to the CCE using a special program called a [job management system]. Common [job management systems] include Slurm and SGE. The [job management system] will handle the process of passing your code from the head node to the other nodes in the CCE, running the code, and storing the results in your home directory. If this process is totally unfamiliar to you, ask the manager of your CCE or your IT team for a basic tutorial. (!!!!! web resource?)
+Although the situation becomes more complicated when using a cluster computing system (CCS), **simba** is built to streamline this process as much as possible. Before diving in, it is important to understand the basic workflow with a CCS. A CCS is a supercomputer that consists of a number of nodes, each of which may have multiple cores. A user will typically log into the head node of the CCS via SSH or an SSH client (such as PuTTY). Once logged into the head node, the user will submit jobs to the CCS using a special program called a [job management system]. Common [job management systems] include Slurm and SGE. The [job management system] will handle the process of passing your code from the head node to the other nodes in the CCS, running the code, and storing the results in your home directory. If this process is totally unfamiliar to you, ask the manager of your CCS or your IT team for a basic tutorial. (!!!!! web resource?)
 
-There are two basic ways to run parallel code on a CCE. The first (and the one we recommend) is through job arrays. With job arrays, your [job management system] will run your 
+There are two basic ways to run parallel code on a CCS. The first (and the one we recommend) is through job arrays. With job arrays, your [job management system] will run your 
 
 When your [job management system] creates a job array, each task will be assigned some sort of task ID, which you can access from within your R code using the *Sys.getenv()* function. 
 
@@ -101,7 +101,7 @@ The key to making **simba** work with your [job management system] is to map thi
 !!!!! job arrays vs computing on a single multicore node
 
 ```R
-sim %>% set_config(jms="SGE")
+sim %<>% set_config(jms="SGE")
 ```
 
 If you are not using one of the supported job management systems (currently only SGE and Slurm are supported), you must manually pass these identifiers to your simulation object.
