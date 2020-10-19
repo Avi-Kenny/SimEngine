@@ -16,6 +16,8 @@
 #' @param stop_at_error Boolean (FALSE by default); if TRUE, simulation will
 #'     stop after it encounters an error in any single run. Useful for
 #'     debugging.
+#' @param dir Directory (given as a character string) where simulation files
+#'     should be stored; defaults to current working directory
 #' @return The original simulation object with a modified configuration
 #' @examples
 #' sim <- new_sim()
@@ -32,16 +34,22 @@ set_config.simba <- function(sim_obj, ...) {
 
   if (length(o_args)==0) { stop("No configuration options specified") }
 
+  valid_opts <- c("num_sim", "datasets", "parallel", "parallel_cores",
+                  "packages", "progress", "stop_at_error", "dir")
+
   for (i in 1:length(o_args)) {
     name <- names(o_args[i])
     value <- o_args[[i]]
-    if (!(name %in% c("num_sim", "stop_at_error", "datasets", "parallel",
-                      "parallel_cores", "packages"))) {
+    if (!(name %in% valid_opts)) {
       stop(paste0("'",name,"' is not a valid configuration option."))
       # !!!!! Add additional error handling for each config option
     } else {
       sim_obj$config[[name]] = value
     }
+  }
+
+  if (!is.null(o_args$num_sim)) {
+    sim_obj$internals$num_sim_total <- nrow(sim_obj$levels_grid)*o_args$num_sim
   }
 
   return (sim_obj)

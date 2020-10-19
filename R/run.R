@@ -4,7 +4,7 @@
 #'     new_sim()
 #' @param script The name of a simulation script, added using add_script()
 #' @param sim_uids A vector of sim_uids that represent simulations to run. If
-#'     omitted, all simulations are run.
+#'     omitted, all simulations are run. # update this !!!!!
 #' @examples
 #' !!!!! TO DO
 #' @export
@@ -13,17 +13,19 @@ run <- function(sim_obj, script, ...) UseMethod("run")
 #' @export
 run.simba <- function(sim_obj, script, ...) {
 
+  sim_obj$internals$start_time <- Sys.time()
+
   # Get reference to current environment
   env <- environment()
 
-  sim_obj$internals$start_time <- Sys.time()
-
   o_args <- list(...)
+  # !!!!! add error handling
   if (!is.null(o_args$sim_uids)) {
-    # !!!!! add error handling
     sim_uids <- o_args$sim_uids
+  } else if (!is.na(sim_obj$internals$tid)) {
+    sim_uids <- sim_obj$internals$tid
   } else {
-    sim_uids <- 1:(nrow(sim_obj$levels_grid)*sim_obj$config$num_sim)
+    sim_uids <- 1:sim_obj$internals$num_sim_total
   }
 
   # Create levels_grid_big
@@ -57,7 +59,7 @@ run.simba <- function(sim_obj, script, ...) {
   }
 
   # Set up parallelization code
-  if (!sim_obj$config$parallel=="none") {
+  if (sim_obj$config$parallel %in% c("inner", "outer")) {
     # !!!!! Should this apply only to "inner" parallelization ?????
 
     packages <- sim_obj$config$packages
@@ -87,7 +89,7 @@ run.simba <- function(sim_obj, script, ...) {
       }
     }
     parallel::clusterExport(cl, cluster_export, env)
-    clusterCall(cl, function(x) {.libPaths(x)}, .libPaths())
+    parallel::clusterCall(cl, function(x) {.libPaths(x)}, .libPaths())
     parallel::clusterEvalQ(cl, sapply(packages, function(p) {
       do.call("library", list(p))
     }))
@@ -108,7 +110,7 @@ run.simba <- function(sim_obj, script, ...) {
 
     C <- sim_obj$constants
 
-    # Declare script copy dynamically (!!!!! Revisit this)
+    # Declare script copy dynamically
     eval(parse(text=c(".script_copy <-", deparse(sim_obj$scripts[[script]]))))
 
     if (sim_obj$config$stop_at_error==TRUE) {
@@ -143,7 +145,7 @@ run.simba <- function(sim_obj, script, ...) {
   }
 
   # Stop cluster
-  if (exists("cl")) { stopCluster(cl) }
+  if (exists("cl")) { parallel::stopCluster(cl) }
 
   # Separate errors from results
   results_lists_ok <- list()
@@ -156,12 +158,6 @@ run.simba <- function(sim_obj, script, ...) {
     }
   }
 
-  sim_obj$internals$end_time <- Sys.time()
-  sim_obj$internals$total_runtime <- as.numeric(
-    difftime(sim_obj$internals$end_time, sim_obj$internals$start_time),
-    units = "secs"
-  )
-
   # Generate completion message
   num_ok <- length(results_lists_ok)
   num_err <- length(results_lists_err)
@@ -173,6 +169,12 @@ run.simba <- function(sim_obj, script, ...) {
       "Done. Errors detected in ", pct_err, "% of simulation replicates.\n"
     )
   }
+
+  sim_obj$internals$end_time <- Sys.time()
+  sim_obj$internals$total_runtime <- as.numeric(
+    difftime(sim_obj$internals$end_time, sim_obj$internals$start_time),
+    units = "secs"
+  )
 
   # Convert summary statistics to data frame
   # !!!!! In addition to sim_uid, runtime, and results, create "other" to store other non-flat info
@@ -246,8 +248,6 @@ run.simba <- function(sim_obj, script, ...) {
   } else {
     sim_obj$errors <- "No errors"
   }
-
-
 
   cat(comp_msg)
 

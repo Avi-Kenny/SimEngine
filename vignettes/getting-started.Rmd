@@ -33,64 +33,94 @@ print(sim)
 
 ```{r}
 
+# Code to run in Slurm:
+#   sbatch --export=run='first' run_r.sh
+#   sbatch --array=1-10 --depend=afterok:101 run_r.sh
+#   sbatch --export=run='last' --depend=afterok:102 run_r.sh
+
+# Submitted batch job 101
+# Submitted batch job 102
+# Submitted batch job 103
+
+# Code to run in SGE:
+#   qsub -v run='first' run_r.sh
+#   qsub -t 1-10 -hold_jid 101 run_r.sh
+#   qsub -v run='last' -hold_jid 102 run_r.sh
+
+# Your job-array 101.1-1:1 ("run_r_Bayes.sh") has been submitted
+# Your job-array 102.2-9:1 ("run_r_Bayes.sh") has been submitted
+# Your job-array 103.10-10:1 ("run_r_Bayes.sh") has been submitted
+
+
+# Code outline:
+# sim <- new_sim()
+# sim %<>% set_config(jms="SGE")
+# sim %<>% run_once_first({...})
+# sim %<>% run("my_script")
+# sim %<>% run_once_last({...})
+
 sim <- new_sim()
+sim %<>% set_config(jms="SGE") # !!!!! Need alternative for unsupported JMS
+# !!!!! Use the standard acronym here and in the documentation; HPC?
+# !!!!! Add option to change where sim_obj and sim_data files are stored
 
-create_rct_data <- function (num_patients) {
-  df <- data.frame(
-    "patient_id" = integer(),
-    "group" = character(),
-    "outcome" = double(),
-    stringsAsFactors = FALSE
+sim %<>% run_once_first({
+  
+  sim %<>% set_config(
+    num_sim = 10,
+    parallel = "outer"
   )
-  for (i in 1:num_patients) {
-    group <- ifelse(sample(c(0,1), size=1)==1, "treatment", "control")
-    treatment_effect <- ifelse(group=="treatment", -7, 0)
-    outcome <- rnorm(n=1, mean=130, sd=5) + treatment_effect
-    df[i,] <- list(i, group, outcome)
+  
+  # if .tid==1, run the code in this block
+  # otherwise, return the already-created sim_obj
+  
+  create_data <- function (population_size) {
+    x <- rnorm(n=population_size, mean=5, sd=0.1)
+    y <- 2*x + rnorm(n=1, mean=0, sd=0.5)
+    return (data.frame(x=x, y=y))
   }
-  return (df)
-}
-sim %<>% add_creator(create_rct_data)
-
-estimator_1 <- function(df) {
-  n <- nrow(df)
-  true_prob <- 0.5
-  sum_t <- sum(df$outcome * (df$group=="treatment"))
-  sum_c <- sum(df$outcome * (df$group=="control"))
-  return ( sum_t/(n*true_prob) - sum_c/(n*(1-true_prob)) )
-}
-estimator_2 <- function(df) {
-  n <- nrow(df)
-  est_prob <- sum(df$group=="treatment") / n
-  sum_t <- sum(df$outcome * (df$group=="treatment"))
-  sum_c <- sum(df$outcome * (df$group=="control"))
-  return ( sum_t/(n*est_prob) - sum_c/(n*(1-est_prob)) )
-}
-sim %<>% add_method(estimator_1)
-sim %<>% add_method(estimator_2)
-
-sim %<>% set_levels(
-  estimator = c("estimator_1", "estimator_2"),
-  num_patients = c(50, 200, 1000)
-)
-
-sim %<>% add_script(
-  "my parallel script",
-  function() {
-    df <- create_rct_data(L$num_patients)
-    estimate <- do.call(L$estimator, list(df))
-    return (
-      list("estimate" = estimate)
-    )
+  
+  take_sample <- function (data, sample_size) {
+    sample <- sample(1:nrow(data), size=sample_size)
+    return (data[sample,])
   }
-)
+  
+  sim %<>% add_creator(create_data)
+  sim %<>% add_method(take_sample)
+  
+  sim %<>% set_levels(
+    sample_size = c(10, 50, 200)
+  )
+  
+  sim %<>% add_script(
+    "my_script",
+    function () {
+      # !!!!! do stuff
+    }
+  )
+  
+  # !!!!! save sim_obj
+  
+})
 
-sim %<>% set_config(
-  num_sim = 10,
-  parallel = "outer"
-)
+sim %<>% run("my_script") # !!!!! handle TIDs
 
-sim %<>% run("my parallel script")
+# !!!!! save results here
+
+# !!!!! need to determine now if job is last
+
+sim %<>% run_once_last({
+  
+  # if .tid==max(.tid), run the code in this block
+  # otherwise, do nothing
+  
+  # !!!!! Merge datasets
+  
+  # !!!!! Print and visualize results
+  
+  # !!!!! Save final sim_obj and delete intermediate sim_objs
+  
+})
 
 ```
 
