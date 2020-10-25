@@ -37,6 +37,8 @@ set_config.simba <- function(sim_obj, ...) {
   valid_opts <- c("num_sim", "datasets", "parallel", "parallel_cores",
                   "packages", "progress", "stop_at_error", "dir")
 
+  # !!!!! Make a note in the docs that stop_at_error will not work on cluster
+
   for (i in 1:length(o_args)) {
     name <- names(o_args[i])
     value <- o_args[[i]]

@@ -26,7 +26,8 @@ new_sim <- function() {
       levels_types = FALSE,
       levels_shallow = list("no levels"=TRUE),
       tid = NA,
-      num_sim_total = 1
+      num_sim_total = 1,
+      sim_var = ""
     ),
     creators = list(),
     methods = list(),
