@@ -8,7 +8,8 @@
 #' @param main Code that will run for every simulation replicate. This should be
 #'     a block of code enclosed by curly braces {} that includes a call to
 #'     run(). This code block will have access to the simulation object you
-#'     created in the 'first' code block.
+#'     created in the 'first' code block, but any changes made here to the
+#'     simulation object will not be saved.
 #' @param last Code that will run after all simulation replicates have been run.
 #'     This should be a block of code enclosed by curly braces {} that takes
 #'     your simulation object (which at this point will contain your results)
@@ -28,11 +29,17 @@ run_on_cluster <- function(first, main, last, cluster_config) {
   cfg <- cluster_config
 
   # !!!!! Need option to test/run code in all three sections locally; maybe with cfg$local=TRUE
-
+  # !!!!! Need to account for situations where a simulation is run twice
+  # !!!!! Need error handling for if any of the three stages fails
   # !!!!! Standardize terminology: JS or HPC ?????
+  # !!!!! Need to handle loading of libraries
+  # !!!!! Set start_time, end_time, etc. (check run() for others)
+  # !!!!! Run everything in a separate environment
+  # !!!!! Make `sim` the default sim_var
 
   # Check that cfg$dir is a valid direcyory
-  if (!is.null(cfg$dir) & !dir.exists(cfg$dir)) {
+  # !!!!! Also check that it is writable by saving and deleting a test file
+  if (!is.null(cfg$dir) && !dir.exists(cfg$dir)) {
     stop(paste("Directory", cfg$dir, "does not exist."))
   }
 
@@ -45,12 +52,17 @@ run_on_cluster <- function(first, main, last, cluster_config) {
     path_sim_res <- paste0(cfg$dir, "/simba_results")
   }
 
-  # Run 'first' function or return existing simulation object
+  # Error handling: incorrect Sys.getenv("run") variable
+  if (!(Sys.getenv("run") %in% c("first", "last", ""))) {
+    stop("The `run` environment variable must equal either 'first' or 'last'.")
+  }
+
+  # FIRST: Run 'first' code or return existing simulation object
   if (Sys.getenv("run")=="first") {
 
     # Run 'first' code
     # !!!!! Error handling: Wrap this in a tryCatch that sets a flag if it returns and error that instructs 'main' and 'last' code to not run
-    first # !!!!! Is eval(substitute()) needed (to specify environment) ?????
+    eval(substitute(first))
 
     # Save simulation object
     # We assume the user doesn't name their simulation object '..sim_obj'
@@ -75,7 +87,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
 
   }
 
-  # Run 'main' function
+  # MAIN: run simulation replicate and save results/errors
   if (Sys.getenv("run")=="") {
 
     # Assign tid variable
@@ -102,83 +114,103 @@ run_on_cluster <- function(first, main, last, cluster_config) {
       stop("Task ID is missing")
     }
 
-    if (tid<1 | tid>sim_obj$internals$num_sim_total) {
+    if (tid<1 || tid>..sim_obj$internals$num_sim_total) {
       stop(paste(
         "Task ID is invalid; must be an integer between 1 and",
         ..sim_obj$internals$num_sim_total
       ))
     } else {
+      # Run 'main' code
       ..sim_obj$internals$tid <- tid
       rm(tid)
       assign(..sim_obj$internals$sim_var, ..sim_obj)
-      main
+      eval(substitute(main))
       assign("..sim_obj", eval(as.name(..sim_obj$internals$sim_var)))
     }
 
     # Parse results filename and save
-    # !!!!! Check sim_obj for results/errors and save files accordingly
     fmt <- paste0("%0", nchar(..sim_obj$internals$num_sim_total), "d")
-    saveRDS(
-      ..sim_obj$results,
-      paste0(path_sim_res, "/r_", sprintf(fmt, .tid), ".rds")
-    )
-    saveRDS(
-      ..sim_obj$errors,
-      paste0(path_sim_res, "/e_", sprintf(fmt, .tid), ".rds")
-    )
-    # !!!!! Need to account for situations where a simulation is run twice
 
-    # !!!!! Need error handling for if any of the three stages fails
-
-  }
-
-  # Run 'last' function
-  if (Sys.getenv("run")=="last") {
-
-    # path_sim_res
-    files <- dir(path_sim_res)
-    for (i in 1:length(files)) {
-      res <- readRDS(paste0(path_sim_res, "/", files[i]))
-      print(res)
-      # !!!!! Merge into sim_obj
+    if (..sim_obj$internals$run_state=="run, no errors") {
+      saveRDS(
+        ..sim_obj$results,
+        paste0(path_sim_res, "/r_",
+               sprintf(fmt, ..sim_obj$internals$tid), ".rds")
+      )
+    } else if (..sim_obj$internals$run_state=="run, all errors") {
+      saveRDS(
+        ..sim_obj$errors,
+        paste0(path_sim_res, "/e_",
+               sprintf(fmt, ..sim_obj$internals$tid), ".rds")
+      )
     }
 
-    # !!!!! merge results and errors into sim_obj
-    last(sim_obj)
-
-    # !!!!! Save final sim_obj and delete intermediate sim_objs
-
   }
 
-  # Error handling: incorrect Sys.getenv("run") variable
-  if (!(Sys.getenv("run") %in% c("first", "last", ""))) {
-    stop("The `run` environment variable must equal either 'first' or 'last'.")
+  # LAST: merge results/errors into simulation object, run 'last' code, and save
+  if (Sys.getenv("run")=="last") {
+
+    # Process result/error files
+    files <- dir(paste0(path_sim_res))
+    results_df <- NULL
+    errors_df <- NULL
+    for (file in files) {
+
+      if (substr(file,1,1)=="r") {
+
+        r <- readRDS(paste0(path_sim_res, "/", file))
+
+        if (class(r)=="data.frame") {
+          if (is.null(results_df)) {
+            results_df <- r
+          } else {
+            results_df[nrow(results_df)+1,] <- r
+          }
+        }
+
+      } else if (substr(file,1,1)=="e") {
+
+        e <- readRDS(paste0(path_sim_res, "/", file))
+
+        if (class(e)=="data.frame") {
+          if (is.null(errors_df)) {
+            errors_df <- e
+          } else {
+            errors_df[nrow(errors_df)+1,] <- e
+          }
+        }
+
+      }
+
+    }
+
+    # Add results/errors to simulation object
+    # Note: this code is somewhat redundant with the end of simba::run()
+    if (!is.null(results_df) && !is.null(errors_df)) {
+      ..sim_obj$results <- results_df
+      ..sim_obj$errors <- errors_df
+      ..sim_obj$internals$run_state <- "run, some errors"
+    } else if (!is.null(results_df)) {
+      ..sim_obj$results <- results_df
+      ..sim_obj$errors <- "No errors."
+      ..sim_obj$internals$run_state <- "run, no errors"
+    } else if (!is.null(errors_df)) {
+      ..sim_obj$results <- "Errors detected in 100% of simulation replicates."
+      ..sim_obj$errors <- errors_df
+      ..sim_obj$internals$run_state <- "run, all errors"
+    } else {
+      stop("An unknown error occurred.")
+    }
+
+    # Run 'last' code
+    assign(..sim_obj$internals$sim_var, ..sim_obj)
+    eval(substitute(last))
+    assign("..sim_obj", eval(as.name(..sim_obj$internals$sim_var)))
+
+    # Save final simulation object and delete intermediate files
+    saveRDS(..sim_obj, file=path_sim_obj)
+    unlink(path_sim_res, recursive=TRUE)
+
   }
 
 }
-
-
-
-testfunc <- function(code, flag) {
-  if (flag) {
-    # print(c)
-    eval(substitute(code))
-    # code
-  }
-  # print(z)
-}
-
-hey <-
-testfunc({
-  x <- 3
-  y <- 4
-  print(x+y)
-}, TRUE)
-
-
-
-
-
-
-
-

@@ -19,8 +19,8 @@ run.simba <- function(sim_obj, script, ...) {
   env <- environment()
 
   o_args <- list(...)
-  # !!!!! add error handling
   if (!is.null(o_args$sim_uids)) {
+    # !!!!! add error handling
     sim_uids <- o_args$sim_uids
   } else if (!is.na(sim_obj$internals$tid)) {
     sim_uids <- sim_obj$internals$tid
@@ -97,9 +97,10 @@ run.simba <- function(sim_obj, script, ...) {
 
   run_script <- function(i) {
 
-    start_time <- Sys.time()
+    ..start_time <- Sys.time()
 
     # Set up references to levels_grid_big row and constants
+    C <- sim_obj$constants
     L <- as.list(sim_obj$internals$levels_grid_big[i,])
     levs <- names(sim_obj$levels)
     for (j in 1:length(levs)) {
@@ -107,25 +108,22 @@ run.simba <- function(sim_obj, script, ...) {
         L[[levs[j]]] <- sim_obj$levels[[levs[j]]][[L[[levs[j]]]]]
       }
     }
-
-    C <- sim_obj$constants
+    rm(levs)
 
     # Declare script copy dynamically
-    eval(parse(text=c(".script_copy <-", deparse(sim_obj$scripts[[script]]))))
+    # !!!!! Currently errors are being logged with call "..script_copy()"
+    eval(parse(text=c("..script_copy <-", deparse(sim_obj$scripts[[script]]))))
 
     if (sim_obj$config$stop_at_error==TRUE) {
-      .script_copy()
+      ..script_copy()
     } else {
       script_results <- tryCatch(
-        expr = {
-          .script_copy()
-        },
+        expr = { ..script_copy() },
         error = function(e) { return(e) }
       )
     }
 
-    # Also add a "total simulation runtime" variable
-    runtime <- as.numeric(difftime(Sys.time(), start_time), units="secs")
+    runtime <- as.numeric(difftime(Sys.time(), ..start_time), units="secs")
 
     return (list(
       "sim_uid" = i,
@@ -177,7 +175,8 @@ run.simba <- function(sim_obj, script, ...) {
   )
 
   # Convert summary statistics to data frame
-  # !!!!! In addition to sim_uid, runtime, and results, create "other" to store other non-flat info
+  # !!!!! In addition to sim$results and sim$errors, create a place to store
+  #       other non-flat simulation data
   if (num_ok>0) {
 
     first <- results_lists_ok[[1]]
@@ -233,8 +232,6 @@ run.simba <- function(sim_obj, script, ...) {
       by = "sim_uid"
     )
     sim_obj$results <- results_df
-  } else {
-    sim_obj$results <- NULL # !!!!! Need to distinguish "sim has not been run" from "sim was run and resulted in 100% errors"
   }
 
   # Join results data frames with `levels_grid_big`and attach to sim_obj
@@ -245,8 +242,19 @@ run.simba <- function(sim_obj, script, ...) {
       by = "sim_uid"
     )
     sim_obj$errors <- errors_df
+  }
+
+  # Set states
+  if (exists("results_df") && exists("errors_df")) {
+    sim_obj$internals$run_state <- "run, some errors"
+  } else if (exists("results_df")) {
+    sim_obj$internals$run_state <- "run, no errors"
+    sim_obj$errors <- "No errors."
+  } else if (exists("errors_df")) {
+    sim_obj$internals$run_state <- "run, all errors"
+    sim_obj$results <- "Errors detected in 100% of simulation replicates."
   } else {
-    sim_obj$errors <- "No errors"
+    stop("An unknown error occurred.")
   }
 
   cat(comp_msg)
