@@ -168,12 +168,6 @@ run.simba <- function(sim_obj, script, ...) {
     )
   }
 
-  sim_obj$internals$end_time <- Sys.time()
-  sim_obj$internals$total_runtime <- as.numeric(
-    difftime(sim_obj$internals$end_time, sim_obj$internals$start_time),
-    units = "secs"
-  )
-
   # Convert summary statistics to data frame
   # !!!!! In addition to sim$results and sim$errors, create a place to store
   #       other non-flat simulation data
@@ -258,6 +252,12 @@ run.simba <- function(sim_obj, script, ...) {
   }
 
   cat(comp_msg)
+
+  sim_obj$internals$end_time <- Sys.time()
+  sim_obj$internals$total_runtime <- as.numeric(
+    difftime(sim_obj$internals$end_time, sim_obj$internals$start_time),
+    units = "secs"
+  )
 
   return (sim_obj)
 

@@ -60,6 +60,8 @@ run_on_cluster <- function(first, main, last, cluster_config) {
   # FIRST: Run 'first' code or return existing simulation object
   if (Sys.getenv("run")=="first") {
 
+    ..start_time <- Sys.time()
+
     # Run 'first' code
     # !!!!! Error handling: Wrap this in a tryCatch that sets a flag if it returns and error that instructs 'main' and 'last' code to not run
     eval(substitute(first))
@@ -68,6 +70,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
     # We assume the user doesn't name their simulation object '..sim_obj'
     ..sim_obj <- eval(as.name(cfg$sim_var))
     ..sim_obj$internals$sim_var <- cfg$sim_var
+    ..sim_obj$internals$start_time <- ..start_time
     saveRDS(..sim_obj, file=path_sim_obj)
 
     # Create directory to store simulation results
@@ -114,6 +117,11 @@ run_on_cluster <- function(first, main, last, cluster_config) {
       stop("Task ID is missing")
     }
 
+    add_to_tid <- as.numeric(Sys.getenv("add_to_tid"))
+    if (!is.na(add_to_tid)) {
+      tid <- tid + add_to_tid
+    }
+
     if (tid<1 || tid>..sim_obj$internals$num_sim_total) {
       stop(paste(
         "Task ID is invalid; must be an integer between 1 and",
@@ -123,6 +131,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
       # Run 'main' code
       ..sim_obj$internals$tid <- tid
       rm(tid)
+      rm(add_to_tid)
       assign(..sim_obj$internals$sim_var, ..sim_obj)
       eval(substitute(main))
       assign("..sim_obj", eval(as.name(..sim_obj$internals$sim_var)))
@@ -208,6 +217,11 @@ run_on_cluster <- function(first, main, last, cluster_config) {
     assign("..sim_obj", eval(as.name(..sim_obj$internals$sim_var)))
 
     # Save final simulation object and delete intermediate files
+    ..sim_obj$internals$end_time <- Sys.time()
+    ..sim_obj$internals$total_runtime <- as.numeric(
+      difftime(..sim_obj$internals$end_time, ..sim_obj$internals$start_time),
+      units = "secs"
+    )
     saveRDS(..sim_obj, file=path_sim_obj)
     unlink(path_sim_res, recursive=TRUE)
 
