@@ -12,7 +12,7 @@
 #'     simulation per core. Setting to "inner" will parallelize operations
 #'     within a single simulation. Setting to "none" will not parallelize any
 #'     code (useful for debugging).
-#' @param packages A character vector of packages to load on the cluster
+#' @param packages A character vector of packages to load
 #' @param stop_at_error Boolean (FALSE by default); if TRUE, simulation will
 #'     stop after it encounters an error in any single run. Useful for
 #'     debugging.
@@ -52,6 +52,12 @@ set_config.simba <- function(sim_obj, ...) {
 
   if (!is.null(o_args$num_sim)) {
     sim_obj$internals$num_sim_total <- nrow(sim_obj$levels_grid)*o_args$num_sim
+  }
+
+  if (!is.null(o_args$packages)) {
+    for (pkg in o_args$packages) {
+      do.call("library", list(pkg))
+    }
   }
 
   return (sim_obj)

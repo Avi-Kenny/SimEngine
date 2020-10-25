@@ -132,6 +132,9 @@ run_on_cluster <- function(first, main, last, cluster_config) {
       ..sim_obj$internals$tid <- tid
       rm(tid)
       rm(add_to_tid)
+      for (pkg in ..sim_obj$config$packages) {
+        do.call("library", list(pkg))
+      }
       assign(..sim_obj$internals$sim_var, ..sim_obj)
       eval(substitute(main))
       assign("..sim_obj", eval(as.name(..sim_obj$internals$sim_var)))
@@ -212,6 +215,9 @@ run_on_cluster <- function(first, main, last, cluster_config) {
     }
 
     # Run 'last' code
+    for (pkg in ..sim_obj$config$packages) {
+      do.call("library", list(pkg))
+    }
     assign(..sim_obj$internals$sim_var, ..sim_obj)
     eval(substitute(last))
     assign("..sim_obj", eval(as.name(..sim_obj$internals$sim_var)))
