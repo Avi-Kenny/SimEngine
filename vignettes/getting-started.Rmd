@@ -51,76 +51,65 @@ print(sim)
 # Your job-array 102.2-9:1 ("run_r_Bayes.sh") has been submitted
 # Your job-array 103.10-10:1 ("run_r_Bayes.sh") has been submitted
 
+library(simba)
+library(magrittr)
 
-# Code outline:
-# sim <- new_sim()
-# sim %<>% set_config(jms="SGE")
-# sim %<>% run_once_first({...})
-# sim %<>% run("my_script")
-# sim %<>% run_once_last({...})
+# !!!!! TESTING: simulate environment variables !!!!!
+Sys.setenv(run="first")             # First
+Sys.setenv(run="")                  # Main
+Sys.setenv(SLURM_ARRAY_TASK_ID="1") # Main
+Sys.setenv(run="last")              # Last
 
-sim <- new_sim()
-sim %<>% set_config(jms="SGE") # !!!!! Need alternative for unsupported JMS
-# !!!!! Use the standard acronym here and in the documentation; HPC?
-# !!!!! Add option to change where sim_obj and sim_data files are stored
+# CLUSTER CODE
+# !!!!! Test this omitting 'testfolder1' argument
+run_on_cluster(
 
-sim %<>% run_once_first({
-  
-  sim %<>% set_config(
-    num_sim = 10,
-    parallel = "outer"
-  )
-  
-  # if .tid==1, run the code in this block
-  # otherwise, return the already-created sim_obj
-  
-  create_data <- function (population_size) {
-    x <- rnorm(n=population_size, mean=5, sd=0.1)
-    y <- 2*x + rnorm(n=1, mean=0, sd=0.5)
-    return (data.frame(x=x, y=y))
-  }
-  
-  take_sample <- function (data, sample_size) {
-    sample <- sample(1:nrow(data), size=sample_size)
-    return (data[sample,])
-  }
-  
-  sim %<>% add_creator(create_data)
-  sim %<>% add_method(take_sample)
-  
-  sim %<>% set_levels(
-    sample_size = c(10, 50, 200)
-  )
-  
-  sim %<>% add_script(
-    "my_script",
-    function () {
-      # !!!!! do stuff
-    }
-  )
-  
-  # !!!!! save sim_obj
-  
-})
+  first = {
+    sim <- new_sim()
+    sim %<>% set_config(parallel = "cluster", num_sim=10)
+    sim %<>% add_creator("my_creator",function(x){rnorm(5, mean=x)})
+    sim %<>% add_script("my_script", function(){
+      if (runif(1)<0.5) {return(list(x=rnorm(1), y=rnorm(1)))} else {stop("e")}
+      # return(list(x=rnorm(1), y=rnorm(1)))
+    })
+  },
 
-sim %<>% run("my_script") # !!!!! handle TIDs
+  main = {
+    sim %<>% run("my_script")
+  },
 
-# !!!!! save results here
+  last = {
+    sim %>% summary() %>% print()
+  },
 
-# !!!!! need to determine now if job is last
+  cluster_config = list(sim_var="sim", js="slurm", dir="testfolder1")
 
-sim %<>% run_once_last({
-  
-  # if .tid==max(.tid), run the code in this block
-  # otherwise, do nothing
-  
-  # !!!!! Merge datasets
-  
-  # !!!!! Print and visualize results
-  
-  # !!!!! Save final sim_obj and delete intermediate sim_objs
-  
-})
+)
+
+# create_data <- function (population_size) {
+#   x <- rnorm(n=population_size, mean=5, sd=0.1)
+#   y <- 2*x + rnorm(n=1, mean=0, sd=0.5)
+#   return (data.frame(x=x, y=y))
+# }
+
+# take_sample <- function (data, sample_size) {
+#   sample <- sample(1:nrow(data), size=sample_size)
+#   return (data[sample,])
+# }
+# 
+# sim %<>% add_creator(create_data)
+# sim %<>% add_method(take_sample)
+
+# sim %<>% set_levels(
+#   sample_size = c(10, 50, 200)
+# )
+# 
+# sim %<>% add_script(
+#   "my_script",
+#   function () {
+#     # !!!!! do stuff
+#   }
+# )
 
 ```
 

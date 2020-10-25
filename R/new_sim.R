@@ -21,13 +21,20 @@ new_sim <- function() {
     constants = list(),
     levels = list("no levels"=TRUE), # !!!!! change to no_levels throughout
     levels_grid = data.frame(level_id=1),
+    results = "Simulation has not been run yet",
+    errors = "Simulation has not been run yet",
+
+    # run_state can be: "pre run", "run, no errors", "run, some errors",
+    #     "run, all errors"
+    # !!!!! Document others here
     internals = list(
       envir = new.env(),
       levels_types = FALSE,
       levels_shallow = list("no levels"=TRUE),
       tid = NA,
       num_sim_total = 1,
-      sim_var = ""
+      sim_var = "",
+      run_state = "pre run"
     ),
     creators = list(),
     methods = list(),

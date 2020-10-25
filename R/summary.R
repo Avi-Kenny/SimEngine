@@ -11,6 +11,8 @@
 #' @export
 summary.simba <- function(sim_obj, ...) {
 
+  # !!!!! Update error handling based on sim_obj$internals$run_state
+
   if (is.null(sim_obj$results)) {
     if (is.null(sim_obj$errors)) {
       stop("Simulation has not been run yet.")
@@ -55,7 +57,7 @@ summary.simba <- function(sim_obj, ...) {
   }
 
   # Parse code to display levels
-  if (is.null(sim$levels$`no levels`)) {
+  if (is.null(sim_obj$levels$`no levels`)) {
     code_levels <- paste0("'",names_levels,"'=`",names_levels,"`[1],")
   } else {
     code_levels <- ""

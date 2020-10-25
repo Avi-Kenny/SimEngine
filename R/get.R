@@ -6,7 +6,7 @@
 #' @examples
 #' !!!!! TO DO
 #' @export
-run <- function(sim_obj, variable) UseMethod("get")
+get <- function(sim_obj, variable) UseMethod("get")
 
 #' @export
 get.simba <- function(sim_obj, variable) {

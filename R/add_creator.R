@@ -31,7 +31,7 @@ add_creator.simba <- function(sim_obj, ...) {
     fn <- list(...)[[2]]
   }
 
-  if (!(is.character(name) & length(name)==1)) {
+  if (!(is.character(name) && length(name)==1)) {
     stop("`name` must be a character string")
   }
   if (!is.function(fn)) {
