@@ -1,4 +1,4 @@
-#' Add simulation "constants'
+#' Add one or more simulation constants
 #'
 #' @param sim_obj A simulation object of class "simba", usually created by
 #'     new_sim()
@@ -11,10 +11,10 @@
 #' @examples
 #' # !!!!! TO DO
 #' @export
-add_constants <- function(sim_obj, ...) UseMethod("add_constants")
+add_constant <- function(sim_obj, ...) UseMethod("add_constant")
 
 #' @export
-add_constants.simba <- function(
+add_constant.simba <- function(
   sim_obj, ...
 ) {
 
