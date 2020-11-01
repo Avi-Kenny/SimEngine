@@ -206,6 +206,7 @@ run.simba <- function(sim_obj, script, ...) {
         call <- NA
       } else {
         call <- deparse(results_lists_err[[i]]$results$call)
+        call <- paste(call, collapse="")
       }
 
       errors_df[nrow(errors_df)+1,] <- list(
@@ -214,6 +215,7 @@ run.simba <- function(sim_obj, script, ...) {
         "message" = results_lists_err[[i]]$results$message,
         "call" = call
       )
+
     }
 
   }
@@ -243,12 +245,12 @@ run.simba <- function(sim_obj, script, ...) {
     sim_obj$internals$run_state <- "run, some errors"
   } else if (exists("results_df")) {
     sim_obj$internals$run_state <- "run, no errors"
-    sim_obj$errors <- "No errors."
+    sim_obj$errors <- "No errors"
   } else if (exists("errors_df")) {
     sim_obj$internals$run_state <- "run, all errors"
-    sim_obj$results <- "Errors detected in 100% of simulation replicates."
+    sim_obj$results <- "Errors detected in 100% of simulation replicates"
   } else {
-    stop("An unknown error occurred.")
+    stop("An unknown error occurred")
   }
 
   cat(comp_msg)

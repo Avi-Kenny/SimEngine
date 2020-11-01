@@ -204,14 +204,14 @@ run_on_cluster <- function(first, main, last, cluster_config) {
       ..sim_obj$internals$run_state <- "run, some errors"
     } else if (!is.null(results_df)) {
       ..sim_obj$results <- results_df
-      ..sim_obj$errors <- "No errors."
+      ..sim_obj$errors <- "No errors"
       ..sim_obj$internals$run_state <- "run, no errors"
     } else if (!is.null(errors_df)) {
-      ..sim_obj$results <- "Errors detected in 100% of simulation replicates."
+      ..sim_obj$results <- "Errors detected in 100% of simulation replicates"
       ..sim_obj$errors <- errors_df
       ..sim_obj$internals$run_state <- "run, all errors"
     } else {
-      stop("An unknown error occurred.")
+      stop("An unknown error occurred")
     }
 
     # Run 'last' code
