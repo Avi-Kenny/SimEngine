@@ -50,7 +50,8 @@ summary.simba <- function(sim_obj, ...) {
 
 
   # If there is only one list, wrap it in a list
-  for (metric in c("mean", "var", "sd", "bias", "mse", "coverage")) {
+  metrics <- c("mean", "var", "sd", "quantile", "bias", "mse", "coverage")
+  for (metric in metrics) {
     if (!is.null(o_args[[metric]]) && !class(o_args[[metric]][[1]])=="list") {
       o_args[[metric]] <- list(o_args[[metric]])
     }
@@ -107,6 +108,30 @@ summary.simba <- function(sim_obj, ...) {
   } else {
     code_sd <- ""
   }
+
+  # Parse quantile summary code
+  if (!is.null(o_args$quantile)) {
+
+    code_q <- ""
+    for (q in o_args$quantile) {
+
+      if (!is.null(q$na.rm) && q$na.rm==TRUE) {
+        na_1 <- ", na.rm=TRUE),"
+      } else {
+        na_1 <- "),"
+      }
+
+      code_q <- c(code_q, paste0(
+        q$name, " = quantile(", q$x, ", probs=", q$prob, ",", na_1
+      ))
+
+    }
+  } else {
+    code_q <- ""
+  }
+
+  # !!!!! Look at "useful functions" header and implement all here
+  #           https://dplyr.tidyverse.org/reference/summarise.html
 
   # Parse variance summary code
   if (!is.null(o_args$var)) {
@@ -219,6 +244,7 @@ summary.simba <- function(sim_obj, ...) {
     code_levels,
     code_means,
     code_sd,
+    code_q,
     code_var,
     code_bias,
     code_mse,
