@@ -10,12 +10,16 @@ permalink: /
 <img src="assets/images/logo.png" align="right" alt="simba" style="height:150px">
 
 # simba
-{: .fs-9 }
+{: .fs-9 .fw-500 }
+
+<span style="color:#FF8E22;font-weight:bold">sim</span>ulation <span style="color:#FF8E22;font-weight:bold">ba</span>ckbone
+{: .fs-6 .mb-0 }
 
 An open-source framework for statistical simulations in R
-{: .fs-5 .fw-300 }
+{: .fs-5 }
 
-<a href="https://github.com/Avi-Kenny/simba" target="_blank">View source code on GitHub</a>{: .btn .btn-primary .fs-4 .mb-4 .mb-md-0 .mr-2 }
+
+<a href="https://github.com/Avi-Kenny/simba" target="_blank">View source code on GitHub</a>{: .btn .btn-primary .fs-4 .mt-1 }
 
 ---
 
@@ -131,10 +135,14 @@ sim %<>% set_levels(
 )
 ```
 
+<!-- # !!!!! add_constant()  You can also reference <a href="" target="_blank">simulation constants</a> using the variable *C*. ????? -->
+<!-- A simulation constant is something that does not change across your entire set of simulations. You could just as easily hard-code values in your code, but it's often easier to have these declared at a separate section so that they can be easily modified if needed. -->
+
 ### 5) Create a simulation script
 
-The script is a function that contains the set of instructions for running a single simulation replicate. Within a script, you can reference the current simulation level values using the variable *L*. For example, when the first simulation replicate is running, *L$method* will equal "estimator_1" and *L$num_patients* will equal 50. In the last simulation replicate, *L$method* will equal "estimator_2" and *L$num_patients* will equal 1,000. This can be used in conjunction with the *do.call()* base-R function to dynamically run different methods over different simulation replicates (as is illustrated below); this is useful when your method is a simulation level, which will often be the case.
-- We can also reference <a href="" target="_blank">simulation constants</a> using the variable *C*.
+The simulation script is a function that runs a single simulation replicate and returns the results. Within a script, you can reference the current simulation level values using the variable *L*. For example, when the first simulation replicate is running, *L$method* will equal "estimator_1" and *L$num_patients* will equal 50. In the last simulation replicate, *L$method* will equal "estimator_2" and *L$num_patients* will equal 1,000. This can be used in conjunction with *do.call()* to dynamically run different methods within different simulation replicates (as is illustrated below).
+
+- Your script will have access to any creators and methods that have been added to your simulation object.
 
 ```R
 sim %<>% add_script(

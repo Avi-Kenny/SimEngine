@@ -2,28 +2,38 @@
 % Please edit documentation in R/run_on_cluster.R
 \name{run_on_cluster}
 \alias{run_on_cluster}
-\title{Framework function for running simulations on a cluster computing system}
+\title{Framework for running simulations on a cluster computing system}
 \usage{
-run_on_cluster(first, main, last, config)
+run_on_cluster(first, main, last, cluster_config)
 }
 \arguments{
-\item{first}{Code to run at the start of a simulation. This should be a
-function that creates and returns a simulation object. Put everything you
-need in the simulation object.}
+\item{first}{Code to run at the start of a simulation. This should be a block
+of code enclosed by curly braces {} that that creates a simulation
+object. Put everything you need in the simulation object, since global
+variables declared in this block will not be available when the 'main'
+and 'last' code blocks run.}
 
-\item{main}{Code that will run for every simulation replicate. This should
-be a function that takes in your simulation object and returns the
-results of a call to run()}
+\item{main}{Code that will run for every simulation replicate. This should be
+a block of code enclosed by curly braces {} that includes a call to
+run(). This code block will have access to the simulation object you
+created in the 'first' code block, but any changes made here to the
+simulation object will not be saved.}
 
 \item{last}{Code that will run after all simulation replicates have been run.
-This should be a function that takes in your simulation object (which at
-this point will contain your results) and does something with it (e.g.
-displays the results on a graph).}
+This should be a block of code enclosed by curly braces {} that takes
+your simulation object (which at this point will contain your results)
+and do something with it, such as display your results on a graph.}
 
-\item{config}{A list of configuration options. !!!!! TO DO}
+\item{cluster_config}{A list of configuration options. You must specify
+sim_var, which is the name of the variable you use for your simulation
+object. You also must specify either js (the job scheduler you are using)
+or tid_var (the name of the environment variable that your task ID)
+is stored in. You can optionally specify dir, which is a path to a
+directory that will hold your simulation object and results (this
+defaults to the current working directory).}
 }
 \description{
-Framework function for running simulations on a cluster computing system
+Framework for running simulations on a cluster computing system
 }
 \examples{
 !!!!! TO DO

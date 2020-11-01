@@ -23,7 +23,7 @@ simulation per core. Setting to "inner" will parallelize operations
 within a single simulation. Setting to "none" will not parallelize any
 code (useful for debugging).}
 
-\item{packages}{A character vector of packages to load on the cluster}
+\item{packages}{A character vector of packages to load}
 
 \item{stop_at_error}{Boolean (FALSE by default); if TRUE, simulation will
 stop after it encounters an error in any single run. Useful for

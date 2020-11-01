@@ -13,10 +13,6 @@ library(parallel) # !!!!! Finish NAMESSPACES chapter and get rid of this
 
 # !!!!! Script: Throw warning if any column names are duplicated/overwritten
 
-# !!!!! Print simulation object
-print(sim)
-
-
 # !!!!! summary(): Throw warning if any column names are duplicated/overwritten
 # Make it such that you can't use expressions like `truth=C$lambda` here (i.e. 
 #     you can't pass constants); instead, add constants to results data frame
@@ -55,61 +51,45 @@ library(simba)
 library(magrittr)
 
 # !!!!! TESTING: simulate environment variables !!!!!
+# !!!!! Move this to unit tests
 Sys.setenv(run="first")             # First
 Sys.setenv(run="")                  # Main
 Sys.setenv(SLURM_ARRAY_TASK_ID="1") # Main
 Sys.setenv(run="last")              # Last
 
 # CLUSTER CODE
-# !!!!! Test this omitting 'testfolder1' argument
 run_on_cluster(
 
   first = {
     sim <- new_sim()
-    sim %<>% set_config(parallel = "cluster", num_sim=10)
-    sim %<>% add_creator("my_creator",function(x){rnorm(5, mean=x)})
+    sim %<>% set_config(
+      parallel = "cluster",
+      num_sim = 2,
+      packages = c("SUMMER")
+    )
+    x <- expit(3)
+    sim %<>% set_levels(mu=c(10,20))
+    sim %<>% add_creator("my_creator", function(x){rnorm(5, mean=x)})
     sim %<>% add_script("my_script", function(){
-      if (runif(1)<0.5) {return(list(x=rnorm(1), y=rnorm(1)))} else {stop("e")}
-      # return(list(x=rnorm(1), y=rnorm(1)))
+      # if (runif(1)<0.5) {return(list(x=rnorm(1,mu)))} else {stop("e")}
+      return(list(x=rnorm(1,L$mu), y=rnorm(1)))
     })
   },
 
-  main = {
-    sim %<>% run("my_script")
-  },
+  main = { x <- expit(3); sim %<>% run("my_script") },
 
-  last = {
-    sim %>% summary() %>% print()
-  },
+  last = { x <- expit(3); sim %>% summary() %>% print() },
 
   cluster_config = list(sim_var="sim", js="slurm", dir="testfolder1")
 
 )
 
-# create_data <- function (population_size) {
-#   x <- rnorm(n=population_size, mean=5, sd=0.1)
-#   y <- 2*x + rnorm(n=1, mean=0, sd=0.5)
-#   return (data.frame(x=x, y=y))
-# }
+# BASH file (run_r.sh)
+# #!/bin/bash
+# Rscript my_sim.R
 
-# take_sample <- function (data, sample_size) {
-#   sample <- sample(1:nrow(data), size=sample_size)
-#   return (data[sample,])
-# }
-# 
-# sim %<>% add_creator(create_data)
-# sim %<>% add_method(take_sample)
-
-# sim %<>% set_levels(
-#   sample_size = c(10, 50, 200)
-# )
-# 
-# sim %<>% add_script(
-#   "my_script",
-#   function () {
-#     # !!!!! do stuff
-#   }
-# )
+# Advanced
+#   sbatch --array=1-10 --depend=afterok:101 --export=add_to_tid='1000' run_r.sh
 
 ```
 
