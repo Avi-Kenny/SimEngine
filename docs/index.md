@@ -140,7 +140,7 @@ sim %<>% set_levels(
 
 ### 5) Create a simulation script
 
-The simulation script is a function that runs a single simulation replicate and returns the results. Within a script, you can reference the current simulation level values using the variable *L*. For example, when the first simulation replicate is running, *L$method* will equal "estimator_1" and *L$num_patients* will equal 50. In the last simulation replicate, *L$method* will equal "estimator_2" and *L$num_patients* will equal 1,000. This can be used in conjunction with *do.call()* to dynamically run different methods within different simulation replicates (as is illustrated below).
+The simulation script is a function that runs a single simulation replicate and returns the results. Within a script, you can reference the current simulation level values using the variable *L*. For example, when the first simulation replicate is running, *L$estimator* will equal "estimator_1" and *L$num_patients* will equal 50. In the last simulation replicate, *L$estimator* will equal "estimator_2" and *L$num_patients* will equal 1,000. This can be used in conjunction with *do.call()* to dynamically run different methods within different simulation replicates (as is illustrated below).
 
 - Your script will have access to any creators and methods that have been added to your simulation object.
 
