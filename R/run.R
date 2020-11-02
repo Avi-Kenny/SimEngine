@@ -136,7 +136,7 @@ run.simba <- function(sim_obj, script, ...) {
   # Run simulations
   if (sim_obj$config$parallel=="outer") {
     # Run in parallel
-    results_lists <- parLapply(cl, sim_uids, run_script)
+    results_lists <- parallel::parLapply(cl, sim_uids, run_script)
   } else {
     # Run serially
     results_lists <- lapply(sim_uids, run_script)
