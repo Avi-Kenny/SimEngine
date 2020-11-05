@@ -114,21 +114,32 @@ run.simba <- function(sim_obj, script, ...) {
     # !!!!! Currently errors are being logged with call "..script_copy()"
     eval(parse(text=c("..script_copy <-", deparse(sim_obj$scripts[[script]]))))
 
-    if (sim_obj$config$stop_at_error==TRUE) {
-      ..script_copy()
-    } else {
-      script_results <- tryCatch(
-        expr = { ..script_copy() },
-        error = function(e) { return(e) }
-      )
-    }
+    # actually run the run
+    # use withCallingHandlers to catch all warnings and tryCatch to catch errors
+    # !!!!! stop_at_error functionality missing
+    withCallingHandlers(
+      {gotWarnings <- character(0) # holds the warnings
+      if (sim_obj$config$stop_at_error==TRUE) {
+        ..script_copy()
+      } else {
+        script_results <- tryCatch(
+          expr = ..script_copy(),
+          error = function(e){ return(e) }
+        )
+      }},
+      warning = function(w){
+        gotWarnings <<- c(gotWarnings, conditionMessage(w))
+        invokeRestart("muffleWarning")
+      }
+    )
 
     runtime <- as.numeric(difftime(Sys.time(), ..start_time), units="secs")
 
     return (list(
       "sim_uid" = i,
       "runtime" = runtime,
-      "results" = script_results
+      "results" = script_results,
+      "warnings" = gotWarnings
     ))
 
   }
@@ -147,6 +158,7 @@ run.simba <- function(sim_obj, script, ...) {
 
   # Separate errors from results
   results_lists_ok <- list()
+  results_lists_warn <- list()
   results_lists_err <- list()
   for (i in 1:length(results_lists)) {
     if (is(results_lists[[i]]$results, "error")) {
@@ -154,17 +166,32 @@ run.simba <- function(sim_obj, script, ...) {
     } else {
       results_lists_ok[[length(results_lists_ok)+1]] <- results_lists[[i]]
     }
+    if (length(results_lists[[i]]$warnings) > 0){
+      results_lists_warn[[length(results_lists_warn)+1]] <- results_lists[[i]]
+    }
   }
 
   # Generate completion message
   num_ok <- length(results_lists_ok)
   num_err <- length(results_lists_err)
   pct_err <- round((100*num_err)/(num_err+num_ok),0)
-  if (pct_err==0) {
-    comp_msg <- "Done. No errors detected.\n"
+  num_warn <- length(results_lists_warn)
+  pct_warn <- round((100*num_warn)/(num_err + num_ok),0)
+  if (pct_err==0 & pct_warn == 0) {
+    comp_msg <- "Done. No errors or warnings detected.\n"
+  } else if (pct_err > 0) {
+    comp_msg <- paste0(
+      "Done. Errors detected in ",
+      pct_err,
+      "% of simulation replicates. Warnings detected in ",
+      pct_warn,
+      "% of simulation replicates.\n"
+    )
   } else {
     comp_msg <- paste0(
-      "Done. Errors detected in ", pct_err, "% of simulation replicates.\n"
+      "Done. No errors detected. Warnings detected in ",
+      pct_warn,
+      "% of simulation replicates.\n"
     )
   }
 
@@ -220,6 +247,29 @@ run.simba <- function(sim_obj, script, ...) {
 
   }
 
+  # Convert warnings to data frame
+  if (num_warn>0) {
+
+    warn_df <- data.frame(
+      "sim_uid" = integer(),
+      "runtime" = double(),
+      "message" = character(),
+      stringsAsFactors=FALSE
+    )
+
+    for (i in 1:length(results_lists_warn)) {
+      for (j in 1:length(results_lists_warn[[i]]$warnings)){
+        warn_df[nrow(warn_df)+1,] <- list(
+          "sim_uid" = results_lists_warn[[i]]$sim_uid,
+          "runtime" = results_lists_warn[[i]]$runtime,
+          "message" = results_lists_warn[[i]]$warnings[j]
+        )
+      }
+
+    }
+
+  }
+
   # Join results data frames with `levels_grid_big`and attach to sim_obj
   if (exists("results_df")) {
     results_df <- dplyr::inner_join(
@@ -230,7 +280,7 @@ run.simba <- function(sim_obj, script, ...) {
     sim_obj$results <- results_df
   }
 
-  # Join results data frames with `levels_grid_big`and attach to sim_obj
+  # Join error data frames with `levels_grid_big`and attach to sim_obj
   if (exists("errors_df")) {
     errors_df <- dplyr::inner_join(
       sim_obj$internals$levels_grid_big,
@@ -238,6 +288,16 @@ run.simba <- function(sim_obj, script, ...) {
       by = "sim_uid"
     )
     sim_obj$errors <- errors_df
+  }
+
+  # Join warnings data frames with `levels_grid_big`and attach to sim_obj
+  if (exists("warn_df")) {
+    warn_df <- dplyr::inner_join(
+      sim_obj$internals$levels_grid_big,
+      warn_df,
+      by = "sim_uid"
+    )
+    sim_obj$warnings <- warn_df
   }
 
   # Set states
@@ -251,6 +311,9 @@ run.simba <- function(sim_obj, script, ...) {
     sim_obj$results <- "Errors detected in 100% of simulation replicates"
   } else {
     stop("An unknown error occurred")
+  }
+  if (!exists("warn_df")){
+    sim_obj$warnings <- "No warnings"
   }
 
   cat(comp_msg)
