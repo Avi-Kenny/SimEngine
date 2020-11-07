@@ -2,13 +2,10 @@
 #'
 #' @param sim_obj A simulation object of class "simba", usually created by
 #'     new_sim()
-#' @return The original simulation object with the new script function added
+#' @return The original simulation object with the new script function added.
+#'     The script should be a function that returns a list of key-value pairs. !!!!! continue
 #' @examples
 #' !!!!! TO DO
-#' !!!!! Script function should return a list of simple key-value pairs
-#' !!!!! Need to modify if more complicated objects are returned
-#' !!!!! Currently throws an error if there are NULL values in the list
-#' !!!!! Make "return data frame" default option and "return list" as alternate
 #' @export
 add_script <- function(sim_obj, ...) UseMethod("add_script")
 
@@ -31,7 +28,6 @@ add_script.simba <- function(sim_obj, ...) {
     stop("`fn` must be a function")
   }
 
-  # !!!!! parse()
   sim_obj$scripts[[name]] <- fn
 
   return (sim_obj)

@@ -19,7 +19,7 @@ new_sim <- function() {
       dir = getwd()
     ),
     constants = list(),
-    levels = list("no levels"=TRUE), # !!!!! change to no_levels throughout
+    levels = list("no levels"=TRUE),
     levels_grid = data.frame(level_id=1),
     results = "Simulation has not been run yet.",
     errors = "Simulation has not been run yet.",
@@ -27,7 +27,6 @@ new_sim <- function() {
 
     # run_state can be: "pre run", "run, no errors", "run, some errors",
     #     "run, all errors"
-    # !!!!! Document others here
     internals = list(
       envir = new.env(),
       levels_types = FALSE,

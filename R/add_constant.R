@@ -18,8 +18,6 @@ add_constant.simba <- function(
   sim_obj, ...
 ) {
 
-  # !!!!! Add error handing
-
   sim_obj$constants <- c(sim_obj$constants, list(...))
 
   return (sim_obj)
