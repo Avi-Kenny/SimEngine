@@ -13,8 +13,8 @@ summary.simba <- function(sim_obj, ...) {
 
   # !!!!! Update error handling based on sim_obj$internals$run_state
 
-  if (is.null(sim_obj$results)) {
-    if (is.null(sim_obj$errors)) {
+  if (is.character(sim_obj$results)) {
+    if (sim_obj$errors == "Simulation has not been run yet.") {
       stop("Simulation has not been run yet.")
     } else {
       stop("100% of simulations had errors.")
