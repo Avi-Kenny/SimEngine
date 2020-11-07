@@ -13,7 +13,8 @@ RoxygenNote: 7.1.0
 Imports: 
     magrittr,
 	parallel,
-	pbapply
+	pbapply,
+	data.table
 Suggests: 
     knitr,
     rmarkdown,
