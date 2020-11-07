@@ -119,7 +119,7 @@ run.simba <- function(sim_obj, script, ...) {
     # use withCallingHandlers to catch all warnings and tryCatch to catch errors
     # !!!!! stop_at_error functionality missing
     withCallingHandlers(
-      {gotWarnings <- character(0) # holds the warnings
+      {.gotWarnings <- character(0) # holds the warnings
       if (sim_obj$config$stop_at_error==TRUE) {
         ..script_copy()
       } else {
@@ -129,7 +129,7 @@ run.simba <- function(sim_obj, script, ...) {
         )
       }},
       warning = function(w){
-        gotWarnings <<- c(gotWarnings, conditionMessage(w))
+        .gotWarnings <<- c(.gotWarnings, conditionMessage(w))
         invokeRestart("muffleWarning")
       }
     )
@@ -140,7 +140,7 @@ run.simba <- function(sim_obj, script, ...) {
       "sim_uid" = i,
       "runtime" = runtime,
       "results" = script_results,
-      "warnings" = gotWarnings
+      "warnings" = .gotWarnings
     ))
 
   }
@@ -234,7 +234,7 @@ run.simba <- function(sim_obj, script, ...) {
     results_lists_warn <- lapply(results_lists_warn, function(r){
       list("sim_uid" = r$sim_uid,
            "runtime" = r$runtime,
-           "message" = paste(r$results$warnings, collapse="; "))
+           "message" = paste(r$warnings, collapse="; "))
     })
     warn_df <- data.table::rbindlist(results_lists_warn)
 
