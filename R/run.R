@@ -16,6 +16,7 @@ run.simba <- function(sim_obj, script, ...) {
   sim_obj$internals$start_time <- Sys.time()
 
   # Get reference to current environment
+  # !!!!! Make sure everything is being run in either this environment or in the simba$internals$env environment
   env <- environment()
 
   o_args <- list(...)
@@ -133,13 +134,18 @@ run.simba <- function(sim_obj, script, ...) {
 
   }
 
+  # Set up progress bar
+  pbapply::pboptions(type="txt", char="#", txt.width=40, style=3)
+
   # Run simulations
   if (sim_obj$config$parallel=="outer") {
     # Run in parallel
-    results_lists <- parallel::parLapply(cl, sim_uids, run_script)
+    # results_lists <- parallel::parLapply(cl, sim_uids, run_script)
+    results_lists <- pbapply::pblapply(sim_uids, run_script, cl=cl)
   } else {
     # Run serially
-    results_lists <- lapply(sim_uids, run_script)
+    # results_lists <- lapply(sim_uids, run_script)
+    results_lists <- pbapply::pblapply(sim_uids, run_script)
   }
 
   # Stop cluster

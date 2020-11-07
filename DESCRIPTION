@@ -12,7 +12,8 @@ LazyData: true
 RoxygenNote: 7.1.0
 Imports: 
     magrittr,
-	parallel
+	parallel,
+	pbapply
 Suggests: 
     knitr,
     rmarkdown,
