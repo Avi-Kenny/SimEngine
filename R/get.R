@@ -15,7 +15,7 @@ get.simba <- function(sim_obj, variable) {
     variable,
     "total_runtime" = { return(sim_obj$internals$total_runtime) },
     "start_time" = { return(sim_obj$internals$start_time) },
-    "end_time" = { return(sim_obj$internals$end_time) }, # !!!!! add error handling
+    "end_time" = { return(sim_obj$internals$end_time) },
     {
       stop("Invalid variable name")
     }

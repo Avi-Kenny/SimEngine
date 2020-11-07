@@ -19,8 +19,6 @@ set_levels <- function(sim_obj, ...) UseMethod("set_levels")
 #' @export
 set_levels.simba <- function(sim_obj, ...) {
 
-  # !!!!! Add error handling for "..."
-
   # Add levels to sim_obj
   if (length(list(...))==0) { stop("No levels supplied") }
   sim_obj$levels <- list(...)

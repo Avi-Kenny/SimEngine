@@ -39,7 +39,6 @@ print.simba <- function(sim_obj) {
       cat(paste0("    ",names(sim_obj$scripts)[i],"\n"))
     }
   }
-  # !!!!! add something for results
 }
 
 #' # Print method for class "simba_results"

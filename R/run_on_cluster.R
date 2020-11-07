@@ -28,17 +28,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
 
   cfg <- cluster_config
 
-  # !!!!! Need option to test/run code in all three sections locally; maybe with cfg$local=TRUE
-  # !!!!! Need to account for situations where a simulation is run twice
-  # !!!!! Need error handling for if any of the three stages fails
-  # !!!!! Standardize terminology: JS or HPC ?????
-  # !!!!! Need to handle loading of libraries
-  # !!!!! Set start_time, end_time, etc. (check run() for others)
-  # !!!!! Run everything in a separate environment
-  # !!!!! Make `sim` the default sim_var
-
   # Check that cfg$dir is a valid direcyory
-  # !!!!! Also check that it is writable by saving and deleting a test file
   if (!is.null(cfg$dir) && !dir.exists(cfg$dir)) {
     stop(paste("Directory", cfg$dir, "does not exist."))
   }
@@ -63,7 +53,6 @@ run_on_cluster <- function(first, main, last, cluster_config) {
     ..start_time <- Sys.time()
 
     # Run 'first' code
-    # !!!!! Error handling: Wrap this in a tryCatch that sets a flag if it returns and error that instructs 'main' and 'last' code to not run
     eval(substitute(first))
 
     # Save simulation object
@@ -105,10 +94,9 @@ run_on_cluster <- function(first, main, last, cluster_config) {
         stop(paste(
           "cluster_config variable js must equal one of the following:",
           "'slurm', 'sge'."))
-        # !!!!! Add more js options other than sge and slurm
       }
     } else {
-      stop("You must specify either 'js' or 'tid_var' in cluster_config") # !!!!! Move some error messages to top
+      stop("You must specify either 'js' or 'tid_var' in cluster_config")
     }
 
     tid <- as.numeric(Sys.getenv(tid_var))
