@@ -23,6 +23,7 @@ new_sim <- function() {
     levels_grid = data.frame(level_id=1),
     results = "Simulation has not been run yet",
     errors = "Simulation has not been run yet",
+    warnings = "Simulation has not been run yet",
 
     # run_state can be: "pre run", "run, no errors", "run, some errors",
     #     "run, all errors"
