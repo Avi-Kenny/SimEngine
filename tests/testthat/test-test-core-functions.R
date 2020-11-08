@@ -80,8 +80,71 @@ test_that("add_creator() throws error for non-function function", {
                "`fn` must be a function")
 })
 
-# back to original creator
+# add_method()
+
+estimator_1 <- function(df) {
+  n <- nrow(df)
+  true_prob <- 0.5
+  sum_t <- sum(df$outcome * (df$group=="treatment"))
+  sum_c <- sum(df$outcome * (df$group=="control"))
+  return ( sum_t/(n*true_prob) - sum_c/(n*(1-true_prob)) )
+}
+estimator_2 <- function(df) {
+  n <- nrow(df)
+  est_prob <- sum(df$group=="treatment") / n
+  sum_t <- sum(df$outcome * (df$group=="treatment"))
+  sum_c <- sum(df$outcome * (df$group=="control"))
+  return ( sum_t/(n*est_prob) - sum_c/(n*(1-est_prob)) )
+}
+
+# add_method() works with predefined functions
+sim %<>% add_method(estimator_1)
+sim %<>% add_method(estimator_2)
+result <- sim$methods[[1]](df)
+test_that("add_method() works with predefined function", {
+  expect_type(sim$methods, "list")
+  expect_equal(length(sim$methods), 2)
+  expect_type(sim$methods[[1]], "closure")
+  expect_type(sim$methods[[2]], "closure")
+  expect_type(result, "double")
+})
+
+# add_method() works with function defined in call
+sim <- new_sim()
+sim %<>% add_method("estimator_1",
+                    function(df) {
+                      n <- nrow(df)
+                      true_prob <- 0.5
+                      sum_t <- sum(df$outcome * (df$group=="treatment"))
+                      sum_c <- sum(df$outcome * (df$group=="control"))
+                      return ( sum_t/(n*true_prob) - sum_c/(n*(1-true_prob)) )
+                    })
+result <- sim$methods[[1]](df)
+test_that("add_method() works with function defined in call", {
+  expect_type(sim$methods, "list")
+  expect_equal(length(sim$methods), 1)
+  expect_equal(names(sim$methods), c("estimator_1"))
+  expect_type(sim$methods[[1]], "closure")
+  expect_type(result, "double")
+})
+
+# add_method() throws error for non-string name
+test_that("add_method() throws error for non-string name", {
+  expect_error(add_method(sim, 2, function(y){return(y)}),
+               "`name` must be a character string")
+})
+
+# add_method() throws error for non-function function
+test_that("add_method() throws error for non-function function", {
+  expect_error(add_method(sim, "func", 2),
+               "`fn` must be a function")
+})
+
+# back to original creator and methods
+sim <- new_sim()
 sim %<>% add_creator(create_rct_data)
+sim %<>% add_method(estimator_1)
+sim %<>% add_method(estimator_2)
 
 # add_constant()
 
@@ -150,23 +213,11 @@ test_that("set_config() successfully loads an installed package", {
 })
 
 
-estimator_1 <- function(df) {
-  n <- nrow(df)
-  true_prob <- 0.5
-  sum_t <- sum(df$outcome * (df$group=="treatment"))
-  sum_c <- sum(df$outcome * (df$group=="control"))
-  return ( sum_t/(n*true_prob) - sum_c/(n*(1-true_prob)) )
-}
-estimator_2 <- function(df) {
-  n <- nrow(df)
-  est_prob <- sum(df$group=="treatment") / n
-  sum_t <- sum(df$outcome * (df$group=="treatment"))
-  sum_c <- sum(df$outcome * (df$group=="control"))
-  return ( sum_t/(n*est_prob) - sum_c/(n*(1-est_prob)) )
-}
 
-sim %<>% add_method(estimator_1)
-sim %<>% add_method(estimator_2)
+
+
+
+
 
 sim %<>% set_levels(
   estimator = c("estimator_1", "estimator_2"),
