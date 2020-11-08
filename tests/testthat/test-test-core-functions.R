@@ -83,6 +83,16 @@ test_that("add_creator() throws error for non-function function", {
 # back to original creator
 sim %<>% add_creator(create_rct_data)
 
+# add_constant()
+
+sim %<>% add_constant("alpha" = 2)
+test_that("add_constant() works", {
+  expect_type(sim$constants, "list")
+  expect_equal(length(sim$constants), 1)
+  expect_equal(names(sim$constants), c("alpha"))
+  expect_equal(sim$constants[[1]], 2)
+})
+
 
 # set_levels()
 
