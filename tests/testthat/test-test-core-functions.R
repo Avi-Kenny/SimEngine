@@ -41,7 +41,60 @@ test_that("add_creator() works", {
   expect_equal(df$patient_id, c(1:5))
 })
 
+# set_levels()
 
+# non-list levels
+sim %<>% set_levels(
+  estimator = c("estimator_1", "estimator_2"),
+  num_patients = c(50, 100, 200)
+)
+
+test_that("set_levels() works with non-list levels provided", {
+  expect_type(sim$levels, "list")
+  expect_equal(length(sim$levels), 2)
+  expect_equal(sim$levels[[1]], c("estimator_1", "estimator_2"))
+  expect_equal(sim$levels[[2]], c(50, 100, 200))
+})
+
+# list levels
+sim %<>% set_levels(method = list("estimator_1" = "estimator_1",
+                                  "estimator_2" = "estimator_2"))
+test_that("set_levels() works with list levels provided", {
+  expect_true(sim$internals$levels_types[1])
+  expect_equal(sim$internals$levels_shallow[[1]],
+               c("estimator_1", "estimator_2"))
+})
+
+# no levels supplied
+test_that("set_levels() throws error with no levels provided", {
+  expect_error(set_levels(sim), "No levels supplied")
+})
+
+
+# set_config()
+
+# no arguments supplied
+test_that("set_config() throws error with no config provided", {
+  expect_error(set_config(sim), "No configuration options specified")
+})
+
+# invalid config option name
+test_that("set_config() throws error for invalid config option name", {
+  expect_error(set_config(sim, fake_name = "foobar"),
+               "'fake_name' is not a valid configuration option.")
+})
+
+# load packages
+# !!!! maybe there's a better way to do this? I don't like having to use detach()
+# this is especially dumb because I have to load pkg before unloading to make sure
+# I have a clean slate
+library('ggplot2')
+detach('package:ggplot2', unload = TRUE)
+sim %<>% set_config(packages = "ggplot2")
+loaded <- search()
+test_that("set_config() successfully loads an installed package", {
+  expect_true("package:ggplot2" %in% loaded)
+})
 
 
 estimator_1 <- function(df) {
