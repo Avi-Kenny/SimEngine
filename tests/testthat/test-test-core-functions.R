@@ -31,15 +31,58 @@ create_rct_data <- function (num_patients) {
   return (df)
 }
 
+# add_creator() works with predefined function
 sim %<>% add_creator(create_rct_data)
 df <- sim$creators[[1]](5)
-
-test_that("add_creator() works", {
+test_that("add_creator() works with predefined function", {
   expect_type(sim$creators, "list")
   expect_equal(length(sim$creators), 1)
   expect_type(sim$creators[[1]], "closure")
   expect_equal(df$patient_id, c(1:5))
 })
+
+# add_creator() works with function defined in call
+sim <- new_sim()
+sim %<>% add_creator("create_rct_data2",
+                     function (num_patients) {
+  df <- data.frame(
+    "patient_id" = integer(),
+    "group" = character(),
+    "outcome" = double(),
+    stringsAsFactors = FALSE
+  )
+  for (i in 1:num_patients) {
+    group <- ifelse(sample(c(0,1), size=1)==1, "treatment", "control")
+    treatment_effect <- ifelse(group=="treatment", -7, 0)
+    outcome <- rnorm(n=1, mean=130, sd=5) + treatment_effect
+    df[i,] <- list(i, group, outcome)
+  }
+  return (df)
+})
+df <- sim$creators[[1]](5)
+test_that("add_creator() works with function defined in call", {
+  expect_type(sim$creators, "list")
+  expect_equal(length(sim$creators), 1)
+  expect_equal(names(sim$creators), c("create_rct_data2"))
+  expect_type(sim$creators[[1]], "closure")
+  expect_equal(df$patient_id, c(1:5))
+})
+
+# add_creator() throws error for non-string name
+test_that("add_creator() throws error for non-string name", {
+  expect_error(add_creator(sim, 2, function(y){return(y)}),
+               "`name` must be a character string")
+})
+
+# add_creator() throws error for non-function function
+test_that("add_creator() throws error for non-function function", {
+  expect_error(add_creator(sim, "func", 2),
+               "`fn` must be a function")
+})
+
+# back to original creator
+sim %<>% add_creator(create_rct_data)
+
 
 # set_levels()
 
