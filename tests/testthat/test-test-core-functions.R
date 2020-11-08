@@ -191,22 +191,6 @@ test_that("add_script() throws error for non-function function", {
                "`fn` must be a function")
 })
 
-# back to original creator, methods, script
-sim <- new_sim()
-sim %<>% add_creator(create_rct_data)
-sim %<>% add_method(estimator_1)
-sim %<>% add_method(estimator_2)
-sim %<>% add_script(
-  "my script",
-  function() {
-    df <- create_rct_data(L$num_patients)
-    estimate <- do.call(L$estimator, list(df))
-    return (
-      list("estimate" = estimate)
-    )
-  }
-)
-
 ### add_constant() ###
 
 sim %<>% add_constant("alpha" = 2)
@@ -274,11 +258,58 @@ test_that("set_config() successfully loads an installed package", {
 })
 
 
+# back to original everything
+sim <- new_sim()
+sim %<>% add_creator(create_rct_data)
+sim %<>% add_method(estimator_1)
+sim %<>% add_method(estimator_2)
+sim %<>% set_levels(
+  estimator = c("estimator_1", "estimator_2"),
+  num_patients = c(50, 200, 1000)
+)
+sim %<>% add_script(
+  "my script",
+  function() {
+    df <- create_rct_data(L$num_patients)
+    estimate <- do.call(L$estimator, list(df))
+    return (
+      list("estimate" = estimate)
+    )
+  }
+)
+sim %<>% set_config(
+  num_sim = 10,
+  parallel = "none"
+)
+sim %<>% run("my script")
 
+### get() ###
 
+# try to get an invalid variable
+test_that("get() throws error for invalid variable name", {
+  expect_error(get(sim, "invalid_variable"), "Invalid variable name")
+})
 
+# get runtime
+runtime <- get(sim, "total_runtime")
+test_that("get() returns runtime", {
+  expect_equal(length(runtime), 1)
+  expect_type(runtime, "double")
+})
 
+# get start time
+start_time <- get(sim, "start_time")
+test_that("get() returns start time", {
+  expect_equal(length(start_time), 1)
+  expect_equal(class(start_time), c("POSIXct", "POSIXt"))
+})
 
+# get end time
+end_time <- get(sim, "end_time")
+test_that("get() returns end time", {
+  expect_equal(length(end_time), 1)
+  expect_equal(class(end_time), c("POSIXct", "POSIXt"))
+})
 
 
 
