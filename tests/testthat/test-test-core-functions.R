@@ -1,5 +1,4 @@
-
-# new_sim()
+### new_sim() ###
 sim <- new_sim()
 
 test_that("new_sim() creates correctly-specified object", {
@@ -13,7 +12,7 @@ test_that("new_sim() creates correctly-specified object", {
 
 
 
-# add_creator()
+### add_creator() ###
 
 create_rct_data <- function (num_patients) {
   df <- data.frame(
@@ -80,7 +79,7 @@ test_that("add_creator() throws error for non-function function", {
                "`fn` must be a function")
 })
 
-# add_method()
+### add_method() ###
 
 estimator_1 <- function(df) {
   n <- nrow(df)
@@ -104,6 +103,7 @@ result <- sim$methods[[1]](df)
 test_that("add_method() works with predefined function", {
   expect_type(sim$methods, "list")
   expect_equal(length(sim$methods), 2)
+  expect_equal(names(sim$methods), c("estimator_1", "estimator_2"))
   expect_type(sim$methods[[1]], "closure")
   expect_type(sim$methods[[2]], "closure")
   expect_type(result, "double")
@@ -140,13 +140,74 @@ test_that("add_method() throws error for non-function function", {
                "`fn` must be a function")
 })
 
-# back to original creator and methods
+### add_script ###
+my_script <- function() {
+  df <- create_rct_data(L$num_patients)
+  estimate <- do.call(L$estimator, list(df))
+  return (
+    list("estimate" = estimate)
+  )
+}
+
+# add_script() works with predefined function
+# !!!! how to check the output?
+sim <- new_sim()
+sim %<>% add_script(my_script)
+test_that("add_script() works with predefined function", {
+  expect_type(sim$scripts, "list")
+  expect_equal(length(sim$scripts), 1)
+  expect_equal(names(sim$scripts), c("my_script"))
+  expect_type(sim$scripts[[1]], "closure")
+})
+
+# add_script() works with function defined in call
+sim <- new_sim()
+sim %<>% add_script(
+  "my script",
+  function() {
+    df <- create_rct_data(L$num_patients)
+    estimate <- do.call(L$estimator, list(df))
+    return (
+      list("estimate" = estimate)
+    )
+  }
+)
+test_that("add_script() works with function defined in call", {
+  expect_type(sim$scripts, "list")
+  expect_equal(length(sim$scripts), 1)
+  expect_equal(names(sim$scripts), c("my script"))
+  expect_type(sim$scripts[[1]], "closure")
+})
+
+# add_script() throws error for non-string name
+test_that("add_script() throws error for non-string name", {
+  expect_error(add_script(sim, 2, function(y){return(y)}),
+               "`name` must be a character string")
+})
+
+# add_script() throws error for non-function function
+test_that("add_script() throws error for non-function function", {
+  expect_error(add_script(sim, "func", 2),
+               "`fn` must be a function")
+})
+
+# back to original creator, methods, script
 sim <- new_sim()
 sim %<>% add_creator(create_rct_data)
 sim %<>% add_method(estimator_1)
 sim %<>% add_method(estimator_2)
+sim %<>% add_script(
+  "my script",
+  function() {
+    df <- create_rct_data(L$num_patients)
+    estimate <- do.call(L$estimator, list(df))
+    return (
+      list("estimate" = estimate)
+    )
+  }
+)
 
-# add_constant()
+### add_constant() ###
 
 sim %<>% add_constant("alpha" = 2)
 test_that("add_constant() works", {
@@ -157,7 +218,7 @@ test_that("add_constant() works", {
 })
 
 
-# set_levels()
+### set_levels() ###
 
 # non-list levels
 sim %<>% set_levels(
@@ -187,7 +248,7 @@ test_that("set_levels() throws error with no levels provided", {
 })
 
 
-# set_config()
+### set_config() ###
 
 # no arguments supplied
 test_that("set_config() throws error with no config provided", {
@@ -219,32 +280,14 @@ test_that("set_config() successfully loads an installed package", {
 
 
 
-sim %<>% set_levels(
-  estimator = c("estimator_1", "estimator_2"),
-  num_patients = c(50, 100, 200)
-)
 
-sim %<>% add_script(
-  "my script",
-  function() {
-    df <- create_rct_data(L$num_patients)
-    estimate <- do.call(L$estimator, list(df))
-    return (
-      list("estimate" = estimate)
-    )
-  }
-)
 
-sim %<>% set_config(
-  num_sim = 100,
-  parallel = "none"
-)
 
-sim %<>% run("my script")
+#sim %<>% run("my script")
 
-sim %>% summary()
+#sim %>% summary()
 
-sim %>% summary(
-  bias = list(name="bias_ate", truth=-7, estimate="estimate"),
-  mse = list(name="mse_ate", truth=-7, estimate="estimate")
-)
+#sim %>% summary(
+#  bias = list(name="bias_ate", truth=-7, estimate="estimate"),
+#  mse = list(name="mse_ate", truth=-7, estimate="estimate")
+#)
