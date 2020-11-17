@@ -145,3 +145,48 @@ test_that("run() behaves correctly; all errors", {
   expect_equal(substring(sim$errors[1,"message"], 1, 14), "Lapack routine")
   expect_equal(sim$errors[1,"call"], "solve.default(x)")
 })
+
+# stop at error
+
+sim <- new_sim()
+
+sim %<>% add_script(
+  "my script",
+  function() {
+    stop('Stop_at_error test triggered.')
+    return (list("x"=1))
+  }
+)
+
+sim %<>% set_config(
+  num_sim = 100,
+  parallel = "none",
+  stop_at_error = TRUE
+)
+
+test_that("stop_at_error config option works", {
+  expect_error(run(sim, "my script"), "Stop_at_error test triggered.")
+})
+
+
+# too many cores requested
+
+sim %<>% add_script(
+  "my script",
+  function() {
+    return (list("x"=1))
+  }
+)
+
+sim %<>% set_config(
+  num_sim = 100,
+  parallel = "inner",
+  parallel_cores = 1000
+)
+
+n_available_cores <- parallel::detectCores()
+mess <- paste0("1000 cores requested but only ", n_available_cores, " cores available")
+
+test_that("run() throws warning if too many cores requested", {
+  expect_warning(run(sim, "my script"), mess)
+})
