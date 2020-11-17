@@ -121,7 +121,7 @@ run.simba <- function(sim_obj, script, ...) {
     withCallingHandlers(
       {.gotWarnings <- character(0) # holds the warnings
       if (sim_obj$config$stop_at_error==TRUE) {
-        ..script_copy()
+        script_results <- ..script_copy()
       } else {
         script_results <- tryCatch(
           expr = ..script_copy(),
