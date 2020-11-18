@@ -11,14 +11,12 @@
 #' @export
 summary.simba <- function(sim_obj, ...) {
 
-  # !!!!! Update error handling based on sim_obj$internals$run_state
-
-  if (is.character(sim_obj$results)) {
-    if (sim_obj$errors == "Simulation has not been run yet.") {
-      stop("Simulation has not been run yet.")
-    } else {
-      stop("100% of simulations had errors.")
-    }
+  # handle scenarios with no results
+  if (sim_obj$internals$run_state == "pre run"){
+    stop("Simulation has not been run yet.")
+  }
+  if (sim_obj$internals$run_state == "run, all errors"){
+    stop("100% of simulations had errors.")
   }
 
   # Parse passed arguments
@@ -28,29 +26,24 @@ summary.simba <- function(sim_obj, ...) {
 
   # Evaluate passed arguments, passing in constants
   o_args <- list(...)
-  # eval(parse(text=c("o_args <- ", deparse(substitute(list(...))))))
-
-  # Add simulation constants to `R` data frame
-  # !!!!! This is problematic if constants are not numbers, strings, etc.
-  # !!!!! Temp fix: declare constants in current environment
-  # if (length(sim_obj$constants)!=0) {
-  #   for (i in 1:length(sim_obj$constants)) {
-  #     length <- nrow(R)
-  #     R[[names(sim_obj$constants)[[i]]]] <- sim_obj$constants[[i]]
-  #   }
-  # }
-  if (length(sim_obj$constants)!=0) {
-    for (i in 1:length(sim_obj$constants)) {
-      assign(
-        x = names(sim_obj$constants)[i],
-        value = (sim_obj$constants)[[i]]
-      )
-    }
-  }
-
 
   # If there is only one list, wrap it in a list
-  metrics <- c("mean", "var", "sd", "quantile", "bias", "mse", "coverage")
+  metrics <- c("mean",
+               "median",
+               "var",
+               "sd",
+               "mad",
+               "iqr",
+               "quantile",
+               "bias",
+               "mse",
+               "mae",
+               "coverage")
+  for (arg_name in names(o_args)){
+    if (!(arg_name %in% metrics)){
+      stop(paste0(arg_name, " is an invalid summary metric."))
+    }
+  }
   for (metric in metrics) {
     if (!is.null(o_args[[metric]]) && !class(o_args[[metric]][[1]])=="list") {
       o_args[[metric]] <- list(o_args[[metric]])
@@ -64,35 +57,74 @@ summary.simba <- function(sim_obj, ...) {
     code_levels <- ""
   }
 
-  # Parse code to calculate means
-  # !!!!! Options should be mean=TRUE (default), mean=FALSE, mean=list()
-  # !!!!! Need to do for (mean in o_args$mean) {...} (similar to below)
+  ### Parse code to calculate mean
+  if (!is.null(o_args$mean)) {
 
-  if (is.null(o_args$mean) ||
-      (!is.null(o_args$mean[[1]]$all) && o_args$mean[[1]]$all==TRUE) ) {
+    code_mean <- ""
+    for (m in o_args$mean) {
 
-    if (!is.null(o_args$mean[[1]]$na.rm) && o_args$mean[[1]]$na.rm==TRUE) {
-      na_1 <- ", na.rm=TRUE),"
-    } else {
-      na_1 <- "),"
+      # handle missing name or x argument
+      if (is.null(m$name)){
+        stop("`name` argument is required.")
+      }
+      if (is.null(m$x)){
+        stop("`x` argument is required.")
+      }
+
+      if (!is.character(m$name)){
+        stop("`name` must be a character string.")
+      }
+
+      # handle x that does not refer to columns in results
+      if (!(m$x %in% names(R))){
+        stop(paste0(m$x, " is not a variable in results."))
+      }
+      # handle non-numeric x
+      if (!is.numeric(R[[m$x]])){
+        stop(paste0(m$x, " is not numeric."))
+      }
+
+      if (!is.null(m$na.rm) && m$na.rm==TRUE) {
+        na_1 <- ", na.rm=TRUE),"
+      } else {
+        na_1 <- "),"
+      }
+
+      code_mean <- c(code_m, paste0(
+        m$name, " = mean(", m$x, na_1
+      ))
+
     }
-
-    names_means <- names_results[!(names_results %in% c(
-      names_levels, "sim_uid", "sim_id", "level_id"
-    ))]
-    code_means <- paste0("'mean_", names_means, "'=mean(", names_means, na_1)
-
   } else {
-
-    # !!!!! TO DO
-
+    code_mean <- ""
   }
 
-  # Parse SD summary code
+  ### Parse SD summary code
   if (!is.null(o_args$sd)) { # !!!!! be consistent about o_args$sd vs o_args[["sd"]]
 
     code_sd <- ""
     for (sd in o_args$sd) {
+
+      # handle missing name or x argument
+      if (is.null(sd$name)){
+        stop("`name` argument is required.")
+      }
+      if (is.null(sd$x)){
+        stop("`x` argument is required.")
+      }
+
+      if (!is.character(sd$name)){
+        stop("`name` must be a character string.")
+      }
+
+      # handle x that does not refer to columns in results
+      if (!(sd$x %in% names(R))){
+        stop(paste0(sd$x, " is not a variable in results."))
+      }
+      # handle non-numeric x
+      if (!is.numeric(R[[sd$x]])){
+        stop(paste0(sd$x, " is not numeric."))
+      }
 
       if (!is.null(sd$na.rm) && sd$na.rm==TRUE) {
         na_1 <- ", na.rm=TRUE),"
@@ -109,35 +141,33 @@ summary.simba <- function(sim_obj, ...) {
     code_sd <- ""
   }
 
-  # Parse quantile summary code
-  if (!is.null(o_args$quantile)) {
-
-    code_q <- ""
-    for (q in o_args$quantile) {
-
-      if (!is.null(q$na.rm) && q$na.rm==TRUE) {
-        na_1 <- ", na.rm=TRUE),"
-      } else {
-        na_1 <- "),"
-      }
-
-      code_q <- c(code_q, paste0(
-        q$name, " = quantile(", q$x, ", probs=", q$prob, ",", na_1
-      ))
-
-    }
-  } else {
-    code_q <- ""
-  }
-
-  # !!!!! Look at "useful functions" header and implement all here
-  #           https://dplyr.tidyverse.org/reference/summarise.html
-
-  # Parse variance summary code
+  ### Parse variance summary code
   if (!is.null(o_args$var)) {
 
     code_var <- ""
     for (var in o_args$var) {
+
+      # handle missing name or x argument
+      if (is.null(var$name)){
+        stop("`name` argument is required.")
+      }
+      if (is.null(var$x)){
+        stop("`x` argument is required.")
+      }
+
+      if (!is.character(var$name)){
+        stop("`name` must be a character string.")
+      }
+
+      # handle x that does not refer to columns in results
+      if (!(var$x %in% names(R))){
+        stop(paste0(var$x, " is not a variable in results."))
+      }
+      # handle non-numeric x
+      if (!is.numeric(R[[var$x]])){
+        stop(paste0(var$x, " is not numeric."))
+      }
+
 
       if (!is.null(var$na.rm) && var$na.rm==TRUE) {
         na_1 <- ", na.rm=TRUE),"
@@ -154,11 +184,233 @@ summary.simba <- function(sim_obj, ...) {
     code_var <- ""
   }
 
-  # Calculate bias and parse summary code
+
+  ### Parse MAD summary code
+  if (!is.null(o_args$mad)) {
+
+    code_mad <- ""
+    for (m in o_args$mad) {
+
+      # handle missing name or x argument
+      if (is.null(m$name)){
+        stop("`name` argument is required.")
+      }
+      if (is.null(m$x)){
+        stop("`x` argument is required.")
+      }
+
+      if (!is.character(m$name)){
+        stop("`name` must be a character string.")
+      }
+
+      # handle x that does not refer to columns in results
+      if (!(m$x %in% names(R))){
+        stop(paste0(m$x, " is not a variable in results."))
+      }
+      # handle non-numeric x
+      if (!is.numeric(R[[m$x]])){
+        stop(paste0(m$x, " is not numeric."))
+      }
+
+      if (!is.null(m$na.rm) && m$na.rm==TRUE) {
+        na_1 <- ", na.rm=TRUE),"
+      } else {
+        na_1 <- "),"
+      }
+
+      code_mad <- c(code_mad, paste0(
+        m$name, " = sd(", m$x, na_1
+      ))
+
+    }
+  } else {
+    code_mad <- ""
+  }
+
+
+  ### Parse IQR summary code
+  if (!is.null(o_args$iqr)) {
+
+    code_iqr <- ""
+    for (i in o_args$iqr) {
+
+      # handle missing name or x argument
+      if (is.null(i$name)){
+        stop("`name` argument is required.")
+      }
+      if (is.null(i$x)){
+        stop("`x` argument is required.")
+      }
+
+      if (!is.character(i$name)){
+        stop("`name` must be a character string.")
+      }
+
+      # handle x that does not refer to columns in results
+      if (!(i$x %in% names(R))){
+        stop(paste0(i$x, " is not a variable in results."))
+      }
+      # handle non-numeric x
+      if (!is.numeric(R[[i$x]])){
+        stop(paste0(i$x, " is not numeric."))
+      }
+
+      if (!is.null(i$na.rm) && i$na.rm==TRUE) {
+        na_1 <- ", na.rm=TRUE),"
+      } else {
+        na_1 <- "),"
+      }
+
+      code_iqr <- c(code_iqr, paste0(
+        i$name, " = IQR(", i$x, na_1
+      ))
+
+    }
+  } else {
+    code_iqr <- ""
+  }
+
+
+  ### Parse quantile summary code
+  if (!is.null(o_args$quantile)) {
+
+    code_q <- ""
+    for (q in o_args$quantile) {
+
+      # handle missing name, x, or prob argument
+      if (is.null(q$name)){
+        stop("`name` argument is required.")
+      }
+      if (is.null(q$x)){
+        stop("`x` argument is required.")
+      }
+      if (is.null(q$prob)){
+        stop("`prob` argument is required.")
+      }
+
+      if (!is.character(q$name)){
+        stop("`name` must be a character string.")
+      }
+
+      # handle x that does not refer to columns in results
+      if (!(q$x %in% names(R))){
+        stop(paste0(q$x, " is not a variable in results."))
+      }
+      # handle non-numeric x
+      if (!is.numeric(R[[q$x]])){
+        stop(paste0(q$x, " is not numeric."))
+      }
+      # handle prob that isn't a number
+      if (!is.numeric(q$prob)){
+        stop(paste0(q$prob, " is not numeric."))
+      }
+      # handle prob that isn't between 0 and 1
+      if (length(q$prob > 1) | q$prob > 1 | q$prob < 0){
+        stop(paste0(q$prob, " is not a number between 0 and 1."))
+      }
+
+      if (!is.null(q$na.rm) && q$na.rm==TRUE) {
+        na_1 <- ", na.rm=TRUE),"
+      } else {
+        na_1 <- "),"
+      }
+
+      code_q <- c(code_q, paste0(
+        q$name, " = quantile(", q$x, ", probs=", q$prob, ",", na_1
+      ))
+
+    }
+  } else {
+    code_q <- ""
+  }
+
+
+  ### Parse median summary code
+  if (!is.null(o_args$median)) {
+
+    code_median<- ""
+    for (m in o_args$median) {
+
+      # handle missing name or x argument
+      if (is.null(m$name)){
+        stop("`name` argument is required.")
+      }
+      if (is.null(m$x)){
+        stop("`x` argument is required.")
+      }
+
+      if (!is.character(m$name)){
+        stop("`name` must be a character string.")
+      }
+
+      # handle x that does not refer to columns in results
+      if (!(m$x %in% colnames(R))){
+        stop(paste0(m$x, " is not a variable in results."))
+      }
+      # handle non-numeric x
+      if (!is.numeric(R[[m$x]])){
+        stop(paste0(m$x, " is not numeric."))
+      }
+
+      if (!is.null(m$na.rm) && m$na.rm==TRUE) {
+        na_1 <- ", na.rm=TRUE),"
+      } else {
+        na_1 <- "),"
+      }
+
+      code_median <- c(code_median, paste0(
+        m$name, " = quantile(", m$x, ", probs=c(0.5),", na_1
+      ))
+
+    }
+  } else {
+    code_median <- ""
+  }
+
+
+  ### Calculate bias and parse summary code
   if (!is.null(o_args$bias)) {
 
     code_bias <- ""
     for (b in o_args$bias) {
+
+      # handle missing estimate, name, or truth argument
+      if (is.null(b$name)){
+        stop("`name` argument is required.")
+      }
+      if (is.null(b$estimate)){
+        stop("`estimate` argument is required.")
+      }
+      if (is.null(b$truth)){
+        stop("`truth` argument is required.")
+      }
+
+      if (!is.character(b$name)){
+        stop("`name` must be a character string.")
+      }
+
+      # handle truth and/or estimate that do not refer to columns in results
+      if (!(b$estimate %in% names(R))){
+        stop(paste0(b$estimate, " is not a variable in results."))
+      }
+      if (is.character(b$truth) & !(b$truth %in% names(R))){
+        stop(paste0(b$truth, " is not a variable in results."))
+      }
+      # handle non-numeric truth and/or estimate
+      if (!is.numeric(R[[b$estimate]])){
+        stop(paste0(b$estimate, " is not numeric."))
+      }
+      if (is.character(b$truth)){
+        if (!is.numeric(R[[b$truth]])){
+          stop(paste0(b$truth, " is not numeric."))
+        }
+      }
+      else{
+        if (!is.numeric(b$truth) | length(b$truth) > 1){
+          stop(paste0(b$truth, " is neither a number nor a variable in results."))
+        }
+      }
+
 
       if (!is.null(b$na.rm) && b$na.rm==TRUE) {
         na_1 <- ", na.rm=TRUE),"
@@ -176,11 +428,49 @@ summary.simba <- function(sim_obj, ...) {
     code_bias <- ""
   }
 
-  # Calculate MSE and parse summary code
+
+  ### Calculate MSE and parse summary code
   if (!is.null(o_args$mse)) {
 
     code_mse <- ""
     for (m in o_args$mse) {
+
+      # handle missing estimate, name, or truth argument
+      if (is.null(m$name)){
+        stop("`name` argument is required.")
+      }
+      if (is.null(m$estimate)){
+        stop("`estimate` argument is required.")
+      }
+      if (is.null(m$truth)){
+        stop("`truth` argument is required.")
+      }
+
+      if (!is.character(m$name)){
+        stop("`name` must be a character string.")
+      }
+
+      # handle truth and/or estimate that do not refer to columns in results
+      if (!(m$estimate %in% names(R))){
+        stop(paste0(m$estimate, " is not a variable in results."))
+      }
+      if (is.character(m$truth) & !(m$truth %in% names(R))){
+        stop(paste0(m$truth, " is not a variable in results."))
+      }
+      # handle non-numeric truth and/or estimate
+      if (!is.numeric(R[[m$estimate]])){
+        stop(paste0(m$estimate, " is not numeric."))
+      }
+      if (is.character(m$truth)){
+        if (!is.numeric(R[[m$truth]])){
+          stop(paste0(m$truth, " is not numeric."))
+        }
+      }
+      else{
+        if (!is.numeric(m$truth) | length(m$truth) > 1){
+          stop(paste0(m$truth, " is neither a number nor a variable in results."))
+        }
+      }
 
       if (!is.null(m$na.rm) && m$na.rm==TRUE) {
         na_1 <- ", na.rm=TRUE),"
@@ -198,19 +488,160 @@ summary.simba <- function(sim_obj, ...) {
     code_mse <- ""
   }
 
-  # Calculate CIs and parse coverage summary code
+
+  ### Calculate MAE and parse summary code
+  if(!is.null(o_args$mae)) {
+
+    code_mae <- ""
+    for (m in o_args$mae) {
+
+      # handle missing estimate, name, or truth argument
+      if (is.null(m$name)){
+        stop("`name` argument is required.")
+      }
+      if (is.null(m$estimate)){
+        stop("`estimate` argument is required.")
+      }
+      if (is.null(m$truth)){
+        stop("`truth` argument is required.")
+      }
+
+      if (!is.character(m$name)){
+        stop("`name` must be a character string.")
+      }
+
+      # handle truth and/or estimate that do not refer to columns in results
+      if (!(m$estimate %in% names(R))){
+        stop(paste0(m$estimate, " is not a variable in results."))
+      }
+      if (is.character(m$truth) & !(m$truth %in% names(R))){
+        stop(paste0(m$truth, " is not a variable in results."))
+      }
+      # handle non-numeric truth and/or estimate
+      if (!is.numeric(R[[m$estimate]])){
+        stop(paste0(m$estimate, " is not numeric."))
+      }
+      if (is.character(m$truth)){
+        if (!is.numeric(R[[m$truth]])){
+          stop(paste0(m$truth, " is not numeric."))
+        }
+      }
+      else{
+        if (!is.numeric(m$truth) | length(m$truth) > 1){
+          stop(paste0(m$truth, " is neither a number nor a variable in results.."))
+        }
+      }
+
+      if (!is.null(m$na.rm) && m$na.rm==TRUE) {
+        na_1 <- ", na.rm=TRUE),"
+      } else {
+        na_1 <- "),"
+      }
+
+      code_mae <- c(code_mae, paste0(
+        m$name, " = mean(abs(", m$estimate, "-", m$truth, ")", na_1
+      ))
+
+    }
+
+  } else {
+    code_mae <- ""
+  }
+
+
+  ### Calculate CIs and parse coverage summary code
   # !!!!! Add a column to specify how many rows were omitted with na.rm (for other summary stats as well)
+  # !!!!! if (mean, se) and (upper, lower) are both provided, the latter takes precedence.
   if (!is.null(o_args$coverage)) {
 
     code_cov <- ""
     for (cov in o_args$coverage) {
 
-      if (!is.null(cov$se)) {
+      # make sure user supplies either est + se, or upper + lower, as well as name
+      if (is.null(cov$name)){
+        stop("`name` argument is required.")
+      }
+      if (is.null(cov$truth)){
+        stop("`truth` argument is required.")
+      }
+      if (is.character(cov$truth) & !(cov$truth %in% names(R))){
+        stop(paste0(cov$truth, " is not a variable in results."))
+      }
+      if (is.character(cov$truth)){
+        if (!is.numeric(R[[cov$truth]])){
+          stop(paste0(cov$truth, " is not numeric."))
+        }
+      }
+      else{
+        if (!is.numeric(cov$truth) | length(cov$truth) > 1){
+          stop(paste0(cov$truth, " is neither a number nor a variable in results.."))
+        }
+      }
+      if (is.null(cov$lower) & is.null(cov$upper) & is.null(cov$estimate) & is.null(cov$se)){
+        stop("Either `estimate` and `se` OR `lower` and `upper` must be provided.")
+      }
+      if (is.null(cov$se) & is.null(cov$estimate) & xor(is.null(cov$upper), is.null(cov$lower))){
+        stop("Both `lower` and `upper` must be provided.")
+      }
+      if (is.null(cov$lower) & is.null(cov$upper) & xor(is.null(cov$estimate), is.null(cov$se))){
+        stop("Both `estimate` and `se` must be provided.")
+      }
+
+      # make sure everything is the proper class
+      if (!is.character(cov$name)){
+        stop("`name` must be a character string.")
+      }
+
+      if (!is.null(cov$se) & !is.null(cov$estimate)) {
+        if (!(cov$estimate %in% names(R))){
+          stop(paste0(cov$estimate, " is not a variable in results."))
+        }
+        # handle non-numeric truth and/or estimate
+        if (!is.numeric(R[[cov$estimate]])){
+          stop(paste0(cov$estimate, " is not numeric."))
+        }
+        if (!(cov$se %in% names(R))){
+          stop(paste0(cov$se, " is not a variable in results."))
+        }
+        # handle non-numeric truth and/or estimate
+        if (!is.numeric(R[[cov$se]])){
+          stop(paste0(cov$se, " is not numeric."))
+        }
         ci_l <- R[[cov$estimate]] - 1.96*R[[cov$se]]
         ci_h <- R[[cov$estimate]] + 1.96*R[[cov$se]]
       }
 
       if (!is.null(cov$lower) && !is.null(cov$upper)) {
+        if (is.character(cov$lower)){
+          if (!(cov$lower %in% names(R))){
+            stop(paste0(cov$lower, " is not a variable in results."))
+          }
+          # handle non-numeric truth and/or estimate
+          if (!is.numeric(R[[cov$lower]])){
+            stop(paste0(cov$lower, " is not numeric."))
+          }
+        }
+        else {
+          if (!is.numeric(cov$lower) | length(cov$lower) > 1){
+            stop(paste0(cov$lower, " is neither a number nor a variable in results."))
+          }
+        }
+
+        if (is.character(cov$upper)){
+          if (!(cov$upper %in% names(R))){
+            stop(paste0(cov$upper, " is not a variable in results."))
+          }
+          # handle non-numeric truth and/or estimate
+          if (!is.numeric(R[[cov$upper]])){
+            stop(paste0(cov$upper, " is not numeric."))
+          }
+        }
+        else {
+            if (!is.numeric(cov$upper) | length(cov$upper) > 1){
+              stop(paste0(cov$upper, " is neither a number nor a variable in results."))
+            }
+        }
+
         ci_l <- R[[cov$lower]]
         ci_h <- R[[cov$upper]]
       }
@@ -237,19 +668,23 @@ summary.simba <- function(sim_obj, ...) {
     code_cov <- ""
   }
 
-  # Put code strings together
+
+  ### Put code strings together
   summarize_code <- c(
     "as.data.frame(dplyr::summarize(
        dplyr::group_by(R, level_id),",
     code_levels,
-    code_means,
-    code_sd,
-    code_q,
+    code_mean,
+    code_median,
     code_var,
+    code_sd,
+    code_mad,
+    code_iqr,
+    code_q,
     code_bias,
     code_mse,
-    code_cov
-  )
+    code_mae,
+    code_cov)
   summarize_code <- c(summarize_code, "))")
   summary <- eval(parse(text=summarize_code))
 
