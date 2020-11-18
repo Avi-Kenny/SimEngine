@@ -216,4 +216,4 @@ head(sim$results)
 
 ## About this project
 
-simba was created and is maintained by <a href="https://github.com/Avi-Kenny" target="_blank">Avi Kenny</a> and <a href="https://github.com/cwolock" target="_blank">Charles Wolock</a>. The package is licensed using the <a href="https://github.com/Avi-Kenny/simba/blob/master/LICENSE.txt" target="_blank">GNU General Public Licence (GPL) V3</a>.
+**simba** was created and is maintained by <a href="https://github.com/Avi-Kenny" target="_blank">Avi Kenny</a> and <a href="https://github.com/cwolock" target="_blank">Charles Wolock</a>. The package is licensed using the <a href="https://github.com/Avi-Kenny/simba/blob/master/LICENSE.txt" target="_blank">GNU General Public Licence (GPL) V3</a>.

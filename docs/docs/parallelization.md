@@ -12,120 +12,162 @@ permalink: /parallelization/
 
 ## What is parallelization?
 
-Parallelization is the process of speeding up code by taking a program, dividing it into independent tasks, and running those tasks simultaneously across multiple computer processors. Most modern laptops will have two or more processors (or "cores"), and many statisticians have access to so-called cluster computing systems, which can have dozens or hundreds of processing nodes, each of which can have multiple cores. Roughly speaking, a program that can be run in ten minutes when executed on a single core will take just one minute if it can be broken into ten separate tasks that all run at the same time. Therefore, parallelization can result in massive gains in computing speed and should be done whenever possible.
+Parallelization is the process of speeding up a computer program by dividing it into independent tasks and running those tasks simultaneously across multiple computer processors. Most modern laptops will have two or more processors (or "cores"), and many statisticians have access to so-called cluster computing systems (CCS), which can have hundreds of processing nodes, each of which can have multiple cores. Roughly speaking, a program that can be run in ten minutes when executed on a single core will take just one minute if it can be broken into ten separate tasks that all run at the same time. Therefore, parallelization can result in massive gains in computing speed and should be done whenever possible.
 
 Not all code can be parallelized; the separate tasks cannot exchange information or depend on each other in any way. However, you can still write programs that are *partially* parallel, such as when you separately compute ten estimates in parallel and then take the mean of the ten estimates.
 
-The terminology associated with parallel computing can be confusing - what is the difference between a node, a core, a processor, and a thread? What is the difference between a job and a task?
+The terminology associated with parallel computing can be confusing - what is the difference between a node, a core, and a processor? What is the difference between a job, a task, and a thread? We use the following definitions:
 
-The most important distinction is between a *node* and a *core*. A node is a single computing device that runs your code and has access to resources, such as memory. You can think of your laptop as a single node with multiple cores.
-
-!!!!! emphasize distinction between cores and nodes
-!!!!! threads = nodes * cores ?????
-!!!!! look at slurm documentation
+- A **node** is a single computer. Each node has access to physical resources, such as processing cores and memory. Your laptop is a node. A CCS is a collection of multiple nodes.
+- A **core** (or a *processor*) is an electronic component within a computer that executes code. Many modern laptops will have more than one core, and each node on a CCS will usually have multiple cores.
+- A **task** (or a *thread*) is a portion of code that runs on a single core.
+- A **cluster computing system (CCS)** is a type of "supercomputer", usually created and managed by IT specialists. It 
+- A **job** is a collection of tasks that are part of the same simulation.
+- A **job array** is a special type of job that contains a number of near-identical tasks
+- A **job scheduler (JS)** is the software that runs on a CCS and manages the process of running jobs and job arrays. Slurm and Sun Grid Engine are examples of job schedulers.
 
 ## Parallelization in **simba**
 
-There are two ways of parallelizing code using **simba**. The most straightforward way is referred to "outer parallelization". Most statistical simulations involve running multiple replicates of the same simulation; with outer parallelization, a single simulation replicate is assigned to a single task. **simba** automatically parallelizes code when you specify *parallel="outer"* using *set_config()*.
+There are three methods of parallelizing code using **simba**:
 
-!!!!! automatically detect packages that have been loaded with library() or require(); use REGEX; alternatively, replace library() with another function (sim %<>% library(c("magrittr", "dplyr")))
+1) **Outer parallelization**. This is the most straightforward way to parallelize your code. Most statistical simulations involve running multiple <a href="/docs/concepts.html" target="_blank">replicates</a> of the same simulation, perhaps with certain things changing between replicates. With outer parallelization, a single simulation replicate is assigned to a single task.
 
-!!!!! Allow for lib path on cluster to be set
+2) **Inner parallelization**. With inner parallelization, one or more pieces within a single simulation replicate are parallelized. Inner parallelization is useful when your entire simulation only has a small handful of replicates (i.e. fewer replicates than available cores); otherwise, we recommend outer parallelization.
+
+3) **Cluster parallelization**. Cluster parallelization is like outer parallelization but on a cluster computing system (CCS). Each simulation replicate is assigned to a single task, and tasks are submitted as a job array to the cluster computing system. This is the most complex method of parallelizing your code, but also the most powerful in terms of potential speed gains.
+
+**simba** is designed to automate as much of the parallelization process as possible. We give an overview of each parallelization method below. Afterwards, we provide tips and tricks that apply to all methods.
+
+## Outer parallelization
+
+To use outer parallelization, all you have to do is specify *parallel="outer"* using *set_config()*. It's as simple as that.
 
 ```R
 sim <- new_sim()
 sim %<>% set_config(parallel = "outer")
 ```
 
-The second way to parallelize is referred to as "inner parallelization". This is when parallelization occurs *within* a single simulation replicate. This is mainly useful when the total number of simulations you want to run is small (i.e. smaller than the number of available nodes/cores), but each simulation has pieces that can be parallelized. Inner parallelization requires you to specify pieces of your code to run in parallel using functions from the **parallel** package. Note that **simba** creates and manages the cluster; simply reference the special *CL* object anywhere your code calls for a cluster reference. If this doesn't make sense, check out the **parallel** package documentation (!!!!! link).
+Note that if a single simulation replicate runs in a very short amount of time (e.g. less than one second), using outer parallelization can actually result in a *decrease* in total speed. This is because there is a certain amount of computational overhead involved in setting up the parallelization engine inside **simba**. If you want to do a quick speed comparison, try running your code twice, once with *set_config(parallel = "outer")* and once with *set_config(parallel = "none")*, and run sim %<>% get("total_runtime") each time to see the difference in total runtime. The exact overhead involved with outer parallelization will differ between machines.
 
-!!!!! Double-use of the word "cluster"
-!!!!! Add "both"; need to test this out ?????
-!!!!! Run on a "dummy cluster" if p=outer; allows switching be p=inner and p=outer ?????
+## Inner parallelization
 
-```R
-create_data <- function(sample_size) {
+With inner parallelization, one or more pieces within a single simulation replicate are parallelized. This method of parallelization requires you to specify pieces of your code to run in parallel using functions from the **parallel** package. See the <a href="https://www.rdocumentation.org/packages/parallel" target="_blank">documentation</a> for the **parallel** package if you have never used this package before. **simba** will create and manage the cluster object; simply reference the special *CL* object in your code (note: the term "cluster object" refers to an R object of class *cluster*; this is distinct from the use use of the word "cluster" in "cluster parallelization").
 
-  data <- parLapply(CL, c(1:sample_size), function(x){
-    x <- rnorm(n=1, mean=10, sd=1)
-  	y <- 3*x + 9
-  	z <- x / y
-    return(list(x,y,z))
-  })
-  df <- as.data.frame(matrix(unlist(data), ncol=3))
-  names(df) <- c("x","y","z")
-
-  return(df)
-  
-}
-
-sim %<>% add_creator(create_data)
-```
-
-In the example above, we parallelized code within the creator function. We can also use *run_in_parallel()*
-
-If you don't want to parallelize at all, simply omit the *parallel* option from the 
-
-!!!!! The sim_uid 0 (zero) is reserved for the one replicate that runs after all others have finished.
-
-!!!!! Need a sample simulation to load/run for examples
-
-Types: outer, inner, none
-
-Setting the *parallel* configuration option to "none" can be useful for debugging.
-
-We can see the efficiency gain incurred from parallelization by comparing the sum of the individual replicate runtimes to the total simulation time.
+In the example below, inner parallelization is used within the *create_data()* function through *parLapply()*. However, you can also use parallel functions within your simulation script itself or within methods.
 
 ```R
-print(sum(sim$results$runtime)) # !!!!!
-print(sim$total_runtime) # !!!!!
+
+sim <- new_sim()
+sim %<>% set_config(parallel = "inner")
+
+sim %<>% add_creator(
+  "create_data",
+  function(sample_size) {
+    data <- parLapply(CL, c(1:sample_size), function(x){
+      x <- rnorm(n=1, mean=10, sd=1)
+      y <- 3*x + 9
+      z <- x / y
+      return(list(x,y,z))
+    })
+    df <- as.data.frame(matrix(unlist(data), ncol=3))
+    names(df) <- c("x","y","z")
+    return(df)
+  }
+)
+
+sim %<>% add_script(
+  "my script",
+  function() {
+    df <- create_data(100)
+    estimate <- mean(df$z)
+    return (list("estimate" = estimate))
+  }
+)
+
+sim %<>% run("my script")
+
 ```
 
-; in most cases, the sum of the runtimes will be greater, indicating a gain in efficiency. However, there is "overhead" associated with parallelizing, especially if you are using a multi-user cluster computing system where there is a lot of competition for nodes.
+## Cluster parallelization
 
-## Parallelization within a cluster computing system
+Although the situation becomes more complicated when using a cluster computing system (CCS), **simba** is built to streamline this process as much as possible. Before diving in, it is important to understand the basic workflow with a CCS. A CCS is a supercomputer that consists of a number of nodes, each of which may have multiple cores. A user will typically log into the CCS via SSH or an SSH client (such as PuTTY), and then send files containing computer programs to the CCS, either using Linux commands or using an FTP Client (such as FileZilla). Next, the user will run these programs by submitting "jobs" to the CCS using a special program called a job scheduler (JS). The JS manages the process of taking your jobs and running it in parallel across multiple nodes and/or multiple cores. If this process is totally unfamiliar to you, ask the manager of your CCS or your IT team for a basic tutorial.
 
-Although the situation becomes more complicated when using a cluster computing system (CCS), **simba** is built to streamline this process as much as possible. Before diving in, it is important to understand the basic workflow with a CCS. A CCS is a supercomputer that consists of a number of nodes, each of which may have multiple cores. A user will typically log into the head node of the CCS via SSH or an SSH client (such as PuTTY). Once logged into the head node, the user will submit jobs to the CCS using a special program called a [job management system]. Common [job management systems] include Slurm and SGE. The [job management system] will handle the process of passing your code from the head node to the other nodes in the CCS, running the code, and storing the results in your home directory. If this process is totally unfamiliar to you, ask the manager of your CCS or your IT team for a basic tutorial. (!!!!! web resource?)
+Although there are multiple ways to run code in parallel on a CCS, we focus on job arrays. The main **simba** function that we use is *run_on_cluster()*. Throughout this example, we use Sun Grid Engine as our JS, but an analogous workflow will apply to other JS software.
 
-There are two basic ways to run parallel code on a CCS. The first (and the one we recommend) is through job arrays. With job arrays, your [job management system] will run your 
-
-When your [job management system] creates a job array, each task will be assigned some sort of task ID, which you can access from within your R code using the *Sys.getenv()* function. 
-
-Also note that **simba** assigns a unique identifier called a *sim_uid* (simulation unique identifier) to each simulation replicate. These IDs are integers that range from 1 to N, where N is the total number of simulation replicates. Recall that the total number of replicates equals the number of simulation levels times the number of replicates per level, and can be accessed by typing `sim %>% get("total_replicates")`.
-
-
-
-The key to making **simba** work with your [job management system] is to map this environment variable to simba. If you specify which [job management system] you are using via *set_config()*, **simba** will pass the task IDs for you.
-
-
-!!!!! job arrays vs computing on a single multicore node
+Suppose we have written the following simulation and want to run it on a CCS:
 
 ```R
-sim %<>% set_config(jms="SGE")
+library(simba)
+library(magrittr)
+sim %<>% new_sim()
+sim %<>% add_creator("create_data", function(n){ rnorm(n) })
+sim %<>% add_script("my script", function() {
+  data <- create_data(L$n)
+  return(mean(data))
+})
+sim %<>% set_levels(n=c(100,1000))
+sim %<>% set_config(num_sim=10)
+sim %<>% run()
+sim %<>% summary()
 ```
 
-If you are not using one of the supported job management systems (currently only SGE and Slurm are supported), you must manually pass these identifiers to your simulation object.
+To run this code on a CCS, we must wrap in the *run_on_cluster()* function. To use this function, you must break your code into three blocks, called *first*, *main*, and *last*. The code in the *first* block will run only once, setting up the simulation object and saving it in the filesystem of your CCS. The code in the *main* block will run for every simulation replicate, and will have access to the simulation object you created in the *first* block. Typically, the code here will just include a single call to *run()*, as illustrated below. Finally, the code in the *last* block will run after all your simulation replicates have finished running, and after **simba** has automatically compiled the results into your simulation object. Use the *run_on_cluster()* function as follows:
 
 ```R
-tid <- as.numeric(Sys.getenv("SGE_TASK_ID"))
-sim %>% set("task_id", tid)
+library(simba)
+library(magrittr)
+run_on_cluster(
+
+  first = {
+    sim %<>% new_sim()
+    sim %<>% add_creator("create_data", function(n){ rnorm(n) })
+    sim %<>% add_script("my script", function() {
+      data <- create_data(L$n)
+      return(mean(data))
+    })
+    sim %<>% set_levels(n=c(100,1000))
+    sim %<>% set_config(num_sim=10)
+  },
+
+  main = {
+    sim %<>% run()
+  },
+
+  last = {
+    sim %<>% summary()
+  },
+
+  cluster_config = list(sim_var="sim", js="slurm")
+
+)
 ```
 
-Finally, submit your job array by typing the relevant command into your console, making sure that the range of task IDs corresponds to the range of sim_uids. For example, if you are using SGE and your simulation contains 100 replicates, type the following in your console:
+Note that none of our actual simulation code changed; we just took chunks of the code and placed these chunks into the appropriate slot within *run_on_cluster()* (either *first*, *main*, or *last*). Additionally, we had to specify a few configuration options using the *cluster_config* argument. The first may seem a bit odd, but we need to tell *run_on_cluster()* the name of the variable that we use to store our simulation object. If we had instead written *my_sim2 %<>% new_sim()* as our first line, we would instead specify *sim_var="my_sim2"*. The second configuration option is the name of our job scheduler. Type *?run_on_cluster* in R for a list of supported JS software. Even if your JS is not supported, you can still use **simba** on a CCS (see "Tips and tricks" below).
 
-```bash
-> qsub run.sh -t 1-100
-```
-
-In a typical situation, you might have two files stored in your cluster's home directory, a shell script and the R file containing your simulation code. Your shell script (called *run.sh*) might look like this:
+We're not done yet, though. We need to give our job scheduler instructions for how to run this code. Assume that the R code above is stored in a file called "my_simulation.R" that you have transferred to your CCS. First, we need to create a simple shell script that will run the my_simulation.R file. We use BASH as our scripting language, but you can use the shell scripting language of your choice. Create a file called "run_sim.sh" with the following two lines and place it in the same directory on your CCS as the "my_simulation.R" file:
 
 ```bash
 #!/bin/bash
-Rscript my_sim.R
+Rscript my_simulation.R
 ```
 
-If you are using a [job management system], such as Slurm or Sun Grid Engine (!!!!!), . This Your corresponding R file might look like this:
+Finally, you will use your JS to submit three jobs. The first will run the *first* code, the second will run the *main* code, and the third will run the *last* code. With Sun Grid Engine, you will type the following three commands into your shell:
 
-```R
-
+```bash
+qsub -v run='first' run_sim.sh
+#> Your job 101 ("run_sim.sh") has been submitted
+qsub -t 1-20 -hold_jid 101 run_sim.sh
+#> Your job-array 102.1-10:1 ("run_sim.sh") has been submitted
+qsub -v run='last' -hold_jid 102 run_sim.sh
+#> Your job 103 ("run_sim.sh") has been submitted
 ```
+
+In the first line, we submit the script using the "-v run='first'" option, which tells **simba** to only run the code in the *first* block within the *run_on_cluster()* function in *my_simulation.R*. Note that after running this line, SGE gives us the message "*Your job 101 ("run_sim.sh") has been submitted*". The number *101* is called the "job ID" and uniquely identifies our job on the CCS.
+
+In the second line, we tell SGE to run a job array with "task IDs" 1-20. Importantly, the number 20 corresponds to the total number of replicates in our simulation (see the "Tips and Tricks" section below if you are not sure how many replicates are in your simulation). This runs the code in the *main* block 20 times; **simba** will automatically assign each task to a different simulation replicate. Also note that we included the option *-hold_jid 101*, which tells SGE to wait until the first job finishes before starting the job array. Change the number 102 to whatever number SGE assigned to the first job.
+
+In the third line, we submit the script using the "-v run='last'" option, which tells **simba** to only run the code in the *last* block. Again, we use *-hold_jid* to make sure this code doesn't run until all tasks in the job array have finished.
+
+## Tips and tricks for parallelization
+
+!!!!! TO DO
