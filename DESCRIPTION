@@ -3,7 +3,7 @@ Type: Package
 Title: simba: simulation backbone
 Version: 0.1.0.9000
 Authors@R: c(person("Avi", "Kenny", email = "avikenny@uw.edu", role = c("aut", "cre")),
-             person("Charles", "Wolock", email = "cwolock@uw.edu", role = c("aut", "cre")),
+             person("Charles", "Wolock", email = "cwolock@uw.edu", role = "aut"),
              person("Rachel", "Kenny", email = "rachel.leah.kenny@gmail.com", role = "ctb"))
 Description: A framework for statistical simulations. Currently
     in development
