@@ -90,7 +90,7 @@ summary.simba <- function(sim_obj, ...) {
         na_1 <- "),"
       }
 
-      code_mean <- c(code_m, paste0(
+      code_mean <- c(code_mean, paste0(
         m$name, " = mean(", m$x, na_1
       ))
 
