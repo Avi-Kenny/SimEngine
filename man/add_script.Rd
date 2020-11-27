@@ -11,15 +11,12 @@ add_script(sim_obj, ...)
 new_sim()}
 }
 \value{
-The original simulation object with the new script function added
+The original simulation object with the new script function added.
+    The script should be a function that returns a list of key-value pairs. !!!!! continue
 }
 \description{
 Add a "simulation script" function
 }
 \examples{
 !!!!! TO DO
-!!!!! Script function should return a list of simple key-value pairs
-!!!!! Need to modify if more complicated objects are returned
-!!!!! Currently throws an error if there are NULL values in the list
-!!!!! Make "return data frame" default option and "return list" as alternate
 }

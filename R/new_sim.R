@@ -38,7 +38,7 @@ new_sim <- function() {
     # run_state can be: "pre run", "run, no errors", "run, some errors",
     #     "run, all errors"
     internals = list(
-      envir = new.env(),
+      # envir = new.env(),
       levels_types = FALSE,
       levels_shallow = list("no levels"=TRUE),
       tid = NA,

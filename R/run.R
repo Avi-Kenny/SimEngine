@@ -16,7 +16,6 @@ run.simba <- function(sim_obj, script, ...) {
   sim_obj$internals$start_time <- Sys.time()
 
   # Get reference to current environment
-  # !!!!! Make sure everything is being run in either this environment or in the simba$internals$env environment
   env <- environment()
 
   o_args <- list(...)
