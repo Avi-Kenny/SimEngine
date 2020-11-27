@@ -28,23 +28,36 @@ run_on_cluster <- function(first, main, last, cluster_config) {
 
   cfg <- cluster_config
 
-  # Check that cfg$dir is a valid direcyory
-  if (!is.null(cfg$dir) && !dir.exists(cfg$dir)) {
-    stop(paste("Directory", cfg$dir, "does not exist."))
-  }
+  # Run all code locally if simulation is not being run on cluster
+  if (Sys.getenv("run")=="") {
 
-  # Construct necessary paths
-  if (is.null(cfg$dir)) {
-    path_sim_obj <- "sim.simba"
-    path_sim_res <- "simba_results"
+    # Run code locally
+    eval(substitute(first))
+    eval(substitute(main))
+    eval(substitute(last))
+
   } else {
-    path_sim_obj <- paste0(cfg$dir, "/sim.simba")
-    path_sim_res <- paste0(cfg$dir, "/simba_results")
-  }
 
-  # Error handling: incorrect Sys.getenv("run") variable
-  if (!(Sys.getenv("run") %in% c("first", "last", ""))) {
-    stop("The `run` environment variable must equal either 'first' or 'last'.")
+    # Check that cfg$dir is a valid direcyory
+    if (!is.null(cfg$dir) && !dir.exists(cfg$dir)) {
+      stop(paste("Directory", cfg$dir, "does not exist."))
+    }
+
+    # Construct necessary paths
+    if (is.null(cfg$dir)) {
+      path_sim_obj <- "sim.simba"
+      path_sim_res <- "simba_results"
+    } else {
+      path_sim_obj <- paste0(cfg$dir, "/sim.simba")
+      path_sim_res <- paste0(cfg$dir, "/simba_results")
+    }
+
+    # Error handling: incorrect Sys.getenv("run") variable
+    if (!(Sys.getenv("run") %in% c("first", "main", "last"))) {
+      stop(paste("The 'run' environment variable must equal either 'first',",
+                 "'main', or 'last'."))
+    }
+
   }
 
   # FIRST: Run 'first' code or return existing simulation object
@@ -65,7 +78,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
     # Create directory to store simulation results
     dir.create(path_sim_res)
 
-  } else {
+  } else if (Sys.getenv("run") %in% c("main","last")) {
 
     tryCatch(
       ..sim_obj <- readRDS(path_sim_obj),
@@ -80,7 +93,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
   }
 
   # MAIN: run simulation replicate and save results/errors
-  if (Sys.getenv("run")=="") {
+  if (Sys.getenv("run")=="main") {
 
     # Assign tid variable
     if (!is.null(cfg$tid_var)) {
@@ -92,7 +105,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
         tid_var <- "SGE_TASK_ID"
       } else {
         stop(paste(
-          "cluster_config variable js must equal one of the following:",
+          "cluster_config variable 'js' must equal one of the following:",
           "'slurm', 'sge'."))
       }
     } else {
