@@ -27,6 +27,21 @@ summary.simba <- function(sim_obj, ...) {
   # Evaluate passed arguments, passing in constants
   o_args <- list(...)
 
+  # If no additional arguments provided to summary, display means by defauls
+  if (identical(o_args,list())) {
+
+    names_means <- names_results[!(names_results %in% c(
+      names_levels, "sim_uid", "sim_id", "level_id"
+    ))]
+
+    o_args <- list()
+    for (i in 1:length(names_means)) {
+      o_args[[i]] <- list(name=paste0("mean_",names_means[i]), x=names_means[i])
+    }
+    o_args <- list(mean=o_args)
+
+  }
+
   # If there is only one list, wrap it in a list
   metrics <- c("mean",
                "median",
@@ -671,8 +686,7 @@ summary.simba <- function(sim_obj, ...) {
 
   ### Put code strings together
   summarize_code <- c(
-    "as.data.frame(dplyr::summarize(
-       dplyr::group_by(R, level_id),",
+    "as.data.frame(dplyr::summarize(dplyr::group_by(R, level_id),",
     code_levels,
     code_mean,
     code_median,
