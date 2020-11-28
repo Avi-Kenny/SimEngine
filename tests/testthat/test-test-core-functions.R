@@ -193,7 +193,7 @@ test_that("add_script() throws error for non-function function", {
 
 ### add_constant() ###
 
-sim %<>% add_constant("alpha" = 2)
+sim %<>% add_constants("alpha" = 2)
 test_that("add_constant() works", {
   expect_type(sim$constants, "list")
   expect_equal(length(sim$constants), 1)

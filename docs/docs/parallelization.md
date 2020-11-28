@@ -168,4 +168,4 @@ In the third line, we submit the script using the "-v run='last'" option, which 
 
 ## Tips and tricks for parallelization
 
-!!!!! TO DO (add_to_tid, run_on_cluster works locally)
+!!!!! TO DO (add_to_tid, run_on_cluster works locally, specify 'tid_var' instead of 'js')
