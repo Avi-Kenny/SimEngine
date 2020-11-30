@@ -8,7 +8,7 @@ run_c <- function(ret=FALSE) {
       sim %<>% set_config(num_sim=2)
       sim %<>% set_levels(alpha=c(2,3), beta=c(4,5))
       sim %<>% add_script("my_script", function() {
-        return(list(sum=(L$alpha+L$beta), prod=(L$alpha*L$beta)))
+        return (list(sum=(L$alpha+L$beta), prod=(L$alpha*L$beta)))
       })
     },
     main = { sim %<>% run("my_script") },
@@ -72,7 +72,7 @@ Sys.setenv(run="last")
 run_c()
 sim <- readRDS("sim.simba")
 output <- readChar("sim_output.txt", file.info("sim_output.txt")$size)
-test_that("run_on_cluster() 'main' section works", {
+test_that("run_on_cluster() 'last' section works", {
   expect_equal(dir.exists("simba_results"), FALSE)
   expect_equal(sim$results$sum, c(6,6))
   expect_equal(sim$errors, "No errors")
@@ -86,3 +86,40 @@ unlink("sim.simba")
 unlink("sim_output.txt")
 rm(sim)
 rm(output)
+
+# Correct behavior if 'first' fails
+# Create wrapper function for testing run_on_cluster()
+run_c2 <- function() {
+  run_on_cluster(
+    first = { stop("Error in 'first'") },
+    main = { sim %<>% run("my_script") },
+    last = {sim %>% summary() %>% print() },
+    cluster_config = list(sim_var="sim", js="slurm")
+  )
+}
+Sys.setenv(run="first")
+test_that("Correct behavior if 'first' fails", {
+  expect_error(run_c2(), "Error in 'first'")
+  expect_equal(file.exists("sim.simba"), FALSE)
+})
+Sys.setenv(run="main")
+Sys.setenv(SLURM_ARRAY_TASK_ID="1")
+test_that("Correct behavior if 'first' fails", {
+  expect_equal(file.exists("sim.simba"), FALSE)
+  expect_error(run_c2(), paste(
+    "Simulation object was not found. Make sure your 'first' function is not",
+    "producing errors and returns a valid simulation object, and that your",
+    "shell commands are properly sequenced."
+  ))
+})
+Sys.setenv(run="last")
+Sys.setenv(SLURM_ARRAY_TASK_ID="")
+test_that("Correct behavior if 'first' fails", {
+  expect_equal(file.exists("sim.simba"), FALSE)
+  expect_error(run_c2(), paste(
+    "Simulation object was not found. Make sure your 'first' function is not",
+    "producing errors and returns a valid simulation object, and that your",
+    "shell commands are properly sequenced."
+  ))
+})
+unlink("simba_results")

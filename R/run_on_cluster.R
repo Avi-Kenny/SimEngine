@@ -97,12 +97,8 @@ run_on_cluster <- function(first, main, last, cluster_config) {
     )
 
     # Remove old files
-    if (dir.exists(path_sim_res)) {
-      unlink(path_sim_res, recursive=TRUE)
-    }
-    if (file.exists(path_sim_obj)) {
-      unlink(path_sim_obj)
-    }
+    if (dir.exists(path_sim_res)) { unlink(path_sim_res, recursive=TRUE) }
+    if (file.exists(path_sim_obj)) { unlink(path_sim_obj) }
 
     # Create directory to store simulation results
     dir.create(path_sim_res)
@@ -122,6 +118,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
     ..sim_obj <- eval(as.name(cfg$sim_var))
     ..sim_obj$internals$sim_var <- cfg$sim_var
     ..sim_obj$internals$start_time <- ..start_time
+    ..sim_obj$config$parallel <- "none"
     saveRDS(..sim_obj, file=path_sim_obj)
 
   } else if (Sys.getenv("run") %in% c("main","last")) {
