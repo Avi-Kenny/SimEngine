@@ -21,7 +21,7 @@ The terminology associated with parallel computing can be confusing - what is th
 - A **node** is a single computer. Each node has access to physical resources, such as processing cores and memory. Your laptop is a node. A CCS is a collection of multiple nodes.
 - A **core** (or a *processor*) is an electronic component within a computer that executes code. Many modern laptops will have more than one core, and each node on a CCS will usually have multiple cores.
 - A **task** (or a *thread*) is a portion of code that runs on a single core.
-- A **cluster computing system (CCS)** is a type of "supercomputer", usually created and managed by IT specialists. It 
+- A **cluster computing system (CCS)** is a type of "supercomputer", usually created and managed by IT specialists, specifically designed to handle large numbers of parallel tasks coming from multiple users.
 - A **job** is a collection of tasks that are part of the same simulation.
 - A **job array** is a special type of job that contains a number of near-identical tasks
 - A **job scheduler (JS)** is the software that runs on a CCS and manages the process of running jobs and job arrays. Slurm and Sun Grid Engine are examples of job schedulers.
@@ -98,7 +98,6 @@ Suppose we have written the following simulation and want to run it on a CCS:
 
 ```R
 library(simba)
-library(magrittr)
 sim %<>% new_sim()
 sim %<>% add_creator("create_data", function(n){ rnorm(n) })
 sim %<>% add_script("my script", function() {
@@ -115,7 +114,6 @@ To run this code on a CCS, we must wrap in the *run_on_cluster()* function. To u
 
 ```R
 library(simba)
-library(magrittr)
 run_on_cluster(
 
   first = {
@@ -156,7 +154,7 @@ Finally, you will use your JS to submit three jobs. The first will run the *firs
 ```bash
 qsub -v run='first' run_sim.sh
 #> Your job 101 ("run_sim.sh") has been submitted
-qsub -t 1-20 -hold_jid 101 run_sim.sh
+qsub -v run='main' -t 1-20 -hold_jid 101 run_sim.sh
 #> Your job-array 102.1-10:1 ("run_sim.sh") has been submitted
 qsub -v run='last' -hold_jid 102 run_sim.sh
 #> Your job 103 ("run_sim.sh") has been submitted
@@ -164,10 +162,10 @@ qsub -v run='last' -hold_jid 102 run_sim.sh
 
 In the first line, we submit the script using the "-v run='first'" option, which tells **simba** to only run the code in the *first* block within the *run_on_cluster()* function in *my_simulation.R*. Note that after running this line, SGE gives us the message "*Your job 101 ("run_sim.sh") has been submitted*". The number *101* is called the "job ID" and uniquely identifies our job on the CCS.
 
-In the second line, we tell SGE to run a job array with "task IDs" 1-20. Importantly, the number 20 corresponds to the total number of replicates in our simulation (see the "Tips and Tricks" section below if you are not sure how many replicates are in your simulation). This runs the code in the *main* block 20 times; **simba** will automatically assign each task to a different simulation replicate. Also note that we included the option *-hold_jid 101*, which tells SGE to wait until the first job finishes before starting the job array. Change the number 102 to whatever number SGE assigned to the first job.
+In the second line, we submit the script using the "-v run='main'" option and we tell SGE to run a job array with "task IDs" 1-20. Importantly, the number 20 corresponds to the total number of replicates in our simulation (see the "Tips and Tricks" section below if you are not sure how many replicates are in your simulation). This runs the code in the *main* block 20 times; **simba** will automatically assign each task to a different simulation replicate. Also note that we included the option *-hold_jid 101*, which tells SGE to wait until the first job finishes before starting the job array. Change the number 102 to whatever number SGE assigned to the first job.
 
 In the third line, we submit the script using the "-v run='last'" option, which tells **simba** to only run the code in the *last* block. Again, we use *-hold_jid* to make sure this code doesn't run until all tasks in the job array have finished.
 
 ## Tips and tricks for parallelization
 
-!!!!! TO DO
+!!!!! TO DO (add_to_tid, run_on_cluster works locally, specify 'tid_var' instead of 'js')

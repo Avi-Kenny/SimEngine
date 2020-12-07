@@ -7,6 +7,16 @@
 #' @export
 new_sim <- function() {
 
+  # First check if dependencies are installed
+  for (pkg in c("magrittr", "parallel", "pbapply", "data.table")) {
+    if (!requireNamespace(pkg, quietly=TRUE)) {
+      stop(paste0(
+        "You need to install the package '", pkg, "' for simba to work."
+      ))
+    }
+  }
+
+  # Create "blank" simulation object
   sim_obj <- list(
     config = list(
       num_sim = 1000,
@@ -28,7 +38,7 @@ new_sim <- function() {
     # run_state can be: "pre run", "run, no errors", "run, some errors",
     #     "run, all errors"
     internals = list(
-      envir = new.env(),
+      # envir = new.env(),
       levels_types = FALSE,
       levels_shallow = list("no levels"=TRUE),
       tid = NA,

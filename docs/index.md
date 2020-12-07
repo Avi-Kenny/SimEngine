@@ -48,7 +48,6 @@ The simulation object (an R object of class *simba*) will contain all data, func
 
 ```R
 library(simba)
-library(magrittr)
 sim <- new_sim()
 ```
 
