@@ -140,6 +140,34 @@ test_that("Invalid or missing arguments to quantile throw errors", {
                "1.1 is not a number between 0 and 1.") # prob is outside [0,1]
 })
 
+### min errors
+test_that("Invalid or missing arguments to min throw errors", {
+  expect_error(summary(sim, min = list(x = "x")),
+               "`name` argument is required.") # no name
+  expect_error(summary(sim, min = list(name = "my_summary")),
+               "`x` argument is required.") # no x
+  expect_error(summary(sim, min = list(name = 7, x = "x")),
+               "`name` must be a character string.") # non-character name
+  expect_error(summary(sim, min = list(name = "my_summary", x = "x1")),
+               "x1 is not a variable in results.") # x is not in results
+  expect_error(summary(sim, min = list(name = "my_summary", x = "y")),
+               "y is not numeric.") # x is not numeric
+})
+
+### max errors
+test_that("Invalid or missing arguments to max throw errors", {
+  expect_error(summary(sim, max = list(x = "x")),
+               "`name` argument is required.") # no name
+  expect_error(summary(sim, max = list(name = "my_summary")),
+               "`x` argument is required.") # no x
+  expect_error(summary(sim, max = list(name = 7, x = "x")),
+               "`name` must be a character string.") # non-character name
+  expect_error(summary(sim, max = list(name = "my_summary", x = "x1")),
+               "x1 is not a variable in results.") # x is not in results
+  expect_error(summary(sim, max = list(name = "my_summary", x = "y")),
+               "y is not numeric.") # x is not numeric
+})
+
 ### median errors
 test_that("Invalid or missing arguments to median throw errors", {
   expect_error(summary(sim, median = list(x = "x")),
@@ -252,16 +280,193 @@ test_that("Invalid or missing arguments to cov throw errors", {
                "x1 is not a variable in results.") # lower is not in results
   expect_error(summary(sim, coverage = list(name = "my_summary", lower = "y", upper = "x", truth = 7)),
                "y is not numeric.") # lower is not numeric
-  expect_error(summary(sim, coverage = list(name = "my_summary", lower = TRUE, upper = "x", truth = 7)),
-               "TRUE is neither a number nor a variable in results.") # lower is neither a variable name nor number
   expect_error(summary(sim, coverage = list(name = "my_summary", lower = "x", upper = "x1", truth = 7)),
                "x1 is not a variable in results.") # upper is not in results
   expect_error(summary(sim, coverage = list(name = "my_summary", lower = "x", upper = "y", truth = 7)),
                "y is not numeric.") # upper is not numeric
-  expect_error(summary(sim, coverage = list(name = "my_summary", lower = "x", upper = TRUE, truth = 7)),
-               "TRUE is neither a number nor a variable in results.") # upper is neither a variable name nor number
 })
 
-#sim %>% summary(
-#  bias = list(name=7, truth="ate", estimate="estimate")
-#)
+
+### proper functioning of mean summary
+
+sim <- new_sim()
+
+sim %<>% add_script(
+  "my script",
+  function() {
+    return (list("x"=c(1,2,3,4,5, NA),
+                 "y" = c(6, 7, 8, 9, 10, 11)))
+  }
+)
+
+sim %<>% run("my script")
+
+summ <- sim %>% summary(
+  mean = list(name="my_summary", x="x")
+)
+
+test_that("mean summary without na.rm returns NA", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_true(is.na(summ$my_summary))
+})
+
+summ <- sim %>% summary(
+  mean = list(name="my_summary", x="x", na.rm=TRUE)
+)
+
+test_that("mean summary with na.rm returns mean", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, mean(c(1,2,3,4,5)))
+})
+
+summ <- sim %>% summary(
+  mean = list(list(name="my_summary", x="x", na.rm=TRUE),
+              list(name = "my_summary2", x="y"))
+)
+
+test_that("mean summary of two variables returns both means", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 3))
+  expect_equal(summ$my_summary, mean(c(1,2,3,4,5)))
+  expect_equal(summ$my_summary2, mean(c(6,7,8,9,10,11)))
+})
+
+
+### proper functioning of sd summary
+
+summ <- sim %>% summary(
+  sd = list(name="my_summary", x="x")
+)
+
+test_that("sd summary without na.rm returns NA", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_true(is.na(summ$my_summary))
+})
+
+summ <- sim %>% summary(
+  sd = list(name="my_summary", x="x", na.rm=TRUE)
+)
+
+test_that("sd summary with na.rm returns sd", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, sd(c(1,2,3,4,5)))
+})
+
+summ <- sim %>% summary(
+  sd = list(list(name="my_summary", x="x", na.rm=TRUE),
+              list(name = "my_summary2", x="y"))
+)
+
+test_that("sd summary of two variables returns both sds", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 3))
+  expect_equal(summ$my_summary, sd(c(1,2,3,4,5)))
+  expect_equal(summ$my_summary2, sd(c(6,7,8,9,10,11)))
+})
+
+### proper functioning of var summary
+
+summ <- sim %>% summary(
+  var = list(name="my_summary", x="x")
+)
+
+test_that("var summary without na.rm returns NA", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_true(is.na(summ$my_summary))
+})
+
+summ <- sim %>% summary(
+  var = list(name="my_summary", x="x", na.rm=TRUE)
+)
+
+test_that("var summary with na.rm returns var", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, var(c(1,2,3,4,5)))
+})
+
+summ <- sim %>% summary(
+  var = list(list(name="my_summary", x="x", na.rm=TRUE),
+            list(name = "my_summary2", x="y"))
+)
+
+test_that("var summary of two variables returns both vars", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 3))
+  expect_equal(summ$my_summary, var(c(1,2,3,4,5)))
+  expect_equal(summ$my_summary2, var(c(6,7,8,9,10,11)))
+})
+
+### proper functioning of mad summary
+
+summ <- sim %>% summary(
+  mad = list(name="my_summary", x="x")
+)
+
+test_that("mad summary without na.rm returns NA", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_true(is.na(summ$my_summary))
+})
+
+summ <- sim %>% summary(
+  mad = list(name="my_summary", x="x", na.rm=TRUE)
+)
+
+test_that("mad summary with na.rm returns mad", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, mad(c(1,2,3,4,5)))
+})
+
+summ <- sim %>% summary(
+  mad = list(list(name="my_summary", x="x", na.rm=TRUE),
+             list(name = "my_summary2", x="y"))
+)
+
+test_that("mad summary of two variables returns both mads", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 3))
+  expect_equal(summ$my_summary, mad(c(1,2,3,4,5)))
+  expect_equal(summ$my_summary2, mad(c(6,7,8,9,10,11)))
+})
+
+### proper functioning of iqr summary
+
+# summ <- sim %>% summary(
+#   iqr = list(name="my_summary", x="x")
+# )
+#
+# test_that("iqr summary without na.rm returns NA", {
+#   expect_type(summ, "list")
+#   expect_equal(dim(summ), c(1, 2))
+#   expect_true(is.na(summ$my_summary))
+# })
+#
+# summ <- sim %>% summary(
+#   iqr = list(name="my_summary", x="x", na.rm=TRUE)
+# )
+#
+# test_that("iqr summary with na.rm returns iqr", {
+#   expect_type(summ, "list")
+#   expect_equal(dim(summ), c(1, 2))
+#   expect_equal(summ$my_summary, IQR(c(1,2,3,4,5)))
+# })
+#
+# summ <- sim %>% summary(
+#   iqr = list(list(name="my_summary", x="x", na.rm=TRUE),
+#              list(name = "my_summary2", x="y"))
+# )
+#
+# test_that("iqr summary of two variables returns both iqrs", {
+#   expect_type(summ, "list")
+#   expect_equal(dim(summ), c(1, 3))
+#   expect_equal(summ$my_summary, IQR(c(1,2,3,4,5)))
+#   expect_equal(summ$my_summary2, IQR(c(6,7,8,9,10,11)))
+# })
+
