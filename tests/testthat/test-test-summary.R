@@ -438,35 +438,368 @@ test_that("mad summary of two variables returns both mads", {
 
 ### proper functioning of iqr summary
 
-# summ <- sim %>% summary(
-#   iqr = list(name="my_summary", x="x")
-# )
-#
-# test_that("iqr summary without na.rm returns NA", {
-#   expect_type(summ, "list")
-#   expect_equal(dim(summ), c(1, 2))
-#   expect_true(is.na(summ$my_summary))
-# })
-#
-# summ <- sim %>% summary(
-#   iqr = list(name="my_summary", x="x", na.rm=TRUE)
-# )
-#
-# test_that("iqr summary with na.rm returns iqr", {
-#   expect_type(summ, "list")
-#   expect_equal(dim(summ), c(1, 2))
-#   expect_equal(summ$my_summary, IQR(c(1,2,3,4,5)))
-# })
-#
-# summ <- sim %>% summary(
-#   iqr = list(list(name="my_summary", x="x", na.rm=TRUE),
-#              list(name = "my_summary2", x="y"))
-# )
-#
-# test_that("iqr summary of two variables returns both iqrs", {
-#   expect_type(summ, "list")
-#   expect_equal(dim(summ), c(1, 3))
-#   expect_equal(summ$my_summary, IQR(c(1,2,3,4,5)))
-#   expect_equal(summ$my_summary2, IQR(c(6,7,8,9,10,11)))
-# })
+summ <- sim %>% summary(
+  iqr = list(name="my_summary", x="x")
+)
 
+test_that("iqr summary without na.rm returns NA", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_true(is.na(summ$my_summary))
+})
+
+summ <- sim %>% summary(
+  iqr = list(name="my_summary", x="x", na.rm=TRUE)
+)
+
+test_that("iqr summary with na.rm returns iqr", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, IQR(c(1,2,3,4,5)))
+})
+
+summ <- sim %>% summary(
+  iqr = list(list(name="my_summary", x="x", na.rm=TRUE),
+             list(name = "my_summary2", x="y"))
+)
+
+test_that("iqr summary of two variables returns both iqrs", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 3))
+  expect_equal(summ$my_summary, IQR(c(1,2,3,4,5)))
+  expect_equal(summ$my_summary2, IQR(c(6,7,8,9,10,11)))
+})
+
+### proper functioning of quantile summary
+
+summ <- sim %>% summary(
+  quantile = list(name="my_summary", x="x", prob = 0.25)
+)
+
+test_that("quantile summary without na.rm returns NA", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_true(is.na(summ$my_summary))
+})
+
+summ <- sim %>% summary(
+  quantile = list(name="my_summary", x="x", prob = 0.25, na.rm=TRUE)
+)
+
+test_that("quantile summary with na.rm returns quantile", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, quantile(c(1,2,3,4,5), probs = c(0.25)))
+})
+
+summ <- sim %>% summary(
+  quantile = list(list(name="my_summary", x="x", prob = 0.25, na.rm=TRUE),
+             list(name = "my_summary2", x="y", prob = 0.75))
+)
+
+test_that("quantile summary of two variables returns both quantiles", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 3))
+  expect_equal(summ$my_summary, quantile(c(1,2,3,4,5), probs = c(0.25)))
+  expect_equal(summ$my_summary2, quantile(c(6,7,8,9,10,11), probs = c(0.75)))
+})
+
+### proper functioning of min summary
+
+summ <- sim %>% summary(
+  min = list(name="my_summary", x="x")
+)
+
+test_that("min summary without na.rm returns NA", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_true(is.na(summ$my_summary))
+})
+
+summ <- sim %>% summary(
+  min = list(name="my_summary", x="x", na.rm=TRUE)
+)
+
+test_that("min summary with na.rm returns min", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, min(c(1,2,3,4,5)))
+})
+
+summ <- sim %>% summary(
+  min = list(list(name="my_summary", x="x", na.rm=TRUE),
+                  list(name = "my_summary2", x="y"))
+)
+
+test_that("min summary of two variables returns both mins", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 3))
+  expect_equal(summ$my_summary, min(c(1,2,3,4,5)))
+  expect_equal(summ$my_summary2, min(c(6,7,8,9,10,11)))
+})
+
+### proper functioning of max summary
+
+summ <- sim %>% summary(
+  max = list(name="my_summary", x="x")
+)
+
+test_that("max summary without na.rm returns NA", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_true(is.na(summ$my_summary))
+})
+
+summ <- sim %>% summary(
+  max = list(name="my_summary", x="x", na.rm=TRUE)
+)
+
+test_that("max summary with na.rm returns max", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, max(c(1,2,3,4,5)))
+})
+
+summ <- sim %>% summary(
+  max = list(list(name="my_summary", x="x", na.rm=TRUE),
+             list(name = "my_summary2", x="y"))
+)
+
+test_that("max summary of two variables returns both maxes", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 3))
+  expect_equal(summ$my_summary, max(c(1,2,3,4,5)))
+  expect_equal(summ$my_summary2, max(c(6,7,8,9,10,11)))
+})
+
+### proper functioning of median summary
+
+summ <- sim %>% summary(
+  median = list(name="my_summary", x="x")
+)
+
+test_that("median summary without na.rm returns NA", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_true(is.na(summ$my_summary))
+})
+
+summ <- sim %>% summary(
+  median = list(name="my_summary", x="x", na.rm=TRUE)
+)
+
+test_that("median summary with na.rm returns median", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, median(c(1,2,3,4,5)))
+})
+
+summ <- sim %>% summary(
+  median = list(list(name="my_summary", x="x", na.rm=TRUE),
+             list(name = "my_summary2", x="y"))
+)
+
+test_that("median summary of two variables returns both medians", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 3))
+  expect_equal(summ$my_summary, median(c(1,2,3,4,5)))
+  expect_equal(summ$my_summary2, median(c(6,7,8,9,10,11)))
+})
+
+### proper functioning of bias summary
+
+summ <- sim %>% summary(
+  bias = list(name="my_summary", estimate="x", truth = 7)
+)
+
+test_that("bias summary without na.rm returns NA", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_true(is.na(summ$my_summary))
+})
+
+summ <- sim %>% summary(
+  bias = list(name="my_summary", estimate="x", truth = 7, na.rm=TRUE)
+)
+
+test_that("bias summary with na.rm, constant truth, returns bias", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, mean(c(1,2,3,4,5) - 7))
+})
+
+summ <- sim %>% summary(
+  bias = list(name="my_summary", estimate="x", truth = "y", na.rm=TRUE)
+)
+
+test_that("bias summary with na.rm, variable truth, returns bias", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, mean(c(1,2,3,4,5) - c(6,7,8,9,10)))
+})
+
+summ <- sim %>% summary(
+  bias = list(list(name="my_summary", estimate="x", truth = 7, na.rm=TRUE),
+                list(name = "my_summary2", estimate="y", truth = 10))
+)
+
+test_that("bias summary of two variables, constant truth, returns both biases", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 3))
+  expect_equal(summ$my_summary, mean(c(1,2,3,4,5)-7))
+  expect_equal(summ$my_summary2, mean(c(6,7,8,9,10,11)-10))
+})
+
+### proper functioning of mse summary
+
+summ <- sim %>% summary(
+  mse = list(name="my_summary", estimate="x", truth = 7)
+)
+
+test_that("mse summary without na.rm returns NA", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_true(is.na(summ$my_summary))
+})
+
+summ <- sim %>% summary(
+  mse = list(name="my_summary", estimate="x", truth = 7, na.rm=TRUE)
+)
+
+test_that("mse summary with na.rm, constant truth, returns mse", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, mean((c(1,2,3,4,5) - 7)^2))
+})
+
+summ <- sim %>% summary(
+  mse = list(name="my_summary", estimate="x", truth = "y", na.rm=TRUE)
+)
+
+test_that("mse summary with na.rm, variable truth, returns mse", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, mean((c(1,2,3,4,5) - c(6,7,8,9,10))^2))
+})
+
+summ <- sim %>% summary(
+  mse = list(list(name="my_summary", estimate="x", truth = 7, na.rm=TRUE),
+              list(name = "my_summary2", estimate="y", truth = 10))
+)
+
+test_that("mse summary of two variables, constant truth, returns both mses", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 3))
+  expect_equal(summ$my_summary, mean((c(1,2,3,4,5)-7)^2))
+  expect_equal(summ$my_summary2, mean((c(6,7,8,9,10,11)-10)^2))
+})
+
+### proper functioning of mae summary
+
+summ <- sim %>% summary(
+  mae = list(name="my_summary", estimate="x", truth = 7)
+)
+
+test_that("mae summary without na.rm returns NA", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_true(is.na(summ$my_summary))
+})
+
+summ <- sim %>% summary(
+  mae = list(name="my_summary", estimate="x", truth = 7, na.rm=TRUE)
+)
+
+test_that("mae summary with na.rm, constant truth, returns mae", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, mean(abs(c(1,2,3,4,5) - 7)))
+})
+
+summ <- sim %>% summary(
+  mae = list(name="my_summary", estimate="x", truth = "y", na.rm=TRUE)
+)
+
+test_that("mae summary with na.rm, variable truth, returns mae", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, mean(abs(c(1,2,3,4,5) - c(6,7,8,9,10))))
+})
+
+summ <- sim %>% summary(
+  mae = list(list(name="my_summary", estimate="x", truth = 7, na.rm=TRUE),
+             list(name = "my_summary2", estimate="y", truth = 10))
+)
+
+test_that("mae summary of two variables, constant truth, returns both maes", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 3))
+  expect_equal(summ$my_summary, mean(abs(c(1,2,3,4,5)-7)))
+  expect_equal(summ$my_summary2, mean(abs(c(6,7,8,9,10,11)-10)))
+})
+
+### proper function of CI coverage
+sim <- new_sim()
+
+sim %<>% add_script(
+  "my script",
+  function() {
+    return (list("x" = c(1,2,3,4,5, NA),
+                 "y" = c(6, 7, 8, 9, 10, 11),
+                 "z" = c(2, 3, 4, 5, 200, 300)))
+  }
+)
+
+sim %<>% run("my script")
+
+summ <- sim %>% summary(
+  coverage = list(name="my_summary", lower="x", upper="y", truth = 3)
+)
+
+test_that("cov summary without na.rm returns NA", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_true(is.na(summ$my_summary))
+})
+
+summ <- sim %>% summary(
+  coverage = list(name="my_summary", lower="x", upper="y", truth = 3, na.rm=TRUE)
+)
+
+test_that("cov summary with na.rm, constant truth, lower and upper, returns cov", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, 0.6)
+})
+
+summ <- sim %>% summary(
+  coverage = list(name="my_summary", lower="x", upper="y", truth = "z", na.rm=TRUE)
+)
+
+test_that("cov summary with na.rm, variable truth, lower and upper, returns cov", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, 0.8)
+})
+
+summ <- sim %>% summary(
+  coverage = list(name="my_summary", estimate="x", se="y", truth = "z", na.rm=TRUE)
+)
+
+test_that("cov summary with na.rm, variable truth, est and SE, returns cov", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, 0.8)
+})
+
+summ <- sim %>% summary(
+  coverage = list(list(name="my_summary", lower="x", upper = "y", truth = 3, na.rm=TRUE),
+             list(name = "my_summary2", lower = "x", upper = "z", truth = 2, na.rm=TRUE))
+)
+
+test_that("cov summary of two variables, constant truth, returns both covs", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 3))
+  expect_equal(summ$my_summary, 0.6)
+  expect_equal(summ$my_summary2, 0.4)
+})

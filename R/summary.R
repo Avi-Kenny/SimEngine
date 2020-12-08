@@ -279,7 +279,8 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_iqr <- c(code_iqr, paste0(
-        i$name, " = IQR(", i$x, na_1
+        #i$name, " = IQR(", i$x, na_1
+        i$name, " = tryCatch(IQR(", i$x, na_1, " error = function(e){return(NA)}),"
       ))
 
     }
@@ -322,7 +323,7 @@ summary.simba <- function(sim_obj, ...) {
         stop(paste0(q$prob, " is not numeric."))
       }
       # handle prob that isn't between 0 and 1
-      if (length(q$prob > 1) | q$prob > 1 | q$prob < 0){
+      if (length(q$prob) > 1 | q$prob > 1 | q$prob < 0){
         stop(paste0(q$prob, " is not a number between 0 and 1."))
       }
 
@@ -333,7 +334,9 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_q <- c(code_q, paste0(
-        q$name, " = quantile(", q$x, ", probs=", q$prob, ",", na_1
+        #q$name, " = quantile(", q$x, ", probs=", q$prob, ",", na_1
+        q$name, " = tryCatch(quantile(", q$x, ", probs=", q$prob, ",",
+                na_1, " error = function(e){return(NA)}),"
       ))
 
     }
@@ -376,7 +379,7 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_min <- c(code_min, paste0(
-        m$name, " = IQR(", m$x, na_1
+        m$name, " = min(", m$x, na_1
       ))
 
     }
@@ -418,7 +421,7 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_max <- c(code_max, paste0(
-        m$name, " = IQR(", m$x, na_1
+        m$name, " = max(", m$x, na_1
       ))
 
     }
@@ -461,7 +464,7 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_median <- c(code_median, paste0(
-        m$name, " = quantile(", m$x, ", probs=c(0.5),", na_1
+        m$name, " = median(", m$x, na_1
       ))
 
     }
@@ -737,18 +740,19 @@ summary.simba <- function(sim_obj, ...) {
       R[[paste0(".ci_h_",cov$name)]] <- ci_h
 
       if (!is.null(cov$na.rm) && cov$na.rm==TRUE) {
-        na_1 <- ", na.rm=TRUE),"
-        na_2 <- paste0(cov$name, "_num_na", " = sum(is.na(", cov$estimate,
-                       ") | is.na(", cov$se,")),")
+        na_1 <- ", na.rm=TRUE)"
+        #na_2 <- paste0(cov$name, "_num_na", " = sum(is.na(", cov$estimate,
+         #              ") | is.na(", cov$se,")),")
       } else {
-        na_1 <- "),"
-        na_2 <- ""
+        na_1 <- ")"
+        #na_2 <- ""
       }
 
       code_cov <- c(code_cov, paste0(
-        cov$name, " = mean(ifelse(.ci_l_", cov$name, " <= ", cov$truth,
-        " & ", cov$truth, " <= .ci_h_", cov$name, ", 1, 0)", na_1, na_2))
-
+        cov$name, " = sum(.ci_l_", cov$name, " <= ", cov$truth,
+        " & ", cov$truth, " <= .ci_h_", cov$name, na_1,
+        "/sum(!is.na(.ci_l_", cov$name, ") & !is.na(.ci_h_", cov$name,
+        ") & !is.na(", cov$truth, ")", "),"))#, na_2))
     }
 
   } else {
