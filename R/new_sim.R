@@ -48,7 +48,7 @@ new_sim <- function() {
     ),
     creators = list(),
     methods = list(),
-    scripts = list(),
+    script = NULL,
     results = NULL,
     errors = NULL
   )

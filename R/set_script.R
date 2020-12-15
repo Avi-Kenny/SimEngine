@@ -7,28 +7,22 @@
 #' @examples
 #' !!!!! TO DO
 #' @export
-add_script <- function(sim_obj, ...) UseMethod("add_script")
+set_script <- function(sim_obj, ...) UseMethod("set_script")
 
 #' @export
-add_script.simba <- function(sim_obj, ...) {
+set_script.simba <- function(sim_obj, ...) {
 
-  if (length(list(...))==1) {
-    name <- deparse(substitute(...))
-    fn <- list(...)[[1]]
-  }
-  if (length(list(...))==2) {
-    name <- list(...)[[1]]
-    fn <- list(...)[[2]]
+  if (length(list(...)) > 1){
+    stop("`set_script` takes only a single argument")
   }
 
-  if (!(is.character(name) && length(name)==1)) {
-    stop("`name` must be a character string")
-  }
+  fn <- list(...)[[1]]
+
   if (!is.function(fn)) {
     stop("`fn` must be a function")
   }
 
-  sim_obj$scripts[[name]] <- fn
+  sim_obj$script <- fn
 
   return (sim_obj)
 

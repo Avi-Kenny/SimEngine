@@ -2,16 +2,15 @@
 #'
 #' @param sim_obj A simulation object of class "simba", usually created by
 #'     new_sim()
-#' @param script The name of a simulation script, added using add_script()
 #' @param sim_uids A vector of sim_uids that represent simulations to run. If
 #'     omitted, all simulations are run. # update this !!!!!
 #' @examples
 #' !!!!! TO DO
 #' @export
-run <- function(sim_obj, script, ...) UseMethod("run")
+run <- function(sim_obj, ...) UseMethod("run")
 
 #' @export
-run.simba <- function(sim_obj, script, ...) {
+run.simba <- function(sim_obj, ...) {
 
   sim_obj$internals$start_time <- Sys.time()
 
@@ -112,7 +111,7 @@ run.simba <- function(sim_obj, script, ...) {
 
     # Declare script copy dynamically
     # !!!!! Currently errors are being logged with call "..script_copy()"
-    eval(parse(text=c("..script_copy <-", deparse(sim_obj$scripts[[script]]))))
+    eval(parse(text=c("..script_copy <-", deparse(sim_obj$script))))
 
     # actually run the run
     # use withCallingHandlers to catch all warnings and tryCatch to catch errors
