@@ -41,10 +41,13 @@ new_sim <- function() {
       # envir = new.env(),
       levels_types = FALSE,
       levels_shallow = list("no levels"=TRUE),
+      levels_prev = list(),
+      num_sim_prev = NA,
       tid = NA,
       num_sim_total = 1,
       sim_var = "",
-      run_state = "pre run"
+      run_state = "pre run",
+      update = FALSE
     ),
     creators = list(),
     methods = list(),

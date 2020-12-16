@@ -27,22 +27,25 @@ run.simba <- function(sim_obj, ...) {
     sim_uids <- 1:sim_obj$internals$num_sim_total
   }
 
-  # Create levels_grid_big
-  levels_grid_big <- expand.grid(list(
-    "level_id" = sim_obj$levels_grid$level_id,
-    "sim_id" = 1:sim_obj$config$num_sim
-  ))
+  if (!sim_obj$internals$update){
+    # Create levels_grid_big
+    levels_grid_big <- expand.grid(list(
+      "level_id" = sim_obj$levels_grid$level_id,
+      "sim_id" = 1:sim_obj$config$num_sim
+    ))
 
-  levels_grid_big <- dplyr::inner_join(
-    levels_grid_big,
-    sim_obj$levels_grid,
-    by = "level_id"
-  )
-  levels_grid_big <- dplyr::arrange(levels_grid_big, level_id, sim_id)
-  names_2 <- names(levels_grid_big)
-  levels_grid_big <- cbind(1:nrow(levels_grid_big), levels_grid_big)
-  names(levels_grid_big) <- c("sim_uid", names_2)
-  sim_obj$internals$levels_grid_big <- levels_grid_big
+    levels_grid_big <- dplyr::inner_join(
+      levels_grid_big,
+      sim_obj$levels_grid,
+      by = "level_id"
+    )
+    levels_grid_big <- dplyr::arrange(levels_grid_big, level_id, sim_id)
+    names_2 <- names(levels_grid_big)
+    levels_grid_big <- cbind(1:nrow(levels_grid_big), levels_grid_big)
+    names(levels_grid_big) <- c("sim_uid", names_2)
+    sim_obj$internals$levels_grid_big <- levels_grid_big
+  }
+
 
   # Load creators/methods
   for (obj in c("creators", "methods")) {
@@ -290,6 +293,10 @@ run.simba <- function(sim_obj, ...) {
     difftime(sim_obj$internals$end_time, sim_obj$internals$start_time),
     units = "secs"
   )
+
+  # record levels and num_sim that were run
+  sim_obj$internals$levels_prev <- sim_obj$internals$levels_shallow
+  sim_obj$internals$num_sim_prev <- sim_obj$config$num_sim
 
   return (sim_obj)
 
