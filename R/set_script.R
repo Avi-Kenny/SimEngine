@@ -12,6 +12,10 @@ set_script <- function(sim_obj, ...) UseMethod("set_script")
 #' @export
 set_script.simba <- function(sim_obj, ...) {
 
+  if (substr(sim_obj$internals$run_state, 1, 3) == "run"){
+    stop("A simulation object's script cannot be changed after the simulation has been run.")
+  }
+
   if (length(list(...)) > 1){
     stop("`set_script` takes only a single argument")
   }
