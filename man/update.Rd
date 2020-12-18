@@ -16,7 +16,8 @@ run those reps again}
 
 \item{keep_extra}{Boolean (FALSE by default); if TRUE, keep previously run
 simulation reps even if they exceed the current num_sim in config or are from
-a level that has been dropped; if FALSE, randomly select excess reps to drop}
+a level that has been dropped; if FALSE, drop excess reps (starting from the last rep
+for that particular simulation level)}
 }
 \description{
 Update a simulation

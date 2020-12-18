@@ -26,7 +26,9 @@ set_script.simba <- function(sim_obj, ...) {
     stop("`fn` must be a function")
   }
 
-  sim_obj$script <- fn
+  environment(fn) <- sim_obj$internals$env
+  sim_obj$script <- fn # !!!!! may be unnecessary
+  assign(x="..script", value=fn, envir=sim_obj$internals$env)
 
   return (sim_obj)
 
