@@ -15,8 +15,6 @@ run.simba <- function(sim_obj, ...) {
   sim_obj$internals$start_time <- Sys.time()
 
   # All objects will be stored in this environment
-  # env <- environment()
-  # env <- new.env()
   env <- sim_obj$internals$env
 
   o_args <- list(...)
@@ -55,10 +53,9 @@ run.simba <- function(sim_obj, ...) {
   # Set up parallelization code
   if (sim_obj$config$parallel %in% c("inner", "outer")) {
 
-    packages <- c(sim_obj$config$packages, "magrittr")
+    ..packages <- c(sim_obj$config$packages, "magrittr")
     n_available_cores <- parallel::detectCores()
     if (sim_obj$config$parallel_cores==0) {
-      # !!!!! If detectCores() runs on a different machine than the code runs on, this will be problematic
       n_cores <- n_available_cores - 1
     } else {
       if (sim_obj$config$parallel_cores>n_available_cores) {
@@ -70,21 +67,12 @@ run.simba <- function(sim_obj, ...) {
       }
     }
 
+    # Create cluster and export everything in env
     cl <- parallel::makeCluster(n_cores)
-    cluster_export <- c("sim_obj", "packages")
-
-    # Export creators/methods to cluster
-    # !!!!! Export everything in env?
-    for (obj in c("creators", "methods")) {
-      if (length(sim_obj[[obj]])!=0) {
-        for (i in 1:length(sim_obj[[obj]])) {
-          cluster_export <- c(cluster_export, names(sim_obj[[obj]])[i])
-        }
-      }
-    }
-    parallel::clusterExport(cl, cluster_export, env)
+    parallel::clusterExport(cl, ls(env), env)
+    parallel::clusterExport(cl, c("sim_obj","..packages"), environment())
     parallel::clusterCall(cl, function(x) {.libPaths(x)}, .libPaths())
-    parallel::clusterEvalQ(cl, sapply(packages, function(p) {
+    parallel::clusterEvalQ(cl, sapply(..packages, function(p) {
       do.call("library", list(p))
     }))
   }
@@ -112,13 +100,9 @@ run.simba <- function(sim_obj, ...) {
       {.gotWarnings <- character(0) # holds the warnings
       if (sim_obj$config$stop_at_error==TRUE) {
         script_results <- do.call(what="..script", args=list(), envir=env)
-        # script_results <- sim_obj$script()
-        # script_results <- ..script_copy()
       } else {
         script_results <- tryCatch(
           expr = do.call(what="..script", args=list(), envir=env),
-          # expr = sim_obj$script(),
-          # expr = ..script_copy(),
           error = function(e){ return(e) }
         )
       }},
@@ -145,11 +129,9 @@ run.simba <- function(sim_obj, ...) {
   # Run simulations
   if (sim_obj$config$parallel=="outer") {
     # Run in parallel
-    # results_lists <- parallel::parLapply(cl, sim_uids, run_script)
     results_lists <- pbapply::pblapply(sim_uids, run_script, cl=cl)
   } else {
     # Run serially
-    # results_lists <- lapply(sim_uids, run_script)
     results_lists <- pbapply::pblapply(sim_uids, run_script)
   }
 
