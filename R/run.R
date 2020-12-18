@@ -68,7 +68,7 @@ run.simba <- function(sim_obj, ...) {
   if (sim_obj$config$parallel %in% c("inner", "outer")) {
     # !!!!! Should this apply only to "inner" parallelization ?????
 
-    packages <- sim_obj$config$packages
+    packages <- c(sim_obj$config$packages, "magrittr")
     n_available_cores <- parallel::detectCores()
     if (sim_obj$config$parallel_cores==0) {
       # !!!!! If detectCores() runs on a different machine than the code runs on, this will be problematic
