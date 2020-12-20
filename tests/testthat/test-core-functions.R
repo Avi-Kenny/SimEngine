@@ -140,7 +140,7 @@ test_that("add_method() throws error for non-function function", {
                "`fn` must be a function")
 })
 
-### add_script ###
+### set_script ###
 my_script <- function() {
   df <- create_rct_data(L$num_patients)
   estimate <- do.call(L$estimator, list(df))
@@ -149,21 +149,18 @@ my_script <- function() {
   )
 }
 
-# add_script() works with predefined function
+# set_script() works with predefined function
 # !!!! how to check the output?
 sim <- new_sim()
-sim %<>% add_script(my_script)
-test_that("add_script() works with predefined function", {
-  expect_type(sim$scripts, "list")
-  expect_equal(length(sim$scripts), 1)
-  expect_equal(names(sim$scripts), c("my_script"))
-  expect_type(sim$scripts[[1]], "closure")
+sim %<>% set_script(my_script)
+test_that("set_script() works with predefined function", {
+  expect_type(sim$script, "closure")
+  expect_equal("..script" %in% ls(sim$internals$env, all.names=TRUE), TRUE)
 })
 
-# add_script() works with function defined in call
+# set_script() works with function defined in call
 sim <- new_sim()
-sim %<>% add_script(
-  "my script",
+sim %<>% set_script(
   function() {
     df <- create_rct_data(L$num_patients)
     estimate <- do.call(L$estimator, list(df))
@@ -172,23 +169,15 @@ sim %<>% add_script(
     )
   }
 )
-test_that("add_script() works with function defined in call", {
-  expect_type(sim$scripts, "list")
-  expect_equal(length(sim$scripts), 1)
-  expect_equal(names(sim$scripts), c("my script"))
-  expect_type(sim$scripts[[1]], "closure")
+test_that("set_script() works with function defined in call", {
+  expect_type(sim$script, "closure")
+  expect_equal("..script" %in% ls(sim$internals$env, all.names=TRUE), TRUE)
 })
 
-# add_script() throws error for non-string name
-test_that("add_script() throws error for non-string name", {
-  expect_error(add_script(sim, 2, function(y){return(y)}),
-               "`name` must be a character string")
-})
-
-# add_script() throws error for non-function function
-test_that("add_script() throws error for non-function function", {
-  expect_error(add_script(sim, "func", 2),
-               "`fn` must be a function")
+# set_script() throws error for non-function second argument
+sim <- new_sim()
+test_that("set_script() throws error for non-function second argument", {
+  expect_error(set_script(sim, 2), "`fn` must be a function")
 })
 
 ### add_constant() ###
@@ -267,8 +256,7 @@ sim %<>% set_levels(
   estimator = c("estimator_1", "estimator_2"),
   num_patients = c(50, 200, 1000)
 )
-sim %<>% add_script(
-  "my script",
+sim %<>% set_script(
   function() {
     df <- create_rct_data(L$num_patients)
     estimate <- do.call(L$estimator, list(df))
