@@ -30,6 +30,8 @@ set_config <- function(sim_obj, ...) UseMethod("set_config")
 #' @export
 set_config.simba <- function(sim_obj, ...) {
 
+  handle_errors(sim_obj, "is.simba")
+
   o_args <- list(...)
 
   if (length(o_args)==0) { stop("No configuration options specified") }

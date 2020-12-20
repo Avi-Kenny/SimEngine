@@ -11,6 +11,8 @@
 #' @export
 summary.simba <- function(sim_obj, ...) {
 
+  handle_errors(sim_obj, "is.simba")
+
   # handle scenarios with no results
   if (sim_obj$internals$run_state == "pre run"){
     stop("Simulation has not been run yet.")

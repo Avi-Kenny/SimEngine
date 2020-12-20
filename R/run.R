@@ -12,6 +12,8 @@ run <- function(sim_obj, ...) UseMethod("run")
 #' @export
 run.simba <- function(sim_obj, ...) {
 
+  handle_errors(sim_obj, "is.simba")
+
   sim_obj$internals$start_time <- Sys.time()
 
   # All objects will be stored in this environment

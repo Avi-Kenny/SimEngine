@@ -22,6 +22,8 @@ add_method <- function(sim_obj, ...) UseMethod("add_method")
 #' @export
 add_method.simba <- function(sim_obj, ...) {
 
+  handle_errors(sim_obj, "is.simba")
+
   if (length(list(...))==1) {
     name <- deparse(substitute(...))
     fn <- list(...)[[1]]

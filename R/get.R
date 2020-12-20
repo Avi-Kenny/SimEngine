@@ -11,6 +11,8 @@ get <- function(sim_obj, variable) UseMethod("get")
 #' @export
 get.simba <- function(sim_obj, variable) {
 
+  handle_errors(sim_obj, "is.simba")
+
   switch(
     variable,
     "total_runtime" = { return(sim_obj$internals$total_runtime) },

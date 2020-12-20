@@ -16,6 +16,8 @@ add_constants <- function(sim_obj, ...) UseMethod("add_constants")
 #' @export
 add_constants.simba <- function(sim_obj, ...) {
 
+  handle_errors(sim_obj, "is.simba")
+
   sim_obj$constants <- c(sim_obj$constants, list(...))
 
   return (sim_obj)
