@@ -10,8 +10,6 @@ test_that("new_sim() creates correctly-specified object", {
   expect_equal(sim$warnings, "Simulation has not been run yet.")
 })
 
-
-
 ### add_creator() ###
 
 create_rct_data <- function (num_patients) {

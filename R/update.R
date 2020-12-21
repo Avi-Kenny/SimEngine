@@ -2,10 +2,10 @@
 #'
 #' @param sim_obj A simulation object of class "simba", usually created by
 #'     new_sim(), that has already been run by run()
-#' @param keep_errors Boolean (TRUE by default); if TRUE, do not try to re-run
+#' @param keep_errors logical (TRUE by default); if TRUE, do not try to re-run
 #'     simulation reps that results in errors previously; if FALSE, attempt to
 #'     run those reps again
-#' @param keep_extra Boolean (FALSE by default); if TRUE, keep previously run
+#' @param keep_extra logical (FALSE by default); if TRUE, keep previously run
 #'     simulation reps even if they exceed the current num_sim in config or are from
 #'     a level that has been dropped; if FALSE, drop excess reps (starting from the last rep
 #'     for that particular simulation level)
@@ -21,7 +21,13 @@ update.simba <- function(sim_obj,
                          keep_errors = TRUE,
                          keep_extra = FALSE) {
 
-  # !!!!! error handle invalid options
+  # error handle invalid options
+  if (!is.logical(keep_errors)){
+    stop("`keep_errors` must be a logical (TRUE or FALSE)")
+  }
+  if (!is.logical(keep_extra)){
+    stop("`keep_extra` must be a logical (TRUE or FALSE)")
+  }
 
   # make sorted list of current levels and previous levels
   sorted_prev_levels <- sim_obj$internals$levels_prev[order(names(sim_obj$internals$levels_prev))]
