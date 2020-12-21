@@ -12,10 +12,12 @@ run <- function(sim_obj, ...) UseMethod("run")
 #' @export
 run.simba <- function(sim_obj, ...) {
 
+  handle_errors(sim_obj, "is.simba")
+
   sim_obj$internals$start_time <- Sys.time()
 
-  # Get reference to current environment
-  env <- environment()
+  # All objects will be stored in this environment
+  env <- sim_obj$internals$env
 
   o_args <- list(...)
 
@@ -50,28 +52,12 @@ run.simba <- function(sim_obj, ...) {
     sim_uids <- sim_obj$internals$levels_grid_big$sim_uid
   }
 
-
-  # Load creators/methods
-  for (obj in c("creators", "methods")) {
-    if (length(sim_obj[[obj]])!=0) {
-      for (i in 1:length(sim_obj[[obj]])) {
-        assign(
-          x = names(sim_obj[[obj]])[i],
-          value = (sim_obj[[obj]])[[i]],
-          envir = env
-        )
-      }
-    }
-  }
-
   # Set up parallelization code
   if (sim_obj$config$parallel %in% c("inner", "outer")) {
-    # !!!!! Should this apply only to "inner" parallelization ?????
 
-    packages <- sim_obj$config$packages
+    ..packages <- c(sim_obj$config$packages, "magrittr")
     n_available_cores <- parallel::detectCores()
     if (sim_obj$config$parallel_cores==0) {
-      # !!!!! If detectCores() runs on a different machine than the code runs on, this will be problematic
       n_cores <- n_available_cores - 1
     } else {
       if (sim_obj$config$parallel_cores>n_available_cores) {
@@ -83,20 +69,12 @@ run.simba <- function(sim_obj, ...) {
       }
     }
 
+    # Create cluster and export everything in env
     cl <- parallel::makeCluster(n_cores)
-    cluster_export <- c("sim_obj", "packages")
-
-    # Export creators/methods to cluster
-    for (obj in c("creators", "methods")) {
-      if (length(sim_obj[[obj]])!=0) {
-        for (i in 1:length(sim_obj[[obj]])) {
-          cluster_export <- c(cluster_export, names(sim_obj[[obj]])[i])
-        }
-      }
-    }
-    parallel::clusterExport(cl, cluster_export, env)
+    parallel::clusterExport(cl, ls(env), env)
+    parallel::clusterExport(cl, c("sim_obj","..packages"), environment())
     parallel::clusterCall(cl, function(x) {.libPaths(x)}, .libPaths())
-    parallel::clusterEvalQ(cl, sapply(packages, function(p) {
+    parallel::clusterEvalQ(cl, sapply(..packages, function(p) {
       do.call("library", list(p))
     }))
   }
@@ -105,8 +83,8 @@ run.simba <- function(sim_obj, ...) {
 
     ..start_time <- Sys.time()
 
-    # Set up references to levels_grid_big row and constants
-    C <- sim_obj$constants
+    # Set up references to levels row (L) and constants (C)
+    assign(x="C", value=sim_obj$constants, envir=env)
     L <- as.list(sim_obj$internals$levels_grid_big[sim_obj$internals$levels_grid_big$sim_uid == i,])
     levs <- names(sim_obj$levels)
     for (j in 1:length(levs)) {
@@ -114,22 +92,19 @@ run.simba <- function(sim_obj, ...) {
         L[[levs[j]]] <- sim_obj$levels[[levs[j]]][[L[[levs[j]]]]]
       }
     }
+    assign(x="L", value=L, envir=env)
     rm(levs)
+    rm(L)
 
-    # Declare script copy dynamically
-    # !!!!! Currently errors are being logged with call "..script_copy()"
-    eval(parse(text=c("..script_copy <-", deparse(sim_obj$script))))
-
-    # actually run the run
-    # use withCallingHandlers to catch all warnings and tryCatch to catch errors
-    # !!!!! stop_at_error functionality missing
+    # Actually run the run
+    # Use withCallingHandlers to catch all warnings and tryCatch to catch errors
     withCallingHandlers(
       {.gotWarnings <- character(0) # holds the warnings
       if (sim_obj$config$stop_at_error==TRUE) {
-        script_results <- ..script_copy()
+        script_results <- do.call(what="..script", args=list(), envir=env)
       } else {
         script_results <- tryCatch(
-          expr = ..script_copy(),
+          expr = do.call(what="..script", args=list(), envir=env),
           error = function(e){ return(e) }
         )
       }},
@@ -156,11 +131,9 @@ run.simba <- function(sim_obj, ...) {
   # Run simulations
   if (sim_obj$config$parallel=="outer") {
     # Run in parallel
-    # results_lists <- parallel::parLapply(cl, sim_uids, run_script)
     results_lists <- pbapply::pblapply(sim_uids, run_script, cl=cl)
   } else {
     # Run serially
-    # results_lists <- lapply(sim_uids, run_script)
     results_lists <- pbapply::pblapply(sim_uids, run_script)
   }
 

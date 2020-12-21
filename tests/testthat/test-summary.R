@@ -13,8 +13,7 @@ test_that("Summary of blank sim object throws an error", {
 
 sim <- new_sim()
 
-sim %<>% add_script(
-  "my script",
+sim %<>% set_script(
   function() {
     x <- matrix(c(1,1,1,1), nrow=2)
     x <- solve(x)
@@ -26,7 +25,7 @@ sim %<>% set_config(
   num_sim = 10
 )
 
-sim %<>% run("my script")
+sim %<>% run()
 
 test_that("Summary of blank sim object throws an error", {
   expect_error(summary(sim), "100% of simulations had errors.")
@@ -34,15 +33,14 @@ test_that("Summary of blank sim object throws an error", {
 
 sim <- new_sim()
 
-sim %<>% add_script(
-  "my script",
+sim %<>% set_script(
   function() {
     return (list("x"=c(1,2,3,4,5),
                  "y" = c("a", "b", "c", "d", "e")))
   }
 )
 
-sim %<>% run("my script")
+sim %<>% run()
 
 ### invalid metric
 test_that("Invalid metric throws error", {
@@ -291,15 +289,14 @@ test_that("Invalid or missing arguments to cov throw errors", {
 
 sim <- new_sim()
 
-sim %<>% add_script(
-  "my script",
+sim %<>% set_script(
   function() {
     return (list("x"=c(1,2,3,4,5, NA),
                  "y" = c(6, 7, 8, 9, 10, 11)))
   }
 )
 
-sim %<>% run("my script")
+sim %<>% run()
 
 summ <- sim %>% summary(
   mean = list(name="my_summary", x="x")
@@ -741,8 +738,7 @@ test_that("mae summary of two variables, constant truth, returns both maes", {
 ### proper function of CI coverage
 sim <- new_sim()
 
-sim %<>% add_script(
-  "my script",
+sim %<>% set_script(
   function() {
     return (list("x" = c(1,2,3,4,5, NA),
                  "y" = c(6, 7, 8, 9, 10, 11),
@@ -750,7 +746,7 @@ sim %<>% add_script(
   }
 )
 
-sim %<>% run("my script")
+sim %<>% run()
 
 summ <- sim %>% summary(
   coverage = list(name="my_summary", lower="x", upper="y", truth = 3)

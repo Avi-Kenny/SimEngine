@@ -22,6 +22,8 @@ add_creator <- function(sim_obj, ...) UseMethod("add_creator")
 #' @export
 add_creator.simba <- function(sim_obj, ...) {
 
+  handle_errors(sim_obj, "is.simba")
+
   if (length(list(...))==1) {
     name <- deparse(substitute(...))
     fn <- list(...)[[1]]
@@ -38,7 +40,9 @@ add_creator.simba <- function(sim_obj, ...) {
     stop("`fn` must be a function")
   }
 
-  sim_obj$creators[[name]] <- fn
+  environment(fn) <- sim_obj$internals$env
+  sim_obj$creators[[name]] <- fn # !!!!! Is this redundant ?????
+  assign(x=name, value=fn, envir=sim_obj$internals$env)
 
   return (sim_obj)
 

@@ -2,6 +2,7 @@
 #'
 #' @param sim_obj A simulation object of class "simba", usually created by
 #'     new_sim()
+#' @param fn A function !!!!!
 #' @return The original simulation object with the new script function added.
 #'     The script should be a function that returns a list of key-value pairs. !!!!! continue
 #' @examples
@@ -12,12 +13,16 @@ set_script <- function(sim_obj, ...) UseMethod("set_script")
 #' @export
 set_script.simba <- function(sim_obj, ...) {
 
-  if (substr(sim_obj$internals$run_state, 1, 3) == "run"){
-    stop("A simulation object's script cannot be changed after the simulation has been run.")
+  handle_errors(sim_obj, "is.simba")
+
+  if (substr(sim_obj$internals$run_state, 1, 3) == "run") {
+    stop(paste("A simulation object's script cannot be changed after the",
+               "simulation has been run."))
   }
 
-  if (length(list(...)) > 1){
-    stop("`set_script` takes only a single argument")
+  if (length(list(...)) > 1) {
+    stop(paste("`set_script` takes only two arguments, a simulation script and",
+               "a function"))
   }
 
   fn <- list(...)[[1]]
@@ -26,7 +31,9 @@ set_script.simba <- function(sim_obj, ...) {
     stop("`fn` must be a function")
   }
 
+  environment(fn) <- sim_obj$internals$env
   sim_obj$script <- fn
+  assign(x="..script", value=fn, envir=sim_obj$internals$env)
 
   return (sim_obj)
 

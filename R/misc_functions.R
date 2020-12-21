@@ -41,6 +41,32 @@ print.simba <- function(sim_obj) {
   }
 }
 
+
+
+#' Function for internal error handling
+#'
+#' @param obj The object to check for errors (can be a list)
+#' @param err The type of error to check for (character string)
+#' @return Throws and error or returns NULL
+handle_errors <- function(obj, err) {
+  switch(
+    err,
+
+    "is.simba" = {
+      if (class(obj)!="simba") {
+        stop("sim_obj must be of class `simba`", call.=FALSE)
+      }
+    },
+
+    "error type 2" = {},
+
+    "error type 3" = {}
+
+  )
+}
+
+
+
 #' # Print method for class "simba_results"
 #' #' @export
 #' print.simba_results <- function(results) {

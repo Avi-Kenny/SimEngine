@@ -15,9 +15,10 @@ new_sim <- function() {
       ))
     }
   }
+  rm(pkg)
 
   # Create "blank" simulation object
-  sim_obj <- list(
+  ...sim_obj <- list(
     config = list(
       num_sim = 1000,
       datasets = "many",
@@ -38,7 +39,7 @@ new_sim <- function() {
     # run_state can be: "pre run", "run, no errors", "run, some errors",
     #     "run, all errors"
     internals = list(
-      # envir = new.env(),
+      env = environment(), # new.env()
       levels_types = FALSE,
       levels_shallow = list("no levels"=TRUE),
       levels_prev = list(),
@@ -56,8 +57,8 @@ new_sim <- function() {
     errors = NULL
   )
 
-  class(sim_obj) <- "simba"
+  class(...sim_obj) <- "simba"
 
-  return (sim_obj)
+  return (...sim_obj)
 
 }

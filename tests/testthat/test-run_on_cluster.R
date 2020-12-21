@@ -7,11 +7,11 @@ run_c <- function(ret=FALSE) {
       sim <- new_sim()
       sim %<>% set_config(num_sim=2)
       sim %<>% set_levels(alpha=c(2,3), beta=c(4,5))
-      sim %<>% add_script("my_script", function() {
+      sim %<>% set_script(function() {
         return (list(sum=(L$alpha+L$beta), prod=(L$alpha*L$beta)))
       })
     },
-    main = { sim %<>% run("my_script") },
+    main = { sim %<>% run() },
     last = {sim %>% summary() %>% print() },
     cluster_config = list(sim_var="sim", js="slurm")
   )
