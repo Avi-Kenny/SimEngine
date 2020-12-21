@@ -134,7 +134,7 @@ sim %<>% set_levels(
 )
 ```
 
-<!-- # !!!!! add_constant()  You can also reference <a href="" target="_blank">simulation constants</a> using the variable *C*. ????? -->
+<!-- # !!!!! add_constants()  You can also reference <a href="" target="_blank">simulation constants</a> using the variable *C*. ????? -->
 <!-- A simulation constant is something that does not change across your entire set of simulations. You could just as easily hard-code values in your code, but it's often easier to have these declared at a separate section so that they can be easily modified if needed. -->
 
 ### 5) Create a simulation script
@@ -144,16 +144,11 @@ The simulation script is a function that runs a single simulation replicate and 
 - Your script will have access to any creators and methods that have been added to your simulation object.
 
 ```R
-sim %<>% add_script(
-  "my script",
-  function() {
-    df <- create_rct_data(L$num_patients)
-    estimate <- do.call(L$estimator, list(df))
-    return (
-      list("estimate" = estimate)
-    )
-  }
-)
+sim %<>% set_script(function() {
+  df <- create_rct_data(L$num_patients)
+  estimate <- do.call(L$estimator, list(df))
+  return (list("estimate"=estimate))
+})
 ```
 
 Your script should always return a named list, although your list can be complex and contain dataframes, multiple levels of nesting, etc.
@@ -174,7 +169,7 @@ sim %<>% set_config(
 All 600 replicates are run at once and results are stored in the simulation object.
 
 ```R
-sim %<>% run("my script")
+sim %<>% run()
 #> "Done. No errors detected."
 ```
 
