@@ -75,16 +75,13 @@ sim %<>% add_creator(
   }
 )
 
-sim %<>% add_script(
-  "my script",
-  function() {
-    df <- create_data(100)
-    estimate <- mean(df$z)
-    return (list("estimate" = estimate))
-  }
-)
+sim %<>% set_script(function() {
+  df <- create_data(100)
+  estimate <- mean(df$z)
+  return (list("estimate" = estimate))
+})
 
-sim %<>% run("my script")
+sim %<>% run()
 
 ```
 
@@ -100,7 +97,7 @@ Suppose we have written the following simulation and want to run it on a CCS:
 library(simba)
 sim %<>% new_sim()
 sim %<>% add_creator("create_data", function(n){ rnorm(n) })
-sim %<>% add_script("my script", function() {
+sim %<>% set_script(function() {
   data <- create_data(L$n)
   return(mean(data))
 })
@@ -119,7 +116,7 @@ run_on_cluster(
   first = {
     sim %<>% new_sim()
     sim %<>% add_creator("create_data", function(n){ rnorm(n) })
-    sim %<>% add_script("my script", function() {
+    sim %<>% set_script(function() {
       data <- create_data(L$n)
       return(mean(data))
     })
