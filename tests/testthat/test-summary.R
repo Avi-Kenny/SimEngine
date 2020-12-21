@@ -1,5 +1,5 @@
 
-### Blank summary
+### Blank summary ###
 
 sim <- new_sim()
 
@@ -9,7 +9,7 @@ test_that("Summary of blank sim object throws an error", {
 
 
 
-### Summary of object with 100% errors
+### Summary of object with 100% errors ###
 
 sim <- new_sim()
 
@@ -42,13 +42,13 @@ sim %<>% set_script(
 
 sim %<>% run()
 
-### invalid metric
+### invalid metric ###
 test_that("Invalid metric throws error", {
   expect_error(summary(sim, cov = list(estimate = "x", se = "x")),
                "cov is an invalid summary metric.")
 })
 
-### mean errors
+### mean errors ###
 test_that("Invalid or missing arguments to mean throw errors", {
   expect_error(summary(sim, mean = list(x = "x")),
                "`name` argument is required.") # no name
@@ -62,7 +62,7 @@ test_that("Invalid or missing arguments to mean throw errors", {
                "y is not numeric.") # x is not numeric
 })
 
-### standard deviation errors
+### standard deviation errors ###
 test_that("Invalid or missing arguments to sd throw errors", {
   expect_error(summary(sim, sd = list(x = "x")),
                "`name` argument is required.") # no name
@@ -76,7 +76,7 @@ test_that("Invalid or missing arguments to sd throw errors", {
                "y is not numeric.") # x is not numeric
 })
 
-### variance errors
+### variance errors ###
 test_that("Invalid or missing arguments to var throw errors", {
   expect_error(summary(sim, var = list(x = "x")),
                "`name` argument is required.") # no name
@@ -90,7 +90,7 @@ test_that("Invalid or missing arguments to var throw errors", {
                "y is not numeric.") # x is not numeric
 })
 
-### mad errors
+### mad errors ###
 test_that("Invalid or missing arguments to mad throw errors", {
   expect_error(summary(sim, mad = list(x = "x")),
                "`name` argument is required.") # no name
@@ -104,7 +104,7 @@ test_that("Invalid or missing arguments to mad throw errors", {
                "y is not numeric.") # x is not numeric
 })
 
-### iqr errors
+### iqr errors ###
 test_that("Invalid or missing arguments to iqr throw errors", {
   expect_error(summary(sim, iqr = list(x = "x")),
                "`name` argument is required.") # no name
@@ -118,7 +118,7 @@ test_that("Invalid or missing arguments to iqr throw errors", {
                "y is not numeric.") # x is not numeric
 })
 
-### quantile errors
+### quantile errors ###
 test_that("Invalid or missing arguments to quantile throw errors", {
   expect_error(summary(sim, quantile = list(x = "x", prob = 0.4)),
                "`name` argument is required.") # no name
@@ -138,7 +138,7 @@ test_that("Invalid or missing arguments to quantile throw errors", {
                "1.1 is not a number between 0 and 1.") # prob is outside [0,1]
 })
 
-### min errors
+### min errors ###
 test_that("Invalid or missing arguments to min throw errors", {
   expect_error(summary(sim, min = list(x = "x")),
                "`name` argument is required.") # no name
@@ -152,7 +152,7 @@ test_that("Invalid or missing arguments to min throw errors", {
                "y is not numeric.") # x is not numeric
 })
 
-### max errors
+### max errors ###
 test_that("Invalid or missing arguments to max throw errors", {
   expect_error(summary(sim, max = list(x = "x")),
                "`name` argument is required.") # no name
@@ -166,7 +166,7 @@ test_that("Invalid or missing arguments to max throw errors", {
                "y is not numeric.") # x is not numeric
 })
 
-### median errors
+### median errors ###
 test_that("Invalid or missing arguments to median throw errors", {
   expect_error(summary(sim, median = list(x = "x")),
                "`name` argument is required.") # no name
@@ -180,7 +180,7 @@ test_that("Invalid or missing arguments to median throw errors", {
                "y is not numeric.") # x is not numeric
 })
 
-### bias errors
+### bias errors ###
 test_that("Invalid or missing arguments to bias throw errors", {
   expect_error(summary(sim, bias = list(estimate = "x", truth = 7)),
                "`name` argument is required.") # no name
@@ -202,7 +202,7 @@ test_that("Invalid or missing arguments to bias throw errors", {
                "TRUE is neither a number nor a variable in results.") # truth is neither a variable name nor a number
 })
 
-### mse errors
+### mse errors ###
 test_that("Invalid or missing arguments to mse throw errors", {
   expect_error(summary(sim, mse = list(estimate = "x", truth = 7)),
                "`name` argument is required.") # no name
@@ -224,7 +224,7 @@ test_that("Invalid or missing arguments to mse throw errors", {
                "TRUE is neither a number nor a variable in results.") # truth is neither a variable name nor a number
 })
 
-### mae errors
+### mae errors ###
 test_that("Invalid or missing arguments to mae throw errors", {
   expect_error(summary(sim, mae = list(estimate = "x", truth = 7)),
                "`name` argument is required.") # no name
@@ -246,7 +246,7 @@ test_that("Invalid or missing arguments to mae throw errors", {
                "TRUE is neither a number nor a variable in results.") # truth is neither a variable name nor a number
 })
 
-### cov errors
+### cov errors ###
 test_that("Invalid or missing arguments to cov throw errors", {
   expect_error(summary(sim, coverage = list(estimate = "x", se = "x", truth = 7)),
                "`name` argument is required.") # no name
@@ -285,7 +285,7 @@ test_that("Invalid or missing arguments to cov throw errors", {
 })
 
 
-### proper functioning of mean summary
+### proper functioning of mean summary ###
 
 sim <- new_sim()
 
@@ -331,7 +331,7 @@ test_that("mean summary of two variables returns both means", {
 })
 
 
-### proper functioning of sd summary
+### proper functioning of sd summary ###
 
 summ <- sim %>% summary(
   sd = list(name="my_summary", x="x")
@@ -365,7 +365,7 @@ test_that("sd summary of two variables returns both sds", {
   expect_equal(summ$my_summary2, sd(c(6,7,8,9,10,11)))
 })
 
-### proper functioning of var summary
+### proper functioning of var summary ###
 
 summ <- sim %>% summary(
   var = list(name="my_summary", x="x")
@@ -399,7 +399,7 @@ test_that("var summary of two variables returns both vars", {
   expect_equal(summ$my_summary2, var(c(6,7,8,9,10,11)))
 })
 
-### proper functioning of mad summary
+### proper functioning of mad summary ###
 
 summ <- sim %>% summary(
   mad = list(name="my_summary", x="x")
@@ -433,7 +433,7 @@ test_that("mad summary of two variables returns both mads", {
   expect_equal(summ$my_summary2, mad(c(6,7,8,9,10,11)))
 })
 
-### proper functioning of iqr summary
+### proper functioning of iqr summary ###
 
 summ <- sim %>% summary(
   iqr = list(name="my_summary", x="x")
@@ -467,7 +467,7 @@ test_that("iqr summary of two variables returns both iqrs", {
   expect_equal(summ$my_summary2, IQR(c(6,7,8,9,10,11)))
 })
 
-### proper functioning of quantile summary
+### proper functioning of quantile summary ###
 
 summ <- sim %>% summary(
   quantile = list(name="my_summary", x="x", prob = 0.25)
@@ -501,7 +501,7 @@ test_that("quantile summary of two variables returns both quantiles", {
   expect_equal(summ$my_summary2, quantile(c(6,7,8,9,10,11), probs = c(0.75)))
 })
 
-### proper functioning of min summary
+### proper functioning of min summary ###
 
 summ <- sim %>% summary(
   min = list(name="my_summary", x="x")
@@ -535,7 +535,7 @@ test_that("min summary of two variables returns both mins", {
   expect_equal(summ$my_summary2, min(c(6,7,8,9,10,11)))
 })
 
-### proper functioning of max summary
+### proper functioning of max summary ###
 
 summ <- sim %>% summary(
   max = list(name="my_summary", x="x")
@@ -569,7 +569,7 @@ test_that("max summary of two variables returns both maxes", {
   expect_equal(summ$my_summary2, max(c(6,7,8,9,10,11)))
 })
 
-### proper functioning of median summary
+### proper functioning of median summary ###
 
 summ <- sim %>% summary(
   median = list(name="my_summary", x="x")
@@ -603,7 +603,7 @@ test_that("median summary of two variables returns both medians", {
   expect_equal(summ$my_summary2, median(c(6,7,8,9,10,11)))
 })
 
-### proper functioning of bias summary
+### proper functioning of bias summary ###
 
 summ <- sim %>% summary(
   bias = list(name="my_summary", estimate="x", truth = 7)
@@ -647,7 +647,7 @@ test_that("bias summary of two variables, constant truth, returns both biases", 
   expect_equal(summ$my_summary2, mean(c(6,7,8,9,10,11)-10))
 })
 
-### proper functioning of mse summary
+### proper functioning of mse summary ###
 
 summ <- sim %>% summary(
   mse = list(name="my_summary", estimate="x", truth = 7)
@@ -691,7 +691,7 @@ test_that("mse summary of two variables, constant truth, returns both mses", {
   expect_equal(summ$my_summary2, mean((c(6,7,8,9,10,11)-10)^2))
 })
 
-### proper functioning of mae summary
+### proper functioning of mae summary ###
 
 summ <- sim %>% summary(
   mae = list(name="my_summary", estimate="x", truth = 7)
@@ -735,7 +735,7 @@ test_that("mae summary of two variables, constant truth, returns both maes", {
   expect_equal(summ$my_summary2, mean(abs(c(6,7,8,9,10,11)-10)))
 })
 
-### proper function of CI coverage
+### proper function of CI coverage ###
 sim <- new_sim()
 
 sim %<>% set_script(

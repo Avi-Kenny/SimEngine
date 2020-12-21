@@ -1,4 +1,6 @@
 ### new_sim() ###
+
+# new_sim() creates a simulation object
 sim <- new_sim()
 
 test_that("new_sim() creates correctly-specified object", {
@@ -9,6 +11,14 @@ test_that("new_sim() creates correctly-specified object", {
   expect_equal(sim$errors, "Simulation has not been run yet.")
   expect_equal(sim$warnings, "Simulation has not been run yet.")
 })
+
+# new_sim() throws an error if dependencies are missing
+# !!!!! as with the config package test below, I would like a different way of doing this...
+#library('magrittr')
+#detach('package:magrittr', unload = TRUE)
+#test_that("new_sim() with missing dependencies throws error", {
+#  expect_error(new_sim(), "You need to install the package 'magrittr' for simba to work.")
+#})
 
 ### add_creator() ###
 
@@ -178,7 +188,7 @@ test_that("set_script() throws error for non-function second argument", {
   expect_error(set_script(sim, 2), "`fn` must be a function")
 })
 
-### add_constant() ###
+### add_constants() ###
 
 sim %<>% add_constants("alpha" = 2)
 test_that("add_constant() works", {
@@ -296,15 +306,3 @@ test_that("get() returns end time", {
   expect_equal(length(end_time), 1)
   expect_equal(class(end_time), c("POSIXct", "POSIXt"))
 })
-
-
-
-
-#sim %<>% run("my script")
-
-#sim %>% summary()
-
-#sim %>% summary(
-#  bias = list(name="bias_ate", truth=-7, estimate="estimate"),
-#  mse = list(name="mse_ate", truth=-7, estimate="estimate")
-#)

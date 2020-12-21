@@ -23,10 +23,10 @@ update.simba <- function(sim_obj,
 
   # error handle invalid options
   if (!is.logical(keep_errors)){
-    stop("`keep_errors` must be a logical (TRUE or FALSE)")
+    stop("'keep_errors' must be a logical")
   }
   if (!is.logical(keep_extra)){
-    stop("`keep_extra` must be a logical (TRUE or FALSE)")
+    stop("'keep_extra' must be a logical")
   }
 
   # make sorted list of current levels and previous levels
@@ -57,26 +57,32 @@ update.simba <- function(sim_obj,
   # make grid of previously run levels / sim_ids
   prev_levels_grid <- expand.grid(c(sorted_prev_levels,
                                     list("sim_id" = 1:sim_obj$internals$num_sim_prev)))
+  if ("no levels" %in% names(sorted_prev_levels)){
+    prev_levels_grid <- prev_levels_grid[,-which(names(prev_levels_grid) == "no levels"), drop = F]
+  }
 
   # if re-running error reps, limit the prev_levels_grid to only those in results and revert the error df
   if (!keep_errors){
     prev_levels_grid <- dplyr::semi_join(prev_levels_grid,
                                          sim_obj$results,
-                                         by = c(names(sim_obj$internals$levels_prev), "sim_id"))
+                                         by = names(prev_levels_grid))
     sim_obj$errors <- "No errors"
   }
 
   # get levels / sim_ids that have not previously been run
-  not_run <- dplyr::anti_join(levels_grid_big[,3:ncol(levels_grid_big)],
+  not_run <- dplyr::anti_join(levels_grid_big[,3:ncol(levels_grid_big), drop = F],
                               prev_levels_grid,
-                              by = c(names(sim_obj$internals$levels_prev), "sim_id"))
+                              #by = c(names(sim_obj$internals$levels_prev), "sim_id"))
+                              by = names(prev_levels_grid))
+
   # add sim_uids to not_run
-  not_run <- dplyr::inner_join(levels_grid_big, not_run, by = c(names(sim_obj$internals$levels_prev), "sim_id"))
+  not_run <- dplyr::inner_join(levels_grid_big, not_run, by = names(prev_levels_grid))
+
 
   # get levels / sim_ids that were previously run but are no longer needed
   extra_run <- dplyr::anti_join(prev_levels_grid,
-                                levels_grid_big[,3:ncol(levels_grid_big)],
-                                by = c(names(sim_obj$internals$levels_prev), "sim_id"))
+                                levels_grid_big[,3:ncol(levels_grid_big), drop = F],
+                                by = names(prev_levels_grid))
 
   # if keep_extra = FALSE, remove excess runs (from results, errors, and warnings)
   if (!keep_extra & nrow(extra_run) > 0){
@@ -146,18 +152,18 @@ update.simba <- function(sim_obj,
   # straighten out the uids
   if (!is.character(sim_obj_copy$results)){
     sim_obj_copy$results <- dplyr::inner_join(levels_grid_big,#[,c("sim_uid", "level_id", "sim_id")],
-                                              sim_obj_copy$results[,-1],
-                                              by = c(names(sim_obj$internals$levels_prev), "sim_id"))
+                                              sim_obj_copy$results[,-c(1,2)],
+                                              by = names(prev_levels_grid))
   }
   if (!is.character(sim_obj_copy$errors)){
     sim_obj_copy$errors <- dplyr::inner_join(levels_grid_big,#[,c("sim_uid", "level_id", "sim_id")],
-                                             sim_obj_copy$errors[,-1],
-                                             by = c(names(sim_obj$internals$levels_prev), "sim_id"))
+                                             sim_obj_copy$errors[,-c(1,2)],
+                                             by = names(prev_levels_grid))
   }
   if (!is.character(sim_obj_copy$warnings)){
     sim_obj_copy$warnings <- dplyr::inner_join(levels_grid_big,#[,c("sim_uid", "level_id", "sim_id")],
-                                               sim_obj_copy$warnings[,-1],
-                                               by = c(names(sim_obj$internals$levels_prev), "sim_id"))
+                                               sim_obj_copy$warnings[,-c(1,2)],
+                                               by = names(prev_levels_grid))
   }
 
   sim_obj_copy$internals$levels_grid_big <- levels_grid_big

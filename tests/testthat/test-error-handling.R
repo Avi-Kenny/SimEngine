@@ -3,8 +3,7 @@
 
 sim <- new_sim()
 
-sim %<>% add_script(
-  "my script",
+sim %<>% set_script(
   function() {
     x <- sample(c(1,2),1)
     return (list("x"=x))
@@ -38,8 +37,7 @@ test_that("run() behaves correctly; no errors", {
 
 sim <- new_sim()
 
-sim %<>% add_script(
-  "my script",
+sim %<>% set_script(
   function() {
     warning('One warning.')
     warning('Two warnings.')
@@ -81,8 +79,7 @@ test_that("run() behaves correctly; no errors and some warnings", {
 
 sim <- new_sim()
 
-sim %<>% add_script(
-  "my script",
+sim %<>% set_script(
   function() {
     x <- matrix(
       c(sample(c(1,2),1), sample(c(1,2),1), sample(c(1,2),1), sample(c(1,2),1)),
@@ -119,8 +116,7 @@ test_that("run() behaves correctly; some errors", {
 
 sim <- new_sim()
 
-sim %<>% add_script(
-  "my script",
+sim %<>% set_script(
   function() {
     x <- matrix(c(1,1,1,1), nrow=2)
     x <- solve(x)
@@ -150,8 +146,7 @@ test_that("run() behaves correctly; all errors", {
 
 sim <- new_sim()
 
-sim %<>% add_script(
-  "my script",
+sim %<>% set_script(
   function() {
     stop('Stop_at_error test triggered.')
     return (list("x"=1))
@@ -171,8 +166,7 @@ test_that("stop_at_error config option works", {
 
 # too many cores requested
 
-sim %<>% add_script(
-  "my script",
+sim %<>% set_script(
   function() {
     return (list("x"=1))
   }

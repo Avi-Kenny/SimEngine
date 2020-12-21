@@ -42,6 +42,7 @@ new_sim <- function() {
       env = environment(), # new.env()
       levels_types = FALSE,
       levels_shallow = list("no levels"=TRUE),
+      #levels_shallow = list(),
       levels_prev = list(),
       num_sim_prev = NA,
       tid = NA,
