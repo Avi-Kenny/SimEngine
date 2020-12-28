@@ -4,34 +4,70 @@
 #'     between simulation replicates.
 #' @param sim_obj A simulation object of class "simba", usually created by
 #'     new_sim()
-#' @param ... One or more key-value pairs representing simulation levels (see
-#'     example)
-#' @param add Only relevant if set_levels() is called multiple times. On the
+#' @param ... One or more key-value pairs representing simulation levels. Each
+#'     value can either be a vector (for simple levels) or a list of lists (for
+#'     more complex levels). See examples.
+#' @param .add Only relevant if set_levels() is called twice or more. On the
 #'     second call, if add=FALSE (default) the old set of levels will be
 #'     replaced by the new set, whereas if add=TRUE the new set of levels will
-#'     be merged with the old set. See examples. Also note that you cannot have
-#'     a simulation level called 'add', since the name would conflict with this argument
+#'     be merged with the old set. See examples.
 #' @return The original simulation object with the old set of levels replaced
 #'     with the new set
 #' @examples
+#' # Basic usage is as follows:
 #' sim <- new_sim()
 #' sim %<>% set_levels(
 #'   "n" = c(10, 100, 1000),
 #'   "theta" = c(2, 3)
 #' )
 #' sim$levels
+#'
+#' # More complex levels can be set using lists:
+#' sim %<>% set_levels(
+#'   "n" = c(10, 100, 1000),
+#'   "theta" = c(2, 3),
+#'   "method" = list(
+#'     "spline1" = list(knots=c(2,4), slopes=c(0.1,0.4)),
+#'     "spline2" = list(knots=c(1,5), slopes=c(0.2,0.3))
+#'   )
+#' )
+#' sim$levels
+#'
+#' # By default, set_levels() will overwrite old levels if it is called twice:
+#' sim %<>% set_levels(alpha=c(1,2), beta=c(5,6))
+#' sim %<>% set_levels(alpha=c(3,4), gamma=c(7,8))
+#' sim$levels
+#'
+#' # To merge the old levels with the new levels instead, specify .add=TRUE:
+#' sim %<>% set_levels(alpha=c(1,2), beta=c(5,6))
+#' sim %<>% set_levels(alpha=c(3,4), gamma=c(7,8), .add=TRUE)
+#' sim$levels
 #' @export
-set_levels <- function(sim_obj, ..., add=FALSE) UseMethod("set_levels")
+set_levels <- function(sim_obj, ..., .add=FALSE) UseMethod("set_levels")
 
 #' @export
-set_levels.simba <- function(sim_obj, ..., add=FALSE) {
+set_levels.simba <- function(sim_obj, ..., .add=FALSE) {
 
   handle_errors(sim_obj, "is.simba")
-  handle_errors(add, "is.boolean")
-
-  # Add levels to sim_obj
+  handle_errors(.add, "is.boolean")
   if (length(list(...))==0) { stop("No levels supplied") }
-  sim_obj$levels <- list(...)
+
+  # Merge with existing levels if .add=TRUE; otherwise, overwrite
+  if (.add) {
+
+    new_list <- list(...)
+    for (i in 1:length(new_list)) {
+      sim_obj$levels[[names(new_list[i])]] <- c(
+        sim_obj$levels[[names(new_list[i])]],
+        new_list[[i]]
+      )
+    }
+
+  } else {
+
+    sim_obj$levels <- list(...)
+
+  }
 
   # Extract names from lists
   levels_shallow <- list()
