@@ -15,7 +15,7 @@ below)}
 }
 \value{
 The original simulation object with the old set of levels replaced
-    with the new set
+with the new set
 }
 \description{
 Set simulation levels

@@ -9,10 +9,12 @@ set_script(sim_obj, ...)
 \arguments{
 \item{sim_obj}{A simulation object of class "simba", usually created by
 new_sim()}
+
+\item{fn}{A function !!!!!}
 }
 \value{
 The original simulation object with the new script function added.
-    The script should be a function that returns a list of key-value pairs. !!!!! continue
+The script should be a function that returns a list of key-value pairs. !!!!! continue
 }
 \description{
 Add a "simulation script" function

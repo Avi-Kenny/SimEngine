@@ -15,7 +15,7 @@ new_sim()}
 }
 \value{
 A simulation object containing the results from both sim_obj_1 and
-    sim_obj_1
+sim_obj_1
 }
 \description{
 Merge simulation results

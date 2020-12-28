@@ -10,7 +10,7 @@
 \item{sim_obj}{A simulation object of class "simba", usually created by
 new_sim()}
 
-\item{sd}{If `sd=TRUE` is passed, standard deviations are reported in
+\item{sd}{If \code{sd=TRUE} is passed, standard deviations are reported in
 addition to means}
 
 \item{coverage}{!!!!! TO DO}

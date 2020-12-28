@@ -186,7 +186,14 @@ run.simba <- function(sim_obj, ...) {
   if (num_ok>0) {
 
     results_lists_ok <- lapply(results_lists_ok, function(r){
+
+      # !!!!! If one or more simulation reps returns an incorrectly-formatted
+      #       list, r$results will be NULL and there will be an uncaught error.
+      #       simba should return `results_lists_ok` so that the user can
+      #       inspect it. Fix this when coding GitHub issue #21
+
       c("sim_uid"=r$sim_uid, "runtime"=r$runtime, r$results)
+
     })
     results_df <- data.table::rbindlist(results_lists_ok)
 
