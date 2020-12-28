@@ -1,5 +1,6 @@
 #' Add a "method" function
 #'
+#' @description Add a "method" function to your simulation object.
 #' @param sim_obj A simulation object of class "simba", usually created by
 #'     new_sim()
 #' @param name A name for the method function
@@ -7,15 +8,27 @@
 #'     accept an object returned by a creator function as its first argument
 #' @return The original simulation object with the new method function added
 #' @examples
+#' # First, we create a simulation object and add creator function:
 #' sim <- new_sim()
-#' sim %<>% add_method(
-#'   "OLS",
-#'   function(data) {
-#'     model <- lm(y~x, data=data)
-#'     return (model$coefficients[["x"]])
-#'   }
-#' )
-#' !!!!! continue example
+#' sim %<>% add_creator("create_data", function(n) { rpois(n, lambda=5) })
+#'
+#' # Like add_creator(), there are two ways to use add_method(). The first is to
+#' # declare a function and add it to simba later:
+#'
+#' method_1 <- function (dat) { mean(dat) }
+#' sim %<>% add_method(method_1)
+#'
+#' # The second is to do both at the same time:
+#'
+#' sim %<>% add_method("method_2", function(dat) {
+#'   var(dat)
+#' })
+#'
+#' # With either option, you can test your function as follows:
+#'
+#' dat <- sim$creators$create_data(10)
+#' sim$methods$method_1(dat)
+#' sim$methods$method_2(dat)
 #' @export
 add_method <- function(sim_obj, ...) UseMethod("add_method")
 

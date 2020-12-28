@@ -1,4 +1,5 @@
-# This section contains functions that are intentionally not documented
+# This section contains functions that are either intentionally not documented
+#   or that are not exported
 
 # Print method for class "simba"
 #' @export
@@ -58,7 +59,11 @@ handle_errors <- function(obj, err) {
       }
     },
 
-    "error type 2" = {},
+    "is.boolean" = {
+      if (!(is.logical(obj) && length(obj) == 1)) {
+        stop(paste(substitute(obj),"must be boolean"))
+      }
+    },
 
     "error type 3" = {}
 

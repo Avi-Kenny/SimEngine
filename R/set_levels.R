@@ -1,25 +1,33 @@
 #' Set simulation levels
 #'
+#' @description Set one or more simulation levels, which are things that vary
+#'     between simulation replicates.
 #' @param sim_obj A simulation object of class "simba", usually created by
 #'     new_sim()
 #' @param ... One or more key-value pairs representing simulation levels (see
-#'     below)
+#'     example)
+#' @param add Only relevant if set_levels() is called multiple times. On the
+#'     second call, if add=FALSE (default) the old set of levels will be
+#'     replaced by the new set, whereas if add=TRUE the new set of levels will
+#'     be merged with the old set. See examples. Also note that you cannot have
+#'     a simulation level called 'add', since the name would conflict with this argument
 #' @return The original simulation object with the old set of levels replaced
 #'     with the new set
 #' @examples
 #' sim <- new_sim()
 #' sim %<>% set_levels(
-#'   "rho" = c(0.1, 0.2),
-#'   "eta" = c(2,3)
+#'   "n" = c(10, 100, 1000),
+#'   "theta" = c(2, 3)
 #' )
-#' !!!!! continue example
+#' sim$levels
 #' @export
-set_levels <- function(sim_obj, ...) UseMethod("set_levels")
+set_levels <- function(sim_obj, ..., add=FALSE) UseMethod("set_levels")
 
 #' @export
-set_levels.simba <- function(sim_obj, ...) {
+set_levels.simba <- function(sim_obj, ..., add=FALSE) {
 
   handle_errors(sim_obj, "is.simba")
+  handle_errors(add, "is.boolean")
 
   # Add levels to sim_obj
   if (length(list(...))==0) { stop("No levels supplied") }

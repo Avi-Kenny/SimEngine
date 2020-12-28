@@ -1,21 +1,29 @@
 #' Add a "creator" function
 #'
+#' @description Add a "creator" function to your simulation object.
 #' @param sim_obj A simulation object of class "simba", usually created by
 #'     new_sim()
 #' @param name A name for the dataset-creating function
 #' @param fn A function that creates a simulated dataset
 #' @return The original simulation object with the new creator function added
 #' @examples
+#' # There are two ways to use add_creator(). The first is to declare a function
+#' # and add it to simba later:
+#'
 #' sim <- new_sim()
-#' sim %<>% add_creator(
-#'   "create_rct",
-#'   function(n, sigma) {
-#'     x <- runif(n)
-#'     y <- 4*x + rnorm(n, mean=0, sd=sigma)
-#'     return (data.frame(x=x,y=y))
-#'   }
-#' )
-#' !!!!! continue example
+#' create_data <- function (n) { rpois(n, lambda=5) }
+#' sim %<>% add_creator(create_data)
+#'
+#' # The second is to do both at the same time:
+#'
+#' sim <- new_sim()
+#' sim %<>% add_creator("create_data", function(n) {
+#'   rpois(n, lambda=5)
+#' })
+#'
+#' # With either option, you can test your function as follows:
+#'
+#' sim$creators$create_data(10)
 #' @export
 add_creator <- function(sim_obj, ...) UseMethod("add_creator")
 

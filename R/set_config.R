@@ -1,5 +1,10 @@
 #' Modify the simulation configuration
 #'
+#' @description This function sets configuration options for the simulation. If
+#'     the 'packages' argument is specified, all packages will be loaded and
+#'     attached via library() when set_config() is called. Multiple calls to
+#'     set_config() will only overwrite configuration options that are specified
+#'     in the subsequent calls, leaving others in place.
 #' @param sim_obj A simulation object of class "simba", usually created by
 #'     new_sim()
 #' @param num_sim Number of simulations to conduct for each level combination

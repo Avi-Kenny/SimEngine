@@ -1,5 +1,6 @@
 #' Get the value of a simulation object variable
 #'
+#' @description !!!!! TO DO
 #' @param sim_obj A simulation object of class "simba", usually created by
 #'     new_sim()
 #' @param variable The name of the internal variable

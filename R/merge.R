@@ -1,5 +1,6 @@
 #' Merge simulation results
 #'
+#' @description !!!!! TO DO
 #' @param sim_obj_1 A simulation object of class "simba", usually created by
 #'     new_sim()
 #' @param sim_obj_2 A simulation object of class "simba", usually created by

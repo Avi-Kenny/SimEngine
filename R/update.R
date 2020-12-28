@@ -1,5 +1,6 @@
 #' Update a simulation
 #'
+#' @description !!!!! TO DO
 #' @param sim_obj A simulation object of class "simba", usually created by
 #'     new_sim(), that has already been run by run()
 #' @param keep_errors logical (TRUE by default); if TRUE, do not try to re-run

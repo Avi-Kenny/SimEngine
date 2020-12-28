@@ -1,5 +1,6 @@
 #' Add a "simulation script" function
 #'
+#' @description !!!!! TO DO
 #' @param sim_obj A simulation object of class "simba", usually created by
 #'     new_sim()
 #' @param fn A function !!!!!

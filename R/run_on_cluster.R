@@ -1,5 +1,6 @@
 #' Framework for running simulations on a cluster computing system
 #'
+#' @description !!!!! TO DO
 #' @param first Code to run at the start of a simulation. This should be a block
 #'     of code enclosed by curly braces {} that that creates a simulation
 #'     object. Put everything you need in the simulation object, since global
