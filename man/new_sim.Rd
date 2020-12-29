@@ -13,8 +13,9 @@ new_sim()
 A simulation object of class "simba"
 }
 \description{
-Initialize a new simulation object
+!!!!! TO DO.
 }
 \examples{
 sim <- new_sim()
+sim
 }

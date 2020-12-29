@@ -49,7 +49,7 @@ print.simba <- function(sim_obj) {
 #' @param obj The object to check for errors (can be a list)
 #' @param err The type of error to check for (character string)
 #' @return Throws and error or returns NULL
-handle_errors <- function(obj, err) {
+handle_errors <- function(obj, err, possible = NA) {
   switch(
     err,
 
@@ -62,6 +62,12 @@ handle_errors <- function(obj, err) {
     "is.boolean" = {
       if (!(is.logical(obj) && length(obj) == 1)) {
         stop(paste(substitute(obj),"must be boolean"), call.=FALSE)
+      }
+    },
+
+    "is.in" = {
+      if (!(obj %in% possible)) {
+        stop(paste(obj,"is not an allowed option."), call.=FALSE)
       }
     },
 

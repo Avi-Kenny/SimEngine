@@ -1,6 +1,6 @@
 #' Initialize a new simulation object
 #'
-#' @description !!!!! TO DO
+#' @description !!!!! TO DO.
 #' @param config A list. Contains simulation configuration information
 #' @return A simulation object of class "simba"
 #' @examples

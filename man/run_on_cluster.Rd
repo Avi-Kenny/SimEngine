@@ -33,7 +33,7 @@ directory that will hold your simulation object and results (this
 defaults to the current working directory).}
 }
 \description{
-Framework for running simulations on a cluster computing system
+!!!!! TO DO
 }
 \examples{
 !!!!! TO DO

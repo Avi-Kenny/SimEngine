@@ -19,6 +19,7 @@ get <- function(sim_obj, variable) UseMethod("get")
 get.simba <- function(sim_obj, variable) {
 
   handle_errors(sim_obj, "is.simba")
+  handle_errors(variable, "is.in", c("num_sim_total", "total_runtime", "start_time", "end_time"))
 
   switch(
     variable,
