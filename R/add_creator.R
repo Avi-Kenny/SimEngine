@@ -32,28 +32,28 @@
 add_creator <- function(sim_obj, name, fn) UseMethod("add_creator")
 
 #' @export
-add_creator.simba <- function(sim_obj, name, fn) {
+add_creator.simba <- function(sim_obj, name=NA, fn=NA) {
 
   handle_errors(sim_obj, "is.simba")
 
-
-  if (!missing(name) && !missing(fn))
-
-
-  if (length(list(...))==1) {
-    name <- deparse(substitute(...))
-    fn <- list(...)[[1]]
+  if (is.na(name) && is.na(fn)) {
+    stop("You must provide a function to add_creator.")
   }
-  if (length(list(...))==2) {
-    name <- list(...)[[1]]
-    fn <- list(...)[[2]]
+
+  # Handle case when only one of {name,fn} is given
+  if (is.na(name)) {
+    name <- deparse(substitute(fn))
+  }
+  if (is.na(fn)) {
+    fn <- name
+    name <- deparse(substitute(name))
   }
 
   handle_errors(name, "is.string")
   handle_errors(fn, "is.function")
 
   environment(fn) <- sim_obj$internals$env
-  sim_obj$creators[[name]] <- fn # !!!!! Is this redundant ?????
+  sim_obj$creators[[name]] <- fn
   assign(x=name, value=fn, envir=sim_obj$internals$env)
 
   return (sim_obj)

@@ -283,7 +283,8 @@ sim %<>% run("my script")
 
 # try to get an invalid variable
 test_that("get() throws error for invalid variable name", {
-  expect_error(get(sim, "invalid_variable"), "Invalid variable name")
+  expect_error(get(sim, "invalid_variable"),
+               "'invalid_variable' is not an allowed option.")
 })
 
 # get runtime

@@ -62,25 +62,26 @@ handle_errors <- function(obj, err, other=NA) {
 
     "is.boolean" = {
       if (!(is.logical(obj) && length(obj) == 1)) {
-        stop(paste(substitute(obj),"must be boolean"), call.=FALSE)
+        stop(paste0("`",substitute(obj),"` must be boolean"), call.=FALSE)
       }
     },
 
     "is.in" = {
       if (!(obj %in% other)) {
-        stop(paste(obj,"is not an allowed option."), call.=FALSE)
+        stop(paste0("'",obj,"' is not an allowed option."), call.=FALSE)
       }
     },
 
     "is.function" = {
       if (!is.function(obj)) {
-        stop(paste(substitute(obj),"must be a function"), call.=FALSE)
+        stop(paste0("`",substitute(obj),"` must be a function"), call.=FALSE)
       }
     },
 
     "is.string" = {
       if (!(is.character(obj) && length(obj)==1)) {
-        stop(paste(substitute(obj),"must be a character string"), call.=FALSE)
+        stop(paste0("`",substitute(obj),"` must be a character string"),
+             call.=FALSE)
       }
     },
 

@@ -4,12 +4,14 @@
 \alias{handle_errors}
 \title{Function for internal error handling}
 \usage{
-handle_errors(obj, err, possible = NA)
+handle_errors(obj, err, other = NA)
 }
 \arguments{
 \item{obj}{The object to check for errors (can be a list)}
 
 \item{err}{The type of error to check for (character string)}
+
+\item{other}{A generic argument that can be used to pass in additional info}
 }
 \value{
 Throws and error or returns NULL
