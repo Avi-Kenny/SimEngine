@@ -1,6 +1,6 @@
 #' Summarize simulation results
 #'
-#' @description !!!!! TO DO
+#' @description Calculate summary statistics for simulation results
 #' @param sim_obj A simulation object of class "simba", usually created by
 #'     new_sim()
 #' @param sd If `sd=TRUE` is passed, standard deviations are reported in
@@ -8,7 +8,27 @@
 #' @param coverage !!!!! TO DO
 #' @return !!!!! TO DO
 #' @examples
-#' !!!!! TO DO
+#' # The following is a toy example of a simulation, illustrating the use of
+#' # the summary() function.
+#' sim <- new_sim()
+#' sim %<>% add_creator("create_data", function(n) { rpois(n, lambda=5) })
+#' sim %<>% add_method("estimator_1", function(dat) { mean(dat) })
+#' sim %<>% add_method("estimator_2", function(dat) { var(dat) })
+#' sim %<>% set_levels(
+#'   "n" = c(10, 100, 1000),
+#'   "estimator" = c("estimator_1", "estimator_2")
+#' )
+#' sim %<>% set_config(num_sim=5)
+#' sim %<>% set_script(function() {
+#'   dat <- create_data(L$n)
+#'   lambda_hat <- do.call(L$estimator, list(dat))
+#'   return (list("lambda_hat"=lambda_hat))
+#' })
+#' sim %<>% run()
+#' sim %>% summary(
+#'   mean = list(name="mean_lambda_hat", x="lambda_hat"),
+#'   mse = list(name="lambda_mse", estimate="lambda_hat", truth=5)
+#' )
 #' @export
 summary.simba <- function(sim_obj, ...) {
 

@@ -1,13 +1,37 @@
-#' Add a "simulation script" function
+#' Set the "simulation script"
 #'
-#' @description !!!!! TO DO
+#' @description Specify a function to be used as the "simulation script". The
+#'     simulation script is a function that runs a single simulation replicate
+#'     and returns the results.
 #' @param sim_obj A simulation object of class "simba", usually created by
 #'     new_sim()
-#' @param fn A function !!!!!
-#' @return The original simulation object with the new script function added.
-#'     The script should be a function that returns a list of key-value pairs. !!!!! continue
+#' @param fn A function that runs a single simulation replicate and returns the
+#'     result. The result must be a list of key-value pairs. The values
+#'     themselves can either be simple (numeric, character, etc.) or complex
+#'     (matrices, lists, etc.). The function body can contain references to the
+#'     special objects `L` (simulation levels) and `C` (simulation constants).
+#'     See examples.
+#' @return The original simulation object with the new "simulation script"
+#'     function added.
 #' @examples
-#' !!!!! TO DO
+#' # The following is a toy example of a simulation, illustrating the use of
+#' # the set_script() function.
+#' sim <- new_sim()
+#' sim %<>% add_creator("create_data", function(n) { rpois(n, lambda=5) })
+#' sim %<>% add_method("estimator_1", function(dat) { mean(dat) })
+#' sim %<>% add_method("estimator_2", function(dat) { var(dat) })
+#' sim %<>% set_levels(
+#'   "n" = c(10, 100, 1000),
+#'   "estimator" = c("estimator_1", "estimator_2")
+#' )
+#' sim %<>% set_config(num_sim=1)
+#' sim %<>% set_script(function() {
+#'   dat <- create_data(L$n)
+#'   lambda_hat <- do.call(L$estimator, list(dat))
+#'   return (list("lambda_hat"=lambda_hat))
+#' })
+#' sim %<>% run()
+#' sim$results
 #' @export
 set_script <- function(sim_obj, ...) UseMethod("set_script")
 

@@ -15,20 +15,20 @@
 #' # Like add_creator(), there are two ways to use add_method(). The first is to
 #' # declare a function and add it to simba later:
 #'
-#' method_1 <- function (dat) { mean(dat) }
-#' sim %<>% add_method(method_1)
+#' estimator_1 <- function (dat) { mean(dat) }
+#' sim %<>% add_method(estimator_1)
 #'
 #' # The second is to do both at the same time:
 #'
-#' sim %<>% add_method("method_2", function(dat) {
+#' sim %<>% add_method("estimator_2", function(dat) {
 #'   var(dat)
 #' })
 #'
 #' # With either option, you can test your function as follows:
 #'
 #' dat <- sim$creators$create_data(10)
-#' sim$methods$method_1(dat)
-#' sim$methods$method_2(dat)
+#' sim$methods$estimator_1(dat)
+#' sim$methods$estimator_2(dat)
 #' @export
 add_method <- function(sim_obj, ...) UseMethod("add_method")
 
