@@ -39,6 +39,26 @@ update.simba <- function(sim_obj,
     stop("Updating a sim cannot include new level variables, only new levels.")
   }
 
+  # make grid of previously run levels / sim_ids
+  #prev_levels_grid <- expand.grid(c(sorted_prev_levels,
+  #                                  list("sim_id" = 1:sim_obj$internals$num_sim_prev)))
+  prev_levels_grid_big <- sim_obj$internals$levels_grid_big
+  prev_levels_grid <- prev_levels_grid_big[,-c(1,3), drop = FALSE] %>% dplyr::distinct()
+  if ("no levels" %in% names(sorted_prev_levels)){
+    #prev_levels_grid <- prev_levels_grid[,-which(names(prev_levels_grid) == "no levels"), drop = F]
+    # this may be unnecessary. don't need to look at new levels if there were no levels to start
+  } else{
+    sim_obj$levels_grid <- dplyr::left_join(sim_obj$levels_grid[,-1, drop=FALSE],
+                                            prev_levels_grid,
+                                            by = names(sorted_prev_levels))
+    max_levelid <- max(prev_levels_grid$level_id)
+    if (nrow(sim_obj$levels_grid) > max_levelid){
+      new_levelids <- (max_levelid + 1):nrow(sim_obj$levels_grid)
+      sim_obj$levels_grid$level_id[is.na(sim_obj$levels_grid$level_id)] <- new_levelids
+    }
+  }
+  #print(sim_obj$levels_grid)
+
   # Create levels_grid_big
   levels_grid_big <- expand.grid(list(
     "level_id" = sim_obj$levels_grid$level_id,
@@ -55,35 +75,33 @@ update.simba <- function(sim_obj,
   levels_grid_big <- cbind(1:nrow(levels_grid_big), levels_grid_big)
   names(levels_grid_big) <- c("sim_uid", names_2)
 
-  # make grid of previously run levels / sim_ids
-  prev_levels_grid <- expand.grid(c(sorted_prev_levels,
-                                    list("sim_id" = 1:sim_obj$internals$num_sim_prev)))
-  if ("no levels" %in% names(sorted_prev_levels)){
-    prev_levels_grid <- prev_levels_grid[,-which(names(prev_levels_grid) == "no levels"), drop = F]
-  }
+
+
 
   # if re-running error reps, limit the prev_levels_grid to only those in results and revert the error df
   if (!keep_errors){
-    prev_levels_grid <- dplyr::semi_join(prev_levels_grid,
+    prev_levels_grid_big <- dplyr::semi_join(prev_levels_grid_big,
                                          sim_obj$results,
-                                         by = names(prev_levels_grid))
+                                         by = names(prev_levels_grid_big))
     sim_obj$errors <- "No errors"
   }
 
   # get levels / sim_ids that have not previously been run
-  not_run <- dplyr::anti_join(levels_grid_big[,3:ncol(levels_grid_big), drop = F],
-                              prev_levels_grid,
-                              #by = c(names(sim_obj$internals$levels_prev), "sim_id"))
-                              by = names(prev_levels_grid))
+  not_run <- dplyr::anti_join(levels_grid_big,
+                              prev_levels_grid_big,
+                              by = names(prev_levels_grid_big[,-1]))
+  #print(not_run)
 
   # add sim_uids to not_run
-  not_run <- dplyr::inner_join(levels_grid_big, not_run, by = names(prev_levels_grid))
+  #not_run <- dplyr::inner_join(levels_grid_big, not_run, by = names(prev_levels_grid))
 
 
   # get levels / sim_ids that were previously run but are no longer needed
-  extra_run <- dplyr::anti_join(prev_levels_grid,
-                                levels_grid_big[,3:ncol(levels_grid_big), drop = F],
-                                by = names(prev_levels_grid))
+  extra_run <- dplyr::anti_join(prev_levels_grid_big[,-1],
+                                levels_grid_big[,-1],
+                                by = names(prev_levels_grid_big[,-1]))
+
+  #print(extra_run)
 
   # if keep_extra = FALSE, remove excess runs (from results, errors, and warnings)
   if (!keep_extra & nrow(extra_run) > 0){
@@ -111,8 +129,11 @@ update.simba <- function(sim_obj,
 
   # if there are extra runs to do
   if (nrow(not_run) > 0){
-    # for new run, do only levels / sim_ids that have not been run
+
     sim_obj_copy$internals$levels_grid_big <- not_run
+
+    # for new run, do only levels / sim_ids that have not been run
+
     sim_obj_copy$results <- NULL
     sim_obj_copy$errors <- NULL
     sim_obj_copy$warnings <- NULL
@@ -146,25 +167,35 @@ update.simba <- function(sim_obj,
       sim_obj_copy$warnings <- sim_obj$warnings
     }
 
+    # get new uids and level_ids that will be assigned to new reps, in order to maintain old uids/level_ids
+    #prev_reps <- sim_obj$internals$levels_grid_big
+    #max_uid <- max(prev_reps$sim_uid)
+
+    #new_uids <- (max_uid + 1):max(levels_grid_big$sim_uid)
+
+    #print(new_uids)
+    #print(new_levelids)
+    #not_run$sim_uid <- new_uids
+    #not_run$level_id <- new_levelids
+    #all_reps <- rbind(prev_reps, not_run)
+    # straighten out the uids
+    #if (!is.character(sim_obj_copy$results)){
+    #  sim_obj_copy$results <- dplyr::inner_join(all_reps,
+    #                                            sim_obj_copy$results[,-c(1,2)],
+    #                                            by = names(prev_levels_grid))
+    #}
+    #if (!is.character(sim_obj_copy$errors)){
+    #  sim_obj_copy$errors <- dplyr::inner_join(all_reps,
+    #                                           sim_obj_copy$errors[,-c(1,2)],
+    #                                           by = names(prev_levels_grid))
+    #}
+    #if (!is.character(sim_obj_copy$warnings)){
+    #  sim_obj_copy$warnings <- dplyr::inner_join(all_reps,
+    #                                             sim_obj_copy$warnings[,-c(1,2)],
+    #                                             by = names(prev_levels_grid))
+    #}
   } else{
     warning("No additional simulations to run.")
-  }
-
-  # straighten out the uids
-  if (!is.character(sim_obj_copy$results)){
-    sim_obj_copy$results <- dplyr::inner_join(levels_grid_big,#[,c("sim_uid", "level_id", "sim_id")],
-                                              sim_obj_copy$results[,-c(1,2)],
-                                              by = names(prev_levels_grid))
-  }
-  if (!is.character(sim_obj_copy$errors)){
-    sim_obj_copy$errors <- dplyr::inner_join(levels_grid_big,#[,c("sim_uid", "level_id", "sim_id")],
-                                             sim_obj_copy$errors[,-c(1,2)],
-                                             by = names(prev_levels_grid))
-  }
-  if (!is.character(sim_obj_copy$warnings)){
-    sim_obj_copy$warnings <- dplyr::inner_join(levels_grid_big,#[,c("sim_uid", "level_id", "sim_id")],
-                                               sim_obj_copy$warnings[,-c(1,2)],
-                                               by = names(prev_levels_grid))
   }
 
   sim_obj_copy$internals$levels_grid_big <- levels_grid_big
