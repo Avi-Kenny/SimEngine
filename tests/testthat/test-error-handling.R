@@ -160,7 +160,7 @@ sim %<>% set_config(
 )
 
 test_that("stop_at_error config option works", {
-  expect_error(run(sim, "my script"), "Stop_at_error test triggered.")
+  expect_error(run(sim), "Stop_at_error test triggered.")
 })
 
 

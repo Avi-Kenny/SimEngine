@@ -296,6 +296,10 @@ sim %<>% set_script(
   }
 )
 
+sim %<>% set_config(
+  num_sim = 1
+)
+
 sim %<>% run()
 
 summ <- sim %>% summary(
@@ -745,6 +749,8 @@ sim %<>% set_script(
                  "z" = c(2, 3, 4, 5, 200, 300)))
   }
 )
+
+sim %<>% set_config(num_sim = 1)
 
 sim %<>% run()
 

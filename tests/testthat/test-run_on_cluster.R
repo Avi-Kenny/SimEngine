@@ -72,6 +72,7 @@ Sys.setenv(run="last")
 run_c()
 sim <- readRDS("sim.simba")
 output <- readChar("sim_output.txt", file.info("sim_output.txt")$size)
+
 test_that("run_on_cluster() 'last' section works", {
   expect_equal(dir.exists("simba_results"), FALSE)
   expect_equal(sim$results$sum, c(6,6))
@@ -123,3 +124,4 @@ test_that("Correct behavior if 'first' fails", {
   ))
 })
 unlink("simba_results")
+Sys.setenv(run="")
