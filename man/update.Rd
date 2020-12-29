@@ -20,7 +20,7 @@ a level that has been dropped; if FALSE, drop excess reps (starting from the las
 for that particular simulation level)}
 }
 \description{
-Update a simulation
+!!!!! TO DO
 }
 \examples{
 !!!!! TO DO

@@ -4,27 +4,56 @@
 \alias{set_levels}
 \title{Set simulation levels}
 \usage{
-set_levels(sim_obj, ...)
+set_levels(sim_obj, ..., .add = FALSE)
 }
 \arguments{
-\item{sim_obj}{A simulation object of class "simba", usually created by
-new_sim()}
+\item{sim_obj}{A simulation object of class \code{simba}, usually created by
+\link{new_sim}}
 
-\item{...}{One or more key-value pairs representing simulation levels (see
-below)}
+\item{...}{One or more key-value pairs representing simulation levels. Each
+value can either be a vector (for simple levels) or a list of lists (for
+more complex levels). See examples.}
+
+\item{.add}{Only relevant if set_levels() is called twice or more. On the
+second call, if add=FALSE (default) the old set of levels will be
+replaced by the new set, whereas if add=TRUE the new set of levels will
+be merged with the old set. See examples.}
 }
 \value{
 The original simulation object with the old set of levels replaced
-with the new set
+    with the new set
 }
 \description{
-Set simulation levels
+Set one or more simulation levels, which are things that vary
+    between simulation replicates.
 }
 \examples{
+# Basic usage is as follows:
 sim <- new_sim()
 sim \%<>\% set_levels(
-  "rho" = c(0.1, 0.2),
-  "eta" = c(2,3)
+  "n" = c(10, 100, 1000),
+  "theta" = c(2, 3)
 )
-!!!!! continue example
+sim$levels
+
+# More complex levels can be set using lists:
+sim \%<>\% set_levels(
+  "n" = c(10, 100, 1000),
+  "theta" = c(2, 3),
+  "method" = list(
+    "spline1" = list(knots=c(2,4), slopes=c(0.1,0.4)),
+    "spline2" = list(knots=c(1,5), slopes=c(0.2,0.3))
+  )
+)
+sim$levels
+
+# By default, set_levels() will overwrite old levels if it is called twice:
+sim \%<>\% set_levels(alpha=c(1,2), beta=c(5,6))
+sim \%<>\% set_levels(alpha=c(3,4), gamma=c(7,8))
+sim$levels
+
+# To merge the old levels with the new levels instead, specify .add=TRUE:
+sim \%<>\% set_levels(alpha=c(1,2), beta=c(5,6))
+sim \%<>\% set_levels(alpha=c(3,4), gamma=c(7,8), .add=TRUE)
+sim$levels
 }

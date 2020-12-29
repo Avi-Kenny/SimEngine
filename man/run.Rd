@@ -7,15 +7,32 @@
 run(sim_obj, ...)
 }
 \arguments{
-\item{sim_obj}{A simulation object of class "simba", usually created by
-new_sim()}
+\item{sim_obj}{A simulation object of class \code{simba}, usually created by
+\link{new_sim}}
 
 \item{sim_uids}{A vector of sim_uids that represent simulations to run. If
 omitted, all simulations are run. # update this !!!!!}
 }
 \description{
-Run the simulation
+!!!!! TO DO
 }
 \examples{
-!!!!! TO DO
+# The following is a toy example of a simulation, illustrating the use of
+# the run() function.
+sim <- new_sim()
+sim \%<>\% add_creator("create_data", function(n) { rpois(n, lambda=5) })
+sim \%<>\% add_method("estimator_1", function(dat) { mean(dat) })
+sim \%<>\% add_method("estimator_2", function(dat) { var(dat) })
+sim \%<>\% set_levels(
+  "n" = c(10, 100, 1000),
+  "estimator" = c("estimator_1", "estimator_2")
+)
+sim \%<>\% set_config(num_sim=1)
+sim \%<>\% set_script(function() {
+  dat <- create_data(L$n)
+  lambda_hat <- do.call(L$estimator, list(dat))
+  return (list("lambda_hat"=lambda_hat))
+})
+sim \%<>\% run()
+sim$results
 }

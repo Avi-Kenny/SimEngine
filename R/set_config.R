@@ -5,8 +5,8 @@
 #'     attached via library() when set_config() is called. Multiple calls to
 #'     set_config() will only overwrite configuration options that are specified
 #'     in the subsequent calls, leaving others in place.
-#' @param sim_obj A simulation object of class "simba", usually created by
-#'     new_sim()
+#' @param sim_obj A simulation object of class \code{simba}, usually created by
+#'     \link{new_sim}
 #' @param num_sim Number of simulations to conduct for each level combination
 #' @param datasets String; either "one" or "many". If set to "one", the same
 #'     dataset will be used for all simulations. If set to "many", a new

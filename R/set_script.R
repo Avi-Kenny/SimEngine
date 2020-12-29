@@ -3,8 +3,8 @@
 #' @description Specify a function to be used as the "simulation script". The
 #'     simulation script is a function that runs a single simulation replicate
 #'     and returns the results.
-#' @param sim_obj A simulation object of class "simba", usually created by
-#'     new_sim()
+#' @param sim_obj A simulation object of class \code{simba}, usually created by
+#'     \link{new_sim}
 #' @param fn A function that runs a single simulation replicate and returns the
 #'     result. The result must be a list of key-value pairs. The values
 #'     themselves can either be simple (numeric, character, etc.) or complex

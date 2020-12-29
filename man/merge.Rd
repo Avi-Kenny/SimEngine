@@ -7,18 +7,18 @@
 merge(sim_obj_1, sim_obj_2, ...)
 }
 \arguments{
-\item{sim_obj_1}{A simulation object of class "simba", usually created by
-new_sim()}
+\item{sim_obj_1}{A simulation object of class \code{simba}, usually created
+by \link{new_sim}}
 
-\item{sim_obj_2}{A simulation object of class "simba", usually created by
-new_sim()}
+\item{sim_obj_2}{A simulation object of class \code{simba}, usually created
+by \link{new_sim}}
 }
 \value{
 A simulation object containing the results from both sim_obj_1 and
-sim_obj_1
+    sim_obj_1
 }
 \description{
-Merge simulation results
+!!!!! TO DO
 }
 \examples{
 TO DO

@@ -38,13 +38,13 @@ install_github(repo="Avi-Kenny/simba")
 
 ## Getting started
 
-The goal of many statistical simulations is to test how a new statistical method performs against existing methods. Most statistical simulations include three basic phases: (1) generate some data, (2) run one or more methods using the generated data, and (3) compare the performance of the methods. We highly recommend reading the <a href="/docs/concepts.html" target="_blank">Simulation concepts</a> section of this site for further discussion of these phases and other high-level concepts related to designing and running simulations with **simba**.
+The goal of many statistical simulations is to test how a new statistical method performs against existing methods. Most statistical simulations include three basic phases: (1) generate some data, (2) run one or more methods using the generated data, and (3) compare the performance of the methods. Check out the <a href="/docs/concepts.html" target="_blank">Simulation concepts</a> section of this site for further discussion of these phases and other high-level concepts related to designing and running simulations.
 
 To briefly illustrate how these phases are implemented using **simba**, we will use the example of estimating the average treatment effect of a drug in the context of a randomized controlled trial (RCT).
 
 ### 1) Load the package and create a "simulation object"
 
-The simulation object (an R object of class *simba*) will contain all data, functions, and results related to your simulation. Note that we make extensive use of the pipe operators (%<>% and %>%) from the **magrittr** package; if you have never used pipe operators, check out the <a href="https://magrittr.tidyverse.org" target="_blank">magrittr documentation</a>.
+The simulation object (an R object of class *simba*) will contain all data, functions, and results related to your simulation. Note that we make extensive use of the pipe operators (%>% and %<>%) from the **magrittr** package; if you have never used pipes, check out the <a href="https://magrittr.tidyverse.org" target="_blank">magrittr documentation</a>.
 
 ```R
 library(simba)
@@ -53,7 +53,7 @@ sim <- new_sim()
 
 ### 2) Write a function to generate some data
 
-In **simba**, functions that generate data are called *creators*. Our creator will simulate data from an RCT in which we compare a continuous outcome (blood pressure) between two groups (the "treatment group" versus the "control group"). We generate the data by looping through individuals, assigning them randomly to either the treatment group or the control group, and generating their outcome according to a simple model (note: although we use a for-loop for illustrative purposes, vectorized methods are often faster).
+In **simba**, functions that generate data are called *creators*. Our creator will simulate data from an RCT in which we compare a continuous outcome (e.g. blood pressure) between two groups (the "treatment group" versus the "control group"). We generate the data by looping through individuals, assigning them randomly to either the treatment group or the control group, and generating their outcome according to a simple model (note: although we use a for-loop for illustrative purposes, vectorized methods are often faster).
 
 ```R
 create_rct_data <- function (num_patients) {

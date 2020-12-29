@@ -2,23 +2,47 @@
 % Please edit documentation in R/set_script.R
 \name{set_script}
 \alias{set_script}
-\title{Add a "simulation script" function}
+\title{Set the "simulation script"}
 \usage{
 set_script(sim_obj, ...)
 }
 \arguments{
-\item{sim_obj}{A simulation object of class "simba", usually created by
-new_sim()}
+\item{sim_obj}{A simulation object of class \code{simba}, usually created by
+\link{new_sim}}
 
-\item{fn}{A function !!!!!}
+\item{fn}{A function that runs a single simulation replicate and returns the
+result. The result must be a list of key-value pairs. The values
+themselves can either be simple (numeric, character, etc.) or complex
+(matrices, lists, etc.). The function body can contain references to the
+special objects `L` (simulation levels) and `C` (simulation constants).
+See examples.}
 }
 \value{
-The original simulation object with the new script function added.
-The script should be a function that returns a list of key-value pairs. !!!!! continue
+The original simulation object with the new "simulation script"
+    function added.
 }
 \description{
-Add a "simulation script" function
+Specify a function to be used as the "simulation script". The
+    simulation script is a function that runs a single simulation replicate
+    and returns the results.
 }
 \examples{
-!!!!! TO DO
+# The following is a toy example of a simulation, illustrating the use of
+# the set_script() function.
+sim <- new_sim()
+sim \%<>\% add_creator("create_data", function(n) { rpois(n, lambda=5) })
+sim \%<>\% add_method("estimator_1", function(dat) { mean(dat) })
+sim \%<>\% add_method("estimator_2", function(dat) { var(dat) })
+sim \%<>\% set_levels(
+  "n" = c(10, 100, 1000),
+  "estimator" = c("estimator_1", "estimator_2")
+)
+sim \%<>\% set_config(num_sim=1)
+sim \%<>\% set_script(function() {
+  dat <- create_data(L$n)
+  lambda_hat <- do.call(L$estimator, list(dat))
+  return (list("lambda_hat"=lambda_hat))
+})
+sim \%<>\% run()
+sim$results
 }

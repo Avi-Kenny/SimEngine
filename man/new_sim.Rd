@@ -2,19 +2,22 @@
 % Please edit documentation in R/new_sim.R
 \name{new_sim}
 \alias{new_sim}
-\title{Initialize a new simulation object}
+\title{Create a new simulation object}
 \usage{
 new_sim()
 }
-\arguments{
-\item{config}{A list. Contains simulation configuration information}
-}
 \value{
-A simulation object of class "simba"
+A simulation object, of class \code{simba}
 }
 \description{
-Initialize a new simulation object
+Create a new simulation object. This is typically the first
+    function to be called when running a simulation using \pkg{simba}.
 }
 \examples{
 sim <- new_sim()
+sim
+}
+\seealso{
+Visit \url{https://avi-kenny.github.io/simba} for more information on how to
+    use the \pkg{simba} simulation framework.
 }

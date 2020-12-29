@@ -107,7 +107,7 @@ sim %<>% run()
 sim %<>% summary()
 ```
 
-To run this code on a CCS, we must wrap in the *run_on_cluster()* function. To use this function, you must break your code into three blocks, called *first*, *main*, and *last*. The code in the *first* block will run only once, setting up the simulation object and saving it in the filesystem of your CCS. The code in the *main* block will run for every simulation replicate, and will have access to the simulation object you created in the *first* block. Typically, the code here will just include a single call to *run()*, as illustrated below. Finally, the code in the *last* block will run after all your simulation replicates have finished running, and after **simba** has automatically compiled the results into your simulation object. Use the *run_on_cluster()* function as follows:
+To run this code on a CCS, we must wrap in the *run_on_cluster()* function. To use this function, you must break your code into three blocks, called *first*, *main*, and *last*. The code in the *first* block will run only once, and will set up the simulation object. When this is done, *simba* will save the simulation object in the filesystem of your CCS. The code in the *main* block will run for every simulation replicate, and will have access to the simulation object you created in the *first* block. Typically, the code here will just include a single call to *run()*, as illustrated below. Finally, the code in the *last* block will run after all your simulation replicates have finished running, and after **simba** has automatically compiled the results into your simulation object. Use the *run_on_cluster()* function as follows:
 
 ```R
 library(simba)

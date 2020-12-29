@@ -2,8 +2,8 @@
 #'
 #' @description Set one or more simulation levels, which are things that vary
 #'     between simulation replicates.
-#' @param sim_obj A simulation object of class "simba", usually created by
-#'     new_sim()
+#' @param sim_obj A simulation object of class \code{simba}, usually created by
+#'     \link{new_sim}
 #' @param ... One or more key-value pairs representing simulation levels. Each
 #'     value can either be a vector (for simple levels) or a list of lists (for
 #'     more complex levels). See examples.

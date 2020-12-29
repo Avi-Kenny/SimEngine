@@ -2,19 +2,32 @@
 % Please edit documentation in R/get.R
 \name{get}
 \alias{get}
-\title{Get the value of a simulation object variable}
+\title{Get the value of a simulation object internal variable}
 \usage{
 get(sim_obj, variable)
 }
 \arguments{
-\item{sim_obj}{A simulation object of class "simba", usually created by
-new_sim()}
+\item{sim_obj}{A simulation object of class \code{simba}, usually created by
+\link{new_sim}}
 
-\item{variable}{The name of the internal variable}
+\item{variable}{The name of the internal variable. Options include:
+\code{num_sim_total} (the total number of simulation replicates to be
+run, equal to the configuration variable num_sim times the number of
+simulation levels), \code{start_time} (the time at which the simulation
+began), and \code{end_time} (the time at which the simulation finished),
+\code{total_runtime} (the difference between start_time and end_time, in
+seconds).}
+}
+\value{
+The value of the internal variable. The data type depends on the
+    \code{variable} argument.
 }
 \description{
-Get the value of a simulation object variable
+Get the value of a simulation object internal variable
 }
 \examples{
-!!!!! TO DO
+sim <- new_sim()
+sim \%>\% get("num_sim_total")
+sim \%<>\% set_levels(alpha=c(2,3,4))
+sim \%>\% get("num_sim_total")
 }

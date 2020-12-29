@@ -7,8 +7,8 @@
 set_config(sim_obj, ...)
 }
 \arguments{
-\item{sim_obj}{A simulation object of class "simba", usually created by
-new_sim()}
+\item{sim_obj}{A simulation object of class \code{simba}, usually created by
+\link{new_sim}}
 
 \item{num_sim}{Number of simulations to conduct for each level combination}
 
@@ -36,7 +36,11 @@ should be stored; defaults to current working directory}
 The original simulation object with a modified configuration
 }
 \description{
-Modify the simulation configuration
+This function sets configuration options for the simulation. If
+    the 'packages' argument is specified, all packages will be loaded and
+    attached via library() when set_config() is called. Multiple calls to
+    set_config() will only overwrite configuration options that are specified
+    in the subsequent calls, leaving others in place.
 }
 \examples{
 sim <- new_sim()

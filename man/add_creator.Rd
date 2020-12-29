@@ -7,8 +7,8 @@
 add_creator(sim_obj, ...)
 }
 \arguments{
-\item{sim_obj}{A simulation object of class "simba", usually created by
-new_sim()}
+\item{sim_obj}{A simulation object of class \code{simba}, usually created by
+\link{new_sim}}
 
 \item{name}{A name for the dataset-creating function}
 
@@ -18,17 +18,23 @@ new_sim()}
 The original simulation object with the new creator function added
 }
 \description{
-Add a "creator" function
+Add a "creator" function to your simulation object.
+}
+\details{
+There are two ways to use add_creator(). The first is to declare a function
+    and add it to simba later:\cr
+\code{sim <- new_sim()}\cr
+\code{create_data <- function (n) { rpois(n, lambda=5) }}\cr
+\code{sim \%<>\% add_creator(create_data)}\cr\cr
+The second is to do both at the same time:\cr
+\code{sim <- new_sim()}\cr
+\code{sim \%<>\% add_creator("create_data", function(n) { rpois(n, lambda=5) }}\cr\cr
+With either option, you can test your function as follows:\cr
+\code{sim$creators$create_data(10)}
 }
 \examples{
 sim <- new_sim()
-sim \%<>\% add_creator(
-  "create_rct",
-  function(n, sigma) {
-    x <- runif(n)
-    y <- 4*x + rnorm(n, mean=0, sd=sigma)
-    return (data.frame(x=x,y=y))
-  }
-)
-!!!!! continue example
+sim \%<>\% add_creator("create_data", function(n) {
+  rpois(n, lambda=5)
+})
 }

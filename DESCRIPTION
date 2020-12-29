@@ -14,12 +14,12 @@ RoxygenNote: 7.1.1
 Depends: 
     magrittr,
 Imports: 
-	parallel,
-	pbapply,
-	data.table
+    parallel,
+    pbapply,
+    data.table,
+    simba
 Suggests: 
     knitr,
     rmarkdown,
     testthat (>= 2.1.0)
 VignetteBuilder: knitr
-Roxygen: list(markdown = TRUE)

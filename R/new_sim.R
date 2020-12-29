@@ -1,8 +1,11 @@
-#' Initialize a new simulation object
+#' Create a new simulation object
 #'
-#' @description !!!!! TO DO
-#' @param config A list. Contains simulation configuration information
-#' @return A simulation object of class "simba"
+#' @description Create a new simulation object. This is typically the first
+#'     function to be called when running a simulation using \pkg{simba}.
+#' @return A simulation object, of class \code{simba}
+#' @seealso
+#' Visit \url{https://avi-kenny.github.io/simba} for more information on how to
+#'     use the \pkg{simba} simulation framework.
 #' @examples
 #' sim <- new_sim()
 #' sim

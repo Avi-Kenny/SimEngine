@@ -48,8 +48,9 @@ print.simba <- function(sim_obj) {
 #'
 #' @param obj The object to check for errors (can be a list)
 #' @param err The type of error to check for (character string)
+#' @param other A generic argument that can be used to pass in additional info
 #' @return Throws and error or returns NULL
-handle_errors <- function(obj, err) {
+handle_errors <- function(obj, err, other=NA) {
   switch(
     err,
 
@@ -65,7 +66,19 @@ handle_errors <- function(obj, err) {
       }
     },
 
-    "error type 3" = {}
+    "is.function" = {
+      if (!is.function(obj)) {
+        stop(paste(substitute(obj),"must be a function"), call.=FALSE)
+      }
+    },
+
+    "is.string" = {
+      if (!(is.character(obj) && length(obj)==1)) {
+        stop(paste(substitute(obj),"must be a character string"), call.=FALSE)
+      }
+    },
+
+    "error type" = {}
 
   )
 }

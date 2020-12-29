@@ -1,8 +1,8 @@
 #' Summarize simulation results
 #'
 #' @description Calculate summary statistics for simulation results
-#' @param sim_obj A simulation object of class "simba", usually created by
-#'     new_sim()
+#' @param sim_obj A simulation object of class \code{simba}, usually created by
+#'     \link{new_sim}
 #' @param sd If `sd=TRUE` is passed, standard deviations are reported in
 #'     addition to means
 #' @param coverage !!!!! TO DO
