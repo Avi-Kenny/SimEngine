@@ -66,6 +66,12 @@ handle_errors <- function(obj, err, other=NA) {
       }
     },
 
+    "is.in" = {
+      if (!(obj %in% other)) {
+        stop(paste(obj,"is not an allowed option."), call.=FALSE)
+      }
+    },
+
     "is.function" = {
       if (!is.function(obj)) {
         stop(paste(substitute(obj),"must be a function"), call.=FALSE)

@@ -4,7 +4,7 @@
 \alias{handle_errors}
 \title{Function for internal error handling}
 \usage{
-handle_errors(obj, err)
+handle_errors(obj, err, possible = NA)
 }
 \arguments{
 \item{obj}{The object to check for errors (can be a list)}
