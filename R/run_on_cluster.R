@@ -1,6 +1,6 @@
 #' Framework for running simulations on a cluster computing system
 #'
-#' @description !!!!! TO DO
+#' @description !!!!! TO DO. Job schedulers currently supported include Slurm, SGE, ... !!!!!
 #' @param first Code to run at the start of a simulation. This should be a block
 #'     of code enclosed by curly braces {} that that creates a simulation
 #'     object. Put everything you need in the simulation object, since global
@@ -8,7 +8,7 @@
 #'     and 'last' code blocks run.
 #' @param main Code that will run for every simulation replicate. This should be
 #'     a block of code enclosed by curly braces {} that includes a call to
-#'     run(). This code block will have access to the simulation object you
+#'     \link{run}. This code block will have access to the simulation object you
 #'     created in the 'first' code block, but any changes made here to the
 #'     simulation object will not be saved.
 #' @param last Code that will run after all simulation replicates have been run.
@@ -16,45 +16,75 @@
 #'     your simulation object (which at this point will contain your results)
 #'     and do something with it, such as display your results on a graph.
 #' @param cluster_config A list of configuration options. You must specify
-#'     sim_var, which is the name of the variable you use for your simulation
-#'     object. You also must specify either js (the job scheduler you are using)
-#'     or tid_var (the name of the environment variable that your task ID)
-#'     is stored in. You can optionally specify dir, which is a path to a
-#'     directory that will hold your simulation object and results (this
-#'     defaults to the current working directory).
+#'     either js (the job scheduler you are using) or tid_var (the name of the
+#'     environment variable that your task ID) is stored in. You can optionally
+#'     specify dir, which is a path to a directory that will hold your
+#'     simulation object and results (this defaults to the current working
+#'     directory).
 #' @examples
 #' !!!!! TO DO
 #' @export
 run_on_cluster <- function(first, main, last, cluster_config) {
 
-  cfg <- cluster_config
+  # Rename arguments to reduce changes of a naming conflict with contents of
+  #   first/main/last blocks
+  ..first <- substitute(first)
+  ..main <- substitute(main)
+  ..last <- substitute(last)
+  ..cfg <- cluster_config
+  rm(first)
+  rm(main)
+  rm(last)
+  rm(cluster_config)
 
   # Run all code locally if simulation is not being run on cluster
   if (Sys.getenv("run")=="") {
 
-    # Run code locally
-    eval(substitute(first))
-    eval(substitute(main))
-    eval(substitute(last))
+    # Run code locally (`first` block)
+    eval(..first)
 
-    # Assign simulation object to cfg$sim_var in the parent environment
+    # Extract the simulation object variable name
+    ..env <- environment()
+    ..count <- 0
+    ..sim_var <- NA
+    for (obj_name in ls(..env)) {
+      if (class(base::get(x=obj_name, envir=..env))=="simba") {
+        ..sim_var <- obj_name
+        ..count <- ..count + 1
+      }
+    }
+    if (is.na(..sim_var)) {
+      stop("A simulation object must be created in the `first` block")
+    }
+    if (..count>1) {
+      stop(paste("Multiple simulation objects were detected; only one may be",
+                 "created in the `first` block"))
+    }
+    rm(..count)
+    rm(..env)
+
+    # Run code locally (`main` and `last` blocks)
+    eval(..main)
+    eval(..last)
+
+    # Assign simulation object to ..sim_var in the parent environment
     assign(
-      x = cfg$sim_var,
-      value = eval(as.name(cfg$sim_var)),
+      x = ..sim_var,
+      value = eval(as.name(..sim_var)),
       envir = parent.frame()
     )
 
   } else {
 
     # Construct necessary paths
-    if (is.null(cfg$dir)) {
-      path_sim_obj <- "sim.simba"
-      path_sim_out <- "sim_output.txt"
-      path_sim_res <- "simba_results"
+    if (is.null(..cfg$dir)) {
+      ..path_sim_obj <- "sim.simba"
+      ..path_sim_out <- "sim_output.txt"
+      ..path_sim_res <- "simba_results"
     } else {
-      path_sim_obj <- paste0(cfg$dir, "/sim.simba")
-      path_sim_out <- paste0(cfg$dir, "/sim_output.txt")
-      path_sim_res <- paste0(cfg$dir, "/simba_results")
+      ..path_sim_obj <- paste0(..cfg$dir, "/sim.simba")
+      ..path_sim_out <- paste0(..cfg$dir, "/sim_output.txt")
+      ..path_sim_res <- paste0(..cfg$dir, "/simba_results")
     }
 
     # Error handling: incorrect Sys.getenv("run") variable
@@ -69,21 +99,21 @@ run_on_cluster <- function(first, main, last, cluster_config) {
   if (Sys.getenv("run")=="first") {
 
     # Check that cfg$dir is a valid directory
-    if (!is.null(cfg$dir) && !dir.exists(cfg$dir)) {
-      stop(paste("Directory", cfg$dir, "does not exist."))
+    if (!is.null(..cfg$dir) && !dir.exists(..cfg$dir)) {
+      stop(paste("Directory", ..cfg$dir, "does not exist."))
     }
 
     # Error handling: test to see that we can write to cfg$dir
     tryCatch(
-      expr = { saveRDS(list(a=123,b=456), file=path_sim_obj) },
+      expr = { saveRDS(list(a=123,b=456), file=..path_sim_obj) },
       error = function(e) {
-        stop(paste0("Directory ", cfg$dir, " is not writable."))
+        stop(paste0("Directory ", ..cfg$dir, " is not writable."))
       }
     )
 
     # Error handling: test to see that we can read from cfg$dir
     tryCatch(
-      expr = { x <- readRDS(file=path_sim_obj) },
+      expr = { x <- readRDS(file=..path_sim_obj) },
       error = function(e) {
         stop(paste0("Directory ", cfg$dir, " is not readable."))
       }
@@ -91,41 +121,56 @@ run_on_cluster <- function(first, main, last, cluster_config) {
 
     # Error handling: test to see that we can delete from cfg$dir
     tryCatch(
-      expr = { unlink(path_sim_obj) },
+      expr = { unlink(..path_sim_obj) },
       error = function(e) {
         stop(paste0("Files cannot be deleted from directory ", cfg$dir, "."))
       }
     )
 
     # Remove old files
-    if (dir.exists(path_sim_res)) { unlink(path_sim_res, recursive=TRUE) }
-    if (file.exists(path_sim_obj)) { unlink(path_sim_obj) }
+    if (dir.exists(..path_sim_res)) { unlink(..path_sim_res, recursive=TRUE) }
+    if (file.exists(..path_sim_obj)) { unlink(..path_sim_obj) }
 
     # Create directory to store simulation results
-    dir.create(path_sim_res)
+    dir.create(..path_sim_res)
 
     ..start_time <- Sys.time()
 
     # Run 'first' code
-    eval(substitute(first))
+    eval(..first)
 
-    # Error handling: incorrectly specified sim_var
-    if (!exists(cfg$sim_var) || class(eval(as.name(cfg$sim_var)))!="simba") {
-      stop("cluster_config$sim_var is incorrectly specified.")
+    # Extract the simulation object variable name
+    ..env <- environment()
+    ..count <- 0
+    ..sim_var <- NA
+    for (obj_name in ls(..env)) {
+      if (class(base::get(x=obj_name, envir=..env))=="simba") {
+        ..sim_var <- obj_name
+        ..count <- ..count + 1
+      }
     }
+    if (is.na(..sim_var)) {
+      stop("A simulation object must be created in the `first` block")
+    }
+    if (..count>1) {
+      stop(paste("Multiple simulation objects were detected; only one may be",
+                 "created in the `first` block"))
+    }
+    rm(..count)
+    rm(..env)
 
     # Save simulation object
     # We assume the user doesn't name their simulation object '..sim_obj'
-    ..sim_obj <- eval(as.name(cfg$sim_var))
-    ..sim_obj$internals$sim_var <- cfg$sim_var
+    ..sim_obj <- eval(as.name(..sim_var))
+    ..sim_obj$internals$sim_var <- ..sim_var
     ..sim_obj$internals$start_time <- ..start_time
-    ..sim_obj$config$parallel <- "none"
-    saveRDS(..sim_obj, file=path_sim_obj)
+    ..sim_obj$config$parallel <- "none" # !!!!! Revisit this
+    saveRDS(..sim_obj, file=..path_sim_obj)
 
   } else if (Sys.getenv("run") %in% c("main","last")) {
 
     tryCatch(
-      ..sim_obj <- readRDS(path_sim_obj),
+      ..sim_obj <- readRDS(..path_sim_obj),
       warning = function(w) {
         stop(paste(
           "Simulation object was not found. Make sure your 'first' function",
@@ -135,7 +180,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
     )
 
     if (!class(..sim_obj)=="simba") {
-      stop("Invalid simulation object.")
+      stop("Invalid simulation object")
     }
 
   }
@@ -145,35 +190,35 @@ run_on_cluster <- function(first, main, last, cluster_config) {
 
     # if there are error files in the results directory and stop_at_error is TRUE
     # skip this rep
-    err_reps <- list.files(path = path_sim_res, pattern = "e_*")
+    err_reps <- list.files(path = ..path_sim_res, pattern = "e_*")
     if (length(err_reps) > 0 & ..sim_obj$config$stop_at_error){
       # do nothing
     } else {
       # Error handling: tid_var and js
-      if (is.null(cfg$tid_var) && is.null(cfg$js)) {
+      if (is.null(..cfg$tid_var) && is.null(..cfg$js)) {
         stop("You must specify either 'js' or 'tid_var' in cluster_config.")
       }
 
       # User specified cfg$tid_var
-      if (!is.null(cfg$tid_var)) {
-        tid_var <- cfg$tid_var
+      if (!is.null(..cfg$tid_var)) {
+        tid_var <- ..cfg$tid_var
       }
 
       # User specified cfg$js
-      if (!is.null(cfg$js)) {
+      if (!is.null(..cfg$js)) {
 
         # Make 'js' case insensitive
-        cfg$js <- tolower(cfg$js)
+        ..cfg$js <- tolower(..cfg$js)
 
-        if (!(cfg$js %in% c("slurm","sge"))) {
+        if (!(..cfg$js %in% c("slurm","sge"))) {
           stop(paste(
             "cluster_config variable 'js' must equal one of the following:",
             "'slurm', 'sge'."))
         }
 
         tid_var <- dplyr::case_when(
-          cfg$js=="slurm" ~ "SLURM_ARRAY_TASK_ID",
-          cfg$js=="sge" ~ "SGE_TASK_ID"
+          ..cfg$js=="slurm" ~ "SLURM_ARRAY_TASK_ID",
+          ..cfg$js=="sge" ~ "SGE_TASK_ID"
         )
 
       }
@@ -203,7 +248,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
           do.call("library", list(pkg))
         }
         assign(..sim_obj$internals$sim_var, ..sim_obj)
-        eval(substitute(main))
+        eval(..main)
         assign("..sim_obj", eval(as.name(..sim_obj$internals$sim_var)))
       }
 
@@ -213,13 +258,13 @@ run_on_cluster <- function(first, main, last, cluster_config) {
       if (..sim_obj$internals$run_state=="run, no errors") {
         saveRDS(
           ..sim_obj$results,
-          paste0(path_sim_res, "/r_",
+          paste0(..path_sim_res, "/r_",
                  sprintf(fmt, ..sim_obj$internals$tid), ".rds")
         )
       } else if (..sim_obj$internals$run_state=="run, all errors") {
         saveRDS(
           ..sim_obj$errors,
-          paste0(path_sim_res, "/e_",
+          paste0(..path_sim_res, "/e_",
                  sprintf(fmt, ..sim_obj$internals$tid), ".rds")
         )
       }
@@ -231,9 +276,9 @@ run_on_cluster <- function(first, main, last, cluster_config) {
 
     # if there are error files in the results directory and stop_at_error is TRUE
     # skip this rep
-    err_reps <- list.files(path = path_sim_res, pattern = "e_*")
+    err_reps <- list.files(path = ..path_sim_res, pattern = "e_*")
     if (length(err_reps) > 0 & ..sim_obj$config$stop_at_error){
-      ..f <- file(path_sim_out, open="wt")
+      ..f <- file(..path_sim_out, open="wt")
       sink(..f, type="output", append=FALSE)
       sink(..f, type="message", append=FALSE)
       cat(paste("simba output START:",Sys.time(),"\n\n"))
@@ -243,17 +288,17 @@ run_on_cluster <- function(first, main, last, cluster_config) {
       sink(type="message")
       close(..f)
 
-      unlink(paste0(path_sim_res, "/r_*"))
+      unlink(paste0(..path_sim_res, "/r_*"))
     } else {
       # Process result/error files
-      files <- dir(paste0(path_sim_res))
+      files <- dir(paste0(..path_sim_res))
       results_df <- NULL
       errors_df <- NULL
       for (file in files) {
 
         if (substr(file,1,1)=="r") {
 
-          r <- readRDS(paste0(path_sim_res, "/", file))
+          r <- readRDS(paste0(..path_sim_res, "/", file))
 
           if (class(r)=="data.frame") {
             if (is.null(results_df)) {
@@ -267,7 +312,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
 
         } else if (substr(file,1,1)=="e") {
 
-          e <- readRDS(paste0(path_sim_res, "/", file))
+          e <- readRDS(paste0(..path_sim_res, "/", file))
 
           if (class(e)=="data.frame") {
             if (is.null(errors_df)) {
@@ -300,12 +345,15 @@ run_on_cluster <- function(first, main, last, cluster_config) {
       }
 
       # Delete individual results files and save simulation object
-      unlink(path_sim_res, recursive=TRUE)
-      saveRDS(..sim_obj, file=path_sim_obj)
+      # This is done before running the 'last' code so that the compiled
+      #   simulation object is saved even if there's an error with the 'last'
+      #   code
+      unlink(..path_sim_res, recursive=TRUE)
+      saveRDS(..sim_obj, file=..path_sim_obj)
 
       # Run 'last' code
       # Divert output to simba_output.txt file
-      ..f <- file(path_sim_out, open="wt")
+      ..f <- file(..path_sim_out, open="wt")
       sink(..f, type="output", append=FALSE)
       sink(..f, type="message", append=FALSE)
       cat(paste("simba output START:",Sys.time(),"\n\n"))
@@ -313,7 +361,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
         do.call("library", list(pkg))
       }
       assign(..sim_obj$internals$sim_var, ..sim_obj)
-      eval(substitute(last))
+      eval(..last)
       cat(paste("\n\nsimba output END:",Sys.time(),"\n"))
       sink(type="output")
       sink(type="message")
@@ -326,10 +374,8 @@ run_on_cluster <- function(first, main, last, cluster_config) {
         difftime(..sim_obj$internals$end_time, ..sim_obj$internals$start_time),
         units = "secs"
       )
-      saveRDS(..sim_obj, file=path_sim_obj)
+      saveRDS(..sim_obj, file=..path_sim_obj)
     }
-
-
 
   }
 

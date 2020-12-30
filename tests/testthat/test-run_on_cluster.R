@@ -12,10 +12,11 @@ run_c <- function(ret=FALSE) {
       })
     },
     main = { sim %<>% run() },
-    last = {sim %>% summary() %>% print() },
-    cluster_config = list(sim_var="sim", js="slurm")
+    last = { sim %>% summary() %>% print() },
+    cluster_config = list(js="slurm")
   )
 
+  # The `sim` object should have been created in this environment
   if (ret) { return (sim) }
 
 }

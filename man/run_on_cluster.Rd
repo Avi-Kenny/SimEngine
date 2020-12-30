@@ -15,7 +15,7 @@ and 'last' code blocks run.}
 
 \item{main}{Code that will run for every simulation replicate. This should be
 a block of code enclosed by curly braces {} that includes a call to
-run(). This code block will have access to the simulation object you
+\link{run}. This code block will have access to the simulation object you
 created in the 'first' code block, but any changes made here to the
 simulation object will not be saved.}
 
@@ -25,15 +25,14 @@ your simulation object (which at this point will contain your results)
 and do something with it, such as display your results on a graph.}
 
 \item{cluster_config}{A list of configuration options. You must specify
-sim_var, which is the name of the variable you use for your simulation
-object. You also must specify either js (the job scheduler you are using)
-or tid_var (the name of the environment variable that your task ID)
-is stored in. You can optionally specify dir, which is a path to a
-directory that will hold your simulation object and results (this
-defaults to the current working directory).}
+either js (the job scheduler you are using) or tid_var (the name of the
+environment variable that your task ID) is stored in. You can optionally
+specify dir, which is a path to a directory that will hold your
+simulation object and results (this defaults to the current working
+directory).}
 }
 \description{
-!!!!! TO DO
+!!!!! TO DO. Job schedulers currently supported include Slurm, SGE, ... !!!!!
 }
 \examples{
 !!!!! TO DO
