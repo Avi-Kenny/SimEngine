@@ -37,8 +37,9 @@
 #' sim
 #' @export
 set_config <- function(
-  sim_obj, num_sim=1000, datasets, parallel, parallel_cores, packages,
-  stop_at_error, dir
+  sim_obj, num_sim=1000, datasets="many", parallel="none",
+  parallel_cores=parallel::detectCores()-1, packages=NULL,
+  stop_at_error=FALSE, dir=getwd()
 ) UseMethod("set_config")
 
 #' @export

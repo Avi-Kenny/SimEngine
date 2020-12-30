@@ -30,8 +30,8 @@ new_sim <- function() {
       num_sim = 1000,
       datasets = "many",
       parallel = "none",
-      parallel_cores = 1,
-      packages = c(),
+      parallel_cores = parallel::detectCores() - 1,
+      packages = NULL,
       stop_at_error = FALSE,
       dir = getwd()
     ),
