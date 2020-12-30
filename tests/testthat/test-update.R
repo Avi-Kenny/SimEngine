@@ -63,8 +63,8 @@ prev_row1 <- sim$results[1,]
 
 ### update handles errors ###
 test_that("Invalid options throw errors", {
-  expect_error(update(sim, keep_errors = "a"), "'keep_errors' must be a logical")
-  expect_error(update(sim, keep_extra = "a"), "'keep_extra' must be a logical")
+  expect_error(update(sim, keep_errors = "a"), "`keep_errors` must be of type `logical`")
+  expect_error(update(sim, keep_extra = "a"), "`keep_extra` must be of type `logical`")
 })
 
 sim %<>% set_levels(
@@ -155,7 +155,7 @@ sim %<>% set_config(
   parallel = "none"
 )
 
-sim %<>% run
+sim %<>% run()
 prev_ncol <- c(length(sim$errors), length(sim$warnings))
 prev_nrow <- c(nrow(sim$errors), nrow(sim$warnings))
 prev_row1 <- list(sim$errors[1,], sim$warnings[1,])

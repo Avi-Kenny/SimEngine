@@ -64,7 +64,7 @@ handle_errors <- function(obj, err, other=NA) {
 
     "is.boolean" = {
       if (!(is.logical(obj) && length(obj) == 1)) {
-        stop(paste0("`",dso,"` must be Boolean"), call.=FALSE)
+        stop(paste0("`",dso,"` must be of type 'logical'"), call.=FALSE)
       }
     },
 
