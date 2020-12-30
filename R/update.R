@@ -1,8 +1,8 @@
 #' Update a simulation
 #'
 #' @description !!!!! TO DO
-#' @param sim_obj A simulation object of class "simba", usually created by
-#'     new_sim(), that has already been run by run()
+#' @param sim_obj A simulation object of class \code{simba}, usually created by
+#'     \link{new_sim}, that has already been run by the \link{run} function
 #' @param keep_errors logical (TRUE by default); if TRUE, do not try to re-run
 #'     simulation reps that results in errors previously; if FALSE, attempt to
 #'     run those reps again

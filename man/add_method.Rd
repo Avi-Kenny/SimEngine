@@ -4,7 +4,7 @@
 \alias{add_method}
 \title{Add a "method" function}
 \usage{
-add_method(sim_obj, ...)
+add_method(sim_obj, name, fn)
 }
 \arguments{
 \item{sim_obj}{A simulation object of class \code{simba}, usually created by
@@ -12,27 +12,47 @@ add_method(sim_obj, ...)
 
 \item{name}{A name for the method function}
 
-\item{fn}{A function that performs some analytic method. The function must
-accept an object returned by a creator function as its first argument}
+\item{fn}{A method function}
 }
 \value{
 The original simulation object with the new method function added
 }
 \description{
-Add a "method" function to your simulation object.
+Add a "method" function to your simulation object. A method
+    function is just a function, and can be used anywhere that you would
+    normally write and use a regular global function. The advantages of
+    explicitly adding a method function to your simulation (rather than
+    declaring and using a function within your simulation script) are that
+    (1) you can use the method function as a simulation level, and (2)
+    parallelization is automated. Often, the method function will be a
+    statistical method that you want to test (e.g. an estimator), and will
+    take in a dataset returned by a creator function as its first argument;
+    however, this is not always the case.
+}
+\details{
+\itemize{
+  \item{As with \link{add_creator}, there are two ways to use
+    \code{add_method}. If two arguments are supplied (\code{sim_obj} and
+    \code{fn}), you can create a function separately and add it to your
+    simulation object later. If three arguments are supplied, you can do both
+    at the same time, using an anonymous function for the \code{fn} argument.
+    See examples.}
+  \item{Your method will be stored in sim_obj$methods. If you added a
+    method called \code{estimator_1}, you can test it out by running
+    \code{sim$creators$estimator_1()}. See examples.}
+}
 }
 \examples{
-# First, we create a simulation object and add creator function:
 sim <- new_sim()
 sim \%<>\% add_creator("create_data", function(n) { rpois(n, lambda=5) })
 
-# Like add_creator(), there are two ways to use add_method(). The first is to
-# declare a function and add it to simba later:
+# The first way to use add_method is to declare a function and add it to
+# your simulation object later:
 
 estimator_1 <- function (dat) { mean(dat) }
 sim \%<>\% add_method(estimator_1)
 
-# The second is to do both at the same time:
+# The second way is to do both at the same time:
 
 sim \%<>\% add_method("estimator_2", function(dat) {
   var(dat)

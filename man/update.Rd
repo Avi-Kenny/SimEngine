@@ -7,8 +7,8 @@
 update(sim_obj, keep_errors = TRUE, keep_extra = FALSE)
 }
 \arguments{
-\item{sim_obj}{A simulation object of class "simba", usually created by
-new_sim(), that has already been run by run()}
+\item{sim_obj}{A simulation object of class \code{simba}, usually created by
+\link{new_sim}, that has already been run by the \link{run} function}
 
 \item{keep_errors}{logical (TRUE by default); if TRUE, do not try to re-run
 simulation reps that results in errors previously; if FALSE, attempt to

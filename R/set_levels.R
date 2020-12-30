@@ -7,7 +7,7 @@
 #' @param ... One or more key-value pairs representing simulation levels. Each
 #'     value can either be a vector (for simple levels) or a list of lists (for
 #'     more complex levels). See examples.
-#' @param .add Only relevant if set_levels() is called twice or more. On the
+#' @param .add Only relevant if \link{set_levels} is called twice or more. On the
 #'     second call, if add=FALSE (default) the old set of levels will be
 #'     replaced by the new set, whereas if add=TRUE the new set of levels will
 #'     be merged with the old set. See examples.
@@ -33,7 +33,7 @@
 #' )
 #' sim$levels
 #'
-#' # By default, set_levels() will overwrite old levels if it is called twice:
+#' # By default, set_levels will overwrite old levels if it is called twice:
 #' sim %<>% set_levels(alpha=c(1,2), beta=c(5,6))
 #' sim %<>% set_levels(alpha=c(3,4), gamma=c(7,8))
 #' sim$levels

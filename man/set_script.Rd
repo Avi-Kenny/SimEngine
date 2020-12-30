@@ -28,7 +28,7 @@ Specify a function to be used as the "simulation script". The
 }
 \examples{
 # The following is a toy example of a simulation, illustrating the use of
-# the set_script() function.
+# the set_script function.
 sim <- new_sim()
 sim \%<>\% add_creator("create_data", function(n) { rpois(n, lambda=5) })
 sim \%<>\% add_method("estimator_1", function(dat) { mean(dat) })

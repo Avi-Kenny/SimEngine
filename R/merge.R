@@ -6,7 +6,7 @@
 #' @param sim_obj_2 A simulation object of class \code{simba}, usually created
 #'     by \link{new_sim}
 #' @return A simulation object containing the results from both sim_obj_1 and
-#'     sim_obj_1
+#'     sim_obj_2
 #' @examples
 #' TO DO
 #' @export
