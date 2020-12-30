@@ -39,15 +39,18 @@ run.simba <- function(sim_obj, ...) {
 
   o_args <- list(...)
 
+  if (!is.null(o_args$sim_uids)) {
+    # !!!!! add error handling
+    sim_uids <- o_args$sim_uids
+  } else if (!is.na(sim_obj$internals$tid)) {
+    sim_uids <- sim_obj$internals$tid
+  } else if (sim_obj$internals$update) {
+    sim_uids <- sim_obj$internals$levels_grid_big$sim_uid
+  } else {
+    sim_uids <- 1:sim_obj$internals$num_sim_total
+  }
+
   if (!sim_obj$internals$update){
-    if (!is.null(o_args$sim_uids)) {
-      # !!!!! add error handling
-      sim_uids <- o_args$sim_uids
-    } else if (!is.na(sim_obj$internals$tid)) {
-      sim_uids <- sim_obj$internals$tid
-    } else {
-      sim_uids <- 1:sim_obj$internals$num_sim_total
-    }
 
     # Create levels_grid_big
     levels_grid_big <- expand.grid(list(
@@ -65,9 +68,9 @@ run.simba <- function(sim_obj, ...) {
     levels_grid_big <- cbind(1:nrow(levels_grid_big), levels_grid_big)
     names(levels_grid_big) <- c("sim_uid", names_2)
     sim_obj$internals$levels_grid_big <- levels_grid_big
-  } else{
-    sim_uids <- sim_obj$internals$levels_grid_big$sim_uid
-  }
+  }# else{
+  #  sim_uids <- sim_obj$internals$levels_grid_big$sim_uid
+  #}
 
 
   # Set up parallelization code

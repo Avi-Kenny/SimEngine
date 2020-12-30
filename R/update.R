@@ -40,8 +40,6 @@ update.simba <- function(sim_obj,
   }
 
   # make grid of previously run levels / sim_ids
-  #prev_levels_grid <- expand.grid(c(sorted_prev_levels,
-  #                                  list("sim_id" = 1:sim_obj$internals$num_sim_prev)))
   prev_levels_grid_big <- sim_obj$internals$levels_grid_big
   prev_levels_grid <- prev_levels_grid_big[,-c(1,3), drop = FALSE] %>% dplyr::distinct()
   if ("no levels" %in% names(sorted_prev_levels)){
@@ -57,7 +55,6 @@ update.simba <- function(sim_obj,
       sim_obj$levels_grid$level_id[is.na(sim_obj$levels_grid$level_id)] <- new_levelids
     }
   }
-  #print(sim_obj$levels_grid)
 
   # Create levels_grid_big
   levels_grid_big <- expand.grid(list(
@@ -90,11 +87,6 @@ update.simba <- function(sim_obj,
   not_run <- dplyr::anti_join(levels_grid_big,
                               prev_levels_grid_big,
                               by = names(prev_levels_grid_big[,-1]))
-  #print(not_run)
-
-  # add sim_uids to not_run
-  #not_run <- dplyr::inner_join(levels_grid_big, not_run, by = names(prev_levels_grid))
-
 
   # get levels / sim_ids that were previously run but are no longer needed
   extra_run <- dplyr::anti_join(prev_levels_grid_big[,-1],
@@ -126,6 +118,7 @@ update.simba <- function(sim_obj,
   # create a copy of the sim to hold new results
   sim_obj_copy <- sim_obj
   sim_obj_copy$internals$update <- TRUE
+  #sim_obj_copy$internals$levels_grid_big <- levels_grid_big
 
   # if there are extra runs to do
   if (nrow(not_run) > 0){
@@ -167,33 +160,6 @@ update.simba <- function(sim_obj,
       sim_obj_copy$warnings <- sim_obj$warnings
     }
 
-    # get new uids and level_ids that will be assigned to new reps, in order to maintain old uids/level_ids
-    #prev_reps <- sim_obj$internals$levels_grid_big
-    #max_uid <- max(prev_reps$sim_uid)
-
-    #new_uids <- (max_uid + 1):max(levels_grid_big$sim_uid)
-
-    #print(new_uids)
-    #print(new_levelids)
-    #not_run$sim_uid <- new_uids
-    #not_run$level_id <- new_levelids
-    #all_reps <- rbind(prev_reps, not_run)
-    # straighten out the uids
-    #if (!is.character(sim_obj_copy$results)){
-    #  sim_obj_copy$results <- dplyr::inner_join(all_reps,
-    #                                            sim_obj_copy$results[,-c(1,2)],
-    #                                            by = names(prev_levels_grid))
-    #}
-    #if (!is.character(sim_obj_copy$errors)){
-    #  sim_obj_copy$errors <- dplyr::inner_join(all_reps,
-    #                                           sim_obj_copy$errors[,-c(1,2)],
-    #                                           by = names(prev_levels_grid))
-    #}
-    #if (!is.character(sim_obj_copy$warnings)){
-    #  sim_obj_copy$warnings <- dplyr::inner_join(all_reps,
-    #                                             sim_obj_copy$warnings[,-c(1,2)],
-    #                                             by = names(prev_levels_grid))
-    #}
   } else{
     warning("No additional simulations to run.")
   }

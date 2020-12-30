@@ -155,7 +155,7 @@ sim %<>% set_config(
   parallel = "none"
 )
 
-sim %<>% run
+sim %<>% run()
 prev_ncol <- c(length(sim$errors), length(sim$warnings))
 prev_nrow <- c(nrow(sim$errors), nrow(sim$warnings))
 prev_row1 <- list(sim$errors[1,], sim$warnings[1,])
