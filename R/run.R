@@ -40,7 +40,6 @@ run.simba <- function(sim_obj, ...) {
   o_args <- list(...)
 
   if (!sim_obj$internals$update){
-
     if (!is.null(o_args$sim_uids)) {
       # !!!!! add error handling
       sim_uids <- o_args$sim_uids
@@ -69,6 +68,7 @@ run.simba <- function(sim_obj, ...) {
   } else{
     sim_uids <- sim_obj$internals$levels_grid_big$sim_uid
   }
+
 
   # Set up parallelization code
   if (sim_obj$config$parallel %in% c("inner", "outer")) {
