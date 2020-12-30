@@ -252,7 +252,7 @@ test_that("set_config() throws errors for invalid config option values", {
   expect_error(set_config(sim, packages=min),
                "`packages` must be a character vector")
   expect_error(set_config(sim, stop_at_error=1),
-               "`stop_at_error` must be Boolean")
+               "`stop_at_error` must be of type 'logical'")
 })
 
 # back to original everything
@@ -277,33 +277,8 @@ sim %<>% set_config(
   num_sim = 10,
   parallel = "none"
 )
-sim %<>% run("my script")
+sim %<>% run()
 
 ### get() ###
 
-# try to get an invalid variable
-test_that("get() throws error for invalid variable name", {
-  expect_error(get(sim, "invalid_variable"),
-               "'invalid_variable' is not an allowed option.")
-})
-
-# get runtime
-runtime <- get(sim, "total_runtime")
-test_that("get() returns runtime", {
-  expect_equal(length(runtime), 1)
-  expect_type(runtime, "double")
-})
-
-# get start time
-start_time <- get(sim, "start_time")
-test_that("get() returns start time", {
-  expect_equal(length(start_time), 1)
-  expect_equal(class(start_time), c("POSIXct", "POSIXt"))
-})
-
-# get end time
-end_time <- get(sim, "end_time")
-test_that("get() returns end time", {
-  expect_equal(length(end_time), 1)
-  expect_equal(class(end_time), c("POSIXct", "POSIXt"))
-})
+# !!!!! Add tests once get() is replaced

@@ -4,7 +4,7 @@
 \alias{set_script}
 \title{Set the "simulation script"}
 \usage{
-set_script(sim_obj, ...)
+set_script(sim_obj, fn)
 }
 \arguments{
 \item{sim_obj}{A simulation object of class \code{simba}, usually created by

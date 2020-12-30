@@ -4,7 +4,7 @@
 \alias{run}
 \title{Run the simulation}
 \usage{
-run(sim_obj, ...)
+run(sim_obj, sim_uids = NA)
 }
 \arguments{
 \item{sim_obj}{A simulation object of class \code{simba}, usually created by
