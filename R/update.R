@@ -43,14 +43,26 @@ update.simba <- function(sim_obj,
                                             prev_levels_grid,
                                             by = names(sorted_prev_levels))
     max_levelid <- max(prev_levels_grid$level_id)
-    if (nrow(sim_obj$levels_grid) > max_levelid){
-      new_levelids <- (max_levelid + 1):nrow(sim_obj$levels_grid)
+    #if (nrow(sim_obj$levels_grid) > max_levelid){
+    if (sum(is.na(sim_obj$levels_grid$level_id)) > 0){
+      new_levelids <- (max_levelid + 1):(max_levelid + sum(is.na(sim_obj$levels_grid$level_id)))
       sim_obj$levels_grid$level_id[is.na(sim_obj$levels_grid$level_id)] <- new_levelids
     }
   }
 
   # Create levels_grid_big
   levels_grid_big <- create_levels_grid_big(sim_obj)
+  levels_grid_big <- dplyr::left_join(levels_grid_big[,-1, drop=FALSE],
+                                      prev_levels_grid_big,
+                                      by = names(levels_grid_big)[-1])
+  max_uid <- max(prev_levels_grid_big$sim_uid)
+  if (sum(is.na(levels_grid_big$sim_uid)) > 0){
+    new_uids <- (max_uid + 1):(max_uid + sum(is.na(levels_grid_big$sim_uid)))
+    levels_grid_big$sim_uid[is.na(levels_grid_big$sim_uid)] <- new_uids
+  }
+
+  col_order <- c("sim_uid", "level_id", "sim_id", names(sim_obj$internals$levels_shallow))
+  levels_grid_big <- levels_grid_big[,col_order]
 
   # if re-running error reps, limit the prev_levels_grid to only those in results and revert the error df
   if (!keep_errors){
