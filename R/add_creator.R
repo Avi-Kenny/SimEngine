@@ -1,24 +1,31 @@
 #' Add a "creator" function
 #'
-#' @description Add a "creator" function to your simulation object.
+#' @description Add a "creator" function to your simulation object. A creator is
+#'     a function that generates a dataset for use in your simulation.
 #' @param sim_obj A simulation object of class \code{simba}, usually created by
 #'     \link{new_sim}
-#' @param name A name for the dataset-creating function
-#' @param fn A function that creates a simulated dataset
-#' @details
-#' There are two ways to use add_creator(). The first is to declare a function
-#'     and add it to your simulation object later. The second is to do both at
-#'     the same time. See examples.
+#' @param name A name for the creator function
+#' @param fn A creator function
+#' @details \itemize{
+#'   \item{There are two ways to use \code{add_creator}. If two arguments are
+#'     supplied (\code{sim_obj} and \code{fn}), you can create a function
+#'     separately and add it to your simulation object later. If three arguments
+#'     are supplied, you can do both at the same time, using an anonymous
+#'     function for the \code{fn} argument. See examples.}
+#'   \item{Your creator will be stored in sim_obj$creators. If you added a
+#'     creator called \code{create_data}, you can test it out by running
+#'     \code{sim$creators$create_data()}. See examples.}
+#' }
 #' @return The original simulation object with the new creator function added
 #' @examples
-#' # There are two ways to use add_creator(). The first is to declare a function
-#' # and add it to simba later:
+#' # The first way to use add_creator is to declare a function and add it to
+#' # your simulation object later:
 #'
 #' sim <- new_sim()
 #' create_data <- function (n) { rpois(n, lambda=5) }
 #' sim %<>% add_creator(create_data)
 #'
-#' # The second is to do both at the same time:
+#' # The second way is to do both at the same time:
 #'
 #' sim <- new_sim()
 #' sim %<>% add_creator("create_data", function(n) {
@@ -32,19 +39,19 @@
 add_creator <- function(sim_obj, name, fn) UseMethod("add_creator")
 
 #' @export
-add_creator.simba <- function(sim_obj, name=NA, fn=NA) {
+add_creator.simba <- function(sim_obj, name, fn) {
 
   handle_errors(sim_obj, "is.simba")
 
-  if (is.na(name) && is.na(fn)) {
+  if (missing(name) && missing(fn)) {
     stop("You must provide a function to add_creator.")
   }
 
   # Handle case when only one of {name,fn} is given
-  if (is.na(name)) {
+  if (missing(name)) {
     name <- deparse(substitute(fn))
   }
-  if (is.na(fn)) {
+  if (missing(fn)) {
     fn <- name
     name <- deparse(substitute(name))
   }
