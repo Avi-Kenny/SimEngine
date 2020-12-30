@@ -23,12 +23,8 @@ update.simba <- function(sim_obj,
                          keep_extra = FALSE) {
 
   # error handle invalid options
-  if (!is.logical(keep_errors)){
-    stop("'keep_errors' must be a logical")
-  }
-  if (!is.logical(keep_extra)){
-    stop("'keep_extra' must be a logical")
-  }
+  handle_errors(keep_errors, "is.boolean")
+  handle_errors(keep_extra, "is.boolean")
 
   # make sorted list of current levels and previous levels
   sorted_prev_levels <- sim_obj$internals$levels_prev[order(names(sim_obj$internals$levels_prev))]
@@ -42,10 +38,7 @@ update.simba <- function(sim_obj,
   # make grid of previously run levels / sim_ids
   prev_levels_grid_big <- sim_obj$internals$levels_grid_big
   prev_levels_grid <- prev_levels_grid_big[,-c(1,3), drop = FALSE] %>% dplyr::distinct()
-  if ("no levels" %in% names(sorted_prev_levels)){
-    #prev_levels_grid <- prev_levels_grid[,-which(names(prev_levels_grid) == "no levels"), drop = F]
-    # this may be unnecessary. don't need to look at new levels if there were no levels to start
-  } else{
+  if (!("no levels" %in% names(sorted_prev_levels))){
     sim_obj$levels_grid <- dplyr::left_join(sim_obj$levels_grid[,-1, drop=FALSE],
                                             prev_levels_grid,
                                             by = names(sorted_prev_levels))
@@ -71,9 +64,6 @@ update.simba <- function(sim_obj,
   names_2 <- names(levels_grid_big)
   levels_grid_big <- cbind(1:nrow(levels_grid_big), levels_grid_big)
   names(levels_grid_big) <- c("sim_uid", names_2)
-
-
-
 
   # if re-running error reps, limit the prev_levels_grid to only those in results and revert the error df
   if (!keep_errors){
@@ -160,7 +150,7 @@ update.simba <- function(sim_obj,
       sim_obj_copy$warnings <- sim_obj$warnings
     }
 
-  } else{
+  } else {
     warning("No additional simulations to run.")
   }
 
