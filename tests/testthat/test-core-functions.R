@@ -233,27 +233,27 @@ test_that("set_levels() throws error with no levels provided", {
 
 # no arguments supplied
 test_that("set_config() throws error with no config provided", {
-  expect_error(set_config(sim), "No configuration options specified")
+  expect_error(set_config(sim), "No configuration options were specified")
 })
 
 # invalid config option name
 test_that("set_config() throws error for invalid config option name", {
   expect_error(set_config(sim, fake_name = "foobar"),
-               "'fake_name' is not a valid configuration option.")
+               "unused argument \\(fake_name = \"foobar\"\\)")
 })
 
-# load packages
-# !!!! maybe there's a better way to do this? I don't like having to use detach()
-# this is especially dumb because I have to load pkg before unloading to make sure
-# I have a clean slate
-library('ggplot2')
-detach('package:ggplot2', unload = TRUE)
-sim %<>% set_config(packages = "ggplot2")
-loaded <- search()
-test_that("set_config() successfully loads an installed package", {
-  expect_true("package:ggplot2" %in% loaded)
+# invalid config values
+test_that("set_config() throws errors for invalid config option values", {
+  expect_error(set_config(sim, num_sim="hey"), "`num_sim` must be numeric")
+  expect_error(set_config(sim, datasets="hey"),
+               "'hey' is not a valid option for `datasets`")
+  expect_error(set_config(sim, parallel=c("inner","outer")),
+               "`parallel` cannot be a vector")
+  expect_error(set_config(sim, packages=min),
+               "`packages` must be a character vector")
+  expect_error(set_config(sim, stop_at_error=1),
+               "`stop_at_error` must be Boolean")
 })
-
 
 # back to original everything
 sim <- new_sim()

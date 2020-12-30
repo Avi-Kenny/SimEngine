@@ -4,33 +4,45 @@
 \alias{set_config}
 \title{Modify the simulation configuration}
 \usage{
-set_config(sim_obj, ...)
+set_config(
+  sim_obj,
+  num_sim = 1000,
+  datasets,
+  parallel,
+  parallel_cores,
+  packages,
+  stop_at_error,
+  dir
+)
 }
 \arguments{
 \item{sim_obj}{A simulation object of class \code{simba}, usually created by
 \link{new_sim}}
 
-\item{num_sim}{Number of simulations to conduct for each level combination}
+\item{num_sim}{An integer; the number of simulations to conduct for each
+level combination}
 
-\item{datasets}{String; either "one" or "many". If set to "one", the same
+\item{datasets}{A string; either "one" or "many". If set to "one", the same
 dataset will be used for all simulations. If set to "many", a new
-dataset will be generated for each simulation}
+dataset will be generated for each simulation.}
 
-\item{parallel}{String; Either "inner", "outer", or "none".Controls which
-sections of the code are parallelized (i.e. for speed gains on
-multicore/cluster computing systems). Setting to "outer" will run one
-simulation per core. Setting to "inner" will parallelize operations
-within a single simulation. Setting to "none" will not parallelize any
-code (useful for debugging).}
+\item{parallel}{String; either "outer", "inner", or "none". Controls which
+sections of the code are parallelized. Setting to "outer" will run one
+simulation per core. Setting to "inner" will allow for parallelization
+within a single simulation replicate. Setting to "none" will not
+parallelize any code. See
+\url{https://avi-kenny.github.io/simba/parallelization} for an overview
+of how parallelization works in \pkg{simba}.}
 
-\item{packages}{A character vector of packages to load}
+\item{packages}{A character vector of packages to load and attach}
 
-\item{stop_at_error}{Boolean (FALSE by default); if TRUE, simulation will
-stop after it encounters an error in any single run. Useful for
+\item{stop_at_error}{A Boolean. If set to TRUE, the simulation will
+stop if it encounters an error in any single replicate Useful for
 debugging.}
 
-\item{dir}{Directory (given as a character string) where simulation files
-should be stored; defaults to current working directory}
+\item{dir}{A directory (given as a character string) where simulation files
+should be stored; if this option is not set, files will be stored in the
+current working directory.}
 }
 \value{
 The original simulation object with a modified configuration
@@ -38,13 +50,16 @@ The original simulation object with a modified configuration
 \description{
 This function sets configuration options for the simulation. If
     the 'packages' argument is specified, all packages will be loaded and
-    attached via library() when set_config() is called. Multiple calls to
-    set_config() will only overwrite configuration options that are specified
-    in the subsequent calls, leaving others in place.
+    attached via \code{library} when \code{set_config} is called. Multiple
+    calls to \code{set_config} will only overwrite configuration options that
+    are specified in the subsequent calls, leaving others in place. You can
+    see the current configuration via \code{print(sim)}, where \code{sim} is
+    your simulation object.
 }
 \examples{
 sim <- new_sim()
 sim \%<>\% set_config(
   num_sim = 10
 )
+sim
 }

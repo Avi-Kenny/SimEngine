@@ -1,7 +1,9 @@
 #' Create a new simulation object
 #'
 #' @description Create a new simulation object. This is typically the first
-#'     function to be called when running a simulation using \pkg{simba}.
+#'     function to be called when running a simulation using \pkg{simba}. Most
+#'     other \pkg{simba} functions take a simulation object as their first
+#'     argument.
 #' @return A simulation object, of class \code{simba}
 #' @seealso
 #' Visit \url{https://avi-kenny.github.io/simba} for more information on how to
@@ -28,9 +30,8 @@ new_sim <- function() {
       num_sim = 1000,
       datasets = "many",
       parallel = "none",
-      parallel_cores = 0,
+      parallel_cores = 1,
       packages = c(),
-      progress = "none",
       stop_at_error = FALSE,
       dir = getwd()
     ),

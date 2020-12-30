@@ -56,7 +56,7 @@ add_creator.simba <- function(sim_obj, name, fn) {
     name <- deparse(substitute(name))
   }
 
-  handle_errors(name, "is.string")
+  handle_errors(name, "is.character")
   handle_errors(fn, "is.function")
 
   environment(fn) <- sim_obj$internals$env

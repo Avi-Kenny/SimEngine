@@ -132,12 +132,12 @@ run_on_cluster(
     sim %<>% summary()
   },
 
-  cluster_config = list(sim_var="sim", js="slurm")
+  cluster_config = list(js="slurm")
 
 )
 ```
 
-Note that none of our actual simulation code changed; we just took chunks of the code and placed these chunks into the appropriate slot within *run_on_cluster()* (either *first*, *main*, or *last*). Additionally, we had to specify a few configuration options using the *cluster_config* argument. The first may seem a bit odd, but we need to tell *run_on_cluster()* the name of the variable that we use to store our simulation object. If we had instead written *my_sim2 %<>% new_sim()* as our first line, we would instead specify *sim_var="my_sim2"*. The second configuration option is the name of our job scheduler. Type *?run_on_cluster* in R for a list of supported JS software. Even if your JS is not supported, you can still use **simba** on a CCS (see "Tips and tricks" below).
+Note that none of our actual simulation code changed; we just took chunks of the code and placed these chunks into the appropriate slot within *run_on_cluster()* (either *first*, *main*, or *last*). Additionally, we had to tell **simba** which job scheduler we are using, by specifying this in the *cluster_config* argument list. Type *?run_on_cluster* in R for a list of supported JS software. Even if your JS is not supported, you can still use **simba** on a CCS (see "Tips and tricks" below).
 
 We're not done yet, though. We need to give our job scheduler instructions for how to run this code. Assume that the R code above is stored in a file called "my_simulation.R" that you have transferred to your CCS. First, we need to create a simple shell script that will run the my_simulation.R file. We use BASH as our scripting language, but you can use the shell scripting language of your choice. Create a file called "run_sim.sh" with the following two lines and place it in the same directory on your CCS as the "my_simulation.R" file:
 

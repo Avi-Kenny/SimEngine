@@ -11,7 +11,9 @@ A simulation object, of class \code{simba}
 }
 \description{
 Create a new simulation object. This is typically the first
-    function to be called when running a simulation using \pkg{simba}.
+    function to be called when running a simulation using \pkg{simba}. Most
+    other \pkg{simba} functions take a simulation object as their first
+    argument.
 }
 \examples{
 sim <- new_sim()
