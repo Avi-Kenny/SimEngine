@@ -83,8 +83,6 @@ update.simba <- function(sim_obj,
                                 levels_grid_big[,-1],
                                 by = names(prev_levels_grid_big[,-1]))
 
-  #print(extra_run)
-
   # if keep_extra = FALSE, remove excess runs (from results, errors, and warnings)
   if (!keep_extra & nrow(extra_run) > 0){
 
