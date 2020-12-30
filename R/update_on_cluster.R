@@ -1,4 +1,4 @@
-#' Framework for running simulations on a cluster computing system
+#' Framework for updating simulations on a cluster computing system
 #'
 #' @description !!!!! TO DO. Job schedulers currently supported include Slurm, SGE, ... !!!!!
 #' @param first Code to run at the start of a simulation. This should be a block
@@ -24,7 +24,16 @@
 #' @examples
 #' !!!!! TO DO
 #' @export
-run_on_cluster <- function(first, main, last, cluster_config) {
+update_on_cluster <- function(first,
+                              main,
+                              last,
+                              cluster_config,
+                              keep_errors = TRUE,
+                              keep_extra = FALSE) {
+
+  # error handle invalid options
+  handle_errors(keep_errors, "is.boolean")
+  handle_errors(keep_extra, "is.boolean")
 
   # Rename arguments to reduce changes of a naming conflict with contents of
   #   first/main/last blocks
@@ -103,9 +112,11 @@ run_on_cluster <- function(first, main, last, cluster_config) {
       stop(paste("Directory", ..cfg$dir, "does not exist."))
     }
 
+    # !!!!! changed this to not erase the sim object
+    test_file <- paste0(..path_sim_obj, '.test')
     # Error handling: test to see that we can write to cfg$dir
     tryCatch(
-      expr = { saveRDS(list(a=123,b=456), file=..path_sim_obj) },
+      expr = { saveRDS(list(a=123,b=456), file=test_file) },
       error = function(e) {
         stop(paste0("Directory ", ..cfg$dir, " is not writable."))
       }
@@ -113,7 +124,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
 
     # Error handling: test to see that we can read from cfg$dir
     tryCatch(
-      expr = { x <- readRDS(file=..path_sim_obj) },
+      expr = { x <- readRDS(file=test_file) },
       error = function(e) {
         stop(paste0("Directory ", cfg$dir, " is not readable."))
       }
@@ -121,7 +132,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
 
     # Error handling: test to see that we can delete from cfg$dir
     tryCatch(
-      expr = { unlink(..path_sim_obj) },
+      expr = { unlink(test_file) },
       error = function(e) {
         stop(paste0("Files cannot be deleted from directory ", cfg$dir, "."))
       }
@@ -129,7 +140,6 @@ run_on_cluster <- function(first, main, last, cluster_config) {
 
     # Remove old files
     if (dir.exists(..path_sim_res)) { unlink(..path_sim_res, recursive=TRUE) }
-    if (file.exists(..path_sim_obj)) { unlink(..path_sim_obj) }
 
     # Create directory to store simulation results
     dir.create(..path_sim_res)
@@ -150,11 +160,11 @@ run_on_cluster <- function(first, main, last, cluster_config) {
       }
     }
     if (is.na(..sim_var)) {
-      stop("A simulation object must be created in the `first` block")
+      stop("A simulation object must be read in the `first` block")
     }
     if (..count>1) {
       stop(paste("Multiple simulation objects were detected; only one may be",
-                 "created in the `first` block"))
+                 "read in the `first` block"))
     }
     rm(..count)
     rm(..env)
@@ -222,6 +232,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
       }
 
       tid <- as.numeric(Sys.getenv(tid_var))
+      print(tid)
 
       if (is.na(tid)) {
         stop("Task ID is missing.")
@@ -341,11 +352,6 @@ run_on_cluster <- function(first, main, last, cluster_config) {
       } else {
         stop("An unknown error occurred.")
       }
-
-      # record levels and num_sim that were run
-      ..sim_obj$internals$levels_prev <- ..sim_obj$internals$levels_shallow
-      ..sim_obj$internals$num_sim_prev <- ..sim_obj$config$num_sim
-      #..sim_obj$internals$levels_grid_big <- levels_grid_big
 
       # Delete individual results files and save simulation object
       # This is done before running the 'last' code so that the compiled

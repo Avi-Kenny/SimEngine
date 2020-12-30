@@ -51,20 +51,7 @@ run.simba <- function(sim_obj, sim_uids=NA) {
   if (!sim_obj$internals$update){
 
     # Create levels_grid_big
-    levels_grid_big <- expand.grid(list(
-      "level_id" = sim_obj$levels_grid$level_id,
-      "sim_id" = 1:sim_obj$config$num_sim
-    ))
-
-    levels_grid_big <- dplyr::inner_join(
-      levels_grid_big,
-      sim_obj$levels_grid,
-      by = "level_id"
-    )
-    levels_grid_big <- dplyr::arrange(levels_grid_big, level_id, sim_id)
-    names_2 <- names(levels_grid_big)
-    levels_grid_big <- cbind(1:nrow(levels_grid_big), levels_grid_big)
-    names(levels_grid_big) <- c("sim_uid", names_2)
+    levels_grid_big <- create_levels_grid_big(sim_obj)
     sim_obj$internals$levels_grid_big <- levels_grid_big
   }# else{
   #  sim_uids <- sim_obj$internals$levels_grid_big$sim_uid

@@ -106,6 +106,29 @@ handle_errors <- function(obj, err, other=NA) {
   )
 }
 
+#' Function for creating levels_grid_big
+#'
+#' @param sim_obj A simulation object of class `simba`
+create_levels_grid_big <- function(sim_obj) {
+
+  levels_grid_big <- expand.grid(list(
+    "level_id" = sim_obj$levels_grid$level_id,
+    "sim_id" = 1:sim_obj$config$num_sim
+  ))
+
+  levels_grid_big <- dplyr::inner_join(
+    levels_grid_big,
+    sim_obj$levels_grid,
+    by = "level_id"
+  )
+  levels_grid_big <- dplyr::arrange(levels_grid_big, level_id, sim_id)
+  names_2 <- names(levels_grid_big)
+  levels_grid_big <- cbind(1:nrow(levels_grid_big), levels_grid_big)
+  names(levels_grid_big) <- c("sim_uid", names_2)
+
+  return(levels_grid_big)
+}
+
 
 
 #' # Print method for class "simba_results"

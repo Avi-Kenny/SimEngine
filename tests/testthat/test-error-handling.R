@@ -16,7 +16,7 @@ sim %<>% set_config(
 )
 
 msg <- capture_output(
-  sim %<>% run("my script")
+  sim %<>% run()
 )
 
 test_that("run() behaves correctly; no errors", {
@@ -52,7 +52,7 @@ sim %<>% set_config(
 )
 
 msg <- capture_output(
-  sim %<>% run("my script")
+  sim %<>% run()
 )
 
 test_that("run() behaves correctly; no errors and some warnings", {
@@ -96,7 +96,7 @@ sim %<>% set_config(
 )
 
 msg <- capture_output(
-  sim %<>% run("my script")
+  sim %<>% run()
 )
 
 pct_error <- nrow(sim$errors)
@@ -130,7 +130,7 @@ sim %<>% set_config(
 )
 
 msg <- capture_output(
-  sim %<>% run("my script")
+  sim %<>% run()
 )
 
 test_that("run() behaves correctly; all errors", {
@@ -182,5 +182,5 @@ n_available_cores <- parallel::detectCores()
 mess <- paste0("1000 cores requested but only ", n_available_cores, " cores available")
 
 test_that("run() throws warning if too many cores requested", {
-  expect_warning(run(sim, "my script"), mess)
+  expect_warning(run(sim), mess)
 })
