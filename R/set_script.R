@@ -33,27 +33,17 @@
 #' sim %<>% run()
 #' sim$results
 #' @export
-set_script <- function(sim_obj, ...) UseMethod("set_script")
+set_script <- function(sim_obj, fn) UseMethod("set_script")
 
 #' @export
-set_script.simba <- function(sim_obj, ...) {
+set_script.simba <- function(sim_obj, fn) {
 
   handle_errors(sim_obj, "is.simba")
+  handle_errors(fn, "is.function")
 
   if (substr(sim_obj$internals$run_state, 1, 3) == "run") {
     stop(paste("A simulation object's script cannot be changed after the",
                "simulation has been run."))
-  }
-
-  if (length(list(...)) > 1) {
-    stop(paste("`set_script` takes only two arguments, a simulation script and",
-               "a function"))
-  }
-
-  fn <- list(...)[[1]]
-
-  if (!is.function(fn)) {
-    stop("`fn` must be a function")
   }
 
   environment(fn) <- sim_obj$internals$env

@@ -25,10 +25,10 @@
 #' sim %<>% run()
 #' sim$results
 #' @export
-run <- function(sim_obj, ...) UseMethod("run")
+run <- function(sim_obj, sim_uids=NA) UseMethod("run")
 
 #' @export
-run.simba <- function(sim_obj, ...) {
+run.simba <- function(sim_obj, sim_uids=NA) {
 
   handle_errors(sim_obj, "is.simba")
 
@@ -37,17 +37,15 @@ run.simba <- function(sim_obj, ...) {
   # All objects will be stored in this environment
   env <- sim_obj$internals$env
 
-  o_args <- list(...)
-
-  if (!is.null(o_args$sim_uids)) {
-    # !!!!! add error handling
-    sim_uids <- o_args$sim_uids
-  } else if (!is.na(sim_obj$internals$tid)) {
-    sim_uids <- sim_obj$internals$tid
-  } else if (sim_obj$internals$update) {
-    sim_uids <- sim_obj$internals$levels_grid_big$sim_uid
-  } else {
-    sim_uids <- 1:sim_obj$internals$num_sim_total
+  if (is.na(sim_uids)) {
+  # !!!!! add error handling for sim_uids
+    if (!is.na(sim_obj$internals$tid)) {
+      sim_uids <- sim_obj$internals$tid
+    } else if (sim_obj$internals$update) {
+      sim_uids <- sim_obj$internals$levels_grid_big$sim_uid
+    } else {
+      sim_uids <- 1:sim_obj$internals$num_sim_total
+    }
   }
 
   if (!sim_obj$internals$update){
