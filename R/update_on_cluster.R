@@ -232,7 +232,6 @@ update_on_cluster <- function(first,
       }
 
       tid <- as.numeric(Sys.getenv(tid_var))
-      print(tid)
 
       if (is.na(tid)) {
         stop("Task ID is missing.")
@@ -332,7 +331,14 @@ update_on_cluster <- function(first,
           }
 
         }
+      }
 
+      # combine results and errors with existing results and errors
+      if (!is.character(..sim_obj$results)){
+        results_df <- rbind(..sim_obj$results, results_df)
+      }
+      if (!is.character(..sim_obj$errors)){
+        errors_df <- rbind(..sim_obj$errors, errors_df)
       }
 
       # Add results/errors to simulation object
@@ -352,6 +358,11 @@ update_on_cluster <- function(first,
       } else {
         stop("An unknown error occurred.")
       }
+
+      # record levels and num_sim that were run
+      ..sim_obj$internals$levels_prev <- ..sim_obj$internals$levels_shallow
+      ..sim_obj$internals$num_sim_prev <- ..sim_obj$config$num_sim
+      ..sim_obj$internals$levels_grid_big <- create_levels_grid_big(..sim_obj)
 
       # Delete individual results files and save simulation object
       # This is done before running the 'last' code so that the compiled

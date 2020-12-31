@@ -55,13 +55,15 @@ update.simba <- function(sim_obj,
   levels_grid_big <- dplyr::left_join(levels_grid_big[,-1, drop=FALSE],
                                       prev_levels_grid_big,
                                       by = names(levels_grid_big)[-1])
+  # !!!!! use the internal total_sim here instead. this is currently not quite correct
   max_uid <- max(prev_levels_grid_big$sim_uid)
   if (sum(is.na(levels_grid_big$sim_uid)) > 0){
     new_uids <- (max_uid + 1):(max_uid + sum(is.na(levels_grid_big$sim_uid)))
     levels_grid_big$sim_uid[is.na(levels_grid_big$sim_uid)] <- new_uids
   }
 
-  col_order <- c("sim_uid", "level_id", "sim_id", names(sim_obj$internals$levels_shallow))
+  col_order <- c("sim_uid", "level_id", "sim_id",
+                 names(sim_obj$internals$levels_shallow)[!(names(sim_obj$internals$levels_shallow) == "no levels")])
   levels_grid_big <- levels_grid_big[,col_order]
 
   # if re-running error reps, limit the prev_levels_grid to only those in results and revert the error df
@@ -102,6 +104,12 @@ update.simba <- function(sim_obj,
     }
   }
 
+  # if on cluster, delete old results, errors, etc
+  if (Sys.getenv("run")!=""){
+    sim_obj$results <- NULL
+    sim_obj$errors <- NULL
+    sim_obj$warnings <- NULL
+  }
   # create a copy of the sim to hold new results
   sim_obj_copy <- sim_obj
   sim_obj_copy$internals$update <- TRUE
