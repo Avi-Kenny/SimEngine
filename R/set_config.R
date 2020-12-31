@@ -25,9 +25,28 @@
 #' @param stop_at_error A Boolean. If set to TRUE, the simulation will
 #'     stop if it encounters an error in any single replicate Useful for
 #'     debugging.
+#' @param seed An integer; seeds allow for reproducible simulation results.
+#'     Normally, when a given simulation is run multiple times, it will give
+#'     the same results each time unless the seed is changed using
+#'     \code{set_config}.
 #' @param dir A directory (given as a character string) where simulation files
 #'     should be stored; if this option is not set, files will be stored in the
 #'     current working directory.
+#' @details \itemize{
+#'   \item{If a user specifies, for example, \code{set_config(seed=4)}, this
+#'       seed is used twice by \pkg{simba}. First, \pkg{simba} executes
+#'       \code{set.seed(4)} at the end of the \code{set_config} call. Second,
+#'       when \link{run} is called, \pkg{simba} will execute
+#'       \code{set.seed(as.integer(4*sim_uid))} at the start of simulation
+#'       replicate, where \code{sim_uid} is the unique identifier corresponding
+#'       to that replicate. This is necessary to ensure that results are
+#'       reproducible even when simulations involve parallelization.}
+#'   \item{Even if seeds are used, not all code will be reproducible. For
+#'       example, a simulation that involves getting the current date/time with
+#'       \code{Sys.time()} may produce different results on different runs.}
+#'   \item{Setting seeds is not currently with inner parallelization
+#'       (\code{set_config(parallel="inner")}).}
+#' }
 #' @return The original simulation object with a modified configuration
 #' @examples
 #' sim <- new_sim()
@@ -39,14 +58,14 @@
 set_config <- function(
   sim_obj, num_sim=1000, datasets="many", parallel="none",
   parallel_cores=parallel::detectCores()-1, packages=NULL,
-  stop_at_error=FALSE, dir=getwd()
+  stop_at_error=FALSE, seed=1, dir=getwd()
 ) UseMethod("set_config")
 
 #' @export
 set_config.simba <- function(
   sim_obj, num_sim=1000, datasets="many", parallel="none",
   parallel_cores=parallel::detectCores()-1, packages=NULL,
-  stop_at_error=FALSE, dir=getwd()
+  stop_at_error=FALSE, seed=1, dir=getwd()
 ) {
 
   handle_errors(sim_obj, "is.simba")
@@ -89,10 +108,17 @@ set_config.simba <- function(
     sim_obj$config[["stop_at_error"]] = stop_at_error
   }
 
+  if (!missing(seed)) {
+    handle_errors(seed, "is.numeric")
+    sim_obj$config[["seed"]] = seed
+  }
+
   if (!missing(dir)) {
     handle_errors(dir, "is.character")
     sim_obj$config[["dir"]] = dir
   }
+
+  set.seed(as.integer(seed))
 
   return (sim_obj)
 

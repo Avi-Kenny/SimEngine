@@ -102,6 +102,9 @@ run.simba <- function(sim_obj, sim_uids=NA) {
     rm(levs)
     rm(L)
 
+    # Set the seed
+    set.seed(as.integer(sim_obj$config$seed*i))
+
     # Actually run the run
     # Use withCallingHandlers to catch all warnings and tryCatch to catch errors
     withCallingHandlers(

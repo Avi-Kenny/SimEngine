@@ -12,6 +12,7 @@ set_config(
   parallel_cores = parallel::detectCores() - 1,
   packages = NULL,
   stop_at_error = FALSE,
+  seed = 1,
   dir = getwd()
 )
 }
@@ -40,6 +41,11 @@ of how parallelization works in \pkg{simba}.}
 stop if it encounters an error in any single replicate Useful for
 debugging.}
 
+\item{seed}{An integer; seeds allow for reproducible simulation results.
+Normally, when a given simulation is run multiple times, it will give
+the same results each time unless the seed is changed using
+\code{set_config}.}
+
 \item{dir}{A directory (given as a character string) where simulation files
 should be stored; if this option is not set, files will be stored in the
 current working directory.}
@@ -55,6 +61,23 @@ This function sets configuration options for the simulation. If
     are specified in the subsequent calls, leaving others in place. You can
     see the current configuration via \code{print(sim)}, where \code{sim} is
     your simulation object.
+}
+\details{
+\itemize{
+  \item{If a user specifies, for example, \code{set_config(seed=4)}, this
+      seed is used twice by \pkg{simba}. First, \pkg{simba} executes
+      \code{set.seed(4)} at the end of the \code{set_config} call. Second,
+      when \link{run} is called, \pkg{simba} will execute
+      \code{set.seed(as.integer(4*sim_uid))} at the start of simulation
+      replicate, where \code{sim_uid} is the unique identifier corresponding
+      to that replicate. This is necessary to ensure that results are
+      reproducible even when simulations involve parallelization.}
+  \item{Even if seeds are used, not all code will be reproducible. For
+      example, a simulation that involves getting the current date/time with
+      \code{Sys.time()} may produce different results on different runs.}
+  \item{Setting seeds is not currently with inner parallelization
+      (\code{set_config(parallel="inner")}).}
+}
 }
 \examples{
 sim <- new_sim()

@@ -279,6 +279,51 @@ sim %<>% set_config(
 )
 sim %<>% run()
 
+
+### seeds ###
+
+sim <- new_sim()
+sim %<>% set_script(function() {
+  return(list(x=rnorm(1)))
+})
+sim %<>% set_config(num_sim=3)
+res1 <- round(run(sim)$results$x, 4)
+res2 <- round(run(sim)$results$x, 4)
+sim %<>% set_config(seed=1)
+res3 <- round(run(sim)$results$x, 4)
+sim %<>% set_config(seed=2)
+res4 <- round(run(sim)$results$x, 4)
+res5 <- round(run(sim)$results$x, 4)
+
+test_that("setting seeds leads to reproducible results (parallel='none')", {
+  expect_equal(res1, res2)
+  expect_equal(res1, res3)
+  expect_equal(isTRUE(all.equal(res1, res4)), FALSE)
+  expect_equal(res4, res5)
+})
+
+sim <- new_sim()
+sim %<>% set_script(function() {
+  return(list(x=rnorm(1)))
+})
+sim %<>% set_config(num_sim=3, parallel="outer")
+res6 <- round(run(sim)$results$x, 4)
+res7 <- round(run(sim)$results$x, 4)
+sim %<>% set_config(seed=1)
+res8 <- round(run(sim)$results$x, 4)
+sim %<>% set_config(seed=2)
+res9 <- round(run(sim)$results$x, 4)
+res10 <- round(run(sim)$results$x, 4)
+
+test_that("setting seeds leads to reproducible results (parallel='outer')", {
+  expect_equal(res6, res7)
+  expect_equal(res6, res8)
+  expect_equal(isTRUE(all.equal(res6, res9)), FALSE)
+  expect_equal(res9, res10)
+  expect_equal(res1, res6)
+  expect_equal(res4, res9)
+})
+
 ### get() ###
 
 # !!!!! Add tests once get() is replaced
