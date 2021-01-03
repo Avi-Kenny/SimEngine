@@ -10,19 +10,14 @@ parent: Function reference
 <td>set_config {simba}</td>
 <td style="text-align: right;">R Documentation</td>
 </tr></table>
-
-<h2>Modify the simulation configuration</h2>
-<h3>Description</h3>
-<p>This function sets configuration options for the simulation. If
+<h2>Modify the simulation configuration</h2><h3>Description</h3><p>This function sets configuration options for the simulation. If
 the 'packages' argument is specified, all packages will be loaded and
 attached via <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>library</span> when <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set_config</span> is called. Multiple
 calls to <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set_config</span> will only overwrite configuration options that
 are specified in the subsequent calls, leaving others in place. You can
 see the current configuration via <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>print(sim)</span>, where <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span> is
 your simulation object.
-</p>
-<h3>Usage</h3>
-```R
+</p><h3>Usage</h3>```R
 set_config(
   sim_obj,
   num_sim = 1000,
@@ -34,9 +29,7 @@ set_config(
   seed = 1,
   dir = getwd()
 )
-```
-<h3>Arguments</h3>
-<table summary="R argblock">
+```<h3>Arguments</h3><table summary="R argblock">
 <tr valign="top">
 <td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span></td>
 <td>
@@ -103,9 +96,7 @@ current working directory.</p>
 </td>
 </tr>
 </table>
-
-<h3>Details</h3>
-<ul>
+<h3>Details</h3><ul>
 <li>
 <p>If a user specifies, for example, <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set_config(seed=4)</span>, this
 seed is used twice by <span class="pkg">simba</span>. First, <span class="pkg">simba</span> executes
@@ -129,18 +120,12 @@ example, a simulation that involves getting the current date/time with
 </p>
 </li>
 </ul>
-
-<h3>Value</h3>
-<p>The original simulation object with a modified configuration
-</p>
-<h3>Examples</h3>
-```R
+<h3>Value</h3><p>The original simulation object with a modified configuration
+</p><h3>Examples</h3>```R
 sim <- new_sim()
 sim %<>% set_config(
   num_sim = 10
 )
 sim
-```
-<hr>
-
+```<hr>
 <div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>

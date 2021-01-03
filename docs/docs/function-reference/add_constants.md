@@ -10,17 +10,10 @@ parent: Function reference
 <td>add_constants {simba}</td>
 <td style="text-align: right;">R Documentation</td>
 </tr></table>
-
-<h2>Add one or more simulation constants</h2>
-<h3>Description</h3>
-<p>Add one or more simulation constants
-</p>
-<h3>Usage</h3>
-```R
+<h2>Add one or more simulation constants</h2><h3>Description</h3><p>Add one or more simulation constants
+</p><h3>Usage</h3>```R
 add_constants(sim_obj, ...)
-```
-<h3>Arguments</h3>
-<table summary="R argblock">
+```<h3>Arguments</h3><table summary="R argblock">
 <tr valign="top">
 <td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span></td>
 <td>
@@ -39,14 +32,8 @@ you decide to run your simulation code in parallel</p>
 </td>
 </tr>
 </table>
-
-<h3>Value</h3>
-<p>The original simulation object with added constants
-</p>
-<h3>Examples</h3>
-```R
+<h3>Value</h3><p>The original simulation object with added constants
+</p><h3>Examples</h3>```R
 sim %<>% add_constants(alpha=4, beta=c(1,2,3))
-```
-<hr>
-
+```<hr>
 <div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>

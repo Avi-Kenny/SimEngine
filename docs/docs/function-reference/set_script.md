@@ -10,19 +10,12 @@ parent: Function reference
 <td>set_script {simba}</td>
 <td style="text-align: right;">R Documentation</td>
 </tr></table>
-
-<h2>Set the "simulation script"</h2>
-<h3>Description</h3>
-<p>Specify a function to be used as the "simulation script". The
+<h2>Set the "simulation script"</h2><h3>Description</h3><p>Specify a function to be used as the "simulation script". The
 simulation script is a function that runs a single simulation replicate
 and returns the results.
-</p>
-<h3>Usage</h3>
-```R
+</p><h3>Usage</h3>```R
 set_script(sim_obj, fn)
-```
-<h3>Arguments</h3>
-<table summary="R argblock">
+```<h3>Arguments</h3><table summary="R argblock">
 <tr valign="top">
 <td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span></td>
 <td>
@@ -42,13 +35,9 @@ See examples.</p>
 </td>
 </tr>
 </table>
-
-<h3>Value</h3>
-<p>The original simulation object with the new "simulation script"
+<h3>Value</h3><p>The original simulation object with the new "simulation script"
 function added.
-</p>
-<h3>Examples</h3>
-```R
+</p><h3>Examples</h3>```R
 # The following is a toy example of a simulation, illustrating the use of
 # the set_script function.
 sim <- new_sim()
@@ -67,7 +56,5 @@ sim %<>% set_script(function() {
 })
 sim %<>% run()
 sim$results
-```
-<hr>
-
+```<hr>
 <div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>

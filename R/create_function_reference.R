@@ -60,7 +60,6 @@ for (i in 1:length(fns)) {
 
     # Write lines
     cat(line)
-    cat("\n")
 
   }
   sink()

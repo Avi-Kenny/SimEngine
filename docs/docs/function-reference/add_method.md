@@ -10,10 +10,7 @@ parent: Function reference
 <td>add_method {simba}</td>
 <td style="text-align: right;">R Documentation</td>
 </tr></table>
-
-<h2>Add a "method" function</h2>
-<h3>Description</h3>
-<p>Add a "method" function to your simulation object. A method
+<h2>Add a "method" function</h2><h3>Description</h3><p>Add a "method" function to your simulation object. A method
 function is just a function, and can be used anywhere that you would
 normally write and use a regular global function. The advantages of
 explicitly adding a method function to your simulation (rather than
@@ -23,13 +20,9 @@ parallelization is automated. Often, the method function will be a
 statistical method that you want to test (e.g. an estimator), and will
 take in a dataset returned by a creator function as its first argument;
 however, this is not always the case.
-</p>
-<h3>Usage</h3>
-```R
+</p><h3>Usage</h3>```R
 add_method(sim_obj, name, fn)
-```
-<h3>Arguments</h3>
-<table summary="R argblock">
+```<h3>Arguments</h3><table summary="R argblock">
 <tr valign="top">
 <td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span></td>
 <td>
@@ -50,9 +43,7 @@ new_sim</p>
 </td>
 </tr>
 </table>
-
-<h3>Details</h3>
-<ul>
+<h3>Details</h3><ul>
 <li>
 <p>As with add_creator, there are two ways to use
 <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>add_method</span>. If two arguments are supplied (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span> and
@@ -63,18 +54,14 @@ See examples.
 </p>
 </li>
 <li>
-<p>Your method will be stored in sim_obj$methods. If you added a
+<p>Your method will be stored in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj$methods</span>. If you added a
 method called <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>estimator_1</span>, you can test it out by running
 <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim$creators$estimator_1()</span>. See examples.
 </p>
 </li>
 </ul>
-
-<h3>Value</h3>
-<p>The original simulation object with the new method function added
-</p>
-<h3>Examples</h3>
-```R
+<h3>Value</h3><p>The original simulation object with the new method function added
+</p><h3>Examples</h3>```R
 sim <- new_sim()
 sim %<>% add_creator("create_data", function(n) { rpois(n, lambda=5) })
 
@@ -95,7 +82,5 @@ sim %<>% add_method("estimator_2", function(dat) {
 dat <- sim$creators$create_data(10)
 sim$methods$estimator_1(dat)
 sim$methods$estimator_2(dat)
-```
-<hr>
-
+```<hr>
 <div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>

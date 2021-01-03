@@ -10,17 +10,10 @@ parent: Function reference
 <td>summary {simba}</td>
 <td style="text-align: right;">R Documentation</td>
 </tr></table>
-
-<h2>Summarize simulation results</h2>
-<h3>Description</h3>
-<p>Calculate summary statistics for simulation results
-</p>
-<h3>Usage</h3>
-```R
+<h2>Summarize simulation results</h2><h3>Description</h3><p>Calculate summary statistics for simulation results
+</p><h3>Usage</h3>```R
 summary(sim_obj, ...)
-```
-<h3>Arguments</h3>
-<table summary="R argblock">
+```<h3>Arguments</h3><table summary="R argblock">
 <tr valign="top">
 <td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span></td>
 <td>
@@ -42,12 +35,8 @@ addition to means</p>
 </td>
 </tr>
 </table>
-
-<h3>Value</h3>
-<p>!!!!! TO DO
-</p>
-<h3>Examples</h3>
-```R
+<h3>Value</h3><p>!!!!! TO DO
+</p><h3>Examples</h3>```R
 # The following is a toy example of a simulation, illustrating the use of
 # the summary function.
 sim <- new_sim()
@@ -69,7 +58,5 @@ sim %>% summary(
   mean = list(name="mean_lambda_hat", x="lambda_hat"),
   mse = list(name="lambda_mse", estimate="lambda_hat", truth=5)
 )
-```
-<hr>
-
+```<hr>
 <div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>

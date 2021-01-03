@@ -10,13 +10,8 @@ parent: Function reference
 <td>update_on_cluster {simba}</td>
 <td style="text-align: right;">R Documentation</td>
 </tr></table>
-
-<h2>Framework for updating simulations on a cluster computing system</h2>
-<h3>Description</h3>
-<p>!!!!! TO DO. Job schedulers currently supported include Slurm, SGE, ... !!!!!
-</p>
-<h3>Usage</h3>
-```R
+<h2>Framework for updating simulations on a cluster computing system</h2><h3>Description</h3><p>!!!!! TO DO. Job schedulers currently supported include Slurm, SGE, ... !!!!!
+</p><h3>Usage</h3>```R
 update_on_cluster(
   first,
   main,
@@ -25,9 +20,7 @@ update_on_cluster(
   keep_errors = TRUE,
   keep_extra = FALSE
 )
-```
-<h3>Arguments</h3>
-<table summary="R argblock">
+```<h3>Arguments</h3><table summary="R argblock">
 <tr valign="top">
 <td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>first</span></td>
 <td>
@@ -69,11 +62,7 @@ directory).</p>
 </td>
 </tr>
 </table>
-
-<h3>Examples</h3>
-```R
+<h3>Examples</h3>```R
 !!!!! TO DO
-```
-<hr>
-
+```<hr>
 <div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>

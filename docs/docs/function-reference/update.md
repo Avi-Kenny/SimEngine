@@ -10,17 +10,10 @@ parent: Function reference
 <td>update {simba}</td>
 <td style="text-align: right;">R Documentation</td>
 </tr></table>
-
-<h2>Update a simulation</h2>
-<h3>Description</h3>
-<p>!!!!! TO DO
-</p>
-<h3>Usage</h3>
-```R
+<h2>Update a simulation</h2><h3>Description</h3><p>!!!!! TO DO
+</p><h3>Usage</h3>```R
 update(sim_obj, keep_errors = TRUE, keep_extra = FALSE)
-```
-<h3>Arguments</h3>
-<table summary="R argblock">
+```<h3>Arguments</h3><table summary="R argblock">
 <tr valign="top">
 <td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span></td>
 <td>
@@ -46,11 +39,7 @@ for that particular simulation level)</p>
 </td>
 </tr>
 </table>
-
-<h3>Examples</h3>
-```R
+<h3>Examples</h3>```R
 !!!!! TO DO
-```
-<hr>
-
+```<hr>
 <div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>

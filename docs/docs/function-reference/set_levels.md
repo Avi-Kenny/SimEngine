@@ -10,18 +10,11 @@ parent: Function reference
 <td>set_levels {simba}</td>
 <td style="text-align: right;">R Documentation</td>
 </tr></table>
-
-<h2>Set simulation levels</h2>
-<h3>Description</h3>
-<p>Set one or more simulation levels, which are things that vary
+<h2>Set simulation levels</h2><h3>Description</h3><p>Set one or more simulation levels, which are things that vary
 between simulation replicates.
-</p>
-<h3>Usage</h3>
-```R
+</p><h3>Usage</h3>```R
 set_levels(sim_obj, ..., .add = FALSE)
-```
-<h3>Arguments</h3>
-<table summary="R argblock">
+```<h3>Arguments</h3><table summary="R argblock">
 <tr valign="top">
 <td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span></td>
 <td>
@@ -47,13 +40,9 @@ be merged with the old set. See examples.</p>
 </td>
 </tr>
 </table>
-
-<h3>Value</h3>
-<p>The original simulation object with the old set of levels replaced
+<h3>Value</h3><p>The original simulation object with the old set of levels replaced
 with the new set
-</p>
-<h3>Examples</h3>
-```R
+</p><h3>Examples</h3>```R
 # Basic usage is as follows:
 sim <- new_sim()
 sim %<>% set_levels(
@@ -82,7 +71,5 @@ sim$levels
 sim %<>% set_levels(alpha=c(1,2), beta=c(5,6))
 sim %<>% set_levels(alpha=c(3,4), gamma=c(7,8), .add=TRUE)
 sim$levels
-```
-<hr>
-
+```<hr>
 <div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>

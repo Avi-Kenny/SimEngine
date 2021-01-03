@@ -10,18 +10,11 @@ parent: Function reference
 <td>add_creator {simba}</td>
 <td style="text-align: right;">R Documentation</td>
 </tr></table>
-
-<h2>Add a "creator" function</h2>
-<h3>Description</h3>
-<p>Add a "creator" function to your simulation object. A creator is
+<h2>Add a "creator" function</h2><h3>Description</h3><p>Add a "creator" function to your simulation object. A creator is
 a function that generates a dataset for use in your simulation.
-</p>
-<h3>Usage</h3>
-```R
+</p><h3>Usage</h3>```R
 add_creator(sim_obj, name, fn)
-```
-<h3>Arguments</h3>
-<table summary="R argblock">
+```<h3>Arguments</h3><table summary="R argblock">
 <tr valign="top">
 <td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span></td>
 <td>
@@ -42,9 +35,7 @@ new_sim</p>
 </td>
 </tr>
 </table>
-
-<h3>Details</h3>
-<ul>
+<h3>Details</h3><ul>
 <li>
 <p>There are two ways to use <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>add_creator</span>. If two arguments are
 supplied (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span> and <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>fn</span>), you can create a function
@@ -60,12 +51,8 @@ creator called <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consola
 </p>
 </li>
 </ul>
-
-<h3>Value</h3>
-<p>The original simulation object with the new creator function added
-</p>
-<h3>Examples</h3>
-```R
+<h3>Value</h3><p>The original simulation object with the new creator function added
+</p><h3>Examples</h3>```R
 # The first way to use add_creator is to declare a function and add it to
 # your simulation object later:
 
@@ -83,7 +70,5 @@ sim %<>% add_creator("create_data", function(n) {
 # With either option, you can test your function as follows:
 
 sim$creators$create_data(10)
-```
-<hr>
-
+```<hr>
 <div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>
