@@ -1,0 +1,16 @@
+#' simba: An open-source framework for statistical simulations in R
+#'
+#' simba is an open-source R package for structuring, maintaining, running, and
+#' debugging statistical simulations on both local and cluster-based computing
+#' environments. Emphasis is placed on thorough documentation, and scalability.
+#'
+#' @section Documentation:
+#' The primary documentation for \pkg{simba} is housed at
+#' \url{https://avi-kenny.github.io/simba} - we recommend that users start here
+#' when first learning how to use the package. Additionally, standard R
+#' documentation is provided, which can be accessed in the usual way (e.g.
+#' \code{?new_sim}).
+#'
+#' @docType package
+#' @name simba
+NULL
