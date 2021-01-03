@@ -12,7 +12,7 @@
 #'     separately and add it to your simulation object later. If three arguments
 #'     are supplied, you can do both at the same time, using an anonymous
 #'     function for the \code{fn} argument. See examples.}
-#'   \item{Your creator will be stored in sim_obj$creators. If you added a
+#'   \item{Your creator will be stored in \code{sim_obj$creators}. If you added a
 #'     creator called \code{create_data}, you can test it out by running
 #'     \code{sim$creators$create_data()}. See examples.}
 #' }
