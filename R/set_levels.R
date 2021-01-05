@@ -69,6 +69,13 @@ set_levels.simba <- function(sim_obj, ..., .add=FALSE) {
 
   }
 
+
+  if (!(is.list(sim_obj$levels)) || !(length(names(sim_obj$levels[which(names(sim_obj$levels) != "")])) == length(sim_obj$levels))) {
+    stop("Simulation levels must be a list of key-value pairs.")
+  }
+
+  handle_errors(sim_obj$levels, "is.named.list")
+
   # Extract names from lists
   levels_shallow <- list()
   levels_types <- c() # Stores whether level is a list (TRUE) or not (FALSE)
