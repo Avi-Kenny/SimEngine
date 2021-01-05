@@ -2,6 +2,7 @@
 #   or that are not exported
 
 # Print method for class "simba"
+#' @noRd
 #' @export
 print.simba <- function(sim_obj) {
   cat("Simulation object (class \"simba\")\n")
@@ -50,6 +51,7 @@ print.simba <- function(sim_obj) {
 #' @param err The type of error to check for (character string)
 #' @param other A generic argument that can be used to pass in additional info
 #' @return Throws and error or returns NULL
+#' @noRd
 handle_errors <- function(obj, err, other=NA) {
 
   dso <- deparse(substitute(obj))
@@ -109,6 +111,7 @@ handle_errors <- function(obj, err, other=NA) {
 #' Function for creating levels_grid_big
 #'
 #' @param sim_obj A simulation object of class `simba`
+#' @noRd
 create_levels_grid_big <- function(sim_obj) {
 
   levels_grid_big <- expand.grid(list(
@@ -130,6 +133,8 @@ create_levels_grid_big <- function(sim_obj) {
 }
 
 
+
+# !!!!! Recycle this code eventually
 
 #' # Print method for class "simba_results"
 #' #' @export

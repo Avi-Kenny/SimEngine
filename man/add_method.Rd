@@ -37,7 +37,7 @@ Add a "method" function to your simulation object. A method
     simulation object later. If three arguments are supplied, you can do both
     at the same time, using an anonymous function for the \code{fn} argument.
     See examples.}
-  \item{Your method will be stored in sim_obj$methods. If you added a
+  \item{Your method will be stored in \code{sim_obj$methods}. If you added a
     method called \code{estimator_1}, you can test it out by running
     \code{sim$creators$estimator_1()}. See examples.}
 }

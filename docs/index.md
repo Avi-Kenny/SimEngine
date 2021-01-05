@@ -25,7 +25,8 @@ An open-source framework for statistical simulations in R
 
 ## Overview
 
-**simba** is an open-source R package for structuring, maintaining, running, and debugging statistical simulations. Emphasis is placed on ease of use, clear documentation, speed, and scalability.
+**simba** is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on thorough documentation, and scalability.
+
 
 ## Installation
 
