@@ -304,6 +304,7 @@ update_on_cluster <- function(first,
       files <- dir(paste0(..path_sim_res))
       results_df <- NULL
       errors_df <- NULL
+      num_new <- 0
       for (file in files) {
 
         if (substr(file,1,1)=="r") {
@@ -317,6 +318,8 @@ update_on_cluster <- function(first,
               results_df[nrow(results_df)+1,] <- r
             }
           }
+
+          num_new <- num_new + 1
 
           # !!!!! Handle non-flat result data
 
@@ -332,8 +335,12 @@ update_on_cluster <- function(first,
             }
           }
 
+          num_new <- num_new + 1
+
         }
       }
+
+
 
       # combine results and errors with existing results and errors
       if (!is.character(..sim_obj$results)){
@@ -365,9 +372,9 @@ update_on_cluster <- function(first,
       levels_grid_big <- create_levels_grid_big(..sim_obj)
 
       # get levels / sim_ids that were previously run but are no longer needed
-      extra_run <- dplyr::anti_join(prev_levels_grid_big[,-1],
-                                    levels_grid_big[,-1],
-                                    by = names(prev_levels_grid_big[,-1]))
+      extra_run <- dplyr::anti_join(prev_levels_grid_big[,-which(names(prev_levels_grid_big) == "sim_uid")],
+                                    levels_grid_big[,-which(names(levels_grid_big) == "sim_uid")],
+                                    by = names(prev_levels_grid_big[,-which(names(prev_levels_grid_big) == "sim_uid")]))
 
       # if keep_extra = FALSE, remove excess runs (from results, errors, and warnings)
       if (!keep_extra & nrow(extra_run) > 0){
@@ -390,11 +397,11 @@ update_on_cluster <- function(first,
       }
 
       # record levels and num_sim that were run
-      # !!!!! change internal update variable!!
       ..sim_obj$internals$levels_prev <- ..sim_obj$internals$levels_shallow
       ..sim_obj$internals$num_sim_prev <- ..sim_obj$config$num_sim
-      ..sim_obj$internals$num_sim_cumulative <- ..sim_obj$internals$num_sim_cumulative + ..sim_obj$internals$num_sim_total
+      ..sim_obj$internals$num_sim_cumulative <- ..sim_obj$internals$num_sim_cumulative + num_new
       ..sim_obj$internals$levels_grid_big <- levels_grid_big
+      ..sim_obj$internals$update <- TRUE
 
       # Delete individual results files and save simulation object
       # This is done before running the 'last' code so that the compiled

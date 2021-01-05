@@ -39,11 +39,10 @@ update.simba <- function(sim_obj,
   prev_levels_grid_big <- sim_obj$internals$levels_grid_big
   prev_levels_grid <- prev_levels_grid_big[,-c(1,3), drop = FALSE] %>% dplyr::distinct()
   if (!("no levels" %in% names(sorted_prev_levels))){
-    sim_obj$levels_grid <- dplyr::left_join(sim_obj$levels_grid[,-1, drop=FALSE],
+    sim_obj$levels_grid <- dplyr::left_join(sim_obj$levels_grid[,-which(names(sim_obj$levels_grid) == "level_id"), drop=FALSE],
                                             prev_levels_grid,
                                             by = names(sorted_prev_levels))
     max_levelid <- max(prev_levels_grid$level_id)
-    #if (nrow(sim_obj$levels_grid) > max_levelid){
     if (sum(is.na(sim_obj$levels_grid$level_id)) > 0){
       new_levelids <- (max_levelid + 1):(max_levelid + sum(is.na(sim_obj$levels_grid$level_id)))
       sim_obj$levels_grid$level_id[is.na(sim_obj$levels_grid$level_id)] <- new_levelids
@@ -52,9 +51,9 @@ update.simba <- function(sim_obj,
 
   # Create levels_grid_big
   levels_grid_big <- create_levels_grid_big(sim_obj)
-  levels_grid_big <- dplyr::left_join(levels_grid_big[,-1, drop=FALSE],
+  levels_grid_big <- dplyr::left_join(levels_grid_big[,-which(names(levels_grid_big) == "sim_uid"), drop=FALSE],
                                       prev_levels_grid_big,
-                                      by = names(levels_grid_big)[-1])
+                                      by = names(levels_grid_big)[-which(names(levels_grid_big) == "sim_uid")])
   # !!!!! use the internal total_sim here instead. this is currently not quite correct
   max_uid <- sim_obj$internals$num_sim_cumulative
   if (sum(is.na(levels_grid_big$sim_uid)) > 0){
@@ -77,12 +76,12 @@ update.simba <- function(sim_obj,
   # get levels / sim_ids that have not previously been run
   not_run <- dplyr::anti_join(levels_grid_big,
                               prev_levels_grid_big,
-                              by = names(prev_levels_grid_big[,-1]))
+                              by = names(prev_levels_grid_big[,-which(names(prev_levels_grid_big) == "sim_uid")]))
 
   # get levels / sim_ids that were previously run but are no longer needed
-  extra_run <- dplyr::anti_join(prev_levels_grid_big[,-1],
-                                levels_grid_big[,-1],
-                                by = names(prev_levels_grid_big[,-1]))
+  extra_run <- dplyr::anti_join(prev_levels_grid_big[,-which(names(prev_levels_grid_big) == "sim_uid")],
+                                levels_grid_big[,-which(names(levels_grid_big) == "sim_uid")],
+                                by = names(prev_levels_grid_big[,-which(names(prev_levels_grid_big) == "sim_uid")]))
 
   # if keep_extra = FALSE, remove excess runs (from results, errors, and warnings)
   if (!keep_extra & nrow(extra_run) > 0){

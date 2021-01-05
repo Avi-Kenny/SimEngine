@@ -290,7 +290,7 @@ run.simba <- function(sim_obj, sim_uids=NA) {
   # record levels and num_sim that were run
   sim_obj$internals$levels_prev <- sim_obj$internals$levels_shallow
   sim_obj$internals$num_sim_prev <- sim_obj$config$num_sim
-  sim_obj$internals$num_sim_cumulative <- sim_obj$internals$num_sim_cumulative + sim_obj$internals$num_sim_total
+  sim_obj$internals$num_sim_cumulative <- sim_obj$internals$num_sim_cumulative + length(sim_uids)
 
   return (sim_obj)
 
