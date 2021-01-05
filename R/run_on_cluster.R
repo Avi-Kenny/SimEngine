@@ -345,6 +345,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
       # record levels and num_sim that were run
       ..sim_obj$internals$levels_prev <- ..sim_obj$internals$levels_shallow
       ..sim_obj$internals$num_sim_prev <- ..sim_obj$config$num_sim
+      ..sim_obj$internals$num_sim_cumulative <- ..sim_obj$internals$num_sim_cumulative + ..sim_obj$internals$num_sim_total
       ..sim_obj$internals$levels_grid_big <- create_levels_grid_big(..sim_obj)
 
       # Delete individual results files and save simulation object

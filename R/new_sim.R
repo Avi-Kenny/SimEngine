@@ -51,6 +51,7 @@ new_sim <- function() {
       levels_shallow = list("no levels"=TRUE),
       levels_prev = list(),
       num_sim_prev = NA,
+      num_sim_cumulative = 0,
       tid = NA,
       num_sim_total = 1000,
       sim_var = "",
