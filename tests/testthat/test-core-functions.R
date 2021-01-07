@@ -38,7 +38,10 @@ create_rct_data <- function (num_patients) {
   return (df)
 }
 
-# add_creator() works with predefined function
+test_that("add_creator() throws an error if no function is provided", {
+  expect_error(add_creator(sim), "You must provide a function to add_creator.")
+})
+
 sim %<>% add_creator(create_rct_data)
 df <- sim$creators[[1]](5)
 test_that("add_creator() works with predefined function", {
@@ -104,7 +107,10 @@ estimator_2 <- function(df) {
   return ( sum_t/(n*est_prob) - sum_c/(n*(1-est_prob)) )
 }
 
-# add_method() works with predefined functions
+test_that("add_method() throws an error if no function is provided", {
+  expect_error(add_method(sim), "You must provide a function to add_method.")
+})
+
 sim %<>% add_method(estimator_1)
 sim %<>% add_method(estimator_2)
 result <- sim$methods[[1]](df)
@@ -157,7 +163,6 @@ my_script <- function() {
   )
 }
 
-# set_script() works with predefined function
 # !!!! how to check the output?
 sim <- new_sim()
 sim %<>% set_script(my_script)
@@ -166,7 +171,6 @@ test_that("set_script() works with predefined function", {
   expect_equal("..script" %in% ls(sim$internals$env, all.names=TRUE), TRUE)
 })
 
-# set_script() works with function defined in call
 sim <- new_sim()
 sim %<>% set_script(
   function() {
@@ -182,10 +186,16 @@ test_that("set_script() works with function defined in call", {
   expect_equal("..script" %in% ls(sim$internals$env, all.names=TRUE), TRUE)
 })
 
-# set_script() throws error for non-function second argument
+
 sim <- new_sim()
 test_that("set_script() throws error for non-function second argument", {
   expect_error(set_script(sim, 2), "`fn` must be a function")
+})
+
+sim <- new_sim()
+sim$internals$run_state <- "run, no errors"
+test_that("set_script() throws error if sim has already been run", {
+  expect_error(set_script(sim, my_script), "A simulation object's script cannot be changed after the simulation has been run.")
 })
 
 ### add_constants() ###
@@ -233,6 +243,17 @@ test_that("set_levels() throws error if levels are not a list of key-value pairs
                "Simulation levels must be a list of key-value pairs." )
 })
 
+sim <- new_sim()
+sim %<>% set_levels(
+  num_patients = c(50, 100)
+)
+sim %<>% set_levels(
+  num_patients = c(200),
+  .add = TRUE
+)
+test_that(".add argument works to add new levels to existing", {
+  expect_equal(sim$levels$num_patients, c(50, 100, 200))
+})
 
 ### set_config() ###
 

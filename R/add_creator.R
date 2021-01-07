@@ -48,6 +48,7 @@ add_creator.simba <- function(sim_obj, name, fn) {
   }
 
   # Handle case when only one of {name,fn} is given
+  #!!!!! Can someone not provide a name? I'm confused how this is supposed to work
   if (missing(name)) {
     name <- deparse(substitute(fn))
   }
