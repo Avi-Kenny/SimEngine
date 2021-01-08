@@ -9,7 +9,7 @@
 #'     result. The result must be a list of key-value pairs. The values
 #'     themselves can either be simple (numeric, character, etc.) or complex
 #'     (matrices, lists, etc.). The function body can contain references to the
-#'     special objects `L` (simulation levels) and `C` (simulation constants).
+#'     special objects \code{L} (simulation levels) and \code{C} (simulation constants).
 #'     See examples.
 #' @return The original simulation object with the new "simulation script"
 #'     function added.
