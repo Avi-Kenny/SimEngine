@@ -144,7 +144,7 @@ run_on_cluster <- function(first, main, last, cluster_config) {
     ..count <- 0
     ..sim_var <- NA
     for (obj_name in ls(..env)) {
-      if (class(base::get(x=obj_name, envir=..env))=="simba") {
+      if ("simba" %in% class(base::get(x=obj_name, envir=..env))) {
         ..sim_var <- obj_name
         ..count <- ..count + 1
       }
