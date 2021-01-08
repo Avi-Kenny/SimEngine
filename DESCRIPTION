@@ -12,12 +12,11 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
 Depends: 
-    magrittr,
+    magrittr
 Imports: 
     parallel,
     pbapply,
-    data.table,
-    simba
+    data.table
 Suggests: 
     knitr,
     rmarkdown,
