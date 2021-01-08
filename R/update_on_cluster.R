@@ -57,7 +57,7 @@ update_on_cluster <- function(first,
     ..count <- 0
     ..sim_var <- NA
     for (obj_name in ls(..env)) {
-      if (class(base::get(x=obj_name, envir=..env))=="simba") {
+      if ("simba" %in% class(get(x=obj_name, envir=..env))) {
         ..sim_var <- obj_name
         ..count <- ..count + 1
       }
@@ -154,7 +154,7 @@ update_on_cluster <- function(first,
     ..count <- 0
     ..sim_var <- NA
     for (obj_name in ls(..env)) {
-      if (class(base::get(x=obj_name, envir=..env))=="simba") {
+      if ("simba" %in% class(get(x=obj_name, envir=..env))) {
         ..sim_var <- obj_name
         ..count <- ..count + 1
       }
