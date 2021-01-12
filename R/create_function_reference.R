@@ -13,7 +13,7 @@ if (FALSE) {
   for (i in 1:length(fns)) {
 
     # Variables
-    fns_doc <- fns[i]
+    fn <- fns[i]
     path_rd <- paste0("man/", fn, ".Rd")
     path_html <- paste0("docs/docs/function-reference/", fn, ".html")
     path_md <- paste0("docs/docs/function-reference/", fn, ".md")
