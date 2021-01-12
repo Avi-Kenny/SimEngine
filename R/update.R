@@ -1,17 +1,54 @@
 #' Update a simulation
 #'
-#' @description !!!!! TO DO
+#' @description This function updates a previously run simulation. After a simulation
+#'    has been \link{run}, you can alter the levels of the
+#'    resulting object of class \code{simba} using \link{set_levels}, or change the configuration
+#'    (including the number of simulation replicates) using \link{set_config}. Executing
+#'    \code{update} on this simulation object will only run the added levels/replicates,
+#'    without repeating anything that has already been run.
 #' @param sim_obj A simulation object of class \code{simba}, usually created by
 #'     \link{new_sim}, that has already been run by the \link{run} function
 #' @param keep_errors logical (TRUE by default); if TRUE, do not try to re-run
 #'     simulation reps that results in errors previously; if FALSE, attempt to
 #'     run those reps again
 #' @param keep_extra logical (FALSE by default); if TRUE, keep previously run
-#'     simulation reps even if they exceed the current num_sim in config or are from
+#'     simulation reps even if they exceed the current \code{num_sim} in config or are from
 #'     a level that has been dropped; if FALSE, drop excess reps (starting from the last rep
 #'     for that particular simulation level)
+#' @details \itemize{
+#'   \item{It is not possible to add new level variables, only new levels of the
+#'   existing variables. Because of this, it is best practice to include all potential
+#'   level variables before initially running a simulation, even if some of them only
+#'   contain a single level. This way, additional levels can be added later.}
+#'   \item {In general, if \code{num_sim} has been reduced prior to running \code{update},
+#'   it is best to use the default option \code{keep_extra = FALSE}. Otherwise, some
+#'   simulation levels will have more replicates than others, which makes comparison
+#'   difficult.}
+#' }
+#' @return The original simulation object with additional simulation replicates in
+#'     \code{results} or \code{errors}
 #' @examples
-#' !!!!! TO DO
+#' sim <- new_sim()
+#' sim %<>% add_creator("create_data", function(n) { rpois(n, lambda=5) })
+#' sim %<>% add_method("estimator_1", function(dat) { mean(dat) })
+#' sim %<>% add_method("estimator_2", function(dat) { var(dat) })
+#' sim %<>% set_levels(
+#'   "n" = c(10, 100),
+#'   "estimator" = c("estimator_1")
+#' )
+#' sim %<>% set_config(num_sim=10)
+#' sim %<>% set_script(function() {
+#'   dat <- create_data(L$n)
+#'   lambda_hat <- do.call(L$estimator, list(dat))
+#'   return (list("lambda_hat"=lambda_hat))
+#' })
+#' sim %<>% run()
+#' sim %<>% set_levels(
+#'   "n" = c(10, 100, 1000),
+#'   "estimator" = c("estimator_1", "estimator_2")
+#' )
+#' sim %<>% set_config(num_sim=5)
+#' sim %<>% update()
 #' @export
 update <- function(sim_obj,
                    keep_errors = TRUE,
