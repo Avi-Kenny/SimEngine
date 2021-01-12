@@ -9,6 +9,7 @@ if (FALSE) {
 
   fns <- dir("man")[dir("man")!="figures"]
   fns <- substring(fns, 1, nchar(fns)-3)
+  fns <- fns[fns!="simba"]
 
   for (i in 1:length(fns)) {
 
