@@ -1,12 +1,101 @@
 #' Summarize simulation results
 #'
-#' @description Calculate summary statistics for simulation results
+#' @description This function calculates summary statistics for simulation results.
+#'     Options for summary statistics include descriptive statistics (e.g. measures of
+#'     center or spread) and inferential statistics (e.g. bias or confidence interval
+#'     coverage). All summary statistics are calculated over simulation replicates
+#'     within a single simulation level.
 #' @param sim_obj A simulation object of class \code{simba}, usually created by
 #'     \link{new_sim}
-#' @param sd If `sd=TRUE` is passed, standard deviations are reported in
-#'     addition to means
-#' @param coverage !!!!! TO DO
-#' @return !!!!! TO DO
+#' @param ... Name-value pairs of summary functions. The possible summary functions (names) are
+#'     listed below. The value for each summary function is a list of summaries to perform.
+#'     \itemize{
+#'     \item{\code{mean}: Each \code{mean} summary is a named list of three arguments. \code{name} gives
+#'     a name for the summary, \code{x} gives the name of the variable in \code{sim_obj$results}
+#'     on which to calculate the mean, and \code{na.rm} indicates whether to exclude \code{NA}
+#'     values when performing the calculation.}
+#'
+#'     \item{\code{median}: Each \code{median} summary is a named list of three arguments. \code{name} gives
+#'     a name for the summary, \code{x} gives the name of the variable in \code{sim_obj$results}
+#'     on which to calculate the median, and \code{na.rm} indicates whether to exclude \code{NA}
+#'     values when performing the calculation.}
+#'
+#'     \item{\code{var}: Each \code{var} (variance) summary is a named list of three arguments. \code{name} gives
+#'     a name for the summary, \code{x} gives the name of the variable in \code{sim_obj$results}
+#'     on which to calculate the variance, and \code{na.rm} indicates whether to exclude \code{NA}
+#'     values when performing the calculation.}
+#'
+#'     \item{\code{sd}: Each \code{sd} (standard deviation) summary is a named list of three arguments. \code{name} gives
+#'     a name for the summary, \code{x} gives the name of the variable in \code{sim_obj$results}
+#'     on which to calculate the standard deviation, and \code{na.rm} indicates whether to exclude \code{NA}
+#'     values when performing the calculation.}
+#'
+#'     \item{\code{mad}: Each \code{mad} (mean absolute deviation) summary is a named list of three arguments. \code{name} gives
+#'     a name for the summary, \code{x} gives the name of the variable in \code{sim_obj$results}
+#'     on which to calculate the MAD, and \code{na.rm} indicates whether to exclude \code{NA}
+#'     values when performing the calculation.}
+#'
+#'     \item{\code{iqr}: Each \code{iqr} (interquartile range) summary is a named list of three arguments. \code{name} gives
+#'     a name for the summary, \code{x} gives the name of the variable in \code{sim_obj$results}
+#'     on which to calculate the IQR, and \code{na.rm} indicates whether to exclude \code{NA}
+#'     values when performing the calculation.}
+#'
+#'     \item{\code{min}: Each \code{min} (minimum) summary is a named list of three arguments. \code{name} gives
+#'     a name for the summary, \code{x} gives the name of the variable in \code{sim_obj$results}
+#'     on which to calculate the minimum, and \code{na.rm} indicates whether to exclude \code{NA}
+#'     values when performing the calculation.}
+#'
+#'     \item{\code{max}: Each \code{max} (maximum) summary is a named list of three arguments. \code{name} gives
+#'     a name for the summary, \code{x} gives the name of the variable in \code{sim_obj$results}
+#'     on which to calculate the maximum, and \code{na.rm} indicates whether to exclude \code{NA}
+#'     values when performing the calculation.}
+#'
+#'     \item{\code{quantile}: Each \code{quantile} summary is a named list of four arguments. \code{name} gives
+#'     a name for the summary, \code{x} gives the name of the variable in \code{sim_obj$results}
+#'     on which to calculate the quantile, \code{prob} is a number in [0,1] denoting the desired quantile,
+#'     and \code{na.rm} indicates whether to exclude \code{NA} values when performing the calculation.}
+#'
+#'     \item{\code{bias}: Each \code{bias} summary is a named list of four arguments. \code{name} gives
+#'     a name for the summary, \code{estimate} gives the name of the variable in \code{sim_obj$results}
+#'     containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}), and
+#'     \code{na.rm} indicates whether to exclude \code{NA} values when performing the calculation.}
+#'
+#'     \item{\code{mse}: Each \code{mse} (mean squared error) summary is a named list of four arguments. \code{name} gives
+#'     a name for the summary, \code{estimate} gives the name of the variable in \code{sim_obj$results}
+#'     containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}), and
+#'     \code{na.rm} indicates whether to exclude \code{NA} values when performing the calculation.}
+#'
+#'     \item{\code{mae}: Each \code{mae} (mean absolute error) summary is a named list of four arguments. \code{name} gives
+#'     a name for the summary, \code{estimate} gives the name of the variable in \code{sim_obj$results}
+#'     containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}), and
+#'     \code{na.rm} indicates whether to exclude \code{NA} values when performing the calculation.}
+#'
+#'     \item{\code{cov}: Each \code{cov} (confidence interval coverage) summary is a named list of five arguments. Either
+#'     (\code{estimate}, \code{se}) or (\code{lower}, \code{upper}) must be provided.  \code{name} gives a name for the
+#'     summary, \code{estimate} gives the name of the variable in \code{sim_obj$results}
+#'     containing the estimator of interest, \code{se} gives the name of the variable in \code{sim_obj$results}
+#'     containing the standard error of the estimator of interest, \code{lower} gives the name of the variable in
+#'     \code{sim_obj$results} containing the confidence interval lower bound, \code{upper} gives the name of the
+#'     variable in \code{sim_obj$results} containing the confidence interval upper bound, \code{truth} is the
+#'     estimand of interest, and \code{na.rm} indicates whether to exclude \code{NA} values when performing the
+#'     calculation. See \emph{Details}.}
+#'    }
+#' @details \itemize{
+#'     \item{For all inferential summaries there are three ways to specify \code{truth}: (1) a single number,
+#'     meaning the estimand is the same across all simulation replicates and levels, (2) a numeric vector of the
+#'     same length as the number of rows in \code{sim_obj$results}, or (3) the name of a variable in \code{sim_obj$results}
+#'     containing the estimand of interest.}
+#'
+#'     \item{There are two ways to specify the confidence interval bounds for \code{cov}. The first is to provide
+#'     an \code{estimate} and its associated \code{se} (standard error). These should both be variables in
+#'     \code{sim_obj$results}. The function constructs a 95\% Wald-type confidence interval of the form
+#'     (\code{estimate} - 1.96 \code{se}, \code{estimate} + 1.96 \code{se}).  The alternative is to provide
+#'     \code{lower} and \code{upper} bounds, which should also be variables in \code{sim_obj$results}. In this case,
+#'     the confidence interval is (\code{lower}, \code{upper}). The coverage is simply the proportion of simulation
+#'     replicates for a given level in which \code{truth} lies within the interval.}
+#' }
+#' @return A data frame containing the result of each specified summary function as a column, for each of
+#'     the simulation levels.
 #' @examples
 #' # The following is a toy example of a simulation, illustrating the use of
 #' # the summary function.

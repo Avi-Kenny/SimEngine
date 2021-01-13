@@ -1,7 +1,7 @@
 ---
 layout: page
 title: set_script 
-nav_order: 9 
+nav_order: 10 
 permalink: /set_script/
 parent: Function reference
 ---
@@ -40,7 +40,7 @@ new_sim</p>
 result. The result must be a list of key-value pairs. The values
 themselves can either be simple (numeric, character, etc.) or complex
 (matrices, lists, etc.). The function body can contain references to the
-special objects 'L' (simulation levels) and 'C' (simulation constants).
+special objects <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>L</span> (simulation levels) and <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>C</span> (simulation constants).
 See examples.</p>
 </td></tr>
 </table>

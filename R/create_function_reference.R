@@ -8,7 +8,7 @@ if (FALSE) {
   library(magrittr)
 
 #  fns <- dir("man")[!(dir("man") %in% c("figures", "simba"))]
-  fns <- dir("man")[!(dir("man") %in% c("figures", "simba"), "merge")]
+  fns <- dir("man")[!(dir("man") %in% c("figures", "simba", "merge"))]
   fns <- substring(fns, 1, nchar(fns)-3)
 
   for (i in 1:length(fns)) {
