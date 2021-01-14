@@ -38,7 +38,7 @@ if (FALSE) {
     cat("layout: page\n")
     cat(paste("title:", fn, "\n"))
     cat(paste("nav_order:", i, "\n"))
-    cat(paste0("permalink: /", fn, "/\n"))
+    cat(paste0("permalink: /function-reference/", fn, "/\n"))
     cat("parent: Function reference\n")
     cat("---\n\n")
 

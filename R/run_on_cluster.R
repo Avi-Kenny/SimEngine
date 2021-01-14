@@ -63,11 +63,21 @@ run_on_cluster <- function(first, main, last, cluster_config) {
     rm(..count)
     rm(..env)
 
-    # Run code locally (`main` and `last` blocks)
+    # Run code locally (`main` block)
     eval(..main)
-    eval(..last)
 
     # Assign simulation object to ..sim_var in the parent environment
+    # Doing this BEFORE running the `last` block in case it contains an error
+    assign(
+      x = ..sim_var,
+      value = eval(as.name(..sim_var)),
+      envir = parent.frame()
+    )
+
+    # Run code locally (`last` block)
+    eval(..last)
+
+    # Run assign() again
     assign(
       x = ..sim_var,
       value = eval(as.name(..sim_var)),

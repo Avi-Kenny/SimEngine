@@ -10,9 +10,6 @@
 #' @examples
 #' TO DO
 #' @export
-merge <- function(sim_obj_1, sim_obj_2, ...) UseMethod("merge")
-
-#' @export
 merge.simba <- function(sim_obj_1, sim_obj_2, ...) {
 
   handle_errors(sim_obj, "is.simba")

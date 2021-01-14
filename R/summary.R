@@ -119,9 +119,6 @@
 #'   mse = list(name="lambda_mse", estimate="lambda_hat", truth=5)
 #' )
 #' @export
-summary <- function(sim_obj, ...) UseMethod("summary")
-
-#' @export
 summary.simba <- function(sim_obj, ...) {
 
   handle_errors(sim_obj, "is.simba")
