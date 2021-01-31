@@ -705,7 +705,7 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_bias_pct <- c(code_bias_pct, paste0(
-        b$name, " = mean(", b$estimate, "-", b$truth, na_1, "/", b$truth, ","
+        b$name, " = mean(", b$estimate, "-", b$truth, na_1, "/abs(", b$truth, "),"
       ))
 
     }
