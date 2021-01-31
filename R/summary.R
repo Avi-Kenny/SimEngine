@@ -60,6 +60,11 @@
 #'     containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}), and
 #'     \code{na.rm} indicates whether to exclude \code{NA} values when performing the calculation.}
 #'
+#'     \item{\code{bias_pct}: Each \code{bias_pct} summary is a named list of four arguments. \code{name} gives
+#'     a name for the summary, \code{estimate} gives the name of the variable in \code{sim_obj$results}
+#'     containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}), and
+#'     \code{na.rm} indicates whether to exclude \code{NA} values when performing the calculation.}
+#'
 #'     \item{\code{mse}: Each \code{mse} (mean squared error) summary is a named list of four arguments. \code{name} gives
 #'     a name for the summary, \code{estimate} gives the name of the variable in \code{sim_obj$results}
 #'     containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}), and
@@ -165,6 +170,7 @@ summary.simba <- function(sim_obj, ...) {
                "min",
                "max",
                "bias",
+               "bias_pct",
                "mse",
                "mae",
                "coverage")
@@ -647,6 +653,68 @@ summary.simba <- function(sim_obj, ...) {
   }
 
 
+  ### Calculate bias and parse summary code
+  if (!is.null(o_args$bias_pct)) {
+
+    code_bias_pct <- ""
+    for (b in o_args$bias_pct) {
+
+      # handle missing estimate, name, or truth argument
+      if (is.null(b$name)){
+        stop("`name` argument is required.")
+      }
+      if (is.null(b$estimate)){
+        stop("`estimate` argument is required.")
+      }
+      if (is.null(b$truth)){
+        stop("`truth` argument is required.")
+      }
+
+      if (!is.character(b$name)){
+        stop("`name` must be a character string.")
+      }
+
+      # handle truth and/or estimate that do not refer to columns in results
+      if (!(b$estimate %in% names(R))){
+        stop(paste0(b$estimate, " is not a variable in results."))
+      }
+      if (is.character(b$truth) & !(b$truth %in% names(R))){
+        stop(paste0(b$truth, " is not a variable in results."))
+      }
+      # handle non-numeric truth and/or estimate
+      if (!is.numeric(R[[b$estimate]])){
+        stop(paste0(b$estimate, " is not numeric."))
+      }
+      if (is.character(b$truth)){
+        if (!is.numeric(R[[b$truth]])){
+          stop(paste0(b$truth, " is not numeric."))
+        }
+      }
+      # !!!!! unsure if we should allow vectors of numbers for `truth`
+      else{
+        if (!is.numeric(b$truth) | length(b$truth) > 1){
+          stop(paste0(b$truth, " is neither a number nor a variable in results."))
+        }
+      }
+
+
+      if (!is.null(b$na.rm) && b$na.rm==TRUE) {
+        na_1 <- ", na.rm=TRUE)"
+      } else {
+        na_1 <- ")"
+      }
+
+      code_bias_pct <- c(code_bias_pct, paste0(
+        b$name, " = mean(", b$estimate, "-", b$truth, na_1, "/", b$truth, ","
+      ))
+
+    }
+
+  } else {
+    code_bias_pct <- ""
+  }
+
+
   ### Calculate MSE and parse summary code
   if (!is.null(o_args$mse)) {
 
@@ -886,6 +954,7 @@ summary.simba <- function(sim_obj, ...) {
     code_max,
     code_q,
     code_bias,
+    code_bias_pct,
     code_mse,
     code_mae,
     code_cov)
