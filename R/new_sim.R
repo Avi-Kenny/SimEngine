@@ -40,6 +40,7 @@ new_sim <- function() {
     levels = list("no levels"=TRUE),
     levels_grid = data.frame(level_id=1),
     results = "Simulation has not been run yet.",
+    results_complex = NA,
     errors = "Simulation has not been run yet.",
     warnings = "Simulation has not been run yet.",
 
