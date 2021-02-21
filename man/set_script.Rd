@@ -45,4 +45,21 @@ sim \%<>\% set_script(function() {
 })
 sim \%<>\% run()
 sim$results
+
+# If you need to return "complex" result data (vectors, dataframes, lists,
+etc.), put it in a key-value pair with key ".complex".
+sim <- new_sim()
+sim \%<>\% set_levels(n=c(4,9))
+sim \%<>\% set_config(num_sim=1)
+sim \%<>\% set_script(function() {
+  dat <- rnorm(L$n)
+  mtx <- matrix(dat, nrow=sqrt(length(dat)))
+  return (list(
+    "mean" = mean(dat),
+    "det" = det(mtx),
+    ".complex" = list(dat=dat, mtx=mtx)
+  ))
+})
+sim \%<>\% run()
+
 }

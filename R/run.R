@@ -91,7 +91,9 @@ run.simba <- function(sim_obj, sim_uids=NA) {
 
     # Set up references to levels row (L) and constants (C)
     assign(x="C", value=sim_obj$constants, envir=env)
-    L <- as.list(sim_obj$internals$levels_grid_big[sim_obj$internals$levels_grid_big$sim_uid == i,])
+    L <- as.list(sim_obj$internals$levels_grid_big[
+      sim_obj$internals$levels_grid_big$sim_uid == i,
+    ])
     levs <- names(sim_obj$levels)
     for (j in 1:length(levs)) {
       if (sim_obj$internals$levels_types[j]) {
@@ -189,22 +191,39 @@ run.simba <- function(sim_obj, sim_uids=NA) {
     )
   }
 
-  # Convert summary statistics to data frame
-  # !!!!! In addition to sim$results and sim$errors, create a place to store
-  #       other non-flat simulation data
+  # Convert results to data frame and pull out complex data
   if (num_ok>0) {
 
+    if (!is.null(results_lists_ok[[1]]$results$.complex)) {
+      results_complex <- lapply(results_lists_ok, function(r){
+        c("sim_uid"=r$sim_uid, r$results$.complex)
+      })
+    }
+
     results_lists_ok <- lapply(results_lists_ok, function(r){
-
-      # !!!!! If one or more simulation reps returns an incorrectly-formatted
-      #       list, r$results will be NULL and there will be an uncaught error.
-      #       simba should return `results_lists_ok` so that the user can
-      #       inspect it. Fix this when coding GitHub issue #21
-
-      c("sim_uid"=r$sim_uid, "runtime"=r$runtime, r$results)
-
+      r$results$.complex <- NULL
+      if (length(r$results)>0) {
+        c("sim_uid"=r$sim_uid, "runtime"=r$runtime, r$results)
+      } else {
+        c("sim_uid"=r$sim_uid, "runtime"=r$runtime,
+          list("complex_results_only"=TRUE))
+      }
     })
+
     results_df <- data.table::rbindlist(results_lists_ok)
+
+    # Join results data frames with `levels_grid_big`and attach to sim_obj
+    results_df <- dplyr::inner_join(
+      sim_obj$internals$levels_grid_big,
+      results_df,
+      by = "sim_uid"
+    )
+    sim_obj$results <- results_df
+
+    # Attach complex results
+    if (exists("results_complex")) {
+      sim_obj$results_complex <- results_complex
+    }
 
   }
 
@@ -220,6 +239,14 @@ run.simba <- function(sim_obj, sim_uids=NA) {
     })
     errors_df <- data.table::rbindlist(results_lists_err)
 
+    # Join error data frames with `levels_grid_big`and attach to sim_obj
+    errors_df <- dplyr::inner_join(
+      sim_obj$internals$levels_grid_big,
+      errors_df,
+      by = "sim_uid"
+    )
+    sim_obj$errors <- errors_df
+
   }
 
   # Convert warnings to data frame
@@ -232,47 +259,26 @@ run.simba <- function(sim_obj, sim_uids=NA) {
     })
     warn_df <- data.table::rbindlist(results_lists_warn)
 
-  }
-
-  # Join results data frames with `levels_grid_big`and attach to sim_obj
-  if (exists("results_df")) {
-    results_df <- dplyr::inner_join(
-      sim_obj$internals$levels_grid_big,
-      results_df,
-      by = "sim_uid"
-    )
-    sim_obj$results <- results_df
-  }
-
-  # Join error data frames with `levels_grid_big`and attach to sim_obj
-  if (exists("errors_df")) {
-    errors_df <- dplyr::inner_join(
-      sim_obj$internals$levels_grid_big,
-      errors_df,
-      by = "sim_uid"
-    )
-    sim_obj$errors <- errors_df
-  }
-
-  # Join warnings data frames with `levels_grid_big`and attach to sim_obj
-  if (exists("warn_df")) {
+    # Join warnings data frames with `levels_grid_big`and attach to sim_obj
     warn_df <- dplyr::inner_join(
       sim_obj$internals$levels_grid_big,
       warn_df,
       by = "sim_uid"
     )
     sim_obj$warnings <- warn_df
-  } else {
-    sim_obj$warnings <- "No warnings"
+
   }
 
   # Set states
-  if (exists("results_df") && exists("errors_df")) {
+  if (num_warn==0) {
+    sim_obj$warnings <- "No warnings"
+  }
+  if (num_ok>0 && num_err>0) {
     sim_obj$internals$run_state <- "run, some errors"
-  } else if (exists("results_df")) {
+  } else if (num_ok>0) {
     sim_obj$internals$run_state <- "run, no errors"
     sim_obj$errors <- "No errors"
-  } else if (exists("errors_df")) {
+  } else if (num_err>0) {
     sim_obj$internals$run_state <- "run, all errors"
     sim_obj$results <- "Errors detected in 100% of simulation replicates"
   } else {
@@ -290,7 +296,8 @@ run.simba <- function(sim_obj, sim_uids=NA) {
   # record levels and num_sim that were run
   sim_obj$internals$levels_prev <- sim_obj$internals$levels_shallow
   sim_obj$internals$num_sim_prev <- sim_obj$config$num_sim
-  sim_obj$internals$num_sim_cumulative <- sim_obj$internals$num_sim_cumulative + length(sim_uids)
+  sim_obj$internals$num_sim_cumulative <- sim_obj$internals$num_sim_cumulative +
+                                          length(sim_uids)
 
   return (sim_obj)
 

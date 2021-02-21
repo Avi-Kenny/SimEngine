@@ -6,11 +6,12 @@
 #' @param sim_obj A simulation object of class \code{simba}, usually created by
 #'     \link{new_sim}
 #' @param fn A function that runs a single simulation replicate and returns the
-#'     result. The result must be a list of key-value pairs. The values
-#'     themselves can either be simple (numeric, character, etc.) or complex
-#'     (matrices, lists, etc.). The function body can contain references to the
-#'     special objects \code{L} (simulation levels) and \code{C} (simulation constants).
-#'     See examples.
+#'     results. The results must be a list of key-value pairs. Values are
+#'     categorized as simple (a number, a character string, etc.) or complex
+#'     (vectors, dataframes, lists, etc.). Complex data must go inside a key
+#'     called ".complex" and the associated value must be a list (see examples).
+#'     The function body can contain references to the special objects \code{L}
+#'     (simulation levels) and \code{C} (simulation constants) (see examples).
 #' @return The original simulation object with the new "simulation script"
 #'     function added.
 #' @examples
@@ -32,6 +33,23 @@
 #' })
 #' sim %<>% run()
 #' sim$results
+#'
+#' # If you need to return complex result data (vectors, dataframes, lists,
+#' etc.), use the construct ".complex"=list().
+#' sim <- new_sim()
+#' sim %<>% set_levels(n=c(4,9))
+#' sim %<>% set_config(num_sim=1)
+#' sim %<>% set_script(function() {
+#'   dat <- rnorm(L$n)
+#'   mtx <- matrix(dat, nrow=sqrt(length(dat)))
+#'   return (list(
+#'     "mean" = mean(dat),
+#'     "det" = det(mtx),
+#'     ".complex" = list(dat=dat, mtx=mtx)
+#'   ))
+#' })
+#' sim %<>% run()
+#'
 #' @export
 set_script <- function(sim_obj, fn) UseMethod("set_script")
 
