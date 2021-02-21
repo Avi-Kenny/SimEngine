@@ -132,8 +132,6 @@ create_levels_grid_big <- function(sim_obj) {
   return(levels_grid_big)
 }
 
-
-
 # !!!!! Recycle this code eventually
 
 #' # Print method for class "simba_results"

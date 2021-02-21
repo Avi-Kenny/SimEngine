@@ -11,7 +11,7 @@ run_c <- function(ret=FALSE) {
         return (list(sum=(L$alpha+L$beta), prod=(L$alpha*L$beta)))
       })
     },
-    main = { sim %<>% run() },
+    main = {sim %<>% run()},
     last = { sim %>% summary() %>% print() },
     cluster_config = list(js="slurm")
   )
