@@ -193,16 +193,20 @@ run.simba <- function(sim_obj, sim_uids=NA) {
   # Convert results to data frame and pull out complex data
   if (num_ok>0) {
 
-    results_complex <- lapply(results_lists_ok, function(r) {
-      c("sim_uid"=r$sim_uid, r$results$.complex)
-    })
+    if (!is.null(results_lists_ok[[1]]$results$.complex)) {
+      results_complex <- lapply(results_lists_ok, function(r) {
+        c("sim_uid"=r$sim_uid, r$results$.complex)
+      })
+    } else {
+      results_complex <- NA
+    }
 
     results_lists_ok <- lapply(results_lists_ok, function(r) {
       r$results$.complex <- NULL
       if (length(r$results)>0) {
         c("sim_uid"=r$sim_uid, "runtime"=r$runtime, r$results)
       } else {
-        list("sim_uid"=r$sim_uid, "runtime"=r$runtime) # list("complex_results_only"=TRUE)
+        list("sim_uid"=r$sim_uid, "runtime"=r$runtime)
       }
     })
 
