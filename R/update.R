@@ -111,9 +111,9 @@ update.simba <- function(sim_obj,
                               by = names(prev_levels_grid_big[,-which(names(prev_levels_grid_big) == "sim_uid")]))
 
   # get levels / sim_ids that were previously run but are no longer needed
-  extra_run <- dplyr::anti_join(prev_levels_grid_big[,-which(names(prev_levels_grid_big) == "sim_uid")],
-                                levels_grid_big[,-which(names(levels_grid_big) == "sim_uid")],
-                                by = names(prev_levels_grid_big[,-which(names(prev_levels_grid_big) == "sim_uid")]))
+  extra_run <- dplyr::anti_join(prev_levels_grid_big[,-which(names(prev_levels_grid_big) %in% c("sim_uid", "level_id")),drop=F],
+                                levels_grid_big[,-which(names(levels_grid_big) %in% c("sim_uid", "level_id")),drop=F],
+                                by = names(prev_levels_grid_big[,-which(names(prev_levels_grid_big) %in% c("sim_uid", "level_id")),drop=F]))
 
   # if keep_extra = FALSE, remove excess runs (from results, errors, and warnings)
   if (!keep_extra & nrow(extra_run) > 0){
@@ -165,6 +165,7 @@ update.simba <- function(sim_obj,
       if (!is.character(sim_obj$results)){
         sim_obj_copy$results <- rbind(sim_obj$results, sim_obj_copy$results)
       }
+      sim_obj_copy$results <- sim_obj_copy$results[order(sim_obj_copy$results$sim_uid),]
     }
     else{
       sim_obj_copy$results <- sim_obj$results
@@ -173,6 +174,7 @@ update.simba <- function(sim_obj,
       if (!is.character(sim_obj$errors)){
         sim_obj_copy$errors <- rbind(sim_obj$errors, sim_obj_copy$errors)
       }
+      sim_obj_copy$errors <- sim_obj_copy$errors[order(sim_obj_copy$errors$sim_uid),]
     }
     else{
       sim_obj_copy$errors <- sim_obj$errors
@@ -181,6 +183,7 @@ update.simba <- function(sim_obj,
       if (!is.character(sim_obj$warnings)){
         sim_obj_copy$warnings <- rbind(sim_obj$warnings, sim_obj_copy$warnings)
       }
+      sim_obj_copy$warnings <- sim_obj_copy$warnings[order(sim_obj_copy$warnings$sim_uid),]
     }
     else{
       sim_obj_copy$warnings <- sim_obj$warnings

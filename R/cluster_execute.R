@@ -194,6 +194,7 @@ cluster_execute <- function(first,
           "that your shell commands are properly sequenced."))
       }
     )
+    #print(..sim_obj$internals)
 
     if (!class(..sim_obj)=="simba") {
       stop("Invalid simulation object")
@@ -352,9 +353,11 @@ cluster_execute <- function(first,
         # combine results and errors with existing results and errors
         if (!is.character(..sim_obj$results)){
           results_df <- rbind(..sim_obj$results, results_df)
+          results_df <- results_df[order(results_df$sim_uid),]
         }
         if (!is.character(..sim_obj$errors)){
           errors_df <- rbind(..sim_obj$errors, errors_df)
+          errors_df <- errors_df[order(errors_df$sim_uid),]
         }
       }
 
@@ -382,9 +385,9 @@ cluster_execute <- function(first,
         prev_levels_grid_big <- ..sim_obj$internals$levels_grid_big
 
         # get levels / sim_ids that were previously run but are no longer needed
-        extra_run <- dplyr::anti_join(prev_levels_grid_big[,-which(names(prev_levels_grid_big) == "sim_uid")],
-                                      levels_grid_big[,-which(names(levels_grid_big) == "sim_uid")],
-                                      by = names(prev_levels_grid_big[,-which(names(prev_levels_grid_big) == "sim_uid")]))
+        extra_run <- dplyr::anti_join(prev_levels_grid_big[,-which(names(prev_levels_grid_big) %in% c("sim_uid", "level_id")),drop=F],
+                                      levels_grid_big[,-which(names(levels_grid_big) %in% c("sim_uid", "level_id")),drop=F],
+                                      by = names(prev_levels_grid_big[,-which(names(prev_levels_grid_big) %in% c("sim_uid", "level_id")),drop=F]))
 
         # if keep_extra = FALSE, remove excess runs (from results, errors, and warnings)
         if (!keep_extra & nrow(extra_run) > 0){
