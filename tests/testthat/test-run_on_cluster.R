@@ -1,20 +1,44 @@
 
 # Create wrapper function for testing run_on_cluster()
-run_c <- function(ret=FALSE) {
+run_c <- function(ret=FALSE, cmplx=FALSE) {
 
-  run_on_cluster(
-    first = {
-      sim <- new_sim()
-      sim %<>% set_config(num_sim=2)
-      sim %<>% set_levels(alpha=c(2,3), beta=c(4,5))
-      sim %<>% set_script(function() {
-        return (list(sum=(L$alpha+L$beta), prod=(L$alpha*L$beta)))
-      })
-    },
-    main = {sim %<>% run()},
-    last = { sim %>% summary() %>% print() },
-    cluster_config = list(js="slurm")
-  )
+  if (cmplx==FALSE) {
+    run_on_cluster(
+      first = {
+        sim <- new_sim()
+        sim %<>% set_config(num_sim=2)
+        sim %<>% set_levels(alpha=c(2,3), beta=c(4,5))
+        sim %<>% set_script(function() {
+          list(
+            sum = L$alpha+L$beta,
+            prod = L$alpha*L$beta
+          )
+        })
+      },
+      main = { sim %<>% run() },
+      last = { sim %>% summary() %>% print() },
+      cluster_config = list(js="slurm")
+    )
+  } else {
+    run_on_cluster(
+      first = {
+        sim <- new_sim()
+        sim %<>% set_config(num_sim=2)
+        sim %<>% set_levels(alpha=c(2,3), beta=c(4,5))
+        sim %<>% set_script(function() {
+          list(
+            sum = L$alpha+L$beta,
+            prod = L$alpha*L$beta,
+            .complex = list(vec = c(L$alpha, L$beta))
+          )
+        })
+      },
+      main = { sim %<>% run() },
+      last = { sim %>% summary() %>% print() },
+      cluster_config = list(js="slurm")
+    )
+  }
+
 
   # The `sim` object should have been created in this environment
   if (ret) { return (sim) }
@@ -54,7 +78,7 @@ rm(sim)
 
 # Simulate running on cluster; test 'main' section
 Sys.setenv(run="main")
-test_that("Incorrect 'run' environment variable throws error", {
+test_that("Missing task ID throws error", {
   expect_error(run_c(), "Task ID is missing.")
 })
 Sys.setenv(SLURM_ARRAY_TASK_ID="1")
@@ -126,3 +150,51 @@ test_that("Correct behavior if 'first' fails", {
 })
 unlink("simba_results")
 Sys.setenv(run="")
+
+# Simulate running locally and on cluster with complex return data
+Sys.setenv(run="")
+sim <- run_c(ret=TRUE, cmplx=TRUE)
+test_that("run_on_cluster() works locally", {
+  expect_equal(class(sim), "simba")
+  expect_equal(sim$results$sum, c(6,6,7,7,7,7,8,8))
+  expect_equal(sim$errors, "No errors")
+  expect_equal(sim$config$num_sim, 2)
+  expect_equal(length(sim$results_complex), 8)
+  expect_equal(class(sim$results_complex), "list")
+  expect_equal(sim$results_complex[[1]]$sim_uid, 1)
+  expect_equal(sim$results_complex[[1]]$vec, c(2,4))
+})
+rm(sim)
+
+Sys.setenv(run="first")
+Sys.setenv(SLURM_ARRAY_TASK_ID="")
+run_c(cmplx=TRUE)
+Sys.setenv(run="main")
+Sys.setenv(SLURM_ARRAY_TASK_ID="1")
+run_c(cmplx=TRUE)
+Sys.setenv(SLURM_ARRAY_TASK_ID="2")
+run_c(cmplx=TRUE)
+Sys.setenv(SLURM_ARRAY_TASK_ID="")
+Sys.setenv(run="last")
+run_c(cmplx=TRUE)
+sim <- readRDS("sim.simba")
+output <- readChar("sim_output.txt", file.info("sim_output.txt")$size)
+test_that("run_on_cluster() works with complex data", {
+  expect_equal(dir.exists("simba_results"), FALSE)
+  expect_equal(sim$results$sum, c(6,6))
+  expect_equal(sim$errors, "No errors")
+  expect_equal(sim$config$num_sim, 2)
+  expect_equal(grepl("simba output START", output, fixed=TRUE), TRUE)
+  expect_equal(grepl("simba output END", output, fixed=TRUE), TRUE)
+  expect_equal(grepl("level_id alpha", output, fixed=TRUE), TRUE)
+  expect_equal(length(sim$results_complex), 2)
+  expect_equal(class(sim$results_complex), "list")
+  expect_equal(sim$results_complex[[1]]$sim_uid, 1)
+  expect_equal(sim$results_complex[[1]]$vec, c(2,4))
+})
+Sys.setenv(run="")
+unlink("sim.simba")
+unlink("sim_output.txt")
+rm(sim)
+rm(output)
+# !!!!! test update_on_cluster with complex data

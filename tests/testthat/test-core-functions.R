@@ -350,6 +350,66 @@ test_that("setting seeds leads to reproducible results (parallel='outer')", {
   expect_equal(res4, res9)
 })
 
+### complex simulation return data ###
+sim_1 <- new_sim()
+sim_2 <- new_sim()
+sim_3 <- new_sim()
+sim_1 %<>% set_levels(n=c(4,9))
+sim_2 %<>% set_levels(n=c(4,9))
+sim_3 %<>% set_levels(n=c(4,9))
+sim_1 %<>% set_config(num_sim=1)
+sim_2 %<>% set_config(num_sim=1)
+sim_3 %<>% set_config(num_sim=1)
+sim_1 %<>% set_script(function() {
+  dat <- c(1:(L$n))
+  mtx <- matrix(dat, nrow=sqrt(length(dat)))
+  return (list(
+    "mean" = mean(dat),
+    "det" = det(mtx),
+    ".complex" = list(dat=dat, mtx=mtx)
+  ))
+})
+sim_2 %<>% set_script(function() {
+  dat <- c(1:(L$n))
+  mtx <- matrix(dat, nrow=sqrt(length(dat)))
+  return (list(
+    ".complex" = list(dat=dat, mtx=mtx)
+  ))
+})
+sim_3 %<>% set_script(function() {
+  dat <- c(1:(L$n))
+  mtx <- matrix(dat, nrow=sqrt(length(dat)))
+  return (list(
+    "mean" = mean(dat),
+    "det" = det(mtx)
+  ))
+})
+sim_1 %<>% run()
+sim_2 %<>% run()
+sim_3 %<>% run()
+
+test_that("sim_1 has both non-complex and complex data", {
+  expect_equal(sim_1$results[1,"mean"], 2.5)
+  expect_equal(sim_1$results[2,"mean"], 5.0)
+  expect_equal(sim_1$results_complex[[1]]$sim_uid, 1)
+  expect_equal(sim_1$results_complex[[1]]$dat, c(1,2,3,4))
+  expect_equal(sim_1$results_complex[[1]]$mtx, matrix(c(1,2,3,4), nrow=2))
+})
+
+test_that("sim_2 has only complex data", {
+  expect_null(sim_2$results[1,"mean"])
+  expect_null(sim_2$results[2,"mean"])
+  expect_equal(sim_2$results_complex[[1]]$sim_uid, 1)
+  expect_equal(sim_2$results_complex[[1]]$dat, c(1,2,3,4))
+  expect_equal(sim_2$results_complex[[1]]$mtx, matrix(c(1,2,3,4), nrow=2))
+})
+
+test_that("sim_3 has only non-complex data", {
+  expect_equal(sim_3$results[1,"mean"], 2.5)
+  expect_equal(sim_3$results[2,"mean"], 5.0)
+  expect_equal(sim_3$results_complex, NA)
+})
+
 ### get() ###
 
 # !!!!! Add tests once get() is replaced
