@@ -331,7 +331,8 @@ cluster_execute <- function(first,
           }
 
           if (!is.na(r$results_complex)) {
-            results_complex[[length(results_complex)+1]] <- r$results_complex
+            results_complex[[length(results_complex)+1]] <-
+              r$results_complex[[1]]
           }
 
           num_new <- num_new + 1
@@ -381,6 +382,7 @@ cluster_execute <- function(first,
         ..sim_obj$internals$run_state <- "run, some errors"
       } else if (!is.null(results_df)) {
         ..sim_obj$results <- results_df
+        ..sim_obj$results_complex <- results_complex
         ..sim_obj$errors <- "No errors"
         ..sim_obj$internals$run_state <- "run, no errors"
       } else if (!is.null(errors_df)) {
