@@ -152,7 +152,6 @@ run.simba <- function(sim_obj, sim_uids=NA) {
   if (exists("cl")) { parallel::stopCluster(cl) }
 
   # Separate errors from results
-  # !!!!! Check to see how fast this is; this can probably be sped up
   results_lists_ok <- list()
   results_lists_warn <- list()
   results_lists_err <- list()
@@ -194,19 +193,16 @@ run.simba <- function(sim_obj, sim_uids=NA) {
   # Convert results to data frame and pull out complex data
   if (num_ok>0) {
 
-    if (!is.null(results_lists_ok[[1]]$results$.complex)) {
-      results_complex <- lapply(results_lists_ok, function(r){
-        c("sim_uid"=r$sim_uid, r$results$.complex)
-      })
-    }
+    results_complex <- lapply(results_lists_ok, function(r) {
+      c("sim_uid"=r$sim_uid, r$results$.complex)
+    })
 
-    results_lists_ok <- lapply(results_lists_ok, function(r){
+    results_lists_ok <- lapply(results_lists_ok, function(r) {
       r$results$.complex <- NULL
       if (length(r$results)>0) {
         c("sim_uid"=r$sim_uid, "runtime"=r$runtime, r$results)
       } else {
-        c("sim_uid"=r$sim_uid, "runtime"=r$runtime,
-          list("complex_results_only"=TRUE))
+        list("sim_uid"=r$sim_uid, "runtime"=r$runtime) # list("complex_results_only"=TRUE)
       }
     })
 
