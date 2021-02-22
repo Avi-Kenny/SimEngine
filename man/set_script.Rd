@@ -11,11 +11,12 @@ set_script(sim_obj, fn)
 \link{new_sim}}
 
 \item{fn}{A function that runs a single simulation replicate and returns the
-result. The result must be a list of key-value pairs. The values
-themselves can either be simple (numeric, character, etc.) or complex
-(matrices, lists, etc.). The function body can contain references to the
-special objects \code{L} (simulation levels) and \code{C} (simulation constants).
-See examples.}
+results. The results must be a list of key-value pairs. Values are
+categorized as simple (a number, a character string, etc.) or complex
+(vectors, dataframes, lists, etc.). Complex data must go inside a key
+called ".complex" and the associated value must be a list (see examples).
+The function body can contain references to the special objects \code{L}
+(simulation levels) and \code{C} (simulation constants) (see examples).}
 }
 \value{
 The original simulation object with the new "simulation script"
@@ -46,8 +47,8 @@ sim \%<>\% set_script(function() {
 sim \%<>\% run()
 sim$results
 
-# If you need to return "complex" result data (vectors, dataframes, lists,
-etc.), put it in a key-value pair with key ".complex".
+# If you need to return complex result data (vectors, dataframes, lists,
+etc.), use the construct ".complex"=list().
 sim <- new_sim()
 sim \%<>\% set_levels(n=c(4,9))
 sim \%<>\% set_config(num_sim=1)
