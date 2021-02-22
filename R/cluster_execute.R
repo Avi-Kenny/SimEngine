@@ -36,7 +36,6 @@ cluster_execute <- function(first,
 
   # Rename arguments to reduce changes of a naming conflict with contents of
   #   first/main/last blocks
-  #..first <- substitute(first)
   ..first <- first
   ..main <- main
   ..last <- last
@@ -208,6 +207,7 @@ cluster_execute <- function(first,
     # skip this rep
     err_reps <- list.files(path = ..path_sim_res, pattern = "e_*")
     if (!(length(err_reps) > 0 & ..sim_obj$config$stop_at_error)){
+
       # Error handling: tid_var and js
       if (is.null(..cfg$tid_var) && is.null(..cfg$js)) {
         stop("You must specify either 'js' or 'tid_var' in cluster_config.")
@@ -275,7 +275,10 @@ cluster_execute <- function(first,
 
       if (..sim_obj$internals$run_state=="run, no errors") {
         saveRDS(
-          ..sim_obj$results,
+          list(
+            "results" = ..sim_obj$results,
+            "results_complex" = ..sim_obj$results_complex
+          ),
           paste0(..path_sim_res, "/r_",
                  sprintf(fmt, ..sim_obj$internals$tid), ".rds")
         )
@@ -311,6 +314,7 @@ cluster_execute <- function(first,
       # Process result/error files
       files <- dir(paste0(..path_sim_res))
       results_df <- NULL
+      results_complex <- list()
       errors_df <- NULL
       num_new <- 0
       for (file in files) {
@@ -319,17 +323,17 @@ cluster_execute <- function(first,
 
           r <- readRDS(paste0(..path_sim_res, "/", file))
 
-          if (class(r)=="data.frame") {
-            if (is.null(results_df)) {
-              results_df <- r
-            } else {
-              results_df[nrow(results_df)+1,] <- r
-            }
+          if (is.null(results_df)) {
+            results_df <- r$results
+          } else {
+            results_df[nrow(results_df)+1,] <- r$results
+          }
+
+          if (!is.na(r$results_complex)) {
+            results_complex[[length(results_complex)+1]] <- r$results_complex
           }
 
           num_new <- num_new + 1
-
-          # !!!!! Handle non-flat result data
 
         } else if (substr(file,1,1)=="e") {
 
@@ -348,12 +352,19 @@ cluster_execute <- function(first,
         }
       }
 
+      if (identical(results_complex,list())) {
+        results_complex <- NA
+      }
+
       if (update_switch) {
         # combine results and errors with existing results and errors
-        if (!is.character(..sim_obj$results)){
+        if (!is.character(..sim_obj$results)) {
           results_df <- rbind(..sim_obj$results, results_df)
         }
-        if (!is.character(..sim_obj$errors)){
+        if (!is.na(results_complex)) {
+          results_complex <- c(..sim_obj$results_complex, results_complex)
+        }
+        if (!is.character(..sim_obj$errors)) {
           errors_df <- rbind(..sim_obj$errors, errors_df)
         }
       }
@@ -362,6 +373,7 @@ cluster_execute <- function(first,
       # Note: this code is somewhat redundant with the end of simba::run()
       if (!is.null(results_df) && !is.null(errors_df)) {
         ..sim_obj$results <- results_df
+        ..sim_obj$results_complex <- results_complex
         ..sim_obj$errors <- errors_df
         ..sim_obj$internals$run_state <- "run, some errors"
       } else if (!is.null(results_df)) {
@@ -406,7 +418,6 @@ cluster_execute <- function(first,
           #}
         }
       }
-
 
       # record levels and num_sim that were run
       ..sim_obj$internals$levels_prev <- ..sim_obj$internals$levels_shallow
