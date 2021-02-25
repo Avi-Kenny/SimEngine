@@ -290,6 +290,13 @@ cluster_execute <- function(first,
                  sprintf(fmt, ..sim_obj$internals$tid), ".rds")
         )
       }
+      if (!is.character(..sim_obj$warnings)) {
+        saveRDS(
+          ..sim_obj$warnings,
+          paste0(..path_sim_res, "/w_",
+                 sprintf(fmt, ..sim_obj$internals$tid), ".rds")
+        )
+      }
     }
   }
 
@@ -317,6 +324,7 @@ cluster_execute <- function(first,
       results_df <- NULL
       results_complex <- list()
       errors_df <- NULL
+      warnings_df <- NULL
       num_new <- 0
       for (file in files) {
 
@@ -351,6 +359,16 @@ cluster_execute <- function(first,
 
           num_new <- num_new + 1
 
+        } else if (substr(file,1,1) == "w") {
+          w <- readRDS(paste0(..path_sim_res, "/", file))
+
+          if (class(w)=="data.frame") {
+            if (is.null(warnings_df)) {
+              warnings_df <- w
+            } else {
+              warnings_df[nrow(warnings_df)+1,] <- w
+            }
+          }
         }
       }
 
@@ -371,10 +389,20 @@ cluster_execute <- function(first,
           errors_df <- rbind(..sim_obj$errors, errors_df)
           errors_df <- errors_df[order(errors_df$sim_uid),]
         }
+        if (!is.character(..sim_obj$warnings)) {
+          warnings_df <- rbind(..sim_obj$warnings, warnings_df)
+          warnings_df <- warnings_df[order(warnings_df$sim_uid),]
+        }
       }
 
       # Add results/errors to simulation object
       # Note: this code is somewhat redundant with the end of simba::run()
+      if (!is.null(warnings_df)) {
+        ..sim_obj$warnings <- warnings_df
+      }
+      else {
+        ..sim_obj$warnings <- "No warnings"
+      }
       if (!is.null(results_df) && !is.null(errors_df)) {
         ..sim_obj$results <- results_df
         ..sim_obj$results_complex <- results_complex
@@ -416,11 +444,11 @@ cluster_execute <- function(first,
                                                  extra_run,
                                                  by = names(extra_run))
           }
-          #if (!is.character(sim_obj$warnings)){
-          #  sim_obj$warnings <- dplyr::anti_join(sim_obj$warnings,
-          #                                       extra_run,
-          #                                       by = names(extra_run))
-          #}
+          if (!is.character(..sim_obj$warnings)){
+            ..sim_obj$warnings <- dplyr::anti_join(..sim_obj$warnings,
+                                                   extra_run,
+                                                   by = names(extra_run))
+          }
         }
       }
 

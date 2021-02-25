@@ -198,3 +198,60 @@ unlink("sim_output.txt")
 rm(sim)
 rm(output)
 # !!!!! test update_on_cluster with complex data
+
+
+
+
+# Create wrapper function for testing run_on_cluster() with warnings
+run_c <- function(ret=FALSE) {
+
+  run_on_cluster(
+    first = {
+      sim <- new_sim()
+      sim %<>% set_config(num_sim=2)
+      sim %<>% set_levels(alpha=c(2,3), beta=c(4,5))
+      sim %<>% set_script(function() {
+        warning("This is a test warning.")
+        list(
+          sum = L$alpha+L$beta,
+          prod = L$alpha*L$beta
+        )
+      })
+    },
+    main = { sim %<>% run() },
+    last = { sim %>% summary() %>% print() },
+    cluster_config = list(js="slurm")
+  )
+
+  # The `sim` object should have been created in this environment
+  if (ret) { return (sim) }
+
+}
+# Simulate running on cluster; produce warnings
+Sys.setenv(run="first")
+Sys.setenv(SLURM_ARRAY_TASK_ID="")
+run_c()
+Sys.setenv(run="main")
+Sys.setenv(SLURM_ARRAY_TASK_ID="1")
+run_c()
+Sys.setenv(SLURM_ARRAY_TASK_ID="2")
+run_c()
+test_that("run_on_cluster() produces warning files", {
+  expect_equal(file.exists("simba_results/w_1.rds"), TRUE)
+  expect_equal(file.exists("simba_results/w_2.rds"), TRUE)
+  expect_equal(file.exists("simba_results/w_3.rds"), FALSE)
+})
+Sys.setenv(SLURM_ARRAY_TASK_ID="")
+Sys.setenv(run="last")
+run_c()
+sim <- readRDS("sim.simba")
+
+test_that("run_on_cluster() 'last' section works", {
+  expect_equal(sim$results$sum, c(6,6))
+  expect_equal(sim$warnings$message, rep("This is a test warning.", 2))
+  expect_equal(sim$errors, "No errors")
+})
+Sys.setenv(run="")
+unlink("sim.simba")
+unlink("sim_output.txt")
+rm(sim)
