@@ -2,7 +2,7 @@
 layout: page
 title: add_method 
 nav_order: 3 
-permalink: /add_method/
+permalink: /function-reference/add_method/
 parent: Function reference
 ---
 

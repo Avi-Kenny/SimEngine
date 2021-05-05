@@ -2,7 +2,7 @@
 layout: page
 title: add_creator 
 nav_order: 2 
-permalink: /add_creator/
+permalink: /function-reference/add_creator/
 parent: Function reference
 ---
 

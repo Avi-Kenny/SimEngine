@@ -2,7 +2,7 @@
 layout: page
 title: set_levels 
 nav_order: 9 
-permalink: /set_levels/
+permalink: /function-reference/set_levels/
 parent: Function reference
 ---
 

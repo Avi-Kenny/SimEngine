@@ -86,6 +86,9 @@
 #'     calculation. See \emph{Details}.}
 #'    }
 #' @details \itemize{
+#'     \item{For all summaries besides \code{cov}, the \code{name} argument is optional. If \code{name} is not provided,
+#'     a name will be formed from the type of summary and the column on which the summary is performed.}
+#'
 #'     \item{For all inferential summaries there are three ways to specify \code{truth}: (1) a single number,
 #'     meaning the estimand is the same across all simulation replicates and levels, (2) a numeric vector of the
 #'     same length as the number of rows in \code{sim_obj$results}, or (3) the name of a variable in \code{sim_obj$results}
@@ -144,7 +147,7 @@ summary.simba <- function(sim_obj, ...) {
   # Evaluate passed arguments, passing in constants
   o_args <- list(...)
 
-  # If no additional arguments provided to summary, display means by defauls
+  # If no additional arguments provided to summary, display means by default
   if (identical(o_args,list())) {
 
     names_means <- names_results[!(names_results %in% c(
@@ -198,12 +201,14 @@ summary.simba <- function(sim_obj, ...) {
     code_mean <- ""
     for (m in o_args$mean) {
 
-      # handle missing name or x argument
-      if (is.null(m$name)){
-        stop("`name` argument is required.")
-      }
+      # handle missing x argument
       if (is.null(m$x)){
         stop("`x` argument is required.")
+      }
+
+      # if name missing, create a name
+      if (is.null(m$name)){
+        m$name <- paste0("mean_", m$x)
       }
 
       if (!is.character(m$name)){
@@ -240,12 +245,14 @@ summary.simba <- function(sim_obj, ...) {
     code_sd <- ""
     for (sd in o_args$sd) {
 
-      # handle missing name or x argument
-      if (is.null(sd$name)){
-        stop("`name` argument is required.")
-      }
+      # handle missing x argument
       if (is.null(sd$x)){
         stop("`x` argument is required.")
+      }
+
+      # if name missing, create a name
+      if (is.null(sd$name)){
+        sd$name <- paste0("sd_", sd$x)
       }
 
       if (!is.character(sd$name)){
@@ -282,12 +289,14 @@ summary.simba <- function(sim_obj, ...) {
     code_var <- ""
     for (var in o_args$var) {
 
-      # handle missing name or x argument
-      if (is.null(var$name)){
-        stop("`name` argument is required.")
-      }
+      # handle missing x argument
       if (is.null(var$x)){
         stop("`x` argument is required.")
+      }
+
+      # if name missing, create a name
+      if (is.null(var$name)){
+        var$name <- paste0("var_", var$x)
       }
 
       if (!is.character(var$name)){
@@ -326,12 +335,14 @@ summary.simba <- function(sim_obj, ...) {
     code_mad <- ""
     for (m in o_args$mad) {
 
-      # handle missing name or x argument
-      if (is.null(m$name)){
-        stop("`name` argument is required.")
-      }
+      # handle missing x argument
       if (is.null(m$x)){
         stop("`x` argument is required.")
+      }
+
+      # if name missing, create a name
+      if (is.null(m$name)){
+        m$name <- paste0("MAD_", m$x)
       }
 
       if (!is.character(m$name)){
@@ -369,12 +380,14 @@ summary.simba <- function(sim_obj, ...) {
     code_iqr <- ""
     for (i in o_args$iqr) {
 
-      # handle missing name or x argument
-      if (is.null(i$name)){
-        stop("`name` argument is required.")
-      }
+      # handle missing x argument
       if (is.null(i$x)){
         stop("`x` argument is required.")
+      }
+
+      # if name missing, create a name
+      if (is.null(i$name)){
+        i$name <- paste0("IQR_", i$x)
       }
 
       if (!is.character(i$name)){
@@ -413,15 +426,17 @@ summary.simba <- function(sim_obj, ...) {
     code_q <- ""
     for (q in o_args$quantile) {
 
-      # handle missing name, x, or prob argument
-      if (is.null(q$name)){
-        stop("`name` argument is required.")
-      }
+      # handle missing x, or prob argument
       if (is.null(q$x)){
         stop("`x` argument is required.")
       }
       if (is.null(q$prob)){
         stop("`prob` argument is required.")
+      }
+
+      # if name missing, create a name
+      if (is.null(q$name)){
+        q$name <- paste0("quantile_", q$prob, "_", q$x)
       }
 
       if (!is.character(q$name)){
@@ -469,12 +484,14 @@ summary.simba <- function(sim_obj, ...) {
     code_min <- ""
     for (m in o_args$min) {
 
-      # handle missing name or x argument
-      if (is.null(m$name)){
-        stop("`name` argument is required.")
-      }
+      # handle missing x argument
       if (is.null(m$x)){
         stop("`x` argument is required.")
+      }
+
+      # if name missing, create a name
+      if (is.null(m$name)){
+        m$name <- paste0("min_", m$x)
       }
 
       if (!is.character(m$name)){
@@ -511,12 +528,14 @@ summary.simba <- function(sim_obj, ...) {
     code_max <- ""
     for (m in o_args$max) {
 
-      # handle missing name or x argument
-      if (is.null(m$name)){
-        stop("`name` argument is required.")
-      }
+      # handle missing x argument
       if (is.null(m$x)){
         stop("`x` argument is required.")
+      }
+
+      # if name missing, create a name
+      if (is.null(m$name)){
+        m$name <- paste0("max_", m$x)
       }
 
       if (!is.character(m$name)){
@@ -554,12 +573,14 @@ summary.simba <- function(sim_obj, ...) {
     code_median<- ""
     for (m in o_args$median) {
 
-      # handle missing name or x argument
-      if (is.null(m$name)){
-        stop("`name` argument is required.")
-      }
+      # handle missing x argument
       if (is.null(m$x)){
         stop("`x` argument is required.")
+      }
+
+      # if name missing, create a name
+      if (is.null(m$name)){
+        m$name <- paste0("median_", m$x)
       }
 
       if (!is.character(m$name)){
@@ -597,15 +618,17 @@ summary.simba <- function(sim_obj, ...) {
     code_bias <- ""
     for (b in o_args$bias) {
 
-      # handle missing estimate, name, or truth argument
-      if (is.null(b$name)){
-        stop("`name` argument is required.")
-      }
+      # handle missing estimate or truth argument
       if (is.null(b$estimate)){
         stop("`estimate` argument is required.")
       }
       if (is.null(b$truth)){
         stop("`truth` argument is required.")
+      }
+
+      # if name missing, create a name
+      if (is.null(b$name)){
+        b$name <- paste0("bias_", b$estimate)
       }
 
       if (!is.character(b$name)){
@@ -659,15 +682,17 @@ summary.simba <- function(sim_obj, ...) {
     code_bias_pct <- ""
     for (b in o_args$bias_pct) {
 
-      # handle missing estimate, name, or truth argument
-      if (is.null(b$name)){
-        stop("`name` argument is required.")
-      }
+      # handle missing estimate or truth argument
       if (is.null(b$estimate)){
         stop("`estimate` argument is required.")
       }
       if (is.null(b$truth)){
         stop("`truth` argument is required.")
+      }
+
+      # if name missing, create a name
+      if (is.null(b$name)){
+        b$name <- paste0("bias_pct_", b$estimate)
       }
 
       if (!is.character(b$name)){
@@ -721,15 +746,17 @@ summary.simba <- function(sim_obj, ...) {
     code_mse <- ""
     for (m in o_args$mse) {
 
-      # handle missing estimate, name, or truth argument
-      if (is.null(m$name)){
-        stop("`name` argument is required.")
-      }
+      # handle missing estimate or truth argument
       if (is.null(m$estimate)){
         stop("`estimate` argument is required.")
       }
       if (is.null(m$truth)){
         stop("`truth` argument is required.")
+      }
+
+      # if name missing, create a name
+      if (is.null(m$name)){
+        m$name <- paste0("MSE_", m$estimate)
       }
 
       if (!is.character(m$name)){
@@ -781,15 +808,17 @@ summary.simba <- function(sim_obj, ...) {
     code_mae <- ""
     for (m in o_args$mae) {
 
-      # handle missing estimate, name, or truth argument
-      if (is.null(m$name)){
-        stop("`name` argument is required.")
-      }
+      # handle missing estimate or truth argument
       if (is.null(m$estimate)){
         stop("`estimate` argument is required.")
       }
       if (is.null(m$truth)){
         stop("`truth` argument is required.")
+      }
+
+      # if name missing, create a name
+      if (is.null(m$name)){
+        m$name <- paste0("MAE_", m$estimate)
       }
 
       if (!is.character(m$name)){

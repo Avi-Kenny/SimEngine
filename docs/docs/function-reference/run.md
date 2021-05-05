@@ -2,7 +2,7 @@
 layout: page
 title: run 
 nav_order: 6 
-permalink: /run/
+permalink: /function-reference/run/
 parent: Function reference
 ---
 

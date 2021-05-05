@@ -2,7 +2,7 @@
 layout: page
 title: add_constants 
 nav_order: 1 
-permalink: /add_constants/
+permalink: /function-reference/add_constants/
 parent: Function reference
 ---
 

@@ -2,7 +2,7 @@
 layout: page
 title: set_config 
 nav_order: 8 
-permalink: /set_config/
+permalink: /function-reference/set_config/
 parent: Function reference
 ---
 

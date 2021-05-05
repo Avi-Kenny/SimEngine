@@ -2,7 +2,7 @@
 layout: page
 title: new_sim 
 nav_order: 5 
-permalink: /new_sim/
+permalink: /function-reference/new_sim/
 parent: Function reference
 ---
 
