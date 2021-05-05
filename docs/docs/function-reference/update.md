@@ -1,13 +1,13 @@
 ---
 layout: page
 title: update 
-nav_order: 13 
-permalink: /update/
+nav_order: 11 
+permalink: /function-reference/update/
 parent: Function reference
 ---
 
 
-<table width="100%" summary="page for update {simba}"><tr><td>update {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table width="100%" summary="page for update.simba {simba}"><tr><td>update.simba {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Update a simulation</h2>
 
@@ -25,6 +25,7 @@ without repeating anything that has already been run.
 <h3>Usage</h3>
 
 ```R
+## S3 method for class 'simba'
 update(sim_obj, keep_errors = TRUE, keep_extra = FALSE)
 ```
 

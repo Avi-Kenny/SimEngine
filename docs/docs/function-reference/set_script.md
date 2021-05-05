@@ -1,7 +1,7 @@
 ---
 layout: page
 title: set_script 
-nav_order: 10 
+nav_order: 9 
 permalink: /function-reference/set_script/
 parent: Function reference
 ---

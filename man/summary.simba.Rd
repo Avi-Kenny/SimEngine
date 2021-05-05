@@ -102,6 +102,9 @@ This function calculates summary statistics for simulation results.
 }
 \details{
 \itemize{
+    \item{For all summaries besides \code{cov}, the \code{name} argument is optional. If \code{name} is not provided,
+    a name will be formed from the type of summary and the column on which the summary is performed.}
+
     \item{For all inferential summaries there are three ways to specify \code{truth}: (1) a single number,
     meaning the estimand is the same across all simulation replicates and levels, (2) a numeric vector of the
     same length as the number of rows in \code{sim_obj$results}, or (3) the name of a variable in \code{sim_obj$results}

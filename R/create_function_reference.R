@@ -8,16 +8,21 @@ if (FALSE) {
   library(magrittr)
 
 #  fns <- dir("man")[!(dir("man") %in% c("figures", "simba"))]
-  fns <- dir("man")[!(dir("man") %in% c("figures", "simba", "merge"))]
+  fns <- dir("man")[!(dir("man") %in% c("figures", "simba.Rd", "merge.simba.Rd"))]
   fns <- substring(fns, 1, nchar(fns)-3)
 
   for (i in 1:length(fns)) {
 
     # Variables
     fn <- fns[i]
+    if (substr(fn, start = nchar(fn) - 5, stop = nchar(fn)) == ".simba"){
+      fn2 <- substr(fn, start = 1, stop = nchar(fn) - 6)
+    } else{
+      fn2 <- fn
+    }
     path_rd <- paste0("man/", fn, ".Rd")
-    path_html <- paste0("docs/docs/function-reference/", fn, ".html")
-    path_md <- paste0("docs/docs/function-reference/", fn, ".md")
+    path_html <- paste0("docs/docs/function-reference/", fn2, ".html")
+    path_md <- paste0("docs/docs/function-reference/", fn2, ".md")
 
     # Convert Rd file to HTML
     Rd2HTML(
@@ -36,9 +41,9 @@ if (FALSE) {
     # Write Jekyll header
     cat("---\n")
     cat("layout: page\n")
-    cat(paste("title:", fn, "\n"))
+    cat(paste("title:", fn2, "\n"))
     cat(paste("nav_order:", i, "\n"))
-    cat(paste0("permalink: /function-reference/", fn, "/\n"))
+    cat(paste0("permalink: /function-reference/", fn2, "/\n"))
     cat("parent: Function reference\n")
     cat("---\n\n")
 

@@ -1,13 +1,13 @@
 ---
 layout: page
 title: summary 
-nav_order: 12 
-permalink: /summary/
+nav_order: 10 
+permalink: /function-reference/summary/
 parent: Function reference
 ---
 
 
-<table width="100%" summary="page for summary {simba}"><tr><td>summary {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table width="100%" summary="page for summary.simba {simba}"><tr><td>summary.simba {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Summarize simulation results</h2>
 
@@ -24,6 +24,7 @@ within a single simulation level.
 <h3>Usage</h3>
 
 ```R
+## S3 method for class 'simba'
 summary(sim_obj, ...)
 ```
 
@@ -103,6 +104,12 @@ containing the estimator of interest, <span style='font-family:&quot;SFMono-Regu
 <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>na.rm</span> indicates whether to exclude <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>NA</span> values when performing the calculation.
 </p>
 </li>
+<li><p><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>bias_pct</span>: Each <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>bias_pct</span> summary is a named list of four arguments. <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>name</span> gives
+a name for the summary, <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>estimate</span> gives the name of the variable in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj$results</span>
+containing the estimator of interest, <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>truth</span> is the estimand of interest (see <em>Details</em>), and
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>na.rm</span> indicates whether to exclude <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>NA</span> values when performing the calculation.
+</p>
+</li>
 <li><p><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>mse</span>: Each <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>mse</span> (mean squared error) summary is a named list of four arguments. <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>name</span> gives
 a name for the summary, <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>estimate</span> gives the name of the variable in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj$results</span>
 containing the estimator of interest, <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>truth</span> is the estimand of interest (see <em>Details</em>), and
@@ -134,6 +141,10 @@ calculation. See <em>Details</em>.
 
 
 <ul>
+<li><p>For all summaries besides <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>cov</span>, the <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>name</span> argument is optional. If <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>name</span> is not provided,
+a name will be formed from the type of summary and the column on which the summary is performed.
+</p>
+</li>
 <li><p>For all inferential summaries there are three ways to specify <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>truth</span>: (1) a single number,
 meaning the estimand is the same across all simulation replicates and levels, (2) a numeric vector of the
 same length as the number of rows in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj$results</span>, or (3) the name of a variable in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj$results</span>
