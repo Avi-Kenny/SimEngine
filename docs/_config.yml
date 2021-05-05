@@ -33,6 +33,7 @@ repository: Avi-Kenny/simba.github.io
 #remote_theme: alexander-heimbuch/millidocs
 plugins:
   - jekyll-feed
+markdown: kramdown
 
 
 logo: "/assets/images/logo.png"
