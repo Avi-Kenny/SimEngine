@@ -12,6 +12,8 @@ usemathjax: true
 
 ---
 
+<img src="assets/images/logo.png" align="right" alt="simba" style="height:150px">
+
 Calculating statistical power is a critical step in the design of experiments. For a given study design, the statistical power is defined as the probability that a hypothesis test correctly rejects the null hypothesis (assuming it is false). Sometimes, the sample size for a study is considered fixed, and interest lies in calculating power. More often, investigators want to know what sample size is needed to reject the null hypothesis at a given power level (e.g. 80% or 90%). We assume that the reader has some familiarity with statistical hypothesis testing.
 
 For simple study designs (e.g. an individually randomized controlled trial with two groups), formulas exist to calculate the sample size necessary to reject the null hypothesis under certain assumptions around the distribution of your outcome, the effect size, etc. For example, in an experiment comparing means between two groups, the following formula is used to calculate the necessary sample size to reject a null hypothesis with power $$1-\beta$$ and type I error rate $$\alpha$$, where the outcome variable has means $$\mu_0,\mu_1$$ and standard deviations $$\sigma_0^2,\sigma_1^2$$ in the two groups and $$z_{\alpha/2}$$ and $$z_\beta$$ represent quantiles of the standard normal distribution:
