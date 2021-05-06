@@ -7,7 +7,7 @@ parent: Function reference
 ---
 
 
-<table width="100%" summary="page for summary.simba {simba}"><tr><td>summary.simba {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table width="100%" summary="page for summary {simba}"><tr><td>summary {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Summarize simulation results</h2>
 
@@ -24,7 +24,6 @@ within a single simulation level.
 <h3>Usage</h3>
 
 ```R
-## S3 method for class 'simba'
 summary(sim_obj, ...)
 ```
 
