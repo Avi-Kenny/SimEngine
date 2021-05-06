@@ -311,7 +311,7 @@ cluster_execute <- function(first,
       sink(..f, type="output", append=FALSE)
       sink(..f, type="message", append=FALSE)
       cat(paste("simba output START:",Sys.time(),"\n\n"))
-      cat(paste("\nSimluation stopped because of error. See error files in simba_results directory.\n\n"))
+      cat(paste("\nThe simluation was stopped because of an error. See error files in simba_results directory.\n\n"))
       cat(paste("\n\nsimba output END:",Sys.time(),"\n"))
       sink(type="output")
       sink(type="message")

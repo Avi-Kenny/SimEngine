@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Function reference
-nav_order: 9
+nav_order: 5
 permalink: /function-reference/
 has_children: true
 has_toc: true

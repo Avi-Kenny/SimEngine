@@ -1,12 +1,12 @@
 ---
 layout: page
-title: Vignette 2
+title: Example 2
 nav_order: 2
-permalink: /vignette2/
-parent: Vignettes
+permalink: /examples/2
+parent: Examples
 ---
 
-# Vignette 2
+# Example 2: TO DO
 {: .fs-9 }
 
 ---

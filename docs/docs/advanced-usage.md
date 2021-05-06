@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Advanced usage
-nav_order: 8
+nav_order: 3
 permalink: /advanced-usage/
 ---
 
@@ -9,5 +9,7 @@ permalink: /advanced-usage/
 {: .fs-9 }
 
 ---
+
+## Header
 
 Text text text text text

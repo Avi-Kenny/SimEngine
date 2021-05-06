@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Parallelization
-nav_order: 5
+nav_order: 2
 permalink: /parallelization/
 ---
 
