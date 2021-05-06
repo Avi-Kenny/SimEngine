@@ -8,12 +8,12 @@
 #'    without repeating anything that has already been run.
 #' @param sim_obj A simulation object of class \code{simba}, usually created by
 #'     \link{new_sim}, that has already been run by the \link{run} function
-#' @param keep_errors logical (TRUE by default); if TRUE, do not try to re-run
-#'     simulation reps that results in errors previously; if FALSE, attempt to
+#' @param keep_errors logical (\code{TRUE} by default); if \code{TRUE}, do not try to re-run
+#'     simulation reps that results in errors previously; if \code{FALSE}, attempt to
 #'     run those reps again
-#' @param keep_extra logical (FALSE by default); if TRUE, keep previously run
+#' @param keep_extra logical (\code{FALSE} by default); if \code{TRUE}, keep previously run
 #'     simulation reps even if they exceed the current \code{num_sim} in config or are from
-#'     a level that has been dropped; if FALSE, drop excess reps (starting from the last rep
+#'     a level that has been dropped; if \code{FALSE}, drop excess reps (starting from the last rep
 #'     for that particular simulation level)
 #' @details \itemize{
 #'   \item{It is not possible to add new level variables, only new levels of the
