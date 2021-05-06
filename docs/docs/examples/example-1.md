@@ -24,10 +24,9 @@ If you want to calculate sample size at a fixed power level (e.g. 90%), you can 
 
 We illustrate this process by simulating a randomized controlled trial and comparing our results to what we get from the formula above. We then show how our simulation can be modified to adapt to more complex scenarios.
 
-First, we load simba, declare a new simulation object, and write our creator function:
+First, we declare a new simulation object and write our creator function:
 
 ```R
-library(simba)
 sim <- new_sim()
 
 sim %<>% add_creator("create_rct_data",

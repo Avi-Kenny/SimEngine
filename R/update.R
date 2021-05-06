@@ -50,9 +50,17 @@
 #' sim %<>% set_config(num_sim=5)
 #' sim %<>% update()
 #' @export
-update.simba <- function(sim_obj,
-                         keep_errors = TRUE,
-                         keep_extra = FALSE) {
+update <- function(sim_obj, keep_errors=TRUE, keep_extra=FALSE) {
+  UseMethod("update")
+}
+
+#' @export
+update.simba <- function(sim_obj, keep_errors=TRUE, keep_extra=FALSE) {
+
+  # Error if simulation has not yet been run
+  if (sim_obj$internals$run_state == "pre run"){
+    stop("Simulation has not been run yet.")
+  }
 
   # error handle invalid options
   handle_errors(keep_errors, "is.boolean")
