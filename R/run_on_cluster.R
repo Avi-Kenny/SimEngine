@@ -1,6 +1,11 @@
 #' Framework for running simulations on a cluster computing system
 #'
-#' @description !!!!! TO DO. Job schedulers currently supported include Slurm, SGE, ... !!!!!
+#' @description This function provides a scaffold for running simulations in parallel
+#'     in a cluster computing environment. It acts as a wrapper for \code{simba} simulation
+#'     code, organizing the code into sections that are run just once per simulation (e.g. simulation
+#'     setup and compiling results) and sections that are run many times (e.g. simulation replicates).
+#'     This function interfaces with the cluster job scheduler to divide parallel tasks over cluster nodes.
+#'     Job schedulers currently supported include Slurm and Sun Grid Engine.
 #' @param first Code to run at the start of a simulation. This should be a block
 #'     of code enclosed by curly braces {} that that creates a simulation
 #'     object. Put everything you need in the simulation object, since global
@@ -16,13 +21,52 @@
 #'     your simulation object (which at this point will contain your results)
 #'     and do something with it, such as display your results on a graph.
 #' @param cluster_config A list of configuration options. You must specify
-#'     either js (the job scheduler you are using) or tid_var (the name of the
+#'     either \code{js} (the job scheduler you are using) or \code{tid_var} (the name of the
 #'     environment variable that your task ID) is stored in. You can optionally
-#'     specify dir, which is a path to a directory that will hold your
+#'     specify \code{dir}, which is a path to a directory that will hold your
 #'     simulation object and results (this defaults to the current working
 #'     directory).
 #' @examples
-#' !!!!! TO DO
+#' # The following is a toy simulation that could be run in a cluster computing environment
+#' # using the SGE job scheduler. It runs 10 replicates of 2 simulation levels as 20
+#' # separate cluster jobs, and then summarizes the results.
+#'
+#' # This code is saved in a file called my_simulation.R
+#' library(simba)
+#' run_on_cluster(
+#'
+#'   first = {
+#'     sim %<>% new_sim()
+#'     sim %<>% add_creator("create_data", function(n){ rnorm(n) })
+#'     sim %<>% set_script(function() {
+#'       data <- create_data(L$n)
+#'       return(mean(data))
+#'     })
+#'     sim %<>% set_levels(n=c(100,1000))
+#'     sim %<>% set_config(num_sim=10)
+#'   },
+#'
+#'   main = {
+#'     sim %<>% run()
+#'   },
+#'
+#'   last = {
+#'     sim %<>% summary()
+#'   },
+#'
+#'   cluster_config = list(js="sge")
+#'
+#' )
+#'
+#' # This code is saved in a file called run_sim.sh
+#' #!/bin/bash
+#' Rscript my_simulation.R
+#'
+#' # The following lines of code are run from the cluster head node.
+#' qsub -v run='first' run_sim.sh
+#' qsub -v run='main' -t 1-20 -hold_jid 101 run_sim.sh
+#' qsub -v run='last' -hold_jid 102 run_sim.sh
+#'
 #' @export
 run_on_cluster <- function(first,
                            main,
