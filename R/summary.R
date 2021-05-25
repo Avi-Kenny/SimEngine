@@ -199,7 +199,7 @@ summary.simba <- function(sim_obj, ...) {
   }
 
   ### Parse code to calculate mean
-  if (!is.null(o_args$mean)) {
+  if (!is.null(o_args[["mean"]])) {
 
     code_mean <- ""
     for (m in o_args$mean) {
@@ -243,7 +243,7 @@ summary.simba <- function(sim_obj, ...) {
   }
 
   ### Parse SD summary code
-  if (!is.null(o_args$sd)) { # !!!!! be consistent about o_args$sd vs o_args[["sd"]]
+  if (!is.null(o_args[["sd"]])) { # !!!!! be consistent about o_args$sd vs o_args[["sd"]]
 
     code_sd <- ""
     for (sd in o_args$sd) {
@@ -287,7 +287,7 @@ summary.simba <- function(sim_obj, ...) {
   }
 
   ### Parse variance summary code
-  if (!is.null(o_args$var)) {
+  if (!is.null(o_args[["var"]])) {
 
     code_var <- ""
     for (var in o_args$var) {
@@ -333,7 +333,7 @@ summary.simba <- function(sim_obj, ...) {
 
 
   ### Parse MAD summary code
-  if (!is.null(o_args$mad)) {
+  if (!is.null(o_args[["mad"]])) {
 
     code_mad <- ""
     for (m in o_args$mad) {
@@ -378,7 +378,7 @@ summary.simba <- function(sim_obj, ...) {
 
 
   ### Parse IQR summary code
-  if (!is.null(o_args$iqr)) {
+  if (!is.null(o_args[["iqr"]])) {
 
     code_iqr <- ""
     for (i in o_args$iqr) {
@@ -424,7 +424,7 @@ summary.simba <- function(sim_obj, ...) {
 
 
   ### Parse quantile summary code
-  if (!is.null(o_args$quantile)) {
+  if (!is.null(o_args[["quantile"]])) {
 
     code_q <- ""
     for (q in o_args$quantile) {
@@ -482,7 +482,7 @@ summary.simba <- function(sim_obj, ...) {
 
 
   ### Parse min summary code
-  if (!is.null(o_args$min)) {
+  if (!is.null(o_args[["min"]])) {
 
     code_min <- ""
     for (m in o_args$min) {
@@ -526,7 +526,7 @@ summary.simba <- function(sim_obj, ...) {
   }
 
   ### Parse max summary code
-  if (!is.null(o_args$max)) {
+  if (!is.null(o_args[["max"]])) {
 
     code_max <- ""
     for (m in o_args$max) {
@@ -571,7 +571,7 @@ summary.simba <- function(sim_obj, ...) {
 
 
   ### Parse median summary code
-  if (!is.null(o_args$median)) {
+  if (!is.null(o_args[["median"]])) {
 
     code_median<- ""
     for (m in o_args$median) {
@@ -616,7 +616,7 @@ summary.simba <- function(sim_obj, ...) {
 
 
   ### Calculate bias and parse summary code
-  if (!is.null(o_args$bias)) {
+  if (!is.null(o_args[["bias"]])) {
 
     code_bias <- ""
     for (b in o_args$bias) {
@@ -679,8 +679,8 @@ summary.simba <- function(sim_obj, ...) {
   }
 
 
-  ### Calculate bias and parse summary code
-  if (!is.null(o_args$bias_pct)) {
+  ### Calculate percent bias and parse summary code
+  if (!is.null(o_args[["bias_pct"]])) {
 
     code_bias_pct <- ""
     for (b in o_args$bias_pct) {
@@ -744,7 +744,7 @@ summary.simba <- function(sim_obj, ...) {
 
 
   ### Calculate MSE and parse summary code
-  if (!is.null(o_args$mse)) {
+  if (!is.null(o_args[["mse"]])) {
 
     code_mse <- ""
     for (m in o_args$mse) {
@@ -806,7 +806,7 @@ summary.simba <- function(sim_obj, ...) {
 
 
   ### Calculate MAE and parse summary code
-  if(!is.null(o_args$mae)) {
+  if(!is.null(o_args[["mae"]])) {
 
     code_mae <- ""
     for (m in o_args$mae) {
@@ -870,7 +870,7 @@ summary.simba <- function(sim_obj, ...) {
   ### Calculate CIs and parse coverage summary code
   # !!!!! Add a column to specify how many rows were omitted with na.rm (for other summary stats as well)
   # !!!!! if (mean, se) and (upper, lower) are both provided, the latter takes precedence.
-  if (!is.null(o_args$coverage)) {
+  if (!is.null(o_args[["coverage"]])) {
 
     code_cov <- ""
     for (cov in o_args$coverage) {
