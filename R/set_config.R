@@ -81,12 +81,12 @@ set_config.simba <- function(
   }
 
   if (!missing(datasets)) {
-    handle_errors(datasets, "is.in", c("one","many"))
+    handle_errors(datasets, "is.in", other=c("one","many"))
     sim_obj$config[["datasets"]] = datasets
   }
 
   if (!missing(parallel)) {
-    handle_errors(parallel, "is.in", c("outer","inner","none"))
+    handle_errors(parallel, "is.in", other=c("outer","inner","none"))
     sim_obj$config[["parallel"]] = parallel
   }
 
@@ -96,7 +96,7 @@ set_config.simba <- function(
   }
 
   if (!missing(packages)) {
-    handle_errors(packages, "is.character.vector")
+    handle_errors(packages, "is.character.vec")
     sim_obj$config[["packages"]] = packages
     for (pkg in packages) {
       do.call("library", list(pkg))
