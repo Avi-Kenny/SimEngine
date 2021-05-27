@@ -151,7 +151,7 @@ summary.simba <- function(sim_obj, ...) {
   o_args <- list(...)
 
   # String to temporarily append to column names
-  ss <- "O____O"
+  pre <- "o___o_"
 
   # If no additional arguments provided to summary, display means by default
   if (identical(o_args,list())) {
@@ -226,7 +226,7 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_mean <- c(code_mean, paste0(
-        m$name, " = mean(", m$x, na_1
+        pre, m$name, " = mean(", m$x, na_1
       ))
 
     }
@@ -259,7 +259,7 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_sd <- c(code_sd, paste0(
-        sd$name, " = sd(", sd$x, na_1
+        pre, sd$name, " = sd(", sd$x, na_1
       ))
 
     }
@@ -292,7 +292,7 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_var <- c(code_var, paste0(
-        var$name, " = var(", var$x, na_1
+        pre, var$name, " = var(", var$x, na_1
       ))
 
     }
@@ -326,7 +326,7 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_mad <- c(code_mad, paste0(
-        m$name, " = mad(", m$x, na_1
+        pre, m$name, " = mad(", m$x, na_1
       ))
 
     }
@@ -361,7 +361,8 @@ summary.simba <- function(sim_obj, ...) {
 
       code_iqr <- c(code_iqr, paste0(
         #i$name, " = IQR(", i$x, na_1
-        i$name, " = tryCatch(IQR(", i$x, na_1, " error = function(e){return(NA)}),"
+        pre, i$name, " = tryCatch(IQR(", i$x, na_1,
+        " error = function(e){return(NA)}),"
       ))
 
     }
@@ -401,8 +402,8 @@ summary.simba <- function(sim_obj, ...) {
 
       code_q <- c(code_q, paste0(
         #q$name, " = quantile(", q$x, ", probs=", q$prob, ",", na_1
-        q$name, " = tryCatch(quantile(", q$x, ", probs=", q$prob, ",",
-                na_1, " error = function(e){return(NA)}),"
+        pre, q$name, " = tryCatch(quantile(", q$x, ", probs=", q$prob, ",",
+        na_1, " error = function(e){return(NA)}),"
       ))
 
     }
@@ -436,7 +437,7 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_min <- c(code_min, paste0(
-        m$name, " = min(", m$x, na_1
+        pre, m$name, " = min(", m$x, na_1
       ))
 
     }
@@ -469,7 +470,7 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_max <- c(code_max, paste0(
-        m$name, " = max(", m$x, na_1
+        pre, m$name, " = max(", m$x, na_1
       ))
 
     }
@@ -503,7 +504,7 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_median <- c(code_median, paste0(
-        m$name, " = median(", m$x, na_1
+        pre, m$name, " = median(", m$x, na_1
       ))
 
     }
@@ -525,7 +526,7 @@ summary.simba <- function(sim_obj, ...) {
       handle_errors(b$estimate, "is.in", other=names(R),
                     msg=paste0("`",b$estimate,"` is not a variable in results."))
       handle_errors(R[[b$estimate]], "is.numeric.vec", name=b$estimate)
-      if (length(b$truth>1) || (
+      if (length(b$truth)>1 || (
         !is.numeric(b$truth) && !(b$truth %in% names(R))
       )) {
         stop(paste0(b$truth, " is neither a number nor a variable in results."))
@@ -543,7 +544,7 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_bias <- c(code_bias, paste0(
-        b$name, " = mean(", b$estimate, "-", b$truth, na_1
+        pre, b$name, " = mean(", b$estimate, "-", b$truth, na_1
       ))
 
     }
@@ -566,7 +567,7 @@ summary.simba <- function(sim_obj, ...) {
       handle_errors(b$estimate, "is.in", other=names(R),
                     msg=paste0("`",b$estimate,"` is not a variable in results."))
       handle_errors(R[[b$estimate]], "is.numeric.vec", name=b$estimate)
-      if (length(b$truth>1) || (
+      if (length(b$truth)>1 || (
         !is.numeric(b$truth) && !(b$truth %in% names(R))
       )) {
         stop(paste0(b$truth, " is neither a number nor a variable in results."))
@@ -584,7 +585,8 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_bias_pct <- c(code_bias_pct, paste0(
-        b$name, " = mean(", b$estimate, "-", b$truth, na_1, "/abs(", b$truth, "[1]),"
+        pre, b$name, " = mean(", b$estimate, "-", b$truth, na_1,
+        "/abs(", b$truth, "[1]),"
       ))
 
     }
@@ -607,7 +609,7 @@ summary.simba <- function(sim_obj, ...) {
       handle_errors(m$estimate, "is.in", other=names(R),
                     msg=paste0("`",m$estimate,"` is not a variable in results."))
       handle_errors(R[[m$estimate]], "is.numeric.vec", name=m$estimate)
-      if (length(m$truth>1) || (
+      if (length(m$truth)>1 || (
         !is.numeric(m$truth) && !(m$truth %in% names(R))
       )) {
         stop(paste0(m$truth, " is neither a number nor a variable in results."))
@@ -625,7 +627,7 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_mse <- c(code_mse, paste0(
-        m$name, " = mean((", m$estimate, "-", m$truth, ")^2", na_1
+        pre, m$name, " = mean((", m$estimate, "-", m$truth, ")^2", na_1
       ))
 
     }
@@ -648,7 +650,7 @@ summary.simba <- function(sim_obj, ...) {
       handle_errors(m$estimate, "is.in", other=names(R),
                     msg=paste0("`",m$estimate,"` is not a variable in results."))
       handle_errors(R[[m$estimate]], "is.numeric.vec", name=m$estimate)
-      if (length(m$truth>1) || (
+      if (length(m$truth)>1 || (
         !is.numeric(m$truth) && !(m$truth %in% names(R))
       )) {
         stop(paste0(m$truth, " is neither a number nor a variable in results."))
@@ -666,7 +668,7 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_mae <- c(code_mae, paste0(
-        m$name, " = mean(abs(", m$estimate, "-", m$truth, ")", na_1
+        pre, m$name, " = mean(abs(", m$estimate, "-", m$truth, ")", na_1
       ))
 
     }
@@ -688,7 +690,7 @@ summary.simba <- function(sim_obj, ...) {
       handle_errors(cov$name, "is.null", msg="`name` argument is required.")
       handle_errors(cov$truth, "is.null", msg="`truth` argument is required.")
       handle_errors(cov$name, "is.character", name="name")
-      if (length(cov$truth>1) || (
+      if (length(cov$truth)>1 || (
         !is.numeric(cov$truth) && !(cov$truth %in% names(R))
       )) {
         stop(paste0(cov$truth, " is neither a number nor a variable in results."))
@@ -732,7 +734,7 @@ summary.simba <- function(sim_obj, ...) {
       }
 
       code_cov <- c(code_cov, paste0(
-        cov$name, " = sum(.ci_l_", cov$name, " <= ", cov$truth,
+        pre, cov$name, " = sum(.ci_l_", cov$name, " <= ", cov$truth,
         " & ", cov$truth, " <= .ci_h_", cov$name, na_1,
         "/sum(!is.na(.ci_l_", cov$name, ") & !is.na(.ci_h_", cov$name,
         ") & !is.na(", cov$truth, ")", "),"))
@@ -763,6 +765,7 @@ summary.simba <- function(sim_obj, ...) {
     code_cov)
   summarize_code <- c(summarize_code, "))")
   summary <- eval(parse(text=summarize_code))
+  names(summary) <- gsub(pre, "", names(summary))
 
   return (summary)
 
