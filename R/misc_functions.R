@@ -49,57 +49,100 @@ print.simba <- function(sim_obj) {
 #'
 #' @param obj The object to check for errors (can be a list)
 #' @param err The type of error to check for (character string)
+#' @param name Name of the object; if not provided, the name of the obj variable
+#'     is used
 #' @param other A generic argument that can be used to pass in additional info
+#' @param msg A custom error message
 #' @return Throws and error or returns NULL
 #' @noRd
-handle_errors <- function(obj, err, other=NA) {
+handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
 
-  dso <- deparse(substitute(obj))
+  if (is.na(name)) {
+    name <- deparse(substitute(obj))
+  }
 
   switch(err,
 
     "is.simba" = {
       if (class(obj)!="simba") {
-        stop(paste0("`",dso,"` must be of class `simba`"), call.=FALSE)
+        if(is.na(msg)) {
+          msg <- paste0("`",name,"` must be of class `simba`")
+        }
+        stop(msg, call.=FALSE)
       }
     },
 
     "is.boolean" = {
       if (!(is.logical(obj) && length(obj) == 1)) {
-        stop(paste0("`",dso,"` must be of type 'logical'"), call.=FALSE)
+        if(is.na(msg)) {
+          msg <- paste0("`",name,"` must be of type 'logical'")
+        }
+        stop(msg, call.=FALSE)
       }
     },
 
     "is.numeric" = {
       if (!(is.numeric(obj) && length(obj) == 1)) {
-        stop(paste0("`",dso,"` must be numeric"), call.=FALSE)
+        if(is.na(msg)) {
+          msg <- paste0("`",name,"` must be numeric")
+        }
+        stop(msg, call.=FALSE)
+      }
+    },
+
+    "is.numeric.vec" = {
+      if (!(is.numeric(obj))) {
+        if(is.na(msg)) {
+          msg <- paste0("`",name,"` must be numeric")
+        }
+        stop(msg, call.=FALSE)
       }
     },
 
     "is.in" = {
       if (length(obj)>1) {
-        stop(paste0("`",dso,"` cannot be a vector"), call.=FALSE)
+        stop(paste0("`",name,"` cannot be a vector"), call.=FALSE)
       } else if (!(obj %in% other)) {
-        stop(paste0("'",obj,"' is not a valid option for `",dso,"`"),
-             call.=FALSE)
+        if(is.na(msg)) {
+          msg <- paste0("'",obj,"' is not a valid option for `",name,"`")
+        }
+        stop(msg, call.=FALSE)
       }
     },
 
     "is.function" = {
       if (!is.function(obj)) {
-        stop(paste0("`",dso,"` must be a function"), call.=FALSE)
+        if(is.na(msg)) {
+          msg <- paste0("`",name,"` must be a function")
+        }
+        stop(msg, call.=FALSE)
       }
     },
 
     "is.character" = {
       if (!(is.character(obj) && length(obj)==1)) {
-        stop(paste0("`",dso,"` must be a character string"), call.=FALSE)
+        if(is.na(msg)) {
+          msg <- paste0("`",name,"` must be a character string")
+        }
+        stop(msg, call.=FALSE)
       }
     },
 
-    "is.character.vector" = {
+    "is.character.vec" = {
       if (!(is.character(obj))) {
-        stop(paste0("`",dso,"` must be a character vector"), call.=FALSE)
+        if(is.na(msg)) {
+          msg <- paste0("`",name,"` must be a character vector")
+        }
+        stop(msg, call.=FALSE)
+      }
+    },
+
+    "is.null" = {
+      if (is.null(obj)) {
+        if(is.na(msg)) {
+          msg <- paste0("`",name,"` must not be NULL")
+        }
+        stop(msg, call.=FALSE)
       }
     },
 
