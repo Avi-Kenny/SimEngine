@@ -19,7 +19,7 @@
 #' sim %<>% set_config(num_sim=1)
 #' sim %<>% set_script(function() {
 #'   dat <- create_data(L$n)
-#'   lambda_hat <- do.call(L$estimator, list(dat))
+#'   lambda_hat <- use_method(L$estimator, list(dat))
 #'   return (list("lambda_hat"=lambda_hat))
 #' })
 #' sim %<>% run()
@@ -103,6 +103,15 @@ run.simba <- function(sim_obj, sim_uids=NA) {
     assign(x="L", value=L, envir=env)
     rm(levs)
     rm(L)
+
+    # Create a reference to the environment that can be searched for via get()
+    #     by methods (currently only use_method) that need to access the
+    #     simulation environment but don't take sim_obj as an argument
+    assign(x="..env", value=env, envir=env)
+
+    # Create ..added_methods vector that use_method() will check to test whether
+    #     a called method has been added to the simulation object
+    assign(x="..added_methods", value=names(sim$methods), envir=env)
 
     # Set the seed
     set.seed(as.integer(sim_obj$config$seed*i))

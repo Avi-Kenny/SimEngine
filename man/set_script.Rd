@@ -41,7 +41,7 @@ sim \%<>\% set_levels(
 sim \%<>\% set_config(num_sim=1)
 sim \%<>\% set_script(function() {
   dat <- create_data(L$n)
-  lambda_hat <- do.call(L$estimator, list(dat))
+  lambda_hat <- use_method(L$estimator, list(dat))
   return (list("lambda_hat"=lambda_hat))
 })
 sim \%<>\% run()
