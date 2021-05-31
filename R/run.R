@@ -111,7 +111,7 @@ run.simba <- function(sim_obj, sim_uids=NA) {
 
     # Create ..added_methods vector that use_method() will check to test whether
     #     a called method has been added to the simulation object
-    assign(x="..added_methods", value=names(sim$methods), envir=env)
+    assign(x="..added_methods", value=names(sim_obj$methods), envir=env)
 
     # Set the seed
     set.seed(as.integer(sim_obj$config$seed*i))

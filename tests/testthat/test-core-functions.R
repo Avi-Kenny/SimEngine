@@ -157,7 +157,7 @@ test_that("add_method() throws error for non-function function", {
 ### set_script ###
 my_script <- function() {
   df <- create_rct_data(L$num_patients)
-  estimate <- do.call(L$estimator, list(df))
+  estimate <- use_method(L$estimator, list(df))
   return (
     list("estimate" = estimate)
   )
@@ -175,7 +175,7 @@ sim <- new_sim()
 sim %<>% set_script(
   function() {
     df <- create_rct_data(L$num_patients)
-    estimate <- do.call(L$estimator, list(df))
+    estimate <- use_method(L$estimator, list(df))
     return (
       list("estimate" = estimate)
     )
@@ -293,7 +293,7 @@ sim %<>% set_levels(
 sim %<>% set_script(
   function() {
     df <- create_rct_data(L$num_patients)
-    estimate <- do.call(L$estimator, list(df))
+    estimate <- use_method(L$estimator, list(df))
     return (
       list("estimate" = estimate)
     )
