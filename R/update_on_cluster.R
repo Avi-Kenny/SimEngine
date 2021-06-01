@@ -77,7 +77,7 @@
 #' # This code is saved in a file called update_my_simulation.R.
 #' # Note that it reads in 'sim.simba' from the previous simulation run.
 #' library(simba)
-#' update_on_cluster(
+#' update_sim_on_cluster(
 #'
 #'   first = {
 #'     sim <- readRDS('sim.simba')
@@ -110,7 +110,7 @@
 #' qsub -v run='last' -hold_jid 105 update_sim.sh
 #'
 #' @export
-update_on_cluster <- function(first,
+update_sim_on_cluster <- function(first,
                               main,
                               last,
                               cluster_config,

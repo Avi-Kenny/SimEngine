@@ -1,5 +1,5 @@
 
-# Create wrapper functions for testing update_on_cluster()
+# Create wrapper functions for testing update_sim_on_cluster()
 run_c <- function(ret=FALSE) {
 
   run_on_cluster(
@@ -23,7 +23,7 @@ run_c <- function(ret=FALSE) {
 
 update_c <- function(ret=FALSE) {
 
-  update_on_cluster(
+  update_sim_on_cluster(
     first = {
       sim <- readRDS('sim.simba')
       sim %<>% set_config(num_sim=2)
@@ -41,7 +41,7 @@ update_c <- function(ret=FALSE) {
 
 update_c2 <- function(ret=FALSE) {
 
-  update_on_cluster(
+  update_sim_on_cluster(
     first = {
       sim <- readRDS('sim.simba')
       sim %<>% set_config(num_sim=1)
@@ -92,7 +92,7 @@ Sys.setenv(run="first")
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 update_c()
 sim <- readRDS("sim.simba")
-test_that("update_on_cluster() 'first' section works", {
+test_that("update_sim_on_cluster() 'first' section works", {
   expect_equal(class(sim), "simba")
   #expect_equal(sim$results, "Simulation has not been run yet.")
   expect_equal(sim$config$num_sim, 2)
@@ -137,7 +137,7 @@ update_c()
 sim <- readRDS("sim.simba")
 output <- readChar("sim_output.txt", file.info("sim_output.txt")$size)
 
-test_that("update_on_cluster() 'last' section works", {
+test_that("update_sim_on_cluster() 'last' section works", {
   expect_equal(dir.exists("simba_results"), FALSE)
   expect_equal(sim$results$sum, c(6,7,6,7,7,7,8,8))
   expect_equal(sim$errors, "No errors")
@@ -163,7 +163,7 @@ Sys.setenv(run="first")
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 update_c2()
 sim <- readRDS("sim.simba")
-test_that("update_on_cluster() 'first' section works", {
+test_that("update_sim_on_cluster() 'first' section works", {
   #expect_equal(sim$results, "Simulation has not been run yet.")
   expect_equal(sim$config$num_sim, 1)
   expect_equal(sim$levels$alpha, c(2,3,4))
@@ -190,7 +190,7 @@ update_c2()
 sim <- readRDS("sim.simba")
 output <- readChar("sim_output.txt", file.info("sim_output.txt")$size)
 
-test_that("update_on_cluster() 'last' section works", {
+test_that("update_sim_on_cluster() 'last' section works", {
   expect_equal(dir.exists("simba_results"), FALSE)
   expect_equal(sim$results$sum, c(6,7,7,8,8,9))
   expect_equal(sim$results$alpha, c(2,3,2,3,4,4))
@@ -211,7 +211,7 @@ rm(output)
 # Correct behavior if 'first' fails
 # Create wrapper function for testing run_on_cluster()
 update_c3 <- function() {
-  update_on_cluster(
+  update_sim_on_cluster(
     first = { stop("Error in 'first'") },
     main = { sim %<>% run("my_script") },
     last = {sim %>% summarize() %>% print() },
