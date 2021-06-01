@@ -29,7 +29,7 @@ update_c <- function(ret=FALSE) {
       sim %<>% set_config(num_sim=2)
       sim %<>% set_levels(alpha = c(2,3), beta = c(4,5))
     },
-    main = {sim %<>% update()},
+    main = {sim %<>% update_sim()},
     last = {sim %>% summarize() %>% print()},
     cluster_config = list(js = "slurm")
   )
@@ -47,7 +47,7 @@ update_c2 <- function(ret=FALSE) {
       sim %<>% set_config(num_sim=1)
       sim %<>% set_levels(alpha = c(2,3,4), beta = c(4,5))
     },
-    main = {sim %<>% update()},
+    main = {sim %<>% update_sim()},
     last = {sim %>% summarize() %>% print()},
     cluster_config = list(js = "slurm")
   )
@@ -143,7 +143,7 @@ test_that("update_sim_on_cluster() 'last' section works", {
   expect_equal(sim$errors, "No errors")
   expect_equal(sim$config$num_sim, 2)
   expect_equal(sim$internals$num_sim_cumulative, 8)
-  expect_true(sim$internals$update)
+  expect_true(sim$internals$update_sim)
   expect_equal(sim$internals$levels_prev$beta, c(4,5))
   expect_equal(grepl("simba output START", output, fixed=TRUE), TRUE)
   expect_equal(grepl("simba output END", output, fixed=TRUE), TRUE)
@@ -197,7 +197,7 @@ test_that("update_sim_on_cluster() 'last' section works", {
   expect_equal(sim$errors, "No errors")
   expect_equal(sim$config$num_sim, 1)
   expect_equal(sim$internals$num_sim_cumulative, 10)
-  expect_true(sim$internals$update)
+  expect_true(sim$internals$update_sim)
   expect_equal(sim$internals$levels_prev$alpha, c(2,3,4))
   expect_equal(grepl("simba output START", output, fixed=TRUE), TRUE)
   expect_equal(grepl("simba output END", output, fixed=TRUE), TRUE)

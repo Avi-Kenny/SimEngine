@@ -61,10 +61,10 @@ prev_ncol <- length(sim$results)
 prev_nrow <- nrow(sim$results)
 prev_row1 <- sim$results[1,]
 
-### update handles errors ###
+### update_sim handles errors ###
 test_that("Invalid options throw errors", {
-  expect_error(update(sim, keep_errors = "a"), "`keep_errors` must be of type 'logical'")
-  expect_error(update(sim, keep_extra = "a"), "`keep_extra` must be of type 'logical'")
+  expect_error(update_sim(sim, keep_errors = "a"), "`keep_errors` must be of type 'logical'")
+  expect_error(update_sim(sim, keep_extra = "a"), "`keep_extra` must be of type 'logical'")
 })
 
 sim %<>% set_levels(
@@ -74,7 +74,7 @@ sim %<>% set_levels(
   new_level = c(1, 2, 3)
 )
 test_that("Adding new level variables throws an error", {
-  expect_error(update(sim), "Updating a sim cannot include new level variables, only new levels.")
+  expect_error(update_sim(sim), "Updating a sim cannot include new level variables, only new levels.")
 })
 
 # add method, change levels
@@ -85,9 +85,9 @@ sim %<>% set_levels(
   ate = c(-7)
 )
 
-### update adds levels ###
-sim %<>% update()
-test_that("update() can add new levels", {
+### update_sim adds levels ###
+sim %<>% update_sim()
+test_that("update_sim() can add new levels", {
   expect_type(sim$results, "list")
   expect_equal(length(sim$results), prev_ncol)
   expect_equal(nrow(sim$results), prev_nrow + 20)
@@ -104,9 +104,9 @@ sim %<>% set_config(
   num_sim = 10
 )
 
-### update adds reps ###
-sim %<>% update()
-test_that("update() can add reps", {
+### update_sim adds reps ###
+sim %<>% update_sim()
+test_that("update_sim() can add reps", {
   expect_type(sim$results, "list")
   expect_equal(length(sim$results), prev_ncol)
   expect_equal(nrow(sim$results), 2*prev_nrow)
@@ -123,9 +123,9 @@ sim %<>% set_config(
   num_sim = 4
 )
 
-### update removes extra reps/levels ###
-sim %<>% update()
-test_that("update() can remove extra reps/levels", {
+### update_sim removes extra reps/levels ###
+sim %<>% update_sim()
+test_that("update_sim() can remove extra reps/levels", {
   expect_type(sim$results, "list")
   expect_equal(length(sim$results), prev_ncol)
   expect_equal(nrow(sim$results), prev_nrow - 6)
@@ -165,9 +165,9 @@ sim %<>% set_levels(
   index = 1:20
 )
 
-### update properly appends errors and warnings
-sim %<>% update()
-test_that("update() appends errors and warnings", {
+### update_sim properly appends errors and warnings
+sim %<>% update_sim()
+test_that("update_sim() appends errors and warnings", {
   expect_type(sim$errors, "list")
   expect_type(sim$warnings, "list")
   expect_equal(length(sim$errors), prev_ncol[1])
@@ -190,9 +190,9 @@ sim %<>% set_config(
   parallel = "none"
 )
 
-### update properly removes extra errors and warnings
-sim %<>% update()
-test_that("update() removes extra errors and warnings", {
+### update_sim properly removes extra errors and warnings
+sim %<>% update_sim()
+test_that("update_sim() removes extra errors and warnings", {
   expect_type(sim$errors, "list")
   expect_type(sim$warnings, "list")
   expect_equal(length(sim$errors), prev_ncol[1])
@@ -229,9 +229,9 @@ sim %<>% set_config(
   parallel = "none"
 )
 
-### update doesn't break with no levels
-sim %<>% update()
-test_that("update() works with no levels", {
+### update_sim doesn't break with no levels
+sim %<>% update_sim()
+test_that("update_sim() works with no levels", {
   expect_type(sim$results, "list")
   expect_equal(length(sim$results), prev_ncol)
   expect_equal(nrow(sim$results), 2*prev_nrow)

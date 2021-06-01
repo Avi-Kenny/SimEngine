@@ -41,14 +41,14 @@ run.simba <- function(sim_obj, sim_uids=NA) {
   # !!!!! add error handling for sim_uids
     if (!is.na(sim_obj$internals$tid)) {
       sim_uids <- sim_obj$internals$tid
-    } else if (sim_obj$internals$update) {
+    } else if (sim_obj$internals$update_sim) {
       sim_uids <- sim_obj$internals$levels_grid_big$sim_uid
     } else {
       sim_uids <- 1:sim_obj$internals$num_sim_total
     }
   }
 
-  if (!sim_obj$internals$update){
+  if (!sim_obj$internals$update_sim){
 
     # Create levels_grid_big
     levels_grid_big <- create_levels_grid_big(sim_obj)

@@ -57,7 +57,7 @@ new_sim <- function() {
       num_sim_total = 1000,
       sim_var = "",
       run_state = "pre run",
-      update = FALSE
+      update_sim = FALSE
     ),
     creators = list(),
     methods = list(),

@@ -14,7 +14,7 @@
 #'     and 'last' code blocks run.
 #' @param main Code that will run for every simulation replicate. This should be
 #'     a block of code enclosed by curly braces {} that includes a call to
-#'     \link[simba]{update}. This code block will have access to the simulation object you
+#'     \link[simba]{update_sim}. This code block will have access to the simulation object you
 #'     read in the 'first' code block, but any changes made here to the
 #'     simulation object will not be saved.
 #' @param last Code that will run after all additional simulation replicates have been run.
@@ -87,7 +87,7 @@
 #'   },
 #'
 #'   main = {
-#'     sim %<>% update()
+#'     sim %<>% update_sim()
 #'   },
 #'
 #'   last = {

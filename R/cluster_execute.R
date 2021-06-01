@@ -458,7 +458,7 @@ cluster_execute <- function(first,
       ..sim_obj$internals$levels_grid_big <- levels_grid_big
 
       if (update_switch) {
-        ..sim_obj$internals$update <- TRUE
+        ..sim_obj$internals$update_sim <- TRUE
         ..sim_obj$internals$num_sim_cumulative <- ..sim_obj$internals$num_sim_cumulative + num_new
       } else {
         ..sim_obj$internals$num_sim_cumulative <- ..sim_obj$internals$num_sim_cumulative + ..sim_obj$internals$num_sim_total
