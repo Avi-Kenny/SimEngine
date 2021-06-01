@@ -7,8 +7,9 @@
 #'     within a single simulation level.
 #' @param sim_obj A simulation object of class \code{simba}, usually created by
 #'     \link{new_sim}
-#' @param ... Name-value pairs of summary functions. The possible summary functions (names) are
-#'     listed below. The value for each summary function is a list of summaries to perform.
+#' @param ... Name-value pairs of summary statistic functions. The possible
+#'     functions (names) are listed below. The value for each summary
+#'     function is a list of summaries to perform.
 #'     \itemize{
 #'     \item{\code{mean}: Each \code{mean} summary is a named list of three arguments. \code{name} gives
 #'     a name for the summary, \code{x} gives the name of the variable in \code{sim_obj$results}
@@ -106,7 +107,7 @@
 #'     the simulation levels.
 #' @examples
 #' # The following is a toy example of a simulation, illustrating the use of
-#' # the summary function.
+#' # the summarize function.
 #' sim <- new_sim()
 #' sim %<>% add_creator("create_data", function(n) { rpois(n, lambda=5) })
 #' sim %<>% add_method("estimator_1", function(dat) { mean(dat) })
@@ -122,15 +123,15 @@
 #'   return (list("lambda_hat"=lambda_hat))
 #' })
 #' sim %<>% run()
-#' sim %>% summary(
+#' sim %>% summarize(
 #'   mean = list(name="mean_lambda_hat", x="lambda_hat"),
 #'   mse = list(name="lambda_mse", estimate="lambda_hat", truth=5)
 #' )
 #' @export
-summary <- function(sim_obj, ...) UseMethod("summary")
+summarize <- function(sim_obj, ...) UseMethod("summarize")
 
 #' @export
-summary.simba <- function(sim_obj, ...) {
+summarize.simba <- function(sim_obj, ...) {
 
   handle_errors(sim_obj, "is.simba")
 
@@ -153,7 +154,7 @@ summary.simba <- function(sim_obj, ...) {
   # String to temporarily append to column names
   pre <- "o___o_"
 
-  # If no additional arguments provided to summary, display means by default
+  # If no additional arguments provided to summarize, display means by default
   if (identical(o_args,list())) {
 
     names_means <- names_results[!(names_results %in% c(

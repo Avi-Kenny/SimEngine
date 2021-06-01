@@ -16,7 +16,7 @@ run_c <- function(ret=FALSE, cmplx=FALSE) {
         })
       },
       main = { sim %<>% run() },
-      last = { sim %>% summary() %>% print() },
+      last = { sim %>% summarize() %>% print() },
       cluster_config = list(js="slurm")
     )
   } else {
@@ -34,7 +34,7 @@ run_c <- function(ret=FALSE, cmplx=FALSE) {
         })
       },
       main = { sim %<>% run() },
-      last = { sim %>% summary() %>% print() },
+      last = { sim %>% summarize() %>% print() },
       cluster_config = list(js="slurm")
     )
   }
@@ -119,7 +119,7 @@ run_c2 <- function() {
   run_on_cluster(
     first = { stop("Error in 'first'") },
     main = { sim %<>% run("my_script") },
-    last = {sim %>% summary() %>% print() },
+    last = {sim %>% summarize() %>% print() },
     cluster_config = list(sim_var="sim", js="slurm")
   )
 }
@@ -219,7 +219,7 @@ run_c <- function(ret=FALSE) {
       })
     },
     main = { sim %<>% run() },
-    last = { sim %>% summary() %>% print() },
+    last = { sim %>% summarize() %>% print() },
     cluster_config = list(js="slurm")
   )
 

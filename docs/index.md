@@ -176,10 +176,10 @@ sim %<>% run()
 
 ### 8) View and summarize results
 
-Once the simulations have finished, use the *summary()* function to calculate common summary statistics, such as bias, variance, MSE, and coverage.
+Once the simulations have finished, use the *summarize()* function to calculate common summary statistics, such as bias, variance, MSE, and coverage.
 
 ```R
-sim %>% summary(
+sim %>% summarize(
   bias = list(name="bias_ate", truth=-7, estimate="estimate"),
   mse = list(name="mse_ate", truth=-7, estimate="estimate")
 )

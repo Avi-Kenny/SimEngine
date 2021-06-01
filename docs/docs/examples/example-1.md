@@ -71,12 +71,12 @@ sim %<>% set_levels(n=c(20,40,60,80))
 sim %<>% set_config(num_sim=1000)
 ```
 
-We are now ready to run the simulation. After obtaining results, we calculate power by averaging the 'reject' variable using the summary() function, which tells us the percentage of simulations in which the null hypothesis was rejected.
+We are now ready to run the simulation. After obtaining results, we calculate power by averaging the 'reject' variable using the summarize() function, which tells us the percentage of simulations in which the null hypothesis was rejected.
 
 ```R
 sim %<>% run()
 
-power_sim <- sim %>% summary(
+power_sim <- sim %>% summarize(
   mean = list(name="power", x="reject")
 )
 print(power_sim)

@@ -12,7 +12,7 @@ run_c <- function(ret=FALSE) {
       })
     },
     main = {sim %<>% run()},
-    last = { sim %>% summary() %>% print() },
+    last = { sim %>% summarize() %>% print() },
     cluster_config = list(js="slurm")
   )
 
@@ -30,7 +30,7 @@ update_c <- function(ret=FALSE) {
       sim %<>% set_levels(alpha = c(2,3), beta = c(4,5))
     },
     main = {sim %<>% update()},
-    last = {sim %>% summary() %>% print()},
+    last = {sim %>% summarize() %>% print()},
     cluster_config = list(js = "slurm")
   )
 
@@ -48,7 +48,7 @@ update_c2 <- function(ret=FALSE) {
       sim %<>% set_levels(alpha = c(2,3,4), beta = c(4,5))
     },
     main = {sim %<>% update()},
-    last = {sim %>% summary() %>% print()},
+    last = {sim %>% summarize() %>% print()},
     cluster_config = list(js = "slurm")
   )
 
@@ -214,7 +214,7 @@ update_c3 <- function() {
   update_on_cluster(
     first = { stop("Error in 'first'") },
     main = { sim %<>% run("my_script") },
-    last = {sim %>% summary() %>% print() },
+    last = {sim %>% summarize() %>% print() },
     cluster_config = list(sim_var="sim", js="slurm")
   )
 }

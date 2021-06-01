@@ -410,6 +410,35 @@ test_that("sim_3 has only non-complex data", {
   expect_equal(sim_3$results_complex, NA)
 })
 
+### Test that use_method can access the proper environment
+sim <- new_sim()
+sim %<>% add_method("estimator_1", function() { L$val })
+sim %<>% add_method("estimator_2", function() { L$val })
+sim %<>% add_method("wrapper_1", function(){
+  val_hat <- use_method(L$estimator, list())
+  return(val_hat)
+})
+sim %<>% set_levels(
+  "val" = 99,
+  "estimator" = c("estimator_1", "estimator_2")
+)
+sim %<>% set_config(num_sim=1)
+sim %<>% set_script(function() {
+  wrapper_2 <- function(){use_method(L$estimator, list())}
+  val_hat_1 <- wrapper_1()
+  val_hat_2 <- wrapper_2()
+  val_hat_3 <- use_method(L$estimator)
+  return (list("v1"=val_hat_1, "v2"=val_hat_2, "v3"=val_hat_3))
+})
+sim %<>% run()
+sim$results
+test_that("use_method can access the proper environment", {
+  expect_equal(sim$errors, "No errors")
+  expect_equal(sim$results[1,"v1"], 99)
+  expect_equal(sim$results[1,"v2"], 99)
+  expect_equal(sim$results[1,"v3"], 99)
+})
+
 ### get() ###
 
 # !!!!! Add tests once get() is replaced

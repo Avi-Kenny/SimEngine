@@ -91,7 +91,7 @@
 #'   },
 #'
 #'   last = {
-#'     sim %<>% summary()
+#'     sim %<>% summarize()
 #'   },
 #'
 #'   cluster_config = list(js = "sge")
