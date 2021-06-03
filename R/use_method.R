@@ -31,13 +31,17 @@
 #' @export
 use_method <- function(method, args=list()) {
 
+  # Not using handle_errors so that function call is returned
+  if (!(is.character(method) && length(method)==1)) {
+    stop("`method must be a character string`")
+  }
+
   # Locate the method and its environment
   ..env <- get("..env", envir=parent.frame(), inherits=TRUE)
   ..m <- get(method, envir=..env, inherits=FALSE)
   ..added_methods <- get("..added_methods", ..env)
 
-  # Handle errors
-  handle_errors(method, "is.character")
+  # Additional error handling
   if (!(method %in% ..added_methods)) {
     stop(paste0("Method `", substitute(method),
                 "` has not been added to your simulation object"))
