@@ -27,7 +27,7 @@ new_sim <- function() {
   # Create "blank" simulation object
   ...sim_obj <- list(
     config = list(
-      num_sim = 1000,
+      num_sim = 10,
       datasets = "many",
       parallel = "none",
       parallel_cores = parallel::detectCores() - 1,
@@ -54,7 +54,7 @@ new_sim <- function() {
       num_sim_prev = NA,
       num_sim_cumulative = 0,
       tid = NA,
-      num_sim_total = 1000,
+      num_sim_total = 10,
       sim_var = "",
       run_state = "pre run",
       update_sim = FALSE
