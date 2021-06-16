@@ -58,19 +58,19 @@ update_c2 <- function(ret=FALSE) {
 }
 
 # run everything
-Sys.setenv(run="first")
+Sys.setenv(simba_run="first")
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 run_c()
-Sys.setenv(run="main")
+Sys.setenv(simba_run="main")
 Sys.setenv(SLURM_ARRAY_TASK_ID="1")
 run_c()
 Sys.setenv(SLURM_ARRAY_TASK_ID="2")
 run_c()
-Sys.setenv(run="last")
+Sys.setenv(simba_run="last")
 run_c()
 
 # Run locally
-Sys.setenv(run="")
+Sys.setenv(simba_run="")
 sim <- update_c(TRUE)
 test_that("run_on_cluster() works locally", {
   expect_equal(class(sim), "simba")
@@ -81,14 +81,14 @@ test_that("run_on_cluster() works locally", {
 rm(sim)
 
 # Incorrect run variable
-Sys.setenv(run="asdf123")
+Sys.setenv(simba_run="asdf123")
 test_that("Incorrect 'run' environment variable throws error", {
   expect_error(update_c(), paste("The 'run' environment variable must",
                                  "equal either 'first', 'main', or 'last'."))
 })
 
 # Simulate updating on cluster; test 'first' section
-Sys.setenv(run="first")
+Sys.setenv(simba_run="first")
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 update_c()
 sim <- readRDS("sim.simba")
@@ -103,7 +103,7 @@ test_that("update_sim_on_cluster() 'first' section works", {
 rm(sim)
 
 # Simulate updating on cluster; test 'main' section
-Sys.setenv(run="main")
+Sys.setenv(simba_run="main")
 test_that("Incorrect 'run' environment variable throws error", {
   expect_error(update_c(), "Task ID is missing.")
 })
@@ -132,7 +132,7 @@ test_that("run_on_cluster() 'main' section works", {
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 
 # Simulate running on cluster; test 'last' section
-Sys.setenv(run="last")
+Sys.setenv(simba_run="last")
 update_c()
 sim <- readRDS("sim.simba")
 output <- readChar("sim_output.txt", file.info("sim_output.txt")$size)
@@ -149,7 +149,7 @@ test_that("update_sim_on_cluster() 'last' section works", {
   expect_equal(grepl("simba output END", output, fixed=TRUE), TRUE)
   expect_equal(grepl("level_id alpha", output, fixed=TRUE), TRUE)
 })
-Sys.setenv(run="")
+Sys.setenv(simba_run="")
 rm(sim)
 rm(output)
 
@@ -159,7 +159,7 @@ rm(output)
 
 
 # Simulate a second update updating on cluster; test 'first' section
-Sys.setenv(run="first")
+Sys.setenv(simba_run="first")
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 update_c2()
 sim <- readRDS("sim.simba")
@@ -171,7 +171,7 @@ test_that("update_sim_on_cluster() 'first' section works", {
 rm(sim)
 
 # Simulate updating on cluster; test 'main' section
-Sys.setenv(run="main")
+Sys.setenv(simba_run="main")
 Sys.setenv(SLURM_ARRAY_TASK_ID="1")
 update_c2()
 Sys.setenv(SLURM_ARRAY_TASK_ID="2")
@@ -185,7 +185,7 @@ test_that("run_on_cluster() 'main' section works", {
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 
 # Simulate running on cluster; test 'last' section
-Sys.setenv(run="last")
+Sys.setenv(simba_run="last")
 update_c2()
 sim <- readRDS("sim.simba")
 output <- readChar("sim_output.txt", file.info("sim_output.txt")$size)
@@ -203,7 +203,7 @@ test_that("update_sim_on_cluster() 'last' section works", {
   expect_equal(grepl("simba output END", output, fixed=TRUE), TRUE)
   expect_equal(grepl("level_id alpha", output, fixed=TRUE), TRUE)
 })
-Sys.setenv(run="")
+Sys.setenv(simba_run="")
 unlink("sim_output.txt")
 rm(sim)
 rm(output)
@@ -218,14 +218,14 @@ update_c3 <- function() {
     cluster_config = list(sim_var="sim", js="slurm")
   )
 }
-Sys.setenv(run="first")
+Sys.setenv(simba_run="first")
 test_that("Correct behavior if 'first' fails", {
   expect_error(update_c3(), "Error in 'first'")
   expect_equal(file.exists("sim.simba"), TRUE)
 })
 # !!!!! what to do if error in first block?
 
-# Sys.setenv(run="main")
+# Sys.setenv(simba_run="main")
 # Sys.setenv(SLURM_ARRAY_TASK_ID="1")
 # test_that("Correct behavior if 'first' fails", {
 #   expect_equal(file.exists("sim.simba"), TRUE)
@@ -235,7 +235,7 @@ test_that("Correct behavior if 'first' fails", {
 #     "shell commands are properly sequenced."
 #   ))
 # })
-# Sys.setenv(run="last")
+# Sys.setenv(simba_run="last")
 # Sys.setenv(SLURM_ARRAY_TASK_ID="")
 # test_that("Correct behavior if 'first' fails", {
 #   expect_equal(file.exists("sim.simba"), TRUE)
@@ -247,4 +247,4 @@ test_that("Correct behavior if 'first' fails", {
 # })
 # unlink("simba_results")
 # unlink("sim.simba")
-Sys.setenv(run="")
+Sys.setenv(simba_run="")

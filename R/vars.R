@@ -16,7 +16,9 @@
 #'     simulation replicates are run (advanced)}
 #'
 #'     \item{\code{num_sim_total}: The total number of simulation replicates
-#'     for the simulation}
+#'     for the simulation. This is particularly useful when a simulation is
+#'     being run in parallel on a cluster computing system as a job array and
+#'     the user needs to know the range of task IDs.}
 #'
 #'     \item{\code{run_state}: A character string describing the "run state" of
 #'     the simulation. This will equal one of the following: "pre run" (the

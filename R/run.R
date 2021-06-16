@@ -120,7 +120,7 @@ run.simba <- function(sim_obj, sim_uids=NA) {
     # Use withCallingHandlers to catch all warnings and tryCatch to catch errors
     withCallingHandlers(
       {.gotWarnings <- character(0) # holds the warnings
-      if (sim_obj$config$stop_at_error==TRUE & Sys.getenv("run")=="") {
+      if (sim_obj$config$stop_at_error==TRUE & Sys.getenv("simba_run")=="") {
         script_results <- do.call(what="..script", args=list(), envir=env)
       } else {
         script_results <- tryCatch(

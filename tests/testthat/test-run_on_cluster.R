@@ -46,14 +46,14 @@ run_c <- function(ret=FALSE, cmplx=FALSE) {
 }
 
 # Incorrect run variable
-Sys.setenv(run="asdf123")
+Sys.setenv(simba_run="asdf123")
 test_that("Incorrect 'run' environment variable throws error", {
   expect_error(run_c(), paste("The 'run' environment variable must",
                               "equal either 'first', 'main', or 'last'."))
 })
 
 # Run locally
-Sys.setenv(run="")
+Sys.setenv(simba_run="")
 sim <- run_c(TRUE)
 test_that("run_on_cluster() works locally", {
   expect_equal(class(sim), "simba")
@@ -64,7 +64,7 @@ test_that("run_on_cluster() works locally", {
 rm(sim)
 
 # Simulate running on cluster; test 'first' section
-Sys.setenv(run="first")
+Sys.setenv(simba_run="first")
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 run_c()
 sim <- readRDS("sim.simba")
@@ -77,7 +77,7 @@ test_that("run_on_cluster() 'first' section works", {
 rm(sim)
 
 # Simulate running on cluster; test 'main' section
-Sys.setenv(run="main")
+Sys.setenv(simba_run="main")
 test_that("Missing task ID throws error", {
   expect_error(run_c(), "Task ID is missing.")
 })
@@ -93,7 +93,7 @@ test_that("run_on_cluster() 'main' section works", {
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 
 # Simulate running on cluster; test 'last' section
-Sys.setenv(run="last")
+Sys.setenv(simba_run="last")
 run_c()
 sim <- readRDS("sim.simba")
 output <- readChar("sim_output.txt", file.info("sim_output.txt")$size)
@@ -107,7 +107,7 @@ test_that("run_on_cluster() 'last' section works", {
   expect_equal(grepl("simba output END", output, fixed=TRUE), TRUE)
   expect_equal(grepl("level_id alpha", output, fixed=TRUE), TRUE)
 })
-Sys.setenv(run="")
+Sys.setenv(simba_run="")
 unlink("sim.simba")
 unlink("sim_output.txt")
 rm(sim)
@@ -123,12 +123,12 @@ run_c2 <- function() {
     cluster_config = list(sim_var="sim", js="slurm")
   )
 }
-Sys.setenv(run="first")
+Sys.setenv(simba_run="first")
 test_that("Correct behavior if 'first' fails", {
   expect_error(run_c2(), "Error in 'first'")
   expect_equal(file.exists("sim.simba"), FALSE)
 })
-Sys.setenv(run="main")
+Sys.setenv(simba_run="main")
 Sys.setenv(SLURM_ARRAY_TASK_ID="1")
 test_that("Correct behavior if 'first' fails", {
   expect_equal(file.exists("sim.simba"), FALSE)
@@ -138,7 +138,7 @@ test_that("Correct behavior if 'first' fails", {
     "shell commands are properly sequenced."
   ))
 })
-Sys.setenv(run="last")
+Sys.setenv(simba_run="last")
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 test_that("Correct behavior if 'first' fails", {
   expect_equal(file.exists("sim.simba"), FALSE)
@@ -149,10 +149,10 @@ test_that("Correct behavior if 'first' fails", {
   ))
 })
 unlink("simba_results")
-Sys.setenv(run="")
+Sys.setenv(simba_run="")
 
 # Simulate running locally and on cluster with complex return data
-Sys.setenv(run="")
+Sys.setenv(simba_run="")
 sim <- run_c(ret=TRUE, cmplx=TRUE)
 test_that("run_on_cluster() works locally", {
   expect_equal(class(sim), "simba")
@@ -166,16 +166,16 @@ test_that("run_on_cluster() works locally", {
 })
 rm(sim)
 
-Sys.setenv(run="first")
+Sys.setenv(simba_run="first")
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 run_c(cmplx=TRUE)
-Sys.setenv(run="main")
+Sys.setenv(simba_run="main")
 Sys.setenv(SLURM_ARRAY_TASK_ID="1")
 run_c(cmplx=TRUE)
 Sys.setenv(SLURM_ARRAY_TASK_ID="2")
 run_c(cmplx=TRUE)
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
-Sys.setenv(run="last")
+Sys.setenv(simba_run="last")
 run_c(cmplx=TRUE)
 sim <- readRDS("sim.simba")
 output <- readChar("sim_output.txt", file.info("sim_output.txt")$size)
@@ -192,7 +192,7 @@ test_that("run_on_cluster() works with complex data", {
   expect_equal(sim$results_complex[[1]]$sim_uid, 1)
   expect_equal(sim$results_complex[[1]]$vec, c(2,4))
 })
-Sys.setenv(run="")
+Sys.setenv(simba_run="")
 unlink("sim.simba")
 unlink("sim_output.txt")
 rm(sim)
@@ -228,10 +228,10 @@ run_c <- function(ret=FALSE) {
 
 }
 # Simulate running on cluster; produce warnings
-Sys.setenv(run="first")
+Sys.setenv(simba_run="first")
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 run_c()
-Sys.setenv(run="main")
+Sys.setenv(simba_run="main")
 Sys.setenv(SLURM_ARRAY_TASK_ID="1")
 run_c()
 Sys.setenv(SLURM_ARRAY_TASK_ID="2")
@@ -242,7 +242,7 @@ test_that("run_on_cluster() produces warning files", {
   expect_equal(file.exists("simba_results/w_3.rds"), FALSE)
 })
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
-Sys.setenv(run="last")
+Sys.setenv(simba_run="last")
 run_c()
 sim <- readRDS("sim.simba")
 
@@ -251,7 +251,7 @@ test_that("run_on_cluster() 'last' section works", {
   expect_equal(sim$warnings$message, rep("This is a test warning.", 2))
   expect_equal(sim$errors, "No errors")
 })
-Sys.setenv(run="")
+Sys.setenv(simba_run="")
 unlink("sim.simba")
 unlink("sim_output.txt")
 rm(sim)

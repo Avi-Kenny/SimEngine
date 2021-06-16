@@ -47,7 +47,7 @@ cluster_execute <- function(first,
 
   # Run all code locally if simulation is not being run on cluster
   # !!!!! TO-DO make this work for update_switch = TRUE
-  if (Sys.getenv("run")=="") {
+  if (Sys.getenv("simba_run")=="") {
 
     # Run code locally (`first` block)
     eval(..first)
@@ -97,15 +97,15 @@ cluster_execute <- function(first,
     }
 
     # Error handling: incorrect Sys.getenv("run") variable
-    if (!(Sys.getenv("run") %in% c("first", "main", "last"))) {
-      stop(paste("The 'run' environment variable must equal either 'first',",
-                 "'main', or 'last'."))
+    if (!(Sys.getenv("simba_run") %in% c("first", "main", "last"))) {
+      stop(paste("The 'simba_run' environment variable must equal either",
+                 "'first', 'main', or 'last'."))
     }
 
   }
 
   # FIRST: Run 'first' code or return existing simulation object
-  if (Sys.getenv("run")=="first") {
+  if (Sys.getenv("simba_run")=="first") {
 
     # Check that cfg$dir is a valid directory
     if (!is.null(..cfg$dir) && !dir.exists(..cfg$dir)) {
@@ -182,7 +182,7 @@ cluster_execute <- function(first,
     ..sim_obj$config$parallel <- "none" # !!!!! Revisit this
     saveRDS(..sim_obj, file=..path_sim_obj)
 
-  } else if (Sys.getenv("run") %in% c("main","last")) {
+  } else if (Sys.getenv("simba_run") %in% c("main","last")) {
 
     tryCatch(
       ..sim_obj <- readRDS(..path_sim_obj),
@@ -202,7 +202,7 @@ cluster_execute <- function(first,
   }
 
   # MAIN: run simulation replicate and save results/errors
-  if (Sys.getenv("run")=="main") {
+  if (Sys.getenv("simba_run")=="main") {
 
     # if there are error files in the results directory and stop_at_error is TRUE
     # skip this rep
@@ -244,7 +244,7 @@ cluster_execute <- function(first,
         stop("Task ID is missing.")
       }
 
-      add_to_tid <- as.numeric(Sys.getenv("add_to_tid"))
+      add_to_tid <- as.numeric(Sys.getenv("simba_run_add_to_tid"))
       if (!is.na(add_to_tid)) {
         tid <- tid + add_to_tid
       }
@@ -301,7 +301,7 @@ cluster_execute <- function(first,
   }
 
   # LAST: merge results/errors into simulation object, run 'last' code, and save
-  if (Sys.getenv("run")=="last") {
+  if (Sys.getenv("simba_run")=="last") {
 
     # if there are error files in the results directory and stop_at_error is TRUE
     # skip this rep

@@ -144,7 +144,7 @@ update_sim.simba <- function(sim_obj, keep_errors=TRUE, keep_extra=FALSE) {
   }
 
   # if on cluster, delete old results, errors, etc
-  if (Sys.getenv("run")!=""){
+  if (Sys.getenv("simba_run")!=""){
     sim_obj$results <- NULL
     sim_obj$errors <- NULL
     sim_obj$warnings <- NULL

@@ -149,20 +149,20 @@ Rscript my_simulation.R
 Finally, you will use your JS to submit three jobs. The first will run the *first* code, the second will run the *main* code, and the third will run the *last* code. With Sun Grid Engine, you will type the following three commands into your shell:
 
 ```bash
-qsub -v run='first' run_sim.sh
+qsub -v simba_run='first' run_sim.sh
 #> Your job 101 ("run_sim.sh") has been submitted
-qsub -v run='main' -t 1-20 -hold_jid 101 run_sim.sh
+qsub -v simba_run='main' -t 1-20 -hold_jid 101 run_sim.sh
 #> Your job-array 102.1-10:1 ("run_sim.sh") has been submitted
-qsub -v run='last' -hold_jid 102 run_sim.sh
+qsub -v simba_run='last' -hold_jid 102 run_sim.sh
 #> Your job 103 ("run_sim.sh") has been submitted
 ```
 
-In the first line, we submit the script using the "-v run='first'" option, which tells **simba** to only run the code in the *first* block within the *run_on_cluster()* function in *my_simulation.R*. Note that after running this line, SGE gives us the message "*Your job 101 ("run_sim.sh") has been submitted*". The number *101* is called the "job ID" and uniquely identifies our job on the CCS.
+In the first line, we submit the script using the "-v simba_run='first'" option, which tells **simba** to only run the code in the *first* block within the *run_on_cluster()* function in *my_simulation.R*. Note that after running this line, SGE gives us the message "*Your job 101 ("run_sim.sh") has been submitted*". The number *101* is called the "job ID" and uniquely identifies our job on the CCS.
 
-In the second line, we submit the script using the "-v run='main'" option and we tell SGE to run a job array with "task IDs" 1-20. Importantly, the number 20 corresponds to the total number of replicates in our simulation (see the "Tips and Tricks" section below if you are not sure how many replicates are in your simulation). This runs the code in the *main* block 20 times; **simba** will automatically assign each task to a different simulation replicate. Also note that we included the option *-hold_jid 101*, which tells SGE to wait until the first job finishes before starting the job array. Change the number 102 to whatever number SGE assigned to the first job.
+In the second line, we submit the script using the "-v simba_run='main'" option and we tell SGE to run a job array with "task IDs" 1-20. Importantly, the number 20 corresponds to the total number of replicates in our simulation (see the "Tips and Tricks" section below if you are not sure how many replicates are in your simulation). This runs the code in the *main* block 20 times; **simba** will automatically assign each task to a different simulation replicate. Also note that we included the option *-hold_jid 101*, which tells SGE to wait until the first job finishes before starting the job array. Change the number 102 to whatever number SGE assigned to the first job.
 
-In the third line, we submit the script using the "-v run='last'" option, which tells **simba** to only run the code in the *last* block. Again, we use *-hold_jid* to make sure this code doesn't run until all tasks in the job array have finished.
+In the third line, we submit the script using the "-v simba_run='last'" option, which tells **simba** to only run the code in the *last* block. Again, we use *-hold_jid* to make sure this code doesn't run until all tasks in the job array have finished.
 
 ## Tips and tricks for parallelization
 
-!!!!! TO DO (add_to_tid, run_on_cluster works locally, specify 'tid_var' instead of 'js')
+!!!!! TO DO (simba_add_to_tid, run_on_cluster works locally, specify 'tid_var' instead of 'js')
