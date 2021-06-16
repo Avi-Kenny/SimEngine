@@ -615,7 +615,7 @@ test_that("bias summary with na.rm, constant truth, returns bias", {
 })
 
 summ <- sim %>% summarize(
-  bias = list(name="my_summarize", estimate="x", truth = "y", na.rm=TRUE)
+  bias = list(name="my_summary", estimate="x", truth = "y", na.rm=TRUE)
 )
 
 test_that("bias summary with na.rm, variable truth, returns bias", {
