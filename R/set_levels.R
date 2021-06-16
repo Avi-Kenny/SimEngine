@@ -81,6 +81,17 @@ set_levels.simba <- function(sim_obj, ..., .add=FALSE) {
   levels_types <- c() # Stores whether level is a list (TRUE) or not (FALSE)
   for (i in 1:length(sim_obj$levels)) {
     if (class(sim_obj$levels[[i]])=="list") {
+      # if the level is a list, it must be a named list of lists
+      # first, make sure it has names
+      if (length(names(sim_obj$levels[[i]])) != length(sim_obj$levels[[i]]) || "" %in% names(sim_obj$levels[[i]])){
+        stop("Each item in a list level must have a name.")
+      }
+      # then, make sure each item in the list is, itself, a list
+      for (j in 1:length(sim_obj$levels[[i]])){
+        if (!is.list(sim_obj$levels[[i]][[j]])){
+          stop("Each item in a list level must be a list.")
+        }
+      }
       levels_types <- c(levels_types, TRUE)
       levels_shallow[[names(sim_obj$levels)[i]]] <- names(sim_obj$levels[[i]])
     } else {

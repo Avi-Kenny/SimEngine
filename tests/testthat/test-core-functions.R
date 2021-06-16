@@ -225,13 +225,25 @@ test_that("set_levels() works with non-list levels provided", {
 })
 
 # list levels
-sim %<>% set_levels(method = list("estimator_1" = "estimator_1",
-                                  "estimator_2" = "estimator_2"))
+test_that("set_levels() throws an error if list level does not have names", {
+  expect_error(set_levels(sim, estimator = list(list("estimator1"), list("estimator2"))),
+               "Each item in a list level must have a name.")
+  expect_error(set_levels(sim, estimator = list(a = list("estimator1"), list("estimator2"))),
+               "Each item in a list level must have a name.")
+})
+test_that("set_levels() throws an error if list level is not comprised of lists", {
+  expect_error(set_levels(sim, estimator = list(a = "estimator1", b = "estimator2")),
+               "Each item in a list level must be a list.")
+})
+sim %<>% set_levels(method = list("estimator_1" = list("estimator_1"),
+                                  "estimator_2" = list("estimator_2")))
 test_that("set_levels() works with list levels provided", {
   expect_true(sim$internals$levels_types[1])
   expect_equal(sim$internals$levels_shallow[[1]],
                c("estimator_1", "estimator_2"))
 })
+
+
 
 # no levels supplied
 test_that("set_levels() throws error with no levels provided", {
