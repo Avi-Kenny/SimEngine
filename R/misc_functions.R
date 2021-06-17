@@ -4,7 +4,8 @@
 # Print method for class "simba"
 #' @noRd
 #' @export
-print.simba <- function(sim_obj, ...) {
+print.simba <- function(x, ...) {
+  sim_obj <- x
   cat("Simulation object (class \"simba\")\n")
   cat("---------------------------------\n")
   cat("Configuration: \n")
