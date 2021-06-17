@@ -45,7 +45,7 @@ To briefly illustrate how these phases are implemented using **simba**, we will 
 
 ### 1) Load the package and create a "simulation object"
 
-The simulation object (an R object of class *simba*) will contain all data, functions, and results related to your simulation. Note that we make extensive use of the pipe operators (%>% and %<>%) from the **magrittr** package; if you have never used pipes, check out the <a href="https://magrittr.tidyverse.org" target="_blank">magrittr documentation</a>.
+The simulation object (an R object of class *simba*) will contain all data, functions, and results related to your simulation. Note that we make extensive use of the pipe operators (`%>%` and `%<>%`) from the **magrittr** package; if you have never used pipes, check out the <a href="https://magrittr.tidyverse.org" target="_blank">magrittr documentation</a>.
 
 ```R
 library(simba)
