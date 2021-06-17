@@ -126,7 +126,7 @@ cluster_execute <- function(first,
     tryCatch(
       expr = { x <- readRDS(file=test_file) },
       error = function(e) {
-        stop(paste0("Directory ", cfg$dir, " is not readable."))
+        stop(paste0("Directory ", ..cfg$dir, " is not readable."))
       }
     )
 
@@ -134,7 +134,7 @@ cluster_execute <- function(first,
     tryCatch(
       expr = { unlink(test_file) },
       error = function(e) {
-        stop(paste0("Files cannot be deleted from directory ", cfg$dir, "."))
+        stop(paste0("Files cannot be deleted from directory ", ..cfg$dir, "."))
       }
     )
 

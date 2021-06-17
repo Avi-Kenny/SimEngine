@@ -166,7 +166,7 @@ run.simba <- function(sim_obj, sim_uids=NA) {
   results_lists_warn <- list()
   results_lists_err <- list()
   for (i in 1:length(results_lists)) {
-    if (is(results_lists[[i]]$results, "error")) {
+    if (methods::is(results_lists[[i]]$results, "error")) {
       results_lists_err[[length(results_lists_err)+1]] <- results_lists[[i]]
     } else {
       results_lists_ok[[length(results_lists_ok)+1]] <- results_lists[[i]]

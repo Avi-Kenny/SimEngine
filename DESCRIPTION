@@ -5,7 +5,7 @@ Version: 0.1.0.9000
 Authors@R: c(person("Avi", "Kenny", email = "avikenny@uw.edu", role = c("aut", "cre")),
              person("Charles", "Wolock", email = "cwolock@uw.edu", role = "aut"),
              person("Rachel", "Kenny", email = "rachel.leah.kenny@gmail.com", role = "ctb"))
-Description: simba is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on thorough documentation, and scalability. See full documentation at https://avi-kenny.github.io/simba
+Description: simba is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on thorough documentation, and scalability. See full documentation at https://avi-kenny.github.io/simba.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -17,7 +17,8 @@ Imports:
     parallel,
     pbapply,
     data.table,
-    rlang
+    rlang,
+    methods
 Suggests: 
     knitr,
     rmarkdown,

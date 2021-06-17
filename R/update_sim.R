@@ -49,6 +49,7 @@
 #' )
 #' sim %<>% set_config(num_sim=5)
 #' sim %<>% update_sim()
+#' @importFrom magrittr %>%
 #' @export
 update_sim <- function(sim_obj, keep_errors=TRUE, keep_extra=FALSE) {
   UseMethod("update_sim")
