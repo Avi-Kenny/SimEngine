@@ -16,7 +16,8 @@ Imports:
     dplyr,
     parallel,
     pbapply,
-    data.table
+    data.table,
+    rlang
 Suggests: 
     knitr,
     rmarkdown,

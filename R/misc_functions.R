@@ -154,6 +154,7 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
 #' Function for creating levels_grid_big
 #'
 #' @param sim_obj A simulation object of class `simba`
+#' @importFrom rlang .data
 #' @noRd
 create_levels_grid_big <- function(sim_obj) {
 
@@ -167,7 +168,7 @@ create_levels_grid_big <- function(sim_obj) {
     sim_obj$levels_grid,
     by = "level_id"
   )
-  levels_grid_big <- dplyr::arrange(levels_grid_big, level_id, sim_id)
+  levels_grid_big <- dplyr::arrange(levels_grid_big, .data$level_id, .data$sim_id)
   names_2 <- names(levels_grid_big)
   levels_grid_big <- cbind(1:nrow(levels_grid_big), levels_grid_big)
   names(levels_grid_big) <- c("sim_uid", names_2)
