@@ -179,10 +179,3 @@ sim %<>% set_config(
   parallel = "inner",
   n_cores = 1000
 )
-
-n_available_cores <- parallel::detectCores()
-mess <- paste0("1000 cores requested but only ", n_available_cores, " cores available")
-
-test_that("run() throws warning if too many cores requested", {
-  expect_warning(run(sim), mess)
-})

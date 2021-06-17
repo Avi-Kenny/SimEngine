@@ -21,7 +21,7 @@ sim %<>% set_script(function() {
 })
 
 sim2 <- sim
-sim2 %<>% set_config(parallel="outer")
+sim2 %<>% set_config(parallel="outer", n_cores=2)
 
 sim %<>% run()
 sim2 %<>% run()
