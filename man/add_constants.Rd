@@ -23,5 +23,6 @@ The original simulation object with added constants
 Add one or more simulation constants
 }
 \examples{
+sim <- new_sim()
 sim \%<>\% add_constants(alpha=4, beta=c(1,2,3))
 }

@@ -9,6 +9,7 @@
 #'     you decide to run your simulation code in parallel
 #' @return The original simulation object with added constants
 #' @examples
+#' sim <- new_sim()
 #' sim %<>% add_constants(alpha=4, beta=c(1,2,3))
 #' @export
 add_constants <- function(sim_obj, ...) UseMethod("add_constants")

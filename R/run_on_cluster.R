@@ -27,6 +27,7 @@
 #'     simulation object and results (this defaults to the current working
 #'     directory).
 #' @examples
+#' \dontrun{
 #' # The following is a toy simulation that could be run in a cluster computing environment
 #' # using the SGE job scheduler. It runs 10 replicates of 2 simulation levels as 20
 #' # separate cluster jobs, and then summarizes the results.
@@ -36,7 +37,7 @@
 #' run_on_cluster(
 #'
 #'   first = {
-#'     sim %<>% new_sim()
+#'     sim <- new_sim()
 #'     sim %<>% add_creator("create_data", function(n){ rnorm(n) })
 #'     sim %<>% set_script(function() {
 #'       data <- create_data(L$n)
@@ -66,7 +67,7 @@
 #' qsub -v run='first' run_sim.sh
 #' qsub -v run='main' -t 1-20 -hold_jid 101 run_sim.sh
 #' qsub -v run='last' -hold_jid 102 run_sim.sh
-#'
+#' }
 #' @export
 run_on_cluster <- function(first,
                            main,

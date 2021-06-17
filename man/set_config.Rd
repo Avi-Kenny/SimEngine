@@ -35,6 +35,10 @@ parallelize any code. See
 \url{https://avi-kenny.github.io/simba/parallelization} for an overview
 of how parallelization works in \pkg{simba}.}
 
+\item{n_cores}{An integer; determines the number of CPUs on which the simulation
+will run if using parallelization. Defaults to one fewer than the number of
+available CPUs on the current host.}
+
 \item{packages}{A character vector of packages to load and attach}
 
 \item{stop_at_error}{A Boolean. If set to TRUE, the simulation will

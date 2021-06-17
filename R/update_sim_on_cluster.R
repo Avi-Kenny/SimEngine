@@ -35,6 +35,7 @@
 #'     a level that has been dropped; if \code{FALSE}, drop excess reps (starting from the last rep
 #'     for that particular simulation level)
 #' @examples
+#' \dontrun{
 #' # The following is a toy simulation that could be run in a cluster computing environment
 #' # using the SGE job scheduler. It runs 10 replicates of 2 simulation levels as 20
 #' # separate cluster jobs. It then adds an additional simulation level and updates the simulation.
@@ -108,7 +109,7 @@
 #' qsub -v run='first' update_sim.sh
 #' qsub -v run='main' -t 1-10 -hold_jid 104 update_sim.sh
 #' qsub -v run='last' -hold_jid 105 update_sim.sh
-#'
+#' }
 #' @export
 update_sim_on_cluster <- function(first,
                               main,

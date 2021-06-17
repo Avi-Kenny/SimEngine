@@ -40,6 +40,7 @@ This function provides a scaffold for running simulations in parallel
     Job schedulers currently supported include Slurm and Sun Grid Engine.
 }
 \examples{
+\dontrun{
 # The following is a toy simulation that could be run in a cluster computing environment
 # using the SGE job scheduler. It runs 10 replicates of 2 simulation levels as 20
 # separate cluster jobs, and then summarizes the results.
@@ -49,7 +50,7 @@ library(simba)
 run_on_cluster(
 
   first = {
-    sim \%<>\% new_sim()
+    sim <- new_sim()
     sim \%<>\% add_creator("create_data", function(n){ rnorm(n) })
     sim \%<>\% set_script(function() {
       data <- create_data(L$n)
@@ -79,5 +80,5 @@ Rscript my_simulation.R
 qsub -v run='first' run_sim.sh
 qsub -v run='main' -t 1-20 -hold_jid 101 run_sim.sh
 qsub -v run='last' -hold_jid 102 run_sim.sh
-
+}
 }

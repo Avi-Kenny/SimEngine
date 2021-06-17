@@ -57,6 +57,7 @@ This function provides a scaffold for updating a previously run
     Job schedulers currently supported include Slurm and Sun Grid Engine.
 }
 \examples{
+\dontrun{
 # The following is a toy simulation that could be run in a cluster computing environment
 # using the SGE job scheduler. It runs 10 replicates of 2 simulation levels as 20
 # separate cluster jobs. It then adds an additional simulation level and updates the simulation.
@@ -130,5 +131,5 @@ Rscript update_my_simulation.R
 qsub -v run='first' update_sim.sh
 qsub -v run='main' -t 1-10 -hold_jid 104 update_sim.sh
 qsub -v run='last' -hold_jid 105 update_sim.sh
-
+}
 }

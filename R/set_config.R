@@ -29,6 +29,9 @@
 #'     Normally, when a given simulation is run multiple times, it will give
 #'     the same results each time unless the seed is changed using
 #'     \code{set_config}.
+#' @param n_cores An integer; determines the number of CPUs on which the simulation
+#'     will run if using parallelization. Defaults to one fewer than the number of
+#'     available CPUs on the current host.
 #' @param dir A directory (given as a character string) where simulation files
 #'     should be stored; if this option is not set, files will be stored in the
 #'     current working directory.

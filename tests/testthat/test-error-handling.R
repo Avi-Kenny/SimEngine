@@ -166,6 +166,8 @@ test_that("stop_at_error config option works", {
 
 # too many cores requested
 
+sim <- new_sim()
+
 sim %<>% set_script(
   function() {
     return (list("x"=1))

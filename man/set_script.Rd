@@ -48,7 +48,7 @@ sim \%<>\% run()
 sim$results
 
 # If you need to return complex result data (vectors, dataframes, lists,
-etc.), use the construct ".complex"=list().
+# etc.), use the construct ".complex"=list().
 sim <- new_sim()
 sim \%<>\% set_levels(n=c(4,9))
 sim \%<>\% set_config(num_sim=1)
