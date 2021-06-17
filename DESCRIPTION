@@ -13,6 +13,7 @@ RoxygenNote: 7.1.1
 Depends: 
     magrittr
 Imports: 
+    dplyr,
     parallel,
     pbapply,
     data.table
