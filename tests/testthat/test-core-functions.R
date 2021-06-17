@@ -4,7 +4,7 @@
 sim <- new_sim()
 
 test_that("new_sim() creates correctly-specified object", {
-  expect_equal(sim$config$num_sim, 1000)
+  expect_equal(sim$config$num_sim, 10)
   expect_equal(sim$config$parallel, "none")
   expect_equal(sim$levels, list("no levels"=TRUE))
   expect_equal(sim$results, "Simulation has not been run yet.")

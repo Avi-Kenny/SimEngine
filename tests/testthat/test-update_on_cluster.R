@@ -83,7 +83,7 @@ rm(sim)
 # Incorrect run variable
 Sys.setenv(simba_run="asdf123")
 test_that("Incorrect 'run' environment variable throws error", {
-  expect_error(update_c(), paste("The 'run' environment variable must",
+  expect_error(update_c(), paste("The 'simba_run' environment variable must",
                                  "equal either 'first', 'main', or 'last'."))
 })
 
@@ -247,4 +247,7 @@ test_that("Correct behavior if 'first' fails", {
 # })
 # unlink("simba_results")
 # unlink("sim.simba")
+
+
 Sys.setenv(simba_run="")
+unlink("sim.simba")

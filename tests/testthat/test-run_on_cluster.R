@@ -48,7 +48,7 @@ run_c <- function(ret=FALSE, cmplx=FALSE) {
 # Incorrect run variable
 Sys.setenv(simba_run="asdf123")
 test_that("Incorrect 'run' environment variable throws error", {
-  expect_error(run_c(), paste("The 'run' environment variable must",
+  expect_error(run_c(), paste("The 'simba_run' environment variable must",
                               "equal either 'first', 'main', or 'last'."))
 })
 
