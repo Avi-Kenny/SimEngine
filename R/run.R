@@ -63,15 +63,16 @@ run.simba <- function(sim_obj, sim_uids=NA) {
 
     ..packages <- c(sim_obj$config$packages, "magrittr")
     n_available_cores <- parallel::detectCores()
-    if (sim_obj$config$parallel_cores==0) {
+    if (sim_obj$config$n_cores==0) {
       n_cores <- n_available_cores - 1
     } else {
-      if (sim_obj$config$parallel_cores>n_available_cores) {
+      if (sim_obj$config$n_cores>n_available_cores) {
         n_cores <- n_available_cores
-        warning(paste(sim_obj$config$parallel_cores, "cores requested but only",
-                      n_available_cores, "cores available"))
+        warning(paste(sim_obj$config$n_cores, "cores requested but only",
+                      n_available_cores, "cores available. Proceeding with",
+                      n_available_cores, "cores."))
       } else {
-        n_cores <- sim_obj$config$parallel_cores
+        n_cores <- sim_obj$config$n_cores
       }
     }
 

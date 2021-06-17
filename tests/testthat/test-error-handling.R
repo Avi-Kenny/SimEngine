@@ -175,7 +175,7 @@ sim %<>% set_script(
 sim %<>% set_config(
   num_sim = 100,
   parallel = "inner",
-  parallel_cores = 1000
+  n_cores = 1000
 )
 
 n_available_cores <- parallel::detectCores()

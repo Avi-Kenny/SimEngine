@@ -57,14 +57,14 @@
 #' @export
 set_config <- function(
   sim_obj, num_sim=1000, datasets="many", parallel="none",
-  parallel_cores=parallel::detectCores()-1, packages=NULL,
+  n_cores=parallel::detectCores()-1, packages=NULL,
   stop_at_error=FALSE, seed=1, dir=getwd()
 ) UseMethod("set_config")
 
 #' @export
 set_config.simba <- function(
   sim_obj, num_sim=1000, datasets="many", parallel="none",
-  parallel_cores=parallel::detectCores()-1, packages=NULL,
+  n_cores=parallel::detectCores()-1, packages=NULL,
   stop_at_error=FALSE, seed=1, dir=getwd()
 ) {
 
@@ -90,9 +90,9 @@ set_config.simba <- function(
     sim_obj$config[["parallel"]] = parallel
   }
 
-  if (!missing(parallel_cores)) {
-    handle_errors(parallel_cores, "is.numeric")
-    sim_obj$config[["parallel_cores"]] = parallel_cores
+  if (!missing(n_cores)) {
+    handle_errors(n_cores, "is.numeric")
+    sim_obj$config[["n_cores"]] = n_cores
   }
 
   if (!missing(packages)) {

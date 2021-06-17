@@ -30,7 +30,7 @@ new_sim <- function() {
       num_sim = 10,
       datasets = "many",
       parallel = "none",
-      parallel_cores = parallel::detectCores() - 1,
+      n_cores = parallel::detectCores() - 1,
       packages = NULL,
       stop_at_error = FALSE,
       seed = 1,
