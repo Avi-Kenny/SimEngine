@@ -77,7 +77,7 @@ print(sim$errors)
 #> 2       6        3      2    s2       0 'Sigma' is not positive definite MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma)
 ```
 
-From the output above, we see that our code fails for the simulation replicates that use the level with `Sigma="s2"` because it uses an invalid covariance matrix. Similarly, if a simulation involves replicates that throw warnings, all warnings are logged and stored in the dataframe sim$warnings.
+From the output above, we see that our code fails for the simulation replicates that use the level with `Sigma="s2"` because it uses an invalid covariance matrix. Similarly, if a simulation involves replicates that throw warnings, all warnings are logged and stored in the dataframe `sim$warnings`.
 
 The workflow above can be useful to quickly spot errors, but it has two main drawbacks. First, it can be frustrating to run a time-consuming simulation involving hundreds or thousands of replicates, only to find out at the very end that every replicate failed because of a typo. It is often useful to stop an entire simulation after a single error has occurred. Second, it can sometimes be difficult to determine exactly what caused an error without making use of more advanced debugging tools. For both of these situations, use the following configuration option:
 
