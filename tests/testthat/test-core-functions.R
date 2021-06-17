@@ -344,7 +344,7 @@ sim <- new_sim()
 sim %<>% set_script(function() {
   return(list(x=rnorm(1)))
 })
-sim %<>% set_config(num_sim=3, parallel="outer")
+sim %<>% set_config(num_sim=3, parallel="outer", n_cores=2)
 res6 <- round(run(sim)$results$x, 4)
 res7 <- round(run(sim)$results$x, 4)
 sim %<>% set_config(seed=1)
