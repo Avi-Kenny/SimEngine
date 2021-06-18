@@ -53,7 +53,6 @@ add_method <- function(sim_obj, name, fn) UseMethod("add_method")
 #' @export
 add_method.simba <- function(sim_obj, name, fn) {
 
-  .e <- sim_obj # Throws error if argument doesn't exist
   handle_errors(sim_obj, "is.simba")
   if (missing(name) && missing(fn)) {
     stop("You must provide a function to add_method.")

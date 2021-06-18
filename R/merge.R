@@ -1,6 +1,6 @@
 #' Merge simulation results
 #'
-#' @description !!!!! TO DO
+#' @description !!!!! This function is unfinished and undocumented
 #' @param sim_obj_1 A simulation object of class \code{simba}, usually created
 #'     by \link{new_sim}
 #' @param sim_obj_2 A simulation object of class \code{simba}, usually created

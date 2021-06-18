@@ -133,7 +133,6 @@ summarize <- function(sim_obj, ...) UseMethod("summarize")
 #' @export
 summarize.simba <- function(sim_obj, ...) {
 
-  .e <- sim_obj # Throws error if argument doesn't exist
   handle_errors(sim_obj, "is.simba")
 
   # handle scenarios with no results

@@ -58,7 +58,6 @@ update_sim <- function(sim_obj, keep_errors=TRUE, keep_extra=FALSE) {
 #' @export
 update_sim.simba <- function(sim_obj, keep_errors=TRUE, keep_extra=FALSE) {
 
-  .e <- sim_obj # Throws error if argument doesn't exist
   handle_errors(sim_obj, "is.simba")
 
   # Error if simulation has not yet been run
@@ -67,7 +66,6 @@ update_sim.simba <- function(sim_obj, keep_errors=TRUE, keep_extra=FALSE) {
   }
 
   # error handle invalid options
-  .e <- list(keep_errors,keep_extra) # Throws error if argument doesn't exist
   handle_errors(keep_errors, "is.boolean")
   handle_errors(keep_extra, "is.boolean")
 

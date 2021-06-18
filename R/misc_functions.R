@@ -62,6 +62,12 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
     name <- deparse(substitute(obj))
   }
 
+  # Throw error (without function call) if obj is not found
+  tryCatch(.e <- obj, error = function(e) {
+    msg <- e$message
+    stop(msg, call.=FALSE)
+  })
+
   switch(err,
 
     "is.simba" = {
