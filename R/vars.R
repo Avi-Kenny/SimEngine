@@ -43,6 +43,7 @@
 vars <- function(sim_obj, var) {
 
   # Error handling
+  .e <- sim_obj # Throws error if argument doesn't exist
   handle_errors(sim_obj, "is.simba")
   if (!missing(var)) {
     valid_vars <- c("config", "env", "num_sim_total", "run_state")

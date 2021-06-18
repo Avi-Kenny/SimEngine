@@ -71,6 +71,7 @@ set_config.simba <- function(
   stop_at_error=FALSE, seed=1, dir=getwd()
 ) {
 
+  .e <- sim_obj # Throws error if argument doesn't exist
   handle_errors(sim_obj, "is.simba")
 
   if (length(as.list(match.call()))==2) {
@@ -78,27 +79,32 @@ set_config.simba <- function(
   }
 
   if (!missing(num_sim)) {
+    .e <- num_sim # Throws error if argument doesn't exist
     handle_errors(num_sim, "is.numeric")
     sim_obj$config[["num_sim"]] = num_sim
     sim_obj$internals$num_sim_total <- nrow(sim_obj$levels_grid)*num_sim
   }
 
   if (!missing(datasets)) {
+    .e <- datasets # Throws error if argument doesn't exist
     handle_errors(datasets, "is.in", other=c("one","many"))
     sim_obj$config[["datasets"]] = datasets
   }
 
   if (!missing(parallel)) {
+    .e <- parallel # Throws error if argument doesn't exist
     handle_errors(parallel, "is.in", other=c("outer","inner","none"))
     sim_obj$config[["parallel"]] = parallel
   }
 
   if (!missing(n_cores)) {
+    .e <- n_cores # Throws error if argument doesn't exist
     handle_errors(n_cores, "is.numeric")
     sim_obj$config[["n_cores"]] = n_cores
   }
 
   if (!missing(packages)) {
+    .e <- packages # Throws error if argument doesn't exist
     handle_errors(packages, "is.character.vec")
     sim_obj$config[["packages"]] = packages
     for (pkg in packages) {
@@ -107,16 +113,19 @@ set_config.simba <- function(
   }
 
   if (!missing(stop_at_error)) {
+    .e <- stop_at_error # Throws error if argument doesn't exist
     handle_errors(stop_at_error, "is.boolean")
     sim_obj$config[["stop_at_error"]] = stop_at_error
   }
 
   if (!missing(seed)) {
+    .e <- seed # Throws error if argument doesn't exist
     handle_errors(seed, "is.numeric")
     sim_obj$config[["seed"]] = seed
   }
 
   if (!missing(dir)) {
+    .e <- dir # Throws error if argument doesn't exist
     handle_errors(dir, "is.character")
     sim_obj$config[["dir"]] = dir
   }
