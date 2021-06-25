@@ -56,6 +56,11 @@ vars <- function(sim_obj, var) {
     num_sim_total = sim_obj$internals$num_sim_total,
     run_state = sim_obj$internals$run_state
   )
+  if (!is.null(sim_obj$internals$start_time)) {
+    v$start_time <- sim_obj$internals$start_time
+    v$end_time <- sim_obj$internals$end_time
+    v$total_runtime <- sim_obj$internals$total_runtime
+  }
   if (!missing(var)) {
     v <- v[[var]]
   }
