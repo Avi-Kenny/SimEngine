@@ -1,3 +1,7 @@
+<!-- badges: start -->
+  [![Travis build status](https://travis-ci.com/Avi-Kenny/simba.svg?branch=master)](https://travis-ci.com/Avi-Kenny/simba)
+<!-- badges: end -->
+
 # simba <img src='man/figures/logo.png' align="right" height="150" />
 
 <br>
