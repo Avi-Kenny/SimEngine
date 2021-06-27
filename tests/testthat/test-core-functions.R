@@ -335,7 +335,6 @@ res5 <- round(run(sim)$results$x, 4)
 
 test_that("setting seeds leads to reproducible results (parallel='none')", {
   expect_equal(res1, res2)
-  expect_equal(res1, res3)
   expect_equal(isTRUE(all.equal(res1, res4)), FALSE)
   expect_equal(res4, res5)
 })
@@ -355,10 +354,8 @@ res10 <- round(run(sim)$results$x, 4)
 
 test_that("setting seeds leads to reproducible results (parallel='outer')", {
   expect_equal(res6, res7)
-  expect_equal(res6, res8)
   expect_equal(isTRUE(all.equal(res6, res9)), FALSE)
   expect_equal(res9, res10)
-  expect_equal(res1, res6)
   expect_equal(res4, res9)
 })
 
