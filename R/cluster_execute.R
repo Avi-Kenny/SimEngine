@@ -178,7 +178,7 @@ cluster_execute <- function(first,
     # We assume the user doesn't name their simulation object '..sim_obj'
     ..sim_obj <- eval(as.name(..sim_var))
     ..sim_obj$internals$sim_var <- ..sim_var
-    ..sim_obj$internals$start_time <- ..start_time
+    ..sim_obj$vars$start_time <- ..start_time
     ..sim_obj$config$parallel <- "none" # !!!!! Revisit this
     saveRDS(..sim_obj, file=..path_sim_obj)
 
@@ -249,10 +249,10 @@ cluster_execute <- function(first,
         tid <- tid + add_to_tid
       }
 
-      if (tid<1 || tid>..sim_obj$internals$num_sim_total) {
+      if (tid<1 || tid>..sim_obj$vars$num_sim_total) {
         stop(paste(
           "Task ID is invalid; must be an integer between 1 and",
-          ..sim_obj$internals$num_sim_total
+          ..sim_obj$vars$num_sim_total
         ))
       } else {
         if (update_switch) {
@@ -272,9 +272,9 @@ cluster_execute <- function(first,
       }
 
       # Parse results filename and save
-      fmt <- paste0("%0", nchar(..sim_obj$internals$num_sim_total), "d")
+      fmt <- paste0("%0", nchar(..sim_obj$vars$num_sim_total), "d")
 
-      if (..sim_obj$internals$run_state=="run, no errors") {
+      if (..sim_obj$vars$run_state=="run, no errors") {
         saveRDS(
           list(
             "results" = ..sim_obj$results,
@@ -283,7 +283,7 @@ cluster_execute <- function(first,
           paste0(..path_sim_res, "/r_",
                  sprintf(fmt, ..sim_obj$internals$tid), ".rds")
         )
-      } else if (..sim_obj$internals$run_state=="run, all errors") {
+      } else if (..sim_obj$vars$run_state=="run, all errors") {
         saveRDS(
           ..sim_obj$errors,
           paste0(..path_sim_res, "/e_",
@@ -407,16 +407,16 @@ cluster_execute <- function(first,
         ..sim_obj$results <- results_df
         ..sim_obj$results_complex <- results_complex
         ..sim_obj$errors <- errors_df
-        ..sim_obj$internals$run_state <- "run, some errors"
+        ..sim_obj$vars$run_state <- "run, some errors"
       } else if (!is.null(results_df)) {
         ..sim_obj$results <- results_df
         ..sim_obj$results_complex <- results_complex
         ..sim_obj$errors <- "No errors"
-        ..sim_obj$internals$run_state <- "run, no errors"
+        ..sim_obj$vars$run_state <- "run, no errors"
       } else if (!is.null(errors_df)) {
         ..sim_obj$results <- "Errors detected in 100% of simulation replicates"
         ..sim_obj$errors <- errors_df
-        ..sim_obj$internals$run_state <- "run, all errors"
+        ..sim_obj$vars$run_state <- "run, all errors"
       } else {
         stop("An unknown error occurred.")
       }
@@ -461,7 +461,7 @@ cluster_execute <- function(first,
         ..sim_obj$internals$update_sim <- TRUE
         ..sim_obj$internals$num_sim_cumulative <- ..sim_obj$internals$num_sim_cumulative + num_new
       } else {
-        ..sim_obj$internals$num_sim_cumulative <- ..sim_obj$internals$num_sim_cumulative + ..sim_obj$internals$num_sim_total
+        ..sim_obj$internals$num_sim_cumulative <- ..sim_obj$internals$num_sim_cumulative + ..sim_obj$vars$num_sim_total
       }
 
       # Delete individual results files and save simulation object
@@ -489,9 +489,9 @@ cluster_execute <- function(first,
 
       # Save final simulation object (a second time, if 'last' code had no errors)
       assign("..sim_obj", eval(as.name(..sim_obj$internals$sim_var)))
-      ..sim_obj$internals$end_time <- Sys.time()
-      ..sim_obj$internals$total_runtime <- as.numeric(
-        difftime(..sim_obj$internals$end_time, ..sim_obj$internals$start_time),
+      ..sim_obj$vars$end_time <- Sys.time()
+      ..sim_obj$vars$total_runtime <- as.numeric(
+        difftime(..sim_obj$vars$end_time, ..sim_obj$vars$start_time),
         units = "secs"
       )
       saveRDS(..sim_obj, file=..path_sim_obj)

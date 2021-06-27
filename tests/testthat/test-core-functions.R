@@ -168,7 +168,7 @@ sim <- new_sim()
 sim %<>% set_script(my_script)
 test_that("set_script() works with predefined function", {
   expect_type(sim$script, "closure")
-  expect_equal("..script" %in% ls(sim$internals$env, all.names=TRUE), TRUE)
+  expect_equal("..script" %in% ls(sim$vars$env, all.names=TRUE), TRUE)
 })
 
 sim <- new_sim()
@@ -183,7 +183,7 @@ sim %<>% set_script(
 )
 test_that("set_script() works with function defined in call", {
   expect_type(sim$script, "closure")
-  expect_equal("..script" %in% ls(sim$internals$env, all.names=TRUE), TRUE)
+  expect_equal("..script" %in% ls(sim$vars$env, all.names=TRUE), TRUE)
 })
 
 
@@ -193,7 +193,7 @@ test_that("set_script() throws error for non-function second argument", {
 })
 
 sim <- new_sim()
-sim$internals$run_state <- "run, no errors"
+sim$vars$run_state <- "run, no errors"
 test_that("set_script() throws error if sim has already been run", {
   expect_error(set_script(sim, my_script), "A simulation object's script cannot be changed after the simulation has been run.")
 })

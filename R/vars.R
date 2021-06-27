@@ -1,7 +1,8 @@
 #' Access internal simulation variables
 #'
 #' @description This is a "getter function" that returns the value of an
-#'     internal simulation variable.
+#'     internal simulation variable. Do not change any of these variables
+#'     manually.
 #' @param sim_obj A simulation object of class \code{simba}, usually created by
 #'     \link{new_sim}
 #' @param var If this argument is omitted, \code{vars()} will return a list
@@ -28,6 +29,10 @@
 #'     errors).}
 #'
 #'    }
+#' @details \itemize{
+#'   \item{You can also access simulation variables through sim$vars, where
+#'     \code{sim} is your simulation object (see examples).}
+#' }
 #' @return The value of the internal variable.
 #' @examples
 #' sim <- new_sim()
@@ -35,10 +40,9 @@
 #'   "n" = c(10, 100, 1000)
 #' )
 #' sim %<>% set_config(num_sim=10)
-#' value <- vars(sim, "num_sim_total")
-#' value
-#' all_values <- vars(sim)
-#' all_values
+#' vars(sim, "num_sim_total") %>% print()
+#' sim$vars$num_sim_total %>% print()
+#' all_values <- vars(sim) %>% print()
 #' @export
 vars <- function(sim_obj, var) {
 
@@ -50,17 +54,7 @@ vars <- function(sim_obj, var) {
   }
 
   # Parse list of variables
-  v <- list(
-    config = sim_obj$config,
-    env = sim_obj$internals$env,
-    num_sim_total = sim_obj$internals$num_sim_total,
-    run_state = sim_obj$internals$run_state
-  )
-  if (!is.null(sim_obj$internals$start_time)) {
-    v$start_time <- sim_obj$internals$start_time
-    v$end_time <- sim_obj$internals$end_time
-    v$total_runtime <- sim_obj$internals$total_runtime
-  }
+  v <- sim_obj$vars
   if (!missing(var)) {
     v <- v[[var]]
   }

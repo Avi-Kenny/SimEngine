@@ -70,9 +70,9 @@ add_method.simba <- function(sim_obj, name, fn) {
   handle_errors(name, "is.character")
   handle_errors(fn, "is.function")
 
-  environment(fn) <- sim_obj$internals$env
+  environment(fn) <- sim_obj$vars$env
   sim_obj$methods[[name]] <- fn
-  assign(x=name, value=fn, envir=sim_obj$internals$env)
+  assign(x=name, value=fn, envir=sim_obj$vars$env)
 
   return (sim_obj)
 

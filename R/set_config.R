@@ -79,28 +79,28 @@ set_config.simba <- function(
 
   if (!missing(num_sim)) {
     handle_errors(num_sim, "is.numeric")
-    sim_obj$config[["num_sim"]] = num_sim
-    sim_obj$internals$num_sim_total <- nrow(sim_obj$levels_grid)*num_sim
+    sim_obj$config[["num_sim"]] <- num_sim
+    sim_obj$vars$num_sim_total <- nrow(sim_obj$levels_grid)*num_sim
   }
 
   if (!missing(datasets)) {
     handle_errors(datasets, "is.in", other=c("one","many"))
-    sim_obj$config[["datasets"]] = datasets
+    sim_obj$config[["datasets"]] <- datasets
   }
 
   if (!missing(parallel)) {
     handle_errors(parallel, "is.in", other=c("outer","inner","none"))
-    sim_obj$config[["parallel"]] = parallel
+    sim_obj$config[["parallel"]] <- parallel
   }
 
   if (!missing(n_cores)) {
     handle_errors(n_cores, "is.numeric")
-    sim_obj$config[["n_cores"]] = n_cores
+    sim_obj$config[["n_cores"]] <- n_cores
   }
 
   if (!missing(packages)) {
     handle_errors(packages, "is.character.vec")
-    sim_obj$config[["packages"]] = packages
+    sim_obj$config[["packages"]] <- packages
     for (pkg in packages) {
       do.call("library", list(pkg))
     }
@@ -108,17 +108,17 @@ set_config.simba <- function(
 
   if (!missing(stop_at_error)) {
     handle_errors(stop_at_error, "is.boolean")
-    sim_obj$config[["stop_at_error"]] = stop_at_error
+    sim_obj$config[["stop_at_error"]] <- stop_at_error
   }
 
   if (!missing(seed)) {
     handle_errors(seed, "is.numeric")
-    sim_obj$config[["seed"]] = seed
+    sim_obj$config[["seed"]] <- seed
   }
 
   if (!missing(dir)) {
     handle_errors(dir, "is.character")
-    sim_obj$config[["dir"]] = dir
+    sim_obj$config[["dir"]] <- dir
   }
 
   set.seed(as.integer(seed))

@@ -40,7 +40,14 @@ The value of the internal variable.
 }
 \description{
 This is a "getter function" that returns the value of an
-    internal simulation variable.
+    internal simulation variable. Do not change any of these variables
+    manually.
+}
+\details{
+\itemize{
+  \item{You can also access simulation variables through sim$vars, where
+    \code{sim} is your simulation object (see examples).}
+}
 }
 \examples{
 sim <- new_sim()
@@ -48,8 +55,7 @@ sim \%<>\% set_levels(
   "n" = c(10, 100, 1000)
 )
 sim \%<>\% set_config(num_sim=10)
-value <- vars(sim, "num_sim_total")
-value
-all_values <- vars(sim)
-all_values
+vars(sim, "num_sim_total") \%>\% print()
+sim$vars$num_sim_total \%>\% print()
+all_values <- vars(sim) \%>\% print()
 }

@@ -59,14 +59,14 @@ set_script.simba <- function(sim_obj, fn) {
   handle_errors(sim_obj, "is.simba")
   handle_errors(fn, "is.function")
 
-  if (substr(sim_obj$internals$run_state, 1, 3) == "run") {
+  if (substr(sim_obj$vars$run_state, 1, 3) == "run") {
     stop(paste("A simulation object's script cannot be changed after the",
                "simulation has been run."))
   }
 
-  environment(fn) <- sim_obj$internals$env
+  environment(fn) <- sim_obj$vars$env
   sim_obj$script <- fn
-  assign(x="..script", value=fn, envir=sim_obj$internals$env)
+  assign(x="..script", value=fn, envir=sim_obj$vars$env)
 
   return (sim_obj)
 

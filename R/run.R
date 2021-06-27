@@ -32,10 +32,10 @@ run.simba <- function(sim_obj, sim_uids=NA) {
 
   handle_errors(sim_obj, "is.simba")
 
-  sim_obj$internals$start_time <- Sys.time()
+  sim_obj$vars$start_time <- Sys.time()
 
   # All objects will be stored in this environment
-  env <- sim_obj$internals$env
+  env <- sim_obj$vars$env
 
   if (is.na(sim_uids)) {
   # !!!!! add error handling for sim_uids
@@ -44,7 +44,7 @@ run.simba <- function(sim_obj, sim_uids=NA) {
     } else if (sim_obj$internals$update_sim) {
       sim_uids <- sim_obj$internals$levels_grid_big$sim_uid
     } else {
-      sim_uids <- 1:sim_obj$internals$num_sim_total
+      sim_uids <- 1:sim_obj$vars$num_sim_total
     }
   }
 
@@ -284,12 +284,12 @@ run.simba <- function(sim_obj, sim_uids=NA) {
     sim_obj$warnings <- "No warnings"
   }
   if (num_ok>0 && num_err>0) {
-    sim_obj$internals$run_state <- "run, some errors"
+    sim_obj$vars$run_state <- "run, some errors"
   } else if (num_ok>0) {
-    sim_obj$internals$run_state <- "run, no errors"
+    sim_obj$vars$run_state <- "run, no errors"
     sim_obj$errors <- "No errors"
   } else if (num_err>0) {
-    sim_obj$internals$run_state <- "run, all errors"
+    sim_obj$vars$run_state <- "run, all errors"
     sim_obj$results <- "Errors detected in 100% of simulation replicates"
   } else {
     stop("An unknown error occurred")
@@ -297,9 +297,9 @@ run.simba <- function(sim_obj, sim_uids=NA) {
 
   cat(comp_msg)
 
-  sim_obj$internals$end_time <- Sys.time()
-  sim_obj$internals$total_runtime <- as.numeric(
-    difftime(sim_obj$internals$end_time, sim_obj$internals$start_time),
+  sim_obj$vars$end_time <- Sys.time()
+  sim_obj$vars$total_runtime <- as.numeric(
+    difftime(sim_obj$vars$end_time, sim_obj$vars$start_time),
     units = "secs"
   )
 

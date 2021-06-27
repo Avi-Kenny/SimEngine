@@ -61,7 +61,7 @@ update_sim.simba <- function(sim_obj, keep_errors=TRUE, keep_extra=FALSE) {
   handle_errors(sim_obj, "is.simba")
 
   # Error if simulation has not yet been run
-  if (sim_obj$internals$run_state == "pre run"){
+  if (sim_obj$vars$run_state == "pre run"){
     stop("Simulation has not been run yet.")
   }
 

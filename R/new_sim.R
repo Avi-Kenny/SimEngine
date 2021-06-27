@@ -43,21 +43,21 @@ new_sim <- function() {
     results_complex = NA,
     errors = "Simulation has not been run yet.",
     warnings = "Simulation has not been run yet.",
-
-    # run_state can be: "pre run", "run, no errors", "run, some errors",
-    #     "run, all errors"
     internals = list(
-      env = environment(), # new.env()
       levels_types = FALSE,
       levels_shallow = list("no levels"=TRUE),
       levels_prev = list(),
       num_sim_prev = NA,
       num_sim_cumulative = 0,
       tid = NA,
-      num_sim_total = 10,
       sim_var = "",
-      run_state = "pre run",
       update_sim = FALSE
+    ),
+    vars = list(
+      env = environment(),
+      num_sim_total = 10,
+      run_state = "pre run"
+      # !!!!!
     ),
     creators = list(),
     methods = list(),

@@ -110,7 +110,7 @@ set_levels.simba <- function(sim_obj, ..., .add=FALSE) {
   sim_obj$internals$levels_shallow <- levels_shallow
   sim_obj$internals$levels_types <- levels_types
   sim_obj$levels_grid <- levels_grid
-  sim_obj$internals$num_sim_total <- nrow(sim_obj$levels_grid) *
+  sim_obj$vars$num_sim_total <- nrow(sim_obj$levels_grid) *
                                      sim_obj$config$num_sim
 
   return (sim_obj)
