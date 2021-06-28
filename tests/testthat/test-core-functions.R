@@ -448,6 +448,38 @@ test_that("use_method can access the proper environment", {
   expect_equal(sim$results[1,"v3"], 99)
 })
 
-### get() ###
-
-# !!!!! Add tests once get() is replaced
+sim <- new_sim()
+test_that("vars() works; before run()", {
+  expect_equal(sim$vars$num_sim_total, 10)
+  expect_equal(sim$vars$run_state, "pre run")
+  expect_equal(class(sim$vars$env), "environment")
+  expect_null(sim$vars$start_time)
+  expect_null(sim$vars$end_time)
+  expect_null(sim$vars$total_runtime)
+  expect_identical(sim$vars$num_sim_total, vars(sim)$num_sim_total)
+  expect_identical(sim$vars$run_state, vars(sim)$run_state)
+  expect_identical(sim$vars$env, vars(sim)$env)
+  expect_identical(sim$vars$start_time, vars(sim)$start_time)
+})
+sim %<>% set_script(function() {
+  Sys.sleep(0.01)
+  return(list(x=1))
+})
+sim %<>% run()
+test_that("vars() works; after run()", {
+  expect_equal(sim$vars$run_state, "run, no errors")
+  expect_equal(class(sim$vars$start_time)[2], "POSIXt")
+  expect_equal(class(sim$vars$end_time)[2], "POSIXt")
+  expect_equal(class(sim$vars$total_runtime), "numeric")
+  expect_identical(sim$vars$run_state, vars(sim)$run_state)
+  expect_identical(sim$vars$start_time, vars(sim)$start_time)
+  expect_identical(sim$vars$end_time, vars(sim)$end_time)
+  expect_identical(sim$vars$total_runtime, vars(sim)$total_runtime)
+})
+test_that("vars() handles incorrect variables properly", {
+  expect_error(vars(list(x=1), "fake_var"),
+               "`sim_obj` must be of class `simba`")
+  expect_error(vars(sim, "fake_var"),
+               "'fake_var' is not a valid option for `var`")
+  expect_null(sim$vars$fake_var)
+})
