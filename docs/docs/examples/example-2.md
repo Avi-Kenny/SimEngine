@@ -30,7 +30,7 @@ The ordinary least squares (OLS) estimator of $$\beta$$ is $$\hat{\beta} = (\mat
 
 $$\text{Var}(\hat{\beta}) = (\mathbb{X}^T\mathbb{X})^{-1}\mathbb{X}^T\Sigma\mathbb{X}(\mathbb{X}^T\mathbb{X})^{-1}$$
 
-The usual estimator of $$\mathbb{V}$$ is the model-based standard error $$s^2(\mathbb{X}^T\mathbb{X})^{-1}$$, where $$s^2 = \frac{\sum_i (Y_i - (\hat{\beta}_0 + \hat{\beta}_1X_i))^2}{n-1}$$. This is the estimator used by default in most statistical software (including the `lm()` function in R). However, under our heteroskedastic model where the $$\sigma^2_i$$ are not all equal, this is not a consistent estimator of $$\mathbb{V}$$! That is to say, even in large samples, we do not expect this estimator to be close to the truth.
+The usual estimator of $$\mathbb{V}$$ is the model-based standard error $$s^2(\mathbb{X}^T\mathbb{X})^{-1}$$, where $$s^2 = \frac{\sum_i (Y_i - (\hat{\beta}_0 + \hat{\beta}_1X_i))^2}{n-1}$$. This is the estimator used by default in most statistical software (including the `lm()` function in R). However, under our heteroskedastic model where the $$\sigma^2_i$$ are not all equal, this is not a consistent estimator of $$\mathbb{V}$$! That is to say, even in large samples, we cannot generally expect this estimator to be close to the truth.
 
 A better estimator for our setting is the so-called sandwich standard error, or Huber-White standard error, given by
 
@@ -40,4 +40,40 @@ where
 
 $$\hat{\Sigma} = \begin{pmatrix}(Y_1 - (\hat{\beta}_0 + \hat{\beta}_1X_1))^2  &\dots& 0 \\ \vdots &\ddots& \vdots \\ 0 & \dots & (Y_n - (\hat{\beta}_0 + \hat{\beta}_1X_n))^2\end{pmatrix}$$
 
-This estimator will be consistent even under heteroskedasticity. 
+Statistical theory tells us that estimator will be consistent even under heteroskedasticity. We will carry out a small simulation study to supplement this theoretical result. 
+
+We start by declaring a new simulation object and writing a creator function that generates some data according to our model. For this simulation, we will make $$\sigma^2_i$$ larger for larger values of $$X_i$$. (For the purposes of this example, we will manually set a seed so that the results are reproducible.) 
+
+```R
+sim <- new_sim()
+
+sim %<>% set_config(seed = 24)
+
+sim %<>% add_creator("create_regression_data",
+  function(n) {
+    beta <- c(-1, 0.5)
+    x <- sort(rnorm(n = n))
+    sigma2 <- sort(rgamma(n = n, shape = 1, rate = 1))
+    y <- rnorm(n = n, mean = beta[1] + beta[2]*x, sd = sqrt(sigma2))
+    return(data.frame(x = x, y = y))
+  }
+)
+```
+
+To get a sense of what heteroskedasticity looks like in practice, we can generate a dataset using our creator function, fit a linear regression model, and make a scatterplot of the residuals against $$X$$. Again we will set a seed here - this means your scatterplot should look the same as ours. 
+
+```R
+set.seed(55)
+
+dat <- sim$creators$create_regression_data(n = 1000)
+linear_model <- lm(y ~ x, data = dat)
+dat$residuals <- linear_model$residuals
+
+library(ggplot2)
+ggplot(dat, aes(x = x, y = residuals)) + 
+  geom_point() +
+  theme_bw() + 
+  labs(x = "x", y = "residual")
+```
+
+![Residual plot](../assets/images/example2_residual_plot.png)
