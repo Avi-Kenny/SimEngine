@@ -57,7 +57,6 @@ new_sim <- function() {
       env = environment(),
       num_sim_total = 10,
       run_state = "pre run"
-      # !!!!!
     ),
     creators = list(),
     methods = list(),

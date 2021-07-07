@@ -82,7 +82,7 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
     "is.boolean" = {
       if (!(is.logical(obj) && length(obj) == 1)) {
         if(is.na(msg)) {
-          msg <- paste0("`",name,"` must be of type 'logical'")
+          msg <- paste0("`",name,"` must be of type 'logical', of length 1")
         }
         stop(msg, call.=FALSE)
       }
@@ -91,7 +91,7 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
     "is.numeric" = {
       if (!(is.numeric(obj) && length(obj) == 1)) {
         if(is.na(msg)) {
-          msg <- paste0("`",name,"` must be numeric")
+          msg <- paste0("`",name,"` must be numeric, of length 1")
         }
         stop(msg, call.=FALSE)
       }
@@ -129,7 +129,7 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
     "is.character" = {
       if (!(is.character(obj) && length(obj)==1)) {
         if(is.na(msg)) {
-          msg <- paste0("`",name,"` must be a character string")
+          msg <- paste0("`",name,"` must be a character string, of length 1")
         }
         stop(msg, call.=FALSE)
       }

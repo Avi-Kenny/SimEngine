@@ -133,15 +133,12 @@ summarize <- function(sim_obj, ...) UseMethod("summarize")
 #' @export
 summarize.simba <- function(sim_obj, ...) {
 
+  # Error handling
   handle_errors(sim_obj, "is.simba")
-
-  # handle scenarios with no results
-  if (sim_obj$vars$run_state == "pre run"){
+  if (sim_obj$vars$run_state == "pre run")
     stop("Simulation has not been run yet.")
-  }
-  if (sim_obj$vars$run_state == "run, all errors"){
+  if (sim_obj$vars$run_state == "run, all errors")
     stop("100% of simulations had errors.")
-  }
 
   # Parse passed arguments
   R <- sim_obj$results

@@ -44,6 +44,9 @@
 #' sim$vars$num_sim_total %>% print()
 #' all_values <- vars(sim) %>% print()
 #' @export
+vars <- function(sim_obj, var) UseMethod("vars")
+
+#' @export
 vars <- function(sim_obj, var) {
 
   # Error handling
