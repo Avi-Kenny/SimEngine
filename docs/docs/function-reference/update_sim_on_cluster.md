@@ -1,7 +1,7 @@
 ---
 layout: page
 title: update_sim_on_cluster 
-nav_order: 12 
+nav_order: 13 
 permalink: /function-reference/update_sim_on_cluster/
 parent: Function reference
 ---
@@ -91,6 +91,7 @@ for that particular simulation level)</p>
 <h3>Examples</h3>
 
 ```R
+## Not run: 
 # The following is a toy simulation that could be run in a cluster computing environment
 # using the SGE job scheduler. It runs 10 replicates of 2 simulation levels as 20
 # separate cluster jobs. It then adds an additional simulation level and updates the simulation.
@@ -165,6 +166,7 @@ qsub -v run='first' update_sim.sh
 qsub -v run='main' -t 1-10 -hold_jid 104 update_sim.sh
 qsub -v run='last' -hold_jid 105 update_sim.sh
 
+## End(Not run)
 ```
 
 <hr /><div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>

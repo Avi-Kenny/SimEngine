@@ -1,7 +1,7 @@
 ---
 layout: page
 title: vars 
-nav_order: 14 
+nav_order: 15 
 permalink: /function-reference/vars/
 parent: Function reference
 ---
@@ -14,7 +14,8 @@ parent: Function reference
 <h3>Description</h3>
 
 <p>This is a &quot;getter function&quot; that returns the value of an
-internal simulation variable.
+internal simulation variable. Do not change any of these variables
+manually.
 </p>
 
 
@@ -67,6 +68,17 @@ errors).
 </table>
 
 
+<h3>Details</h3>
+
+
+<ul>
+<li><p>You can also access simulation variables through sim$vars, where
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span> is your simulation object (see examples).
+</p>
+</li></ul>
+
+
+
 <h3>Value</h3>
 
 <p>The value of the internal variable.
@@ -81,10 +93,9 @@ sim %<>% set_levels(
   "n" = c(10, 100, 1000)
 )
 sim %<>% set_config(num_sim=10)
-value <- vars(sim, "num_sim_total")
-value
-all_values <- vars(sim)
-all_values
+vars(sim, "num_sim_total") %>% print()
+sim$vars$num_sim_total %>% print()
+all_values <- vars(sim) %>% print()
 ```
 
 <hr /><div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>

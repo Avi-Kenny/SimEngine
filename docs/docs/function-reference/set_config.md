@@ -1,7 +1,7 @@
 ---
 layout: page
 title: set_config 
-nav_order: 7 
+nav_order: 8 
 permalink: /function-reference/set_config/
 parent: Function reference
 ---
@@ -68,6 +68,12 @@ within a single simulation replicate. Setting to &quot;none&quot; will not
 parallelize any code. See
 <a href="https://avi-kenny.github.io/simba/parallelization">https://avi-kenny.github.io/simba/parallelization</a> for an overview
 of how parallelization works in <span class="pkg">simba</span>.</p>
+</td></tr>
+<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>n_cores</span></td>
+<td>
+<p>An integer; determines the number of CPUs on which the simulation
+will run if using parallelization. Defaults to one fewer than the number of
+available CPUs on the current host.</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>packages</span></td>
 <td>
