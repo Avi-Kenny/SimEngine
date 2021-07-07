@@ -7,9 +7,16 @@ if (FALSE) {
   library(tools)
   library(magrittr)
 
-#  fns <- dir("man")[!(dir("man") %in% c("figures", "simba"))]
-  fns <- dir("man")[!(dir("man") %in% c("figures", "simba.Rd", "merge.simba.Rd"))]
+  fns <- dir("man")[!(dir("man") %in% c("figures", "simba.Rd"))]
   fns <- substring(fns, 1, nchar(fns)-3)
+  fn_ref_path <- "docs/docs/function-reference/"
+
+  # Delete old files
+  for (fn in dir(fn_ref_path)) {
+    if (!(fn %in% c("function-reference.md"))) {
+      unlink(paste0(fn_ref_path, fn))
+    }
+  }
 
   for (i in 1:length(fns)) {
 
@@ -21,8 +28,8 @@ if (FALSE) {
       fn2 <- fn
     }
     path_rd <- paste0("man/", fn, ".Rd")
-    path_html <- paste0("docs/docs/function-reference/", fn2, ".html")
-    path_md <- paste0("docs/docs/function-reference/", fn2, ".md")
+    path_html <- paste0(fn_ref_path, fn2, ".html")
+    path_md <- paste0(fn_ref_path, fn2, ".md")
 
     # Convert Rd file to HTML
     Rd2HTML(
