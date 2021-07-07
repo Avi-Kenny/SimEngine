@@ -51,7 +51,24 @@ supplied <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Mono
 
 ```R
 sim <- new_sim()
-!!!!! TO DO
+sim %<>% add_creator("create_data", function(n) {
+  x <- runif(n)
+  y <- 3 + 2*x + rnorm(n)
+  data.frame(x=x, y=y)
+})
+sim %<>% set_levels("n"=c(10, 100, 1000))
+sim %<>% set_config(num_sim=1)
+sim %<>% set_script(function() {
+  dat <- create_data(L$n)
+  model <- lm(y~x, data=dat)
+  return (list(
+    "beta1_hat" = model$coefficients[[2]],
+    ".complex" = model
+  ))
+})
+sim %<>% run()
+print(sim$results)
+print(get_complex(sim, 1))
 ```
 
 <hr /><div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>

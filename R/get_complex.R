@@ -9,7 +9,24 @@
 #'     supplied \code{sim_uid}
 #' @examples
 #' sim <- new_sim()
-#' !!!!! TO DO
+#' sim %<>% add_creator("create_data", function(n) {
+#'   x <- runif(n)
+#'   y <- 3 + 2*x + rnorm(n)
+#'   data.frame(x=x, y=y)
+#' })
+#' sim %<>% set_levels("n"=c(10, 100, 1000))
+#' sim %<>% set_config(num_sim=1)
+#' sim %<>% set_script(function() {
+#'   dat <- create_data(L$n)
+#'   model <- lm(y~x, data=dat)
+#'   return (list(
+#'     "beta1_hat" = model$coefficients[[2]],
+#'     ".complex" = model
+#'   ))
+#' })
+#' sim %<>% run()
+#' print(sim$results)
+#' print(get_complex(sim, 1))
 #' @export
 
 #' @export
@@ -28,12 +45,10 @@ get_complex <- function(sim_obj, sim_uid) {
   # handle_errors(sim_uid, "is.in", other=sim_obj$results$sim_uid, # !!!!! add error handling for sim_uid
   #               msg="sim_uid not found in results")
 
-  # !!!!! Options for sim_uid=NA or sim_uid=c(1,2) ?????
-
   if (length(sim_uid==1)) {
     return (sim_obj$results_complex[[paste0("sim_uid_",sim_uid)]])
   } else {
-
+    # !!!!! Options for sim_uid=NA or sim_uid=c(1,2) ?????
   }
 
 }
