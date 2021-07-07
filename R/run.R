@@ -203,15 +203,8 @@ run.simba <- function(sim_obj, sim_uids=NA) {
   # Convert results to data frame and pull out complex data
   if (num_ok>0) {
 
-    if (!is.null(results_lists_ok[[1]]$results$.complex)) {
-      results_complex <- lapply(results_lists_ok, function(r) {
-        c("sim_uid"=r$sim_uid, r$results$.complex)
-      })
-    } else {
-      results_complex <- NA
-    }
-
-    results_lists_ok <- lapply(results_lists_ok, function(r) {
+    # Handle standard results
+    results_lists_ok2 <- lapply(results_lists_ok, function(r) {
       r$results$.complex <- NULL
       if (length(r$results)>0) {
         c("sim_uid"=r$sim_uid, "runtime"=r$runtime, r$results)
@@ -219,8 +212,17 @@ run.simba <- function(sim_obj, sim_uids=NA) {
         list("sim_uid"=r$sim_uid, "runtime"=r$runtime)
       }
     })
+    results_df <- data.table::rbindlist(results_lists_ok2)
 
-    results_df <- data.table::rbindlist(results_lists_ok)
+    # Handle complex results
+    if (!is.null(results_lists_ok[[1]]$results$.complex)) {
+      r_sim_uids <- results_df$sim_uid
+      names(results_lists_ok) <- as.character(paste0("sim_uid_",r_sim_uids))
+      results_complex <- lapply(results_lists_ok, function(r) {
+        r$results$.complex
+      })
+      sim_obj$results_complex <- results_complex
+    }
 
     # Join results data frames with `levels_grid_big`and attach to sim_obj
     results_df <- dplyr::inner_join(
@@ -229,11 +231,6 @@ run.simba <- function(sim_obj, sim_uids=NA) {
       by = "sim_uid"
     )
     sim_obj$results <- results_df
-
-    # Attach complex results
-    if (exists("results_complex")) {
-      sim_obj$results_complex <- results_complex
-    }
 
   }
 
