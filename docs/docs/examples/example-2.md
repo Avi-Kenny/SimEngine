@@ -20,7 +20,7 @@ Suppose our dataset consists of $$n$$ independent observations $$\{(Y_1, X_1), \
 
 $$Y_i = \beta_0 + \beta_1 X_i + \epsilon_i$$
 
-where $$\epsilon_i$$ is a mean-zero noise term with variance $$\sigma^2_i$$. We refer to this as a heteroskedastic model, since the variances need not be equal across all $$i$$. This is the true data-generating model. (Note: A more restrictive (but misspecified) model assumes that there is a common variance $$\sigma^2$$ such that $$\sigma^2_i = \sigma^2$$ for all $i$. We refer to this incorrect model as the homoskedastic model.) 
+where $$\epsilon_i$$ is a mean-zero noise term with variance $$\sigma^2_i$$. We refer to this as a heteroskedastic model, since the variances need not be equal across all $$i$$. This is the true data-generating model. (Note: A more restrictive (but misspecified) model assumes that there is a common variance $$\sigma^2$$ such that $$\sigma^2_i = \sigma^2$$ for all $$i$$. We refer to this incorrect model as the homoskedastic model.) 
 
 For simplicity, we build a matrix $$\mathbb{X}$$, whose first column is all 1's (the intercept column) and whose second column is $$(X_1, \dots, X_n)^T$$. We also define a matrix 
 
@@ -47,33 +47,128 @@ We start by declaring a new simulation object and writing a creator function tha
 ```R
 sim <- new_sim()
 
-sim %<>% set_config(seed = 24)
-
 sim %<>% add_creator("create_regression_data",
-  function(n) {
-    beta <- c(-1, 0.5)
-    x <- sort(rnorm(n = n))
-    sigma2 <- sort(rgamma(n = n, shape = 1, rate = 1))
-    y <- rnorm(n = n, mean = beta[1] + beta[2]*x, sd = sqrt(sigma2))
-    return(data.frame(x = x, y = y))
-  }
+                     function(n) {
+                       beta <- c(-1, 10)
+                       x <- rnorm(n)
+                       sigma2 <- exp(x)
+                       y <- rnorm(n = n, mean = beta[1] + beta[2]*x, sd = sqrt(sigma2))
+                       return(data.frame(x = x, y = y))
+                     }
 )
 ```
 
 To get a sense of what heteroskedasticity looks like in practice, we can generate a dataset using our creator function, fit a linear regression model, and make a scatterplot of the residuals against $$X$$. Again we will set a seed here - this means your scatterplot should look the same as ours. 
 
 ```R
-set.seed(55)
+set.seed(56)
 
-dat <- sim$creators$create_regression_data(n = 1000)
+dat <- sim$creators$create_regression_data(n = 500)
 linear_model <- lm(y ~ x, data = dat)
 dat$residuals <- linear_model$residuals
 
 library(ggplot2)
-ggplot(dat, aes(x = x, y = residuals)) + 
+ggplot(dat, aes(x = x, y = residuals)) +
   geom_point() +
-  theme_bw() + 
+  theme_bw() +
   labs(x = "x", y = "residual")
 ```
 
 ![Residual plot](../assets/images/example2_residual_plot.png)
+
+Now we add two methods to our simulation object: one returns the keast squares estimate and model-based estimator of the variance-covariance matrix of $$\hat{\beta}$$, and the other returns the least squares estimate and sandwich estimator (using the sandwich package). 
+
+```R
+sim %<>% add_method("model_vcov", function(data){
+  mod <- lm(y ~ x, data = data)
+  return(list("coef" = mod$coefficients, "vcov" = diag(vcov(mod))))
+})
+
+library(sandwich)
+sim %<>% add_method("sandwich_vcov", function(data){
+  mod <- lm(y ~ x, data = data)
+  return(list("coef" = mod$coefficients, "vcov" = diag(vcovHC(mod))))
+})
+```
+
+Next, we write the simulation script. This script returns a point estimate and a standard error estimate for both the intercept parameter $$\beta_0$$ and the slope parameter $$\beta_1$$. We will tell simba to run 500 simulation replicates for each of three sample sizes. It is important to use the `seed` argument in `set_config` so that our results will be reproducible. Finally, we run the simulation.  
+
+```R
+sim %<>% set_script(function() {
+  data <- create_regression_data(n = L$n)
+  # get estimate of var-cov matrix
+  estimates <- use_method(L$estimator, list(data))
+  return(list("beta0_est" = estimates$coef[1],
+              "beta1_est" = estimates$coef[2],
+              "beta0_se_est" = sqrt(estimates$vcov[1]),
+              "beta1_se_est" = sqrt(estimates$vcov[2])))
+})
+
+sim %<>% set_levels(
+  estimator = c("model_vcov", "sandwich_vcov"),
+  n = c(50, 100, 500, 1000)
+)
+
+sim %<>% set_config(num_sim=500,
+                    seed = 24)
+
+sim %<>% run()
+```
+
+Now we can summarize the results using `summarize`. There are two main quantities of interest for us. The primary purpose of the standard error estimate for $$\hat{\beta}$$ is to form confidence intervals, so we will look at (1) the average width of the resulting interval (simply 1.96 times the average standard error estimate across simulation replicates), and (2) the estimated coverage of the interval, which is simply the proportion of simulation replicates in which the interval contains the true value of $$\beta$$. We will focus on 95% confidence intervals in this simulation. 
+
+```R
+summarized_results <- sim %>%
+  summarize(mean = list(list(name = "mean_se_beta0", x = "beta0_se_est"),
+                       list(name = "mean_se_beta1", x = "beta1_se_est")),
+            coverage = list(list(name = "cov_beta0", 
+                                 estimate = "beta0_est", 
+                                 se = "beta0_se_est", 
+                                 truth = -1),
+                       list(name = "cov_beta1", 
+                            estimate = "beta1_est", 
+                            se = "beta1_se_est", 
+                            truth = 10)))
+                       
+# plot results
+summarized_results %>%
+  dplyr::select(estimator, n, mean_se_beta0, mean_se_beta1) %>%
+  tidyr::pivot_longer(cols = c("mean_se_beta0", "mean_se_beta1"),
+                      names_to = "parameter",
+                      names_prefix = "mean_se_") %>%
+  ggplot(aes(x = n, y = 1.96*value, color = estimator)) +
+  geom_line(aes(linetype = parameter)) +
+  geom_point() +
+  theme_bw() +
+  ylab("Average CI width") +
+  scale_color_manual(values=c("#999999", "#E69F00"),
+                       breaks = c("model_vcov", "sandwich_vcov"),
+                       name = "SE estimator",
+                       labels = c("Model-based", "Sandwich")) +
+  scale_linetype_discrete(breaks = c("beta0", "beta1"),
+                          name = "Parameter",
+                          labels = c(expression(beta[0]), expression(beta[1])))
+                          
+summarized_results %>%
+  dplyr::select(estimator, n, cov_beta0, cov_beta1) %>%
+  tidyr::pivot_longer(cols = c("cov_beta0", "cov_beta1"),
+                      names_to = "parameter",
+                      names_prefix = "cov_") %>%
+  ggplot(aes(x = n, y = value, color = estimator)) +
+  geom_line(aes(linetype = parameter)) +
+  geom_point() +
+  theme_bw() +
+  ylab("Coverage") +
+  scale_color_manual(values=c("#999999", "#E69F00"),
+                       breaks = c("model_vcov", "sandwich_vcov"),
+                       name = "SE estimator",
+                       labels = c("Model-based", "Sandwich")) +
+  scale_linetype_discrete(breaks = c("beta0", "beta1"),
+                          name = "Parameter",
+                          labels = c(expression(beta[0]), expression(beta[1]))) +
+  geom_hline(yintercept = 0.95)
+```
+
+![Residual plot](../assets/images/example2_CI_width1.png)
+![Residual plot](../assets/images/example2_CI_cov1.png)
+

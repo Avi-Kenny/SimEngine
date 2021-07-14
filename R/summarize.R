@@ -76,7 +76,7 @@
 #'     containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}), and
 #'     \code{na.rm} indicates whether to exclude \code{NA} values when performing the calculation.}
 #'
-#'     \item{\code{cov}: Each \code{cov} (confidence interval coverage) summary is a named list of five arguments. Either
+#'     \item{\code{coverage}: Each \code{coverage} (confidence interval coverage) summary is a named list of five arguments. Either
 #'     (\code{estimate}, \code{se}) or (\code{lower}, \code{upper}) must be provided.  \code{name} gives a name for the
 #'     summary, \code{estimate} gives the name of the variable in \code{sim_obj$results}
 #'     containing the estimator of interest, \code{se} gives the name of the variable in \code{sim_obj$results}
@@ -87,7 +87,7 @@
 #'     calculation. See \emph{Details}.}
 #'    }
 #' @details \itemize{
-#'     \item{For all summaries besides \code{cov}, the \code{name} argument is optional. If \code{name} is not provided,
+#'     \item{For all summaries besides \code{coverage}, the \code{name} argument is optional. If \code{name} is not provided,
 #'     a name will be formed from the type of summary and the column on which the summary is performed.}
 #'
 #'     \item{For all inferential summaries there are three ways to specify \code{truth}: (1) a single number,
@@ -95,7 +95,7 @@
 #'     same length as the number of rows in \code{sim_obj$results}, or (3) the name of a variable in \code{sim_obj$results}
 #'     containing the estimand of interest.}
 #'
-#'     \item{There are two ways to specify the confidence interval bounds for \code{cov}. The first is to provide
+#'     \item{There are two ways to specify the confidence interval bounds for \code{coverage}. The first is to provide
 #'     an \code{estimate} and its associated \code{se} (standard error). These should both be variables in
 #'     \code{sim_obj$results}. The function constructs a 95\% Wald-type confidence interval of the form
 #'     (\code{estimate} - 1.96 \code{se}, \code{estimate} + 1.96 \code{se}).  The alternative is to provide
