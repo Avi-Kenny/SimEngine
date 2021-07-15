@@ -400,7 +400,6 @@ sim_3 %<>% run()
 test_that("sim_1 has both non-complex and complex data", {
   expect_equal(sim_1$results[1,"mean"], 2.5)
   expect_equal(sim_1$results[2,"mean"], 5.0)
-  expect_equal(sim_1$results_complex[[1]]$sim_uid, 1)
   expect_equal(sim_1$results_complex[[1]]$dat, c(1,2,3,4))
   expect_equal(sim_1$results_complex[[1]]$mtx, matrix(c(1,2,3,4), nrow=2))
 })
@@ -408,7 +407,6 @@ test_that("sim_1 has both non-complex and complex data", {
 test_that("sim_2 has only complex data", {
   expect_null(sim_2$results[1,"mean"])
   expect_null(sim_2$results[2,"mean"])
-  expect_equal(sim_2$results_complex[[1]]$sim_uid, 1)
   expect_equal(sim_2$results_complex[[1]]$dat, c(1,2,3,4))
   expect_equal(sim_2$results_complex[[1]]$mtx, matrix(c(1,2,3,4), nrow=2))
 })
