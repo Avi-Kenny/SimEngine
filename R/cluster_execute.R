@@ -34,7 +34,7 @@ cluster_execute <- function(first,
   handle_errors(keep_extra, "is.boolean")
   handle_errors(update_switch, "is.boolean")
 
-  # Rename arguments to reduce changes of a naming conflict with contents of
+  # Rename arguments to avoid potential naming conflicts with contents of
   #   first/main/last blocks
   ..first <- first
   ..main <- main
@@ -72,16 +72,14 @@ cluster_execute <- function(first,
     rm(..count)
     rm(..env)
 
+    # Assign simulation object to ..sim_var in the parent environment
+    assign(x=..sim_var, value=eval(as.name(..sim_var)), envir=parent.frame(n=2))
+
     # Run code locally (`main` and `last` blocks)
     eval(..main)
+    assign(x=..sim_var, value=eval(as.name(..sim_var)), envir=parent.frame(n=2))
     eval(..last)
-
-    # Assign simulation object to ..sim_var in the parent environment
-    assign(
-      x = ..sim_var,
-      value = eval(as.name(..sim_var)),
-      envir = parent.frame(n = 2)
-    )
+    assign(x=..sim_var, value=eval(as.name(..sim_var)), envir=parent.frame(n=2))
 
   } else {
 
@@ -112,9 +110,8 @@ cluster_execute <- function(first,
       stop(paste("Directory", ..cfg$dir, "does not exist."))
     }
 
-    # !!!!! changed this to not erase the sim object
-    test_file <- paste0(..path_sim_obj, '.test')
     # Error handling: test to see that we can write to cfg$dir
+    test_file <- paste0(..path_sim_obj, '.test')
     tryCatch(
       expr = { saveRDS(list(a=123,b=456), file=test_file) },
       error = function(e) {
@@ -175,7 +172,6 @@ cluster_execute <- function(first,
     rm(..env)
 
     # Save simulation object
-    # We assume the user doesn't name their simulation object '..sim_obj'
     ..sim_obj <- eval(as.name(..sim_var))
     ..sim_obj$internals$sim_var <- ..sim_var
     ..sim_obj$vars$start_time <- ..start_time
@@ -193,7 +189,6 @@ cluster_execute <- function(first,
           "that your shell commands are properly sequenced."))
       }
     )
-    #print(..sim_obj$internals)
 
     if (!class(..sim_obj)=="simba") {
       stop("Invalid simulation object")
