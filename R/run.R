@@ -214,6 +214,15 @@ run.simba <- function(sim_obj, sim_uids=NA) {
     })
     results_df <- data.table::rbindlist(results_lists_ok2)
 
+    # Change invalid columns names
+    ..rdf_names <- names(results_df)
+    ..rdf_names_valid <- make.names(..rdf_names)
+
+    if (..rdf_names!=..rdf_names_valid) {
+      names(results_df) <- ..rdf_names_valid
+      warning("Some invalid column names were changed.")
+    }
+
     # Handle complex results
     if (!is.null(results_lists_ok[[1]]$results$.complex)) {
       r_sim_uids <- results_df$sim_uid
