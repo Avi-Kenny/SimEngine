@@ -216,11 +216,11 @@ run.simba <- function(sim_obj, sim_uids=NA) {
 
     # Change invalid columns names
     ..rdf_names <- names(results_df)
-    ..rdf_names_valid <- make.names(..rdf_names)
+    ..rdf_names_valid <- make.names(..rdf_names, unique=TRUE)
 
-    if (..rdf_names!=..rdf_names_valid) {
+    if (!identical(..rdf_names,..rdf_names_valid)) {
       names(results_df) <- ..rdf_names_valid
-      warning("Some invalid column names were changed.")
+      warning("Some invalid column names were changed.", call.=FALSE)
     }
 
     # Handle complex results
