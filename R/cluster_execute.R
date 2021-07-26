@@ -239,7 +239,7 @@ cluster_execute <- function(first,
         stop("Task ID is missing.")
       }
 
-      add_to_tid <- as.numeric(Sys.getenv("simba_run_add_to_tid"))
+      add_to_tid <- as.numeric(Sys.getenv("simba_add_to_tid"))
       if (!is.na(add_to_tid)) {
         tid <- tid + add_to_tid
       }
