@@ -32,9 +32,6 @@
 #' @param n_cores An integer; determines the number of CPUs on which the simulation
 #'     will run if using parallelization. Defaults to one fewer than the number of
 #'     available CPUs on the current host.
-#' @param dir A directory (given as a character string) where simulation files
-#'     should be stored; if this option is not set, files will be stored in the
-#'     current working directory.
 #' @details \itemize{
 #'   \item{If a user specifies, for example, \code{set_config(seed=4)}, this
 #'   seed is used twice by \pkg{simba}. First, \pkg{simba} executes
@@ -59,14 +56,14 @@
 set_config <- function(
   sim_obj, num_sim=1000, parallel="none",
   n_cores=parallel::detectCores()-1, packages=NULL,
-  stop_at_error=FALSE, seed=NA, dir=getwd()
+  stop_at_error=FALSE, seed=NA
 ) UseMethod("set_config")
 
 #' @export
 set_config.simba <- function(
   sim_obj, num_sim=1000, parallel="none",
   n_cores=parallel::detectCores()-1, packages=NULL,
-  stop_at_error=FALSE, seed=NA, dir=getwd()
+  stop_at_error=FALSE, seed=NA
 ) {
 
   handle_errors(sim_obj, "is.simba")
@@ -107,11 +104,6 @@ set_config.simba <- function(
   if (!missing(seed)) {
     handle_errors(seed, "is.numeric")
     sim_obj$config[["seed"]] <- seed
-  }
-
-  if (!missing(dir)) {
-    handle_errors(dir, "is.character")
-    sim_obj$config[["dir"]] <- dir
   }
 
   set.seed(sim_obj$config[["seed"]])

@@ -33,8 +33,7 @@ new_sim <- function() {
       n_cores = parallel::detectCores() - 1,
       packages = NULL,
       stop_at_error = FALSE,
-      seed = as.integer(1e9*runif(1)),
-      dir = getwd()
+      seed = as.integer(1e9*runif(1))
     ),
     constants = list(),
     levels = list("no levels"=TRUE),
