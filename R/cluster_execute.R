@@ -186,14 +186,14 @@ cluster_execute <- function(first,
       if (is.null(..cfg$tid_var) && is.null(..cfg$js)) {
         stop("You must specify either 'js' or 'tid_var' in cluster_config.")
       }
-
-      # User specified cfg$tid_var
-      if (!is.null(..cfg$tid_var)) {
-        tid_var <- ..cfg$tid_var
+      if (!is.null(..cfg$tid_var) && !is.null(..cfg$js)) {
+        warning(paste0("Both 'js' and 'tid_var' were specified in cluster_conf",
+                       "ig; js will be ignored."))
       }
 
-      # User specified cfg$js
-      if (!is.null(..cfg$js)) {
+      if (!is.null(..cfg$tid_var)) {
+        tid_var <- ..cfg$tid_var
+      } else if (!is.null(..cfg$js)) {
 
         # Make 'js' case insensitive
         ..cfg$js <- tolower(..cfg$js)
@@ -204,12 +204,11 @@ cluster_execute <- function(first,
         }
 
         tid_var <- dplyr::case_when(
-          # !!!!! Create an internal R object that stores this info and stores
-          # The dataframe that js_support() currently manually parses
+          # !!!!! Create an internal R object that stores this info and also
+          # stores the dataframe that js_support() currently manually parses
           ..cfg$js=="slurm" ~ "SLURM_ARRAY_TASK_ID",
           ..cfg$js=="ge" ~ "SGE_TASK_ID"
         )
-
       }
 
       tid <- as.numeric(Sys.getenv(tid_var))
