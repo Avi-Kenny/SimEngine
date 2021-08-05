@@ -7,13 +7,11 @@
 set_config(
   sim_obj,
   num_sim = 1000,
-  datasets = "many",
   parallel = "none",
   n_cores = parallel::detectCores() - 1,
   packages = NULL,
   stop_at_error = FALSE,
-  seed = 1,
-  dir = getwd()
+  seed = NA
 )
 }
 \arguments{
@@ -23,17 +21,14 @@ set_config(
 \item{num_sim}{An integer; the number of simulations to conduct for each
 level combination}
 
-\item{datasets}{A string; either "one" or "many". If set to "one", the same
-dataset will be used for all simulations. If set to "many", a new
-dataset will be generated for each simulation.}
-
-\item{parallel}{String; either "outer", "inner", or "none". Controls which
+\item{parallel}{String; one of c("outer", "inner", "none"). Controls which
 sections of the code are parallelized. Setting to "outer" will run one
 simulation per core. Setting to "inner" will allow for parallelization
 within a single simulation replicate. Setting to "none" will not
 parallelize any code. See
 \url{https://avi-kenny.github.io/simba/parallelization} for an overview
-of how parallelization works in \pkg{simba}.}
+of how parallelization works in \pkg{simba}. This option will be ignored
+if the simulation is being run on a cluster computing system.}
 
 \item{n_cores}{An integer; determines the number of CPUs on which the simulation
 will run if using parallelization. Defaults to one fewer than the number of
@@ -45,14 +40,12 @@ available CPUs on the current host.}
 stop if it encounters an error in any single replicate Useful for
 debugging.}
 
-\item{seed}{An integer; seeds allow for reproducible simulation results.
-Normally, when a given simulation is run multiple times, it will give
-the same results each time unless the seed is changed using
-\code{set_config}.}
-
-\item{dir}{A directory (given as a character string) where simulation files
-should be stored; if this option is not set, files will be stored in the
-current working directory.}
+\item{seed}{An integer; seeds allow for reproducible simulation results. If a
+seed is specified, then consecutive runs of the same simulation with the
+same seed will lead to identical results (under normal circumstances). If
+a seed was not set in advance by the user, \pkg{simba} will set a random
+seed, which can later be retrieved using the \link{vars} function. See
+details for further info.}
 }
 \value{
 The original simulation object with a modified configuration
@@ -69,24 +62,22 @@ This function sets configuration options for the simulation. If
 \details{
 \itemize{
   \item{If a user specifies, for example, \code{set_config(seed=4)}, this
-      seed is used twice by \pkg{simba}. First, \pkg{simba} executes
-      \code{set.seed(4)} at the end of the \code{set_config} call. Second,
-      when \link{run} is called, \pkg{simba} will execute
-      \code{set.seed(as.integer(4*sim_uid))} at the start of simulation
-      replicate, where \code{sim_uid} is the unique identifier corresponding
-      to that replicate. This is necessary to ensure that results are
-      reproducible even when simulations involve parallelization.}
+  seed is used twice by \pkg{simba}. First, \pkg{simba} executes
+  \code{set.seed(4)} at the end of the \code{set_config} call. Second, this
+  seed is used to generate a new set of seeds, one for each simulation
+  replicate. Each of these seeds is set in turn (or in parallel) when
+  \link{run} is called.}
   \item{Even if seeds are used, not all code will be reproducible. For
-      example, a simulation that involves getting the current date/time with
-      \code{Sys.time()} may produce different results on different runs.}
-  \item{Setting seeds is not currently with inner parallelization
-      (\code{set_config(parallel="inner")}).}
+  example, a simulation that involves getting the current date/time with
+  \code{Sys.time()} or dynamically retrieving external data may produce
+  different results on different runs.}
 }
 }
 \examples{
 sim <- new_sim()
 sim \%<>\% set_config(
-  num_sim = 10
+  num_sim = 10,
+  seed = 2112
 )
 sim
 }

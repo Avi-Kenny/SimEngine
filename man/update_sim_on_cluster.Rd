@@ -32,11 +32,15 @@ your simulation object (which at this point will contain both your old and new r
 and do something with it, such as display your results on a graph.}
 
 \item{cluster_config}{A list of configuration options. You must specify
-either \code{js} (the job scheduler you are using) or \code{tid_var} (the name of the
-environment variable that your task ID) is stored in. You can optionally
-specify \code{dir}, which is a path to a directory that will hold your
-simulation object and results (this defaults to the current working
-directory).}
+either \code{js} (the job scheduler you are using) or \code{tid_var} (the
+name of the environment variable that your task ID is stored in). Run
+\code{js_support()} to see a list of job schedulers that are currently
+supported. You can optionally also specify \code{dir}, which is a
+character string representing a path to a directory; this directory will
+serve as your working directory and hold your simulation object,
+temporary \pkg{simba} objects, and simulation results (this defaults to
+the working directory of the R script that contains your simulation
+code).}
 
 \item{keep_errors}{logical (\code{TRUE} by default); if \code{TRUE}, do not try to re-run
 simulation reps that results in errors previously; if \code{FALSE}, attempt to

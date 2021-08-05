@@ -115,7 +115,8 @@ run.simba <- function(sim_obj, sim_uids=NA) {
     assign(x="..added_methods", value=names(sim_obj$methods), envir=env)
 
     # Set the seed
-    set.seed(as.integer(sim_obj$config$seed*i))
+    set.seed(sim_obj$config$seed)
+    set.seed(as.integer((1e9*runif(i))[i]))
 
     # Actually run the run
     # Use withCallingHandlers to catch all warnings and tryCatch to catch errors
@@ -213,6 +214,15 @@ run.simba <- function(sim_obj, sim_uids=NA) {
       }
     })
     results_df <- data.table::rbindlist(results_lists_ok2)
+
+    # Change invalid columns names
+    ..rdf_names <- names(results_df)
+    ..rdf_names_valid <- make.names(..rdf_names, unique=TRUE)
+
+    if (!identical(..rdf_names,..rdf_names_valid)) {
+      names(results_df) <- ..rdf_names_valid
+      warning("Some invalid column names were changed.", call.=FALSE)
+    }
 
     # Handle complex results
     if (!is.null(results_lists_ok[[1]]$results$.complex)) {

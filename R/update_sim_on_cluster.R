@@ -22,11 +22,15 @@
 #'     your simulation object (which at this point will contain both your old and new results)
 #'     and do something with it, such as display your results on a graph.
 #' @param cluster_config A list of configuration options. You must specify
-#'     either \code{js} (the job scheduler you are using) or \code{tid_var} (the name of the
-#'     environment variable that your task ID) is stored in. You can optionally
-#'     specify \code{dir}, which is a path to a directory that will hold your
-#'     simulation object and results (this defaults to the current working
-#'     directory).
+#'     either \code{js} (the job scheduler you are using) or \code{tid_var} (the
+#'     name of the environment variable that your task ID is stored in). Run
+#'     \code{js_support()} to see a list of job schedulers that are currently
+#'     supported. You can optionally also specify \code{dir}, which is a
+#'     character string representing a path to a directory; this directory will
+#'     serve as your working directory and hold your simulation object,
+#'     temporary \pkg{simba} objects, and simulation results (this defaults to
+#'     the working directory of the R script that contains your simulation
+#'     code).
 #' @param keep_errors logical (\code{TRUE} by default); if \code{TRUE}, do not try to re-run
 #'     simulation reps that results in errors previously; if \code{FALSE}, attempt to
 #'     run those reps again
@@ -36,10 +40,11 @@
 #'     for that particular simulation level)
 #' @examples
 #' \dontrun{
-#' # The following is a toy simulation that could be run in a cluster computing environment
-#' # using the SGE job scheduler. It runs 10 replicates of 2 simulation levels as 20
-#' # separate cluster jobs. It then adds an additional simulation level and updates the simulation.
-#' # Finally, it summarizes the results.
+#' # The following is a toy simulation that could be run in a cluster computing
+#' # environment using the Oracle Grid Engine job scheduler. It runs 10
+#' # replicates of 2 simulation levels as 20 separate cluster jobs. It then adds
+#' # an additional simulation level and updates the simulation. Finally, it
+#' # summarizes the results.
 #'
 #' # This code is saved in a file called my_simulation.R
 #' library(simba)
@@ -62,7 +67,7 @@
 #'
 #'   last = {},
 #'
-#'   cluster_config = list(js="sge")
+#'   cluster_config = list(js="ge")
 #'
 #' )
 #'
@@ -95,7 +100,7 @@
 #'     sim %<>% summarize()
 #'   },
 #'
-#'   cluster_config = list(js = "sge")
+#'   cluster_config = list(js = "ge")
 #'
 #' )
 #'

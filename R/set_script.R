@@ -12,6 +12,7 @@
 #'     called ".complex" and the associated value must be a list (see examples).
 #'     The function body can contain references to the special objects \code{L}
 #'     (simulation levels) and \code{C} (simulation constants) (see examples).
+#'     The keys must be valid R names (see ?make.names).
 #' @return The original simulation object with the new "simulation script"
 #'     function added.
 #' @examples

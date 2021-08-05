@@ -1,11 +1,13 @@
 #' Framework for running simulations on a cluster computing system
 #'
-#' @description This function provides a scaffold for running simulations in parallel
-#'     in a cluster computing environment. It acts as a wrapper for \code{simba} simulation
-#'     code, organizing the code into sections that are run just once per simulation (e.g. simulation
-#'     setup and compiling results) and sections that are run many times (e.g. simulation replicates).
-#'     This function interfaces with the cluster job scheduler to divide parallel tasks over cluster nodes.
-#'     Job schedulers currently supported include Slurm and Sun Grid Engine.
+#' @description This function provides a scaffold for running simulations in
+#'     parallel in a cluster computing environment. It acts as a wrapper for
+#'     \code{simba} simulation code, organizing the code into sections that are
+#'     run just once per simulation (e.g. simulation setup and compiling
+#'     results) and sections that are run many times (e.g. simulation
+#'     replicates). This function interfaces with the cluster job scheduler to
+#'     divide parallel tasks over cluster nodes. Job schedulers currently
+#'     supported include Slurm and Sun Grid Engine.
 #' @param first Code to run at the start of a simulation. This should be a block
 #'     of code enclosed by curly braces {} that that creates a simulation
 #'     object. Put everything you need in the simulation object, since global
@@ -21,16 +23,23 @@
 #'     your simulation object (which at this point will contain your results)
 #'     and do something with it, such as display your results on a graph.
 #' @param cluster_config A list of configuration options. You must specify
-#'     either \code{js} (the job scheduler you are using) or \code{tid_var} (the name of the
-#'     environment variable that your task ID) is stored in. You can optionally
-#'     specify \code{dir}, which is a path to a directory that will hold your
-#'     simulation object and results (this defaults to the current working
-#'     directory).
+#'     either \code{js} (the job scheduler you are using) or \code{tid_var} (the
+#'     name of the environment variable that your task ID is stored in). Run
+#'     \code{js_support()} to see a list of job schedulers that are currently
+#'     supported. You can optionally also specify \code{dir}, which is a
+#'     character string representing a path to a directory; this directory will
+#'     serve as your working directory and hold your simulation object,
+#'     temporary \pkg{simba} objects, and simulation results (this defaults to
+#'     the working directory of the R script that contains your simulation
+#'     code).
 #' @examples
 #' \dontrun{
-#' # The following is a toy simulation that could be run in a cluster computing environment
-#' # using the SGE job scheduler. It runs 10 replicates of 2 simulation levels as 20
-#' # separate cluster jobs, and then summarizes the results.
+#' # The following is a toy simulation that could be run in a cluster computing
+#' # environment using the Oracle Grid Engine job scheduler. It runs 10
+#' # replicates of 2 simulation levels as 20 separate cluster jobs, and then
+#' # summarizes the results. If a different scheduler is being used, modify the
+#' # shell script accordingly (i.e. change the qsub commands to the relevant
+#' # commands for your scheduler.
 #'
 #' # This code is saved in a file called my_simulation.R
 #' library(simba)
@@ -55,7 +64,7 @@
 #'     sim %<>% summarize()
 #'   },
 #'
-#'   cluster_config = list(js="sge")
+#'   cluster_config = list(js="ge")
 #'
 #' )
 #'

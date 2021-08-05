@@ -1,25 +1,5 @@
 #' Framework for updating simulations on a cluster computing system
 #'
-#' @param first Code to run at the start of a simulation. This should be a block
-#'     of code enclosed by curly braces {} that that creates a simulation
-#'     object. Put everything you need in the simulation object, since global
-#'     variables declared in this block will not be available when the 'main'
-#'     and 'last' code blocks run.
-#' @param main Code that will run for every simulation replicate. This should be
-#'     a block of code enclosed by curly braces {} that includes a call to
-#'     \link{run}. This code block will have access to the simulation object you
-#'     created in the 'first' code block, but any changes made here to the
-#'     simulation object will not be saved.
-#' @param last Code that will run after all simulation replicates have been run.
-#'     This should be a block of code enclosed by curly braces {} that takes
-#'     your simulation object (which at this point will contain your results)
-#'     and do something with it, such as display your results on a graph.
-#' @param cluster_config A list of configuration options. You must specify
-#'     either js (the job scheduler you are using) or tid_var (the name of the
-#'     environment variable that your task ID) is stored in. You can optionally
-#'     specify dir, which is a path to a directory that will hold your
-#'     simulation object and results (this defaults to the current working
-#'     directory).
 #' @noRd
 cluster_execute <- function(first,
                             main,
@@ -34,7 +14,7 @@ cluster_execute <- function(first,
   handle_errors(keep_extra, "is.boolean")
   handle_errors(update_switch, "is.boolean")
 
-  # Rename arguments to reduce changes of a naming conflict with contents of
+  # Rename arguments to avoid potential naming conflicts with contents of
   #   first/main/last blocks
   ..first <- first
   ..main <- main
@@ -72,29 +52,21 @@ cluster_execute <- function(first,
     rm(..count)
     rm(..env)
 
+    # Assign simulation object to ..sim_var in the parent environment
+    assign(x=..sim_var, value=eval(as.name(..sim_var)), envir=parent.frame(n=2))
+
     # Run code locally (`main` and `last` blocks)
     eval(..main)
+    assign(x=..sim_var, value=eval(as.name(..sim_var)), envir=parent.frame(n=2))
     eval(..last)
-
-    # Assign simulation object to ..sim_var in the parent environment
-    assign(
-      x = ..sim_var,
-      value = eval(as.name(..sim_var)),
-      envir = parent.frame(n = 2)
-    )
+    assign(x=..sim_var, value=eval(as.name(..sim_var)), envir=parent.frame(n=2))
 
   } else {
 
     # Construct necessary paths
-    if (is.null(..cfg$dir)) {
-      ..path_sim_obj <- "sim.simba"
-      ..path_sim_out <- "sim_output.txt"
-      ..path_sim_res <- "simba_results"
-    } else {
-      ..path_sim_obj <- paste0(..cfg$dir, "/sim.simba")
-      ..path_sim_out <- paste0(..cfg$dir, "/sim_output.txt")
-      ..path_sim_res <- paste0(..cfg$dir, "/simba_results")
-    }
+    ..path_sim_obj <- "sim.simba"
+    ..path_sim_out <- "sim_output.txt"
+    ..path_sim_res <- "simba_results"
 
     # Error handling: incorrect Sys.getenv("run") variable
     if (!(Sys.getenv("simba_run") %in% c("first", "main", "last"))) {
@@ -112,9 +84,8 @@ cluster_execute <- function(first,
       stop(paste("Directory", ..cfg$dir, "does not exist."))
     }
 
-    # !!!!! changed this to not erase the sim object
-    test_file <- paste0(..path_sim_obj, '.test')
     # Error handling: test to see that we can write to cfg$dir
+    test_file <- paste0(..path_sim_obj, '.test')
     tryCatch(
       expr = { saveRDS(list(a=123,b=456), file=test_file) },
       error = function(e) {
@@ -137,6 +108,9 @@ cluster_execute <- function(first,
         stop(paste0("Files cannot be deleted from directory ", ..cfg$dir, "."))
       }
     )
+
+    # Set working directory
+    if (!is.null(..cfg$dir)) setwd(..cfg$dir)
 
     # Remove old files
     if (dir.exists(..path_sim_res)) { unlink(..path_sim_res, recursive=TRUE) }
@@ -175,14 +149,16 @@ cluster_execute <- function(first,
     rm(..env)
 
     # Save simulation object
-    # We assume the user doesn't name their simulation object '..sim_obj'
     ..sim_obj <- eval(as.name(..sim_var))
     ..sim_obj$internals$sim_var <- ..sim_var
     ..sim_obj$vars$start_time <- ..start_time
-    ..sim_obj$config$parallel <- "none" # !!!!! Revisit this
+    ..sim_obj$config$parallel <- "cluster"
     saveRDS(..sim_obj, file=..path_sim_obj)
 
   } else if (Sys.getenv("simba_run") %in% c("main","last")) {
+
+    # Set working directory
+    if (!is.null(..cfg$dir)) setwd(..cfg$dir)
 
     tryCatch(
       ..sim_obj <- readRDS(..path_sim_obj),
@@ -190,14 +166,11 @@ cluster_execute <- function(first,
         stop(paste(
           "Simulation object was not found. Make sure your 'first' function",
           "is not producing errors and returns a valid simulation object, and",
-          "that your shell commands are properly sequenced."))
+          "that your shell commands are correct and properly sequenced."))
       }
     )
-    #print(..sim_obj$internals)
 
-    if (!class(..sim_obj)=="simba") {
-      stop("Invalid simulation object")
-    }
+    handle_errors(..sim_obj, "is.simba")
 
   }
 
@@ -225,15 +198,16 @@ cluster_execute <- function(first,
         # Make 'js' case insensitive
         ..cfg$js <- tolower(..cfg$js)
 
-        if (!(..cfg$js %in% c("slurm","sge"))) {
-          stop(paste(
-            "cluster_config variable 'js' must equal one of the following:",
-            "'slurm', 'sge'."))
+        if (!(..cfg$js %in% (js_support())$js_code)) {
+          stop(paste("cluster_config variable 'js' is invalid; for a list of",
+                     "supported job schedulers, run js_support()"))
         }
 
         tid_var <- dplyr::case_when(
+          # !!!!! Create an internal R object that stores this info and stores
+          # The dataframe that js_support() currently manually parses
           ..cfg$js=="slurm" ~ "SLURM_ARRAY_TASK_ID",
-          ..cfg$js=="sge" ~ "SGE_TASK_ID"
+          ..cfg$js=="ge" ~ "SGE_TASK_ID"
         )
 
       }
@@ -244,7 +218,7 @@ cluster_execute <- function(first,
         stop("Task ID is missing.")
       }
 
-      add_to_tid <- as.numeric(Sys.getenv("simba_run_add_to_tid"))
+      add_to_tid <- as.numeric(Sys.getenv("simba_add_to_tid"))
       if (!is.na(add_to_tid)) {
         tid <- tid + add_to_tid
       }

@@ -137,7 +137,7 @@ test_that("Correct behavior if 'first' fails", {
   expect_error(run_c2(), paste(
     "Simulation object was not found. Make sure your 'first' function is not",
     "producing errors and returns a valid simulation object, and that your",
-    "shell commands are properly sequenced."
+    "shell commands are correct and properly sequenced."
   ))
 })
 Sys.setenv(simba_run="last")
@@ -147,7 +147,7 @@ test_that("Correct behavior if 'first' fails", {
   expect_error(run_c2(), paste(
     "Simulation object was not found. Make sure your 'first' function is not",
     "producing errors and returns a valid simulation object, and that your",
-    "shell commands are properly sequenced."
+    "shell commands are correct and properly sequenced."
   ))
 })
 unlink("simba_results")
@@ -163,7 +163,6 @@ test_that("run_on_cluster() works locally", {
   expect_equal(sim$config$num_sim, 2)
   expect_equal(length(sim$results_complex), 8)
   expect_equal(class(sim$results_complex), "list")
-  expect_equal(sim$results_complex[[1]]$sim_uid, 1)
   expect_equal(sim$results_complex[[1]]$vec, c(2,4))
 })
 rm(sim)
@@ -191,7 +190,6 @@ test_that("run_on_cluster() works with complex data", {
   expect_equal(grepl("level_id alpha", output, fixed=TRUE), TRUE)
   expect_equal(length(sim$results_complex), 2)
   expect_equal(class(sim$results_complex), "list")
-  expect_equal(sim$results_complex[[1]]$sim_uid, 1)
   expect_equal(sim$results_complex[[1]]$vec, c(2,4))
 })
 Sys.setenv(simba_run="")
