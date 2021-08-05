@@ -11,8 +11,7 @@ set_config(
   n_cores = parallel::detectCores() - 1,
   packages = NULL,
   stop_at_error = FALSE,
-  seed = NA,
-  dir = getwd()
+  seed = NA
 )
 }
 \arguments{
@@ -47,10 +46,6 @@ same seed will lead to identical results (under normal circumstances). If
 a seed was not set in advance by the user, \pkg{simba} will set a random
 seed, which can later be retrieved using the \link{vars} function. See
 details for further info.}
-
-\item{dir}{A directory (given as a character string) where simulation files
-should be stored; if this option is not set, files will be stored in the
-current working directory.}
 }
 \value{
 The original simulation object with a modified configuration
