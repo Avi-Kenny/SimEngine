@@ -62,6 +62,7 @@ test_that("run_on_cluster() works locally", {
   expect_equal(sim$config$num_sim, 2)
 })
 rm(sim)
+unlink("sim.simba")
 
 # Simulate running on cluster; test 'first' section
 Sys.setenv(simba_run="first")
@@ -110,6 +111,7 @@ test_that("run_on_cluster() 'last' section works", {
 Sys.setenv(simba_run="")
 unlink("sim.simba")
 unlink("sim_output.txt")
+unlink("sim_results", recursive = TRUE)
 rm(sim)
 rm(output)
 
@@ -195,6 +197,7 @@ test_that("run_on_cluster() works with complex data", {
 Sys.setenv(simba_run="")
 unlink("sim.simba")
 unlink("sim_output.txt")
+unlink("sim_results", recursive = TRUE)
 rm(sim)
 rm(output)
 # !!!!! test update_on_cluster with complex data
@@ -254,4 +257,5 @@ test_that("run_on_cluster() 'last' section works", {
 Sys.setenv(simba_run="")
 unlink("sim.simba")
 unlink("sim_output.txt")
+unlink("sim_results", recursive = TRUE)
 rm(sim)
