@@ -115,7 +115,8 @@ run.simba <- function(sim_obj, sim_uids=NA) {
     assign(x="..added_methods", value=names(sim_obj$methods), envir=env)
 
     # Set the seed
-    set.seed(as.integer(sim_obj$config$seed*i))
+    set.seed(sim_obj$config$seed)
+    set.seed(as.integer((1e9*runif(i))[i]))
 
     # Actually run the run
     # Use withCallingHandlers to catch all warnings and tryCatch to catch errors

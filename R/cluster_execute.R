@@ -175,7 +175,7 @@ cluster_execute <- function(first,
     ..sim_obj <- eval(as.name(..sim_var))
     ..sim_obj$internals$sim_var <- ..sim_var
     ..sim_obj$vars$start_time <- ..start_time
-    ..sim_obj$config$parallel <- "none" # !!!!! Revisit this
+    ..sim_obj$config$parallel <- "cluster"
     saveRDS(..sim_obj, file=..path_sim_obj)
 
   } else if (Sys.getenv("simba_run") %in% c("main","last")) {
@@ -186,13 +186,11 @@ cluster_execute <- function(first,
         stop(paste(
           "Simulation object was not found. Make sure your 'first' function",
           "is not producing errors and returns a valid simulation object, and",
-          "that your shell commands are properly sequenced."))
+          "that your shell commands are correct and properly sequenced."))
       }
     )
 
-    if (!class(..sim_obj)=="simba") {
-      stop("Invalid simulation object")
-    }
+    handle_errors(..sim_obj, "is.simba")
 
   }
 

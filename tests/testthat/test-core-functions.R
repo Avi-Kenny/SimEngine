@@ -283,8 +283,8 @@ test_that("set_config() throws error for invalid config option name", {
 # invalid config values
 test_that("set_config() throws errors for invalid config option values", {
   expect_error(set_config(sim, num_sim="hey"), "`num_sim` must be numeric")
-  expect_error(set_config(sim, datasets="hey"),
-               "'hey' is not a valid option for `datasets`")
+  # expect_error(set_config(sim, datasets="hey"),
+  #              "'hey' is not a valid option for `datasets`")
   expect_error(set_config(sim, parallel=c("inner","outer")),
                "`parallel` cannot be a vector")
   expect_error(set_config(sim, packages=min),

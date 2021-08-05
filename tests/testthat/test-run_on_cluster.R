@@ -135,7 +135,7 @@ test_that("Correct behavior if 'first' fails", {
   expect_error(run_c2(), paste(
     "Simulation object was not found. Make sure your 'first' function is not",
     "producing errors and returns a valid simulation object, and that your",
-    "shell commands are properly sequenced."
+    "shell commands are correct and properly sequenced."
   ))
 })
 Sys.setenv(simba_run="last")
@@ -145,7 +145,7 @@ test_that("Correct behavior if 'first' fails", {
   expect_error(run_c2(), paste(
     "Simulation object was not found. Make sure your 'first' function is not",
     "producing errors and returns a valid simulation object, and that your",
-    "shell commands are properly sequenced."
+    "shell commands are correct and properly sequenced."
   ))
 })
 unlink("simba_results")
