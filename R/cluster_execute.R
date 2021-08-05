@@ -198,15 +198,16 @@ cluster_execute <- function(first,
         # Make 'js' case insensitive
         ..cfg$js <- tolower(..cfg$js)
 
-        if (!(..cfg$js %in% c("slurm","sge"))) {
-          stop(paste(
-            "cluster_config variable 'js' must equal one of the following:",
-            "'slurm', 'sge'."))
+        if (!(..cfg$js %in% (js_support())$js_code)) {
+          stop(paste("cluster_config variable 'js' is invalid; for a list of",
+                     "supported job schedulers, run js_support()"))
         }
 
         tid_var <- dplyr::case_when(
+          # !!!!! Create an internal R object that stores this info and stores
+          # The dataframe that js_support() currently manually parses
           ..cfg$js=="slurm" ~ "SLURM_ARRAY_TASK_ID",
-          ..cfg$js=="sge" ~ "SGE_TASK_ID"
+          ..cfg$js=="ge" ~ "SGE_TASK_ID"
         )
 
       }

@@ -33,13 +33,10 @@ js_support <- function() {
   ))
   df <- add(df, list(
     name = "Oracle Grid Engine",
-    js_code = "oge",
+    js_code = "ge",
     developer = "Oracle",
     notes = "Formerly known as 'Sun Grid Engine'"
   ))
-
-  cat("Job schedulers currently supported by `simba`\n")
-  cat("---------------------------------------------\n")
 
   return(df)
 
