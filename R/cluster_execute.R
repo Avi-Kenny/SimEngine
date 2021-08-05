@@ -1,25 +1,5 @@
 #' Framework for updating simulations on a cluster computing system
 #'
-#' @param first Code to run at the start of a simulation. This should be a block
-#'     of code enclosed by curly braces {} that that creates a simulation
-#'     object. Put everything you need in the simulation object, since global
-#'     variables declared in this block will not be available when the 'main'
-#'     and 'last' code blocks run.
-#' @param main Code that will run for every simulation replicate. This should be
-#'     a block of code enclosed by curly braces {} that includes a call to
-#'     \link{run}. This code block will have access to the simulation object you
-#'     created in the 'first' code block, but any changes made here to the
-#'     simulation object will not be saved.
-#' @param last Code that will run after all simulation replicates have been run.
-#'     This should be a block of code enclosed by curly braces {} that takes
-#'     your simulation object (which at this point will contain your results)
-#'     and do something with it, such as display your results on a graph.
-#' @param cluster_config A list of configuration options. You must specify
-#'     either js (the job scheduler you are using) or tid_var (the name of the
-#'     environment variable that your task ID) is stored in. You can optionally
-#'     specify dir, which is a path to a directory that will hold your
-#'     simulation object and results (this defaults to the current working
-#'     directory).
 #' @noRd
 cluster_execute <- function(first,
                             main,
@@ -84,15 +64,9 @@ cluster_execute <- function(first,
   } else {
 
     # Construct necessary paths
-    if (is.null(..cfg$dir)) {
-      ..path_sim_obj <- "sim.simba"
-      ..path_sim_out <- "sim_output.txt"
-      ..path_sim_res <- "simba_results"
-    } else {
-      ..path_sim_obj <- paste0(..cfg$dir, "/sim.simba")
-      ..path_sim_out <- paste0(..cfg$dir, "/sim_output.txt")
-      ..path_sim_res <- paste0(..cfg$dir, "/simba_results")
-    }
+    ..path_sim_obj <- "sim.simba"
+    ..path_sim_out <- "sim_output.txt"
+    ..path_sim_res <- "simba_results"
 
     # Error handling: incorrect Sys.getenv("run") variable
     if (!(Sys.getenv("simba_run") %in% c("first", "main", "last"))) {
@@ -134,6 +108,9 @@ cluster_execute <- function(first,
         stop(paste0("Files cannot be deleted from directory ", ..cfg$dir, "."))
       }
     )
+
+    # Set working directory
+    if (!is.null(..cfg$dir)) setwd(..cfg$dir)
 
     # Remove old files
     if (dir.exists(..path_sim_res)) { unlink(..path_sim_res, recursive=TRUE) }
@@ -179,6 +156,9 @@ cluster_execute <- function(first,
     saveRDS(..sim_obj, file=..path_sim_obj)
 
   } else if (Sys.getenv("simba_run") %in% c("main","last")) {
+
+    # Set working directory
+    if (!is.null(..cfg$dir)) setwd(..cfg$dir)
 
     tryCatch(
       ..sim_obj <- readRDS(..path_sim_obj),
