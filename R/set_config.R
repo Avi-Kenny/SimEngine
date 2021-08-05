@@ -11,9 +11,6 @@
 #'     \link{new_sim}
 #' @param num_sim An integer; the number of simulations to conduct for each
 #'     level combination
-#' @param datasets A string; either "one" or "many". If set to "one", the same
-#'     dataset will be used for all simulations. If set to "many", a new
-#'     dataset will be generated for each simulation.
 #' @param parallel String; either "outer", "inner", or "none". Controls which
 #'     sections of the code are parallelized. Setting to "outer" will run one
 #'     simulation per core. Setting to "inner" will allow for parallelization
@@ -59,14 +56,14 @@
 #' sim
 #' @export
 set_config <- function(
-  sim_obj, num_sim=1000, datasets="many", parallel="none",
+  sim_obj, num_sim=1000, parallel="none",
   n_cores=parallel::detectCores()-1, packages=NULL,
   stop_at_error=FALSE, seed=1, dir=getwd()
 ) UseMethod("set_config")
 
 #' @export
 set_config.simba <- function(
-  sim_obj, num_sim=1000, datasets="many", parallel="none",
+  sim_obj, num_sim=1000, parallel="none",
   n_cores=parallel::detectCores()-1, packages=NULL,
   stop_at_error=FALSE, seed=1, dir=getwd()
 ) {
@@ -81,11 +78,6 @@ set_config.simba <- function(
     handle_errors(num_sim, "is.numeric")
     sim_obj$config[["num_sim"]] <- num_sim
     sim_obj$vars$num_sim_total <- nrow(sim_obj$levels_grid)*num_sim
-  }
-
-  if (!missing(datasets)) {
-    handle_errors(datasets, "is.in", other=c("one","many"))
-    sim_obj$config[["datasets"]] <- datasets
   }
 
   if (!missing(parallel)) {
