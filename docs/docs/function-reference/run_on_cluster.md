@@ -1,7 +1,7 @@
 ---
 layout: page
 title: run_on_cluster 
-nav_order: 7 
+nav_order: 8 
 permalink: /function-reference/run_on_cluster/
 parent: Function reference
 ---
@@ -13,12 +13,14 @@ parent: Function reference
 
 <h3>Description</h3>
 
-<p>This function provides a scaffold for running simulations in parallel
-in a cluster computing environment. It acts as a wrapper for <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>simba</span> simulation
-code, organizing the code into sections that are run just once per simulation (e.g. simulation
-setup and compiling results) and sections that are run many times (e.g. simulation replicates).
-This function interfaces with the cluster job scheduler to divide parallel tasks over cluster nodes.
-Job schedulers currently supported include Slurm and Sun Grid Engine.
+<p>This function provides a scaffold for running simulations in
+parallel in a cluster computing environment. It acts as a wrapper for
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>simba</span> simulation code, organizing the code into sections that are
+run just once per simulation (e.g. simulation setup and compiling
+results) and sections that are run many times (e.g. simulation
+replicates). This function interfaces with the cluster job scheduler to
+divide parallel tasks over cluster nodes. Job schedulers currently
+supported include Slurm and Sun Grid Engine.
 </p>
 
 
@@ -58,11 +60,15 @@ and do something with it, such as display your results on a graph.</p>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>cluster_config</span></td>
 <td>
 <p>A list of configuration options. You must specify
-either <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>js</span> (the job scheduler you are using) or <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>tid_var</span> (the name of the
-environment variable that your task ID) is stored in. You can optionally
-specify <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>dir</span>, which is a path to a directory that will hold your
-simulation object and results (this defaults to the current working
-directory).</p>
+either <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>js</span> (the job scheduler you are using) or <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>tid_var</span> (the
+name of the environment variable that your task ID is stored in). Run
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>js_support()</span> to see a list of job schedulers that are currently
+supported. You can optionally also specify <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>dir</span>, which is a
+character string representing a path to a directory; this directory will
+serve as your working directory and hold your simulation object,
+temporary <span class="pkg">simba</span> objects, and simulation results (this defaults to
+the working directory of the R script that contains your simulation
+code).</p>
 </td></tr>
 </table>
 
@@ -71,9 +77,12 @@ directory).</p>
 
 ```R
 ## Not run: 
-# The following is a toy simulation that could be run in a cluster computing environment
-# using the SGE job scheduler. It runs 10 replicates of 2 simulation levels as 20
-# separate cluster jobs, and then summarizes the results.
+# The following is a toy simulation that could be run in a cluster computing
+# environment using the SGE job scheduler. It runs 10 replicates of 2
+# simulation levels as 20 separate cluster jobs, and then summarizes the
+# results. If a scheduler other than SGE is being used, modify the shell
+# script accordingly (i.e. change the qsub commands to the relevant commands
+# for your scheduler.
 
 # This code is saved in a file called my_simulation.R
 library(simba)

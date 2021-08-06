@@ -1,7 +1,7 @@
 ---
 layout: page
 title: summarize 
-nav_order: 11 
+nav_order: 12 
 permalink: /function-reference/summarize/
 parent: Function reference
 ---
@@ -122,7 +122,7 @@ containing the estimator of interest, <span style='font-family:&quot;SFMono-Regu
 <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>na.rm</span> indicates whether to exclude <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>NA</span> values when performing the calculation.
 </p>
 </li>
-<li><p><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>cov</span>: Each <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>cov</span> (confidence interval coverage) summary is a named list of five arguments. Either
+<li><p><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>coverage</span>: Each <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>coverage</span> (confidence interval coverage) summary is a named list of five arguments. Either
 (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>estimate</span>, <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>se</span>) or (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>lower</span>, <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>upper</span>) must be provided.  <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>name</span> gives a name for the
 summary, <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>estimate</span> gives the name of the variable in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj$results</span>
 containing the estimator of interest, <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>se</span> gives the name of the variable in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj$results</span>
@@ -141,7 +141,7 @@ calculation. See <em>Details</em>.
 
 
 <ul>
-<li><p>For all summaries besides <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>cov</span>, the <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>name</span> argument is optional. If <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>name</span> is not provided,
+<li><p>For all summaries besides <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>coverage</span>, the <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>name</span> argument is optional. If <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>name</span> is not provided,
 a name will be formed from the type of summary and the column on which the summary is performed.
 </p>
 </li>
@@ -151,7 +151,7 @@ same length as the number of rows in <span style='font-family:&quot;SFMono-Regul
 containing the estimand of interest.
 </p>
 </li>
-<li><p>There are two ways to specify the confidence interval bounds for <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>cov</span>. The first is to provide
+<li><p>There are two ways to specify the confidence interval bounds for <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>coverage</span>. The first is to provide
 an <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>estimate</span> and its associated <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>se</span> (standard error). These should both be variables in
 <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj$results</span>. The function constructs a 95% Wald-type confidence interval of the form
 (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>estimate</span> - 1.96 <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>se</span>, <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>estimate</span> + 1.96 <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>se</span>).  The alternative is to provide

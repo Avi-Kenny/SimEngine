@@ -1,7 +1,7 @@
 ---
 layout: page
 title: update_sim_on_cluster 
-nav_order: 13 
+nav_order: 14 
 permalink: /function-reference/update_sim_on_cluster/
 parent: Function reference
 ---
@@ -66,11 +66,15 @@ and do something with it, such as display your results on a graph.</p>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>cluster_config</span></td>
 <td>
 <p>A list of configuration options. You must specify
-either <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>js</span> (the job scheduler you are using) or <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>tid_var</span> (the name of the
-environment variable that your task ID) is stored in. You can optionally
-specify <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>dir</span>, which is a path to a directory that will hold your
-simulation object and results (this defaults to the current working
-directory).</p>
+either <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>js</span> (the job scheduler you are using) or <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>tid_var</span> (the
+name of the environment variable that your task ID is stored in). Run
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>js_support()</span> to see a list of job schedulers that are currently
+supported. You can optionally also specify <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>dir</span>, which is a
+character string representing a path to a directory; this directory will
+serve as your working directory and hold your simulation object,
+temporary <span class="pkg">simba</span> objects, and simulation results (this defaults to
+the working directory of the R script that contains your simulation
+code).</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>keep_errors</span></td>
 <td>
