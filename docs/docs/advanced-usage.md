@@ -12,15 +12,126 @@ permalink: /advanced-usage/
 
 ## Complex simulation levels
 
-Often, simulation levels will be simple, such as a vector of sample sizes. However, !!!!!
+Often, simulation levels will be simple, such as a vector of sample sizes:
 
 ```R
-TO DO
+sim <- new_sim()
+sim %<>% set_levels(
+  n = c(200,400,800)
+)
+```
+
+However, there will be many instances in which more complex objects are needed. For these cases, instead of a vector of numbers or character strings, use a *named* list of lists. The toy example below illustrates this. Note that the list names (`"Beta 1"`, `"Beta 2"`, and `"Normal"`) become the entries in the dataframe returned by `summarize`.
+
+```R
+sim <- new_sim()
+sim %<>% set_levels(
+  n = c(10,100),
+  distribution = list(
+    "Beta 1" = list(type="Beta", params=c(0.3, 0.7)),
+    "Beta 2" = list(type="Beta", params=c(1.5, 0.4)),
+    "Normal" = list(type="Normal", params=c(3.0, 0.2))
+  )
+)
+sim %<>% add_creator("create_data", function(n, type, params) {
+  if (type=="Beta") {
+    return(rbeta(n, shape1=params[1], shape2=params[2]))
+  } else if (type=="Normal") {
+    return(rnorm(n, mean=params[1], sd=params[2]))
+  }
+})
+sim %<>% set_script(function() {
+  x <- create_data(L$n, L$distribution$type, L$distribution$params)
+  return(list("y"=mean(x)))
+})
+sim %<>% run()
+#>   |########################################| 100%
+#> Done. No errors or warnings detected.
+sim %>% summarize()
+#>   level_id   n distribution mean_runtime    mean_y
+#> 1        1  10       Beta 1 0.0032717705 0.3411949
+#> 2        2 100       Beta 1 0.0012259722 0.3052342
+#> 3        3  10       Beta 2 0.0004872084 0.7922969
+#> 4        4 100       Beta 2 0.0006912470 0.7854644
+#> 5        5  10       Normal 0.0008846998 3.0360586
+#> 6        6 100       Normal 0.0007148027 2.9898891
+```
+
+## Complex return data
+
+In most situations, the results of simulations will be numeric. However, we may want to return more complex data, such as matrices, lists, or model objects. To do this, we include our complex return data in the list with the special key `".complex"`. This is illustrated in the toy example below, in which we estimate the parameters of a linear regression and returns these as numeric, but also return the estimated covariance matrix and the entire model object.
+
+```R
+sim <- new_sim()
+sim %<>% set_levels(n=c(10, 100, 1000))
+sim %<>% add_creator("create_data", function(n) {
+  x <- runif(n)
+  y <- 3 + 2*x + rnorm(n)
+  return(data.frame("x"=x, "y"=y))
+})
+sim %<>% set_config(num_sim=2)
+sim %<>% set_script(function() {
+  dat <- create_data(L$n)
+  model <- lm(y~x, data=dat)
+  return (list(
+    "beta0_hat" = model$coefficients[[1]],
+    "beta1_hat" = model$coefficients[[2]],
+    ".complex" = list(
+	  "model" = model,
+	  "cov_mtx" = vcov(model)
+	)
+  ))
+})
+sim %<>% run()
+#>   |########################################| 100%
+#> Done. No errors or warnings detected.
+```
+
+After running this simulation, we can examine the numeric results directly by accessing `sim$results` or using the `summarize()` function, as usual:
+
+```R
+print(sim$results)
+#>   sim_uid level_id sim_id    n      runtime beta0_hat beta1_hat
+#> 1       1        1      1   10 0.0030298233  3.352146  2.070652
+#> 2       2        1      2   10 0.0000000000  2.442415  3.557133
+#> 3       3        2      1  100 0.0040059090  2.688359  2.564584
+#> 4       4        2      2  100 0.0024149418  2.668047  2.542642
+#> 5       5        3      1 1000 0.0075380802  3.019869  1.991019
+#> 6       6        3      2 1000 0.0009970665  3.021231  2.026103
+```
+
+However, we may also want to look at the complex return data. To do so, we use the special function `get_complex`, as illustrated below:
+
+```R
+c5 <- get_complex(sim, sim_uid=5)
+print(summary(c5$model))
+#> Call:
+#> lm(formula = y ~ x, data = dat)
+#> 
+#> Residuals:
+#>     Min      1Q  Median      3Q     Max 
+#> -3.2936 -0.6818  0.0334  0.6788  3.0812 
+#> 
+#> Coefficients:
+#>             Estimate Std. Error t value Pr(>|t|)    
+#> (Intercept)  3.01987    0.06377   47.35   <2e-16 ***
+#> x            1.99102    0.10875   18.31   <2e-16 ***
+#> ---
+#> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#> 
+#> Residual standard error: 1.009 on 998 degrees of freedom
+#> Multiple R-squared:  0.2514,	Adjusted R-squared:  0.2507 
+#> F-statistic: 335.2 on 1 and 998 DF,  p-value: < 2.2e-16
+
+print(c5$cov_mtx)
+#>              (Intercept)           x
+#> (Intercept)  0.004067129 -0.00600565
+#> x           -0.006005650  0.01182677
 ```
 
 ## Setting seeds
 
-When R code involves random functions like `rnorm()` or `sample()`, it is often desirable to have the ability to reproduce exact results. In a simple R script, calling the `set.seed()` function at the top of your script ensures that the code that follows will produce the same results whenever the script is run. However, a more nuanced strategy is needed when running simulations. If we are running 100 replicates of the same simulation, we typically don't want each replicate to return identical results; rather, we would like for each replicate to be different from one another, but for *the entire set of replicates* to be the same when we run the entire simulation twice in a row. Luckily, **simba** manages this process for you, even when simulations are being run in parallel. **simba** uses a single "global seed" that changes the individual seeds for each simulation replicate; if desired you can use `set_config()` to change this global seed:
+In statistical research, it is often desirable to have the ability to reproduce the exact results of a simulation. Since R code often involves stochastic (random) functions like `rnorm()` or `sample()` that return different values when called multiple times, reproducibility is not guaranteed. In a simple R script, calling the `set.seed()` function at the top of your script ensures that the code that follows will produce the same results whenever the script is run. However, a more nuanced strategy is needed when running simulations. If we are running 100 replicates of the same simulation, we typically don't want each replicate to return identical results; rather, we would like for each replicate to be different from one another, but for *the entire set of replicates* to be the same when we run the entire simulation twice in a row. Luckily, **simba** manages this process for you, even when simulations are being run in parallel. **simba** uses a single "global seed" that changes the individual seeds for each simulation replicate; if desired you can use `set_config()` to change this global seed:
 
 ```R
 sim %<>% set_config(seed=123)

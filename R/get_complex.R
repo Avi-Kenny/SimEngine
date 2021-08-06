@@ -12,7 +12,7 @@
 #' sim %<>% add_creator("create_data", function(n) {
 #'   x <- runif(n)
 #'   y <- 3 + 2*x + rnorm(n)
-#'   data.frame(x=x, y=y)
+#'   return(data.frame("x"=x, "y"=y))
 #' })
 #' sim %<>% set_levels("n"=c(10, 100, 1000))
 #' sim %<>% set_config(num_sim=1)

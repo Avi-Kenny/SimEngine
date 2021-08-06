@@ -14,6 +14,6 @@ has_toc: false
 
 We illustrate the use of **simba** through the following examples:
 
-1) Using **simba** to compute simulation-based power calculations
+[Example 1](/examples/1): Using **simba** to compute simulation-based power calculations
 
-2) Using **simba** to compare the performance of two standard error estimators
+[Example 2](/examples/2): Using **simba** to compare the performance of two standard error estimators
