@@ -10,8 +10,8 @@
 #'     provided, it should equal one of the following character strings:
 #'     \itemize{
 #'
-#'     \item{\code{config}: a list representing the current simulation
-#'     configuration. This will typically be set using \code{set_config()}.}
+#'     \item{\code{seed}: the simulation seed; see \link{set_config} for more
+#'     info on seeds.}
 #'
 #'     \item{\code{env}: a reference to the environment in which individual
 #'     simulation replicates are run (advanced)}
@@ -42,7 +42,7 @@
 #' sim %<>% set_config(num_sim=10)
 #' vars(sim, "num_sim_total") %>% print()
 #' sim$vars$num_sim_total %>% print()
-#' all_values <- vars(sim) %>% print()
+#' vars(sim) %>% print()
 #' @export
 vars <- function(sim_obj, var) UseMethod("vars")
 
@@ -52,7 +52,7 @@ vars <- function(sim_obj, var) {
   # Error handling
   handle_errors(sim_obj, "is.simba")
   if (!missing(var)) {
-    valid_vars <- c("config", "env", "num_sim_total", "run_state")
+    valid_vars <- c("seed", "env", "num_sim_total", "run_state")
     handle_errors(var, "is.in", other=valid_vars)
   }
 

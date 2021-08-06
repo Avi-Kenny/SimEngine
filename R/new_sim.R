@@ -25,6 +25,7 @@ new_sim <- function() {
   rm(pkg)
 
   # Create "blank" simulation object
+  ..seed <- as.integer(1e9*runif(1))
   ...sim_obj <- list(
     config = list(
       num_sim = 10,
@@ -33,7 +34,7 @@ new_sim <- function() {
       n_cores = parallel::detectCores() - 1,
       packages = NULL,
       stop_at_error = FALSE,
-      seed = as.integer(1e9*runif(1))
+      seed = ..seed
     ),
     constants = list(),
     levels = list("no levels"=TRUE),
@@ -53,6 +54,7 @@ new_sim <- function() {
       update_sim = FALSE
     ),
     vars = list(
+      seed = ..seed,
       env = environment(),
       num_sim_total = 10,
       run_state = "pre run"

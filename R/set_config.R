@@ -104,6 +104,7 @@ set_config.simba <- function(
   if (!missing(seed)) {
     handle_errors(seed, "is.numeric")
     sim_obj$config[["seed"]] <- seed
+    sim_obj$vars[["seed"]] <- seed
   }
 
   set.seed(sim_obj$config[["seed"]])
