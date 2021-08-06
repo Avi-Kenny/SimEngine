@@ -162,6 +162,7 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
 #'
 #' @param sim_obj A simulation object of class `simba`
 #' @importFrom rlang .data
+#' @importFrom stats runif
 #' @noRd
 create_levels_grid_big <- function(sim_obj) {
 
@@ -182,6 +183,8 @@ create_levels_grid_big <- function(sim_obj) {
 
   return(levels_grid_big)
 }
+
+
 
 # !!!!! Recycle this code eventually
 
