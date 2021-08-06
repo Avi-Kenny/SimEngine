@@ -25,5 +25,6 @@ Suggests:
     rmarkdown,
     testthat (>= 2.1.0),
     tidyr,
-    ggplot2
+    ggplot2,
+    sandwich
 VignetteBuilder: knitr
