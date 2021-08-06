@@ -96,10 +96,11 @@ for that particular simulation level)</p>
 
 ```R
 ## Not run: 
-# The following is a toy simulation that could be run in a cluster computing environment
-# using the SGE job scheduler. It runs 10 replicates of 2 simulation levels as 20
-# separate cluster jobs. It then adds an additional simulation level and updates the simulation.
-# Finally, it summarizes the results.
+# The following is a toy simulation that could be run in a cluster computing
+# environment using the Oracle Grid Engine job scheduler. It runs 10
+# replicates of 2 simulation levels as 20 separate cluster jobs. It then adds
+# an additional simulation level and updates the simulation. Finally, it
+# summarizes the results.
 
 # This code is saved in a file called my_simulation.R
 library(simba)
@@ -122,7 +123,7 @@ run_on_cluster(
 
   last = {},
 
-  cluster_config = list(js="sge")
+  cluster_config = list(js="ge")
 
 )
 
@@ -155,7 +156,7 @@ update_sim_on_cluster(
     sim %<>% summarize()
   },
 
-  cluster_config = list(js = "sge")
+  cluster_config = list(js = "ge")
 
 )
 

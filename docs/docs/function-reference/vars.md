@@ -42,8 +42,8 @@ provided, it should equal one of the following character strings:
 </p>
 
 <ul>
-<li><p><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>config</span>: a list representing the current simulation
-configuration. This will typically be set using <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set_config()</span>.
+<li><p><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>seed</span>: the simulation seed; see set_config for more
+info on seeds.
 </p>
 </li>
 <li><p><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>env</span>: a reference to the environment in which individual
@@ -95,7 +95,7 @@ sim %<>% set_levels(
 sim %<>% set_config(num_sim=10)
 vars(sim, "num_sim_total") %>% print()
 sim$vars$num_sim_total %>% print()
-all_values <- vars(sim) %>% print()
+vars(sim) %>% print()
 ```
 
 <hr /><div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>

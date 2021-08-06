@@ -13,7 +13,10 @@ parent: Function reference
 
 <h3>Description</h3>
 
-<p>!!!!! TO DO
+<p>This is the workhorse function of <span class="pkg">simba</span> that actually runs
+the simulation. This should be called after all functions that set up the
+simulation (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>add_creator</span>, <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set_config</span>, etc.) have been
+called.
 </p>
 
 
@@ -34,10 +37,21 @@ new_sim</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_uids</span></td>
 <td>
-<p>A vector of sim_uids that represent simulations to run. If
-omitted, all simulations are run. # update this !!!!!</p>
+<p>Advanced; a vector of <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_uid</span> values, each of which
+uniquely identifies a simulation replicate. This will normally be
+omitted. If this is specified, only the simulation replicates with a
+matching <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_uid</span> will be run.</p>
 </td></tr>
 </table>
+
+
+<h3>Value</h3>
+
+<p>The original simulation object but with the results attached (along
+with any errors and warnings). Results are stored in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim$results</span>,
+errors are stored in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim$errors</span>, and warnings are stored in
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim$warnings</span>.
+</p>
 
 
 <h3>Examples</h3>
@@ -60,7 +74,7 @@ sim %<>% set_script(function() {
   return (list("lambda_hat"=lambda_hat))
 })
 sim %<>% run()
-sim$results
+sim$results %>% print()
 ```
 
 <hr /><div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>

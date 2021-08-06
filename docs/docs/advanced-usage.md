@@ -141,12 +141,13 @@ If you did not set a seed with `set_config()`, **simba** will set a random seed 
 
 ```R
 sim <- new_sim()
-vars(sim, "seed")
+vars(sim, "seed") %>% print()
+#> 561011367
 ```
 
 ## Using simulation constants
 
-A simulation constant is any R object that does not change across simulation replicates. It can be useful as an organizational "container" to store global values that you may want to change later. It can also be used to store external data that you need in your simulation. This is especially useful when the external data requires some amount of time-intensive processing that you only want to do once. The code below demonstrates both uses of simulation constants.
+A simulation constant is any R object that does not change across simulation replicates. It can be useful as an organizational "container" to store global values that you may want to change later. It can also be used to store external data that you need in your simulation. The code below demonstrates both uses of simulation constants.
 
 ```R
 sim <- new_sim()

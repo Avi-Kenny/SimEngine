@@ -10,11 +10,22 @@ run(sim_obj, sim_uids = NA)
 \item{sim_obj}{A simulation object of class \code{simba}, usually created by
 \link{new_sim}}
 
-\item{sim_uids}{A vector of sim_uids that represent simulations to run. If
-omitted, all simulations are run. # update this !!!!!}
+\item{sim_uids}{Advanced; a vector of \code{sim_uid} values, each of which
+uniquely identifies a simulation replicate. This will normally be
+omitted. If this is specified, only the simulation replicates with a
+matching \code{sim_uid} will be run.}
+}
+\value{
+The original simulation object but with the results attached (along
+    with any errors and warnings). Results are stored in \code{sim$results},
+    errors are stored in \code{sim$errors}, and warnings are stored in
+    \code{sim$warnings}.
 }
 \description{
-!!!!! TO DO
+This is the workhorse function of \pkg{simba} that actually runs
+    the simulation. This should be called after all functions that set up the
+    simulation (\code{add_creator}, \code{set_config}, etc.) have been
+    called.
 }
 \examples{
 # The following is a toy example of a simulation, illustrating the use of
@@ -34,5 +45,5 @@ sim \%<>\% set_script(function() {
   return (list("lambda_hat"=lambda_hat))
 })
 sim \%<>\% run()
-sim$results
+sim$results \%>\% print()
 }
