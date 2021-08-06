@@ -441,7 +441,13 @@ cluster_execute <- function(first,
       # This is done before running the 'last' code so that the compiled
       #   simulation object is saved even if there's an error with the 'last'
       #   code
-      unlink(..path_sim_res, recursive=TRUE)
+      for (i in 1:5){
+        x <- unlink(..path_sim_res, recursive=TRUE)
+        if (x == 0){
+          break
+        }
+        Sys.sleep(0.2)
+      }
       saveRDS(..sim_obj, file=..path_sim_obj)
 
       # Run 'last' code

@@ -147,7 +147,7 @@ test_that("Correct behavior if 'first' fails", {
     "shell commands are correct and properly sequenced."
   ))
 })
-unlink("simba_results")
+unlink("simba_results", recursive = TRUE)
 Sys.setenv(simba_run="")
 
 # Simulate running locally and on cluster with complex return data

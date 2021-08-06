@@ -245,7 +245,9 @@ test_that("Correct behavior if 'first' fails", {
 #     "shell commands are properly sequenced."
 #   ))
 # })
-# unlink("simba_results")
+Sys.sleep(1)
+x <- unlink("simba_results", recursive = TRUE)
+print(x)
 # unlink("sim.simba")
 
 

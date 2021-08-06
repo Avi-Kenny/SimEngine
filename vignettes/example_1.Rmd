@@ -85,7 +85,7 @@ print(power_sim)
 
 We can compare our results to what we obtain by using the formula stated earlier.
 
-```{r, message = FALSE}
+```{r, message = FALSE, fig.width = 6}
 power_formula <- sapply(c(20,40,60,80), function(n) {
   pnorm(sqrt((n*(17-18)^2)/(2^2+2^2)) - qnorm(0.025, lower.tail=F))
 })

@@ -206,8 +206,8 @@ The bootstrap is another popular approach to estimating standard errors. We can 
 ```R
 sim %<>% add_method("bootstrap_vcov", function(data) {
   mod <- lm(y~x, data=data)
-  boot_ests <- matrix(NA, nrow=500, ncol=2)
-  for (j in 1:500){
+  boot_ests <- matrix(NA, nrow=100, ncol=2)
+  for (j in 1:100){
     indices <- sample(1:nrow(data), size=nrow(data), replace=TRUE)
     boot_dat <- data[indices,]
     boot_mod <- lm(y~x, data=boot_dat)
@@ -227,6 +227,7 @@ sim %<>% set_config(
   num_sim=500,
   seed = 24,
   parallel = "outer",
+  n_cores = 2,
   packages = c("sandwich")
 )
 
