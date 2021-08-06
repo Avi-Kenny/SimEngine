@@ -90,7 +90,7 @@ sim %<>% run()
 After running this simulation, we can examine the numeric results directly by accessing `sim$results` or using the `summarize()` function, as usual:
 
 ```R
-print(sim$results)
+sim$results %>% print()
 #>   sim_uid level_id sim_id    n      runtime beta0_hat beta1_hat
 #> 1       1        1      1   10 0.0030298233  3.352146  2.070652
 #> 2       2        1      2   10 0.0000000000  2.442415  3.557133
@@ -104,7 +104,7 @@ However, we may also want to look at the complex return data. To do so, we use t
 
 ```R
 c5 <- get_complex(sim, sim_uid=5)
-print(summary(c5$model))
+summary(c5$model) %>% print()
 #> Call:
 #> lm(formula = y ~ x, data = dat)
 #> 
@@ -123,7 +123,7 @@ print(summary(c5$model))
 #> Multiple R-squared:  0.2514,	Adjusted R-squared:  0.2507 
 #> F-statistic: 335.2 on 1 and 998 DF,  p-value: < 2.2e-16
 
-print(c5$cov_mtx)
+c5$cov_mtx %>% print()
 #>              (Intercept)           x
 #> (Intercept)  0.004067129 -0.00600565
 #> x           -0.006005650  0.01182677
@@ -131,10 +131,17 @@ print(c5$cov_mtx)
 
 ## Setting seeds
 
-In statistical research, it is often desirable to have the ability to reproduce the exact results of a simulation. Since R code often involves stochastic (random) functions like `rnorm()` or `sample()` that return different values when called multiple times, reproducibility is not guaranteed. In a simple R script, calling the `set.seed()` function at the top of your script ensures that the code that follows will produce the same results whenever the script is run. However, a more nuanced strategy is needed when running simulations. If we are running 100 replicates of the same simulation, we typically don't want each replicate to return identical results; rather, we would like for each replicate to be different from one another, but for *the entire set of replicates* to be the same when we run the entire simulation twice in a row. Luckily, **simba** manages this process for you, even when simulations are being run in parallel. **simba** uses a single "global seed" that changes the individual seeds for each simulation replicate; if desired you can use `set_config()` to change this global seed:
+In statistical research, it is often desirable to have the ability to reproduce the exact results of a simulation. Since R code often involves stochastic (random) functions like `rnorm()` or `sample()` that return different values when called multiple times, reproducibility is not guaranteed. In a simple R script, calling the `set.seed()` function at the top of your script ensures that the code that follows will produce the same results whenever the script is run. However, a more nuanced strategy is needed when running simulations. If we are running 100 replicates of the same simulation, we typically don't want each replicate to return identical results; rather, we would like for each replicate to be different from one another, but for *the entire set of replicates* to be the same when we run the entire simulation twice in a row. Luckily, **simba** manages this process for you, even when simulations are being run in parallel. **simba** uses a single "global seed" that changes the individual seeds for each simulation replicate; use `set_config()` to set or change this global seed:
 
 ```R
 sim %<>% set_config(seed=123)
+```
+
+If you did not set a seed with `set_config()`, **simba** will set a random seed automatically for you so that you can reproduce the results later if desired. To view this seed, use the `vars()` function:
+
+```R
+sim <- new_sim()
+vars(sim, "seed")
 ```
 
 ## Using simulation constants

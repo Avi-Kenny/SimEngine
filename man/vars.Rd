@@ -15,8 +15,8 @@ vars(sim_obj, var)
     provided, it should equal one of the following character strings:
     \itemize{
 
-    \item{\code{config}: a list representing the current simulation
-    configuration. This will typically be set using \code{set_config()}.}
+    \item{\code{seed}: the simulation seed; see \link{set_config} for more
+    info on seeds.}
 
     \item{\code{env}: a reference to the environment in which individual
     simulation replicates are run (advanced)}
@@ -57,5 +57,5 @@ sim \%<>\% set_levels(
 sim \%<>\% set_config(num_sim=10)
 vars(sim, "num_sim_total") \%>\% print()
 sim$vars$num_sim_total \%>\% print()
-all_values <- vars(sim) \%>\% print()
+vars(sim) \%>\% print()
 }

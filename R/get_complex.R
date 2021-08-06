@@ -25,8 +25,8 @@
 #'   ))
 #' })
 #' sim %<>% run()
-#' print(sim$results)
-#' print(get_complex(sim, 1))
+#' sim$results %>% print()
+#' get_complex(sim, 1) %>% print()
 #' @export
 
 #' @export

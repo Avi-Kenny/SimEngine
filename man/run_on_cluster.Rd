@@ -48,11 +48,11 @@ This function provides a scaffold for running simulations in
 \examples{
 \dontrun{
 # The following is a toy simulation that could be run in a cluster computing
-# environment using the SGE job scheduler. It runs 10 replicates of 2
-# simulation levels as 20 separate cluster jobs, and then summarizes the
-# results. If a scheduler other than SGE is being used, modify the shell
-# script accordingly (i.e. change the qsub commands to the relevant commands
-# for your scheduler.
+# environment using the Oracle Grid Engine job scheduler. It runs 10
+# replicates of 2 simulation levels as 20 separate cluster jobs, and then
+# summarizes the results. If a different scheduler is being used, modify the
+# shell script accordingly (i.e. change the qsub commands to the relevant
+# commands for your scheduler.
 
 # This code is saved in a file called my_simulation.R
 library(simba)
@@ -77,7 +77,7 @@ run_on_cluster(
     sim \%<>\% summarize()
   },
 
-  cluster_config = list(js="sge")
+  cluster_config = list(js="ge")
 
 )
 
