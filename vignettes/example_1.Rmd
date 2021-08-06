@@ -14,6 +14,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+This vignette is adapted from <a href="https://avi-kenny.github.io/simba/examples/1" target="_blank">Example 1</a> on the simba website. 
+
 ```{r setup}
 library(simba)
 ```
