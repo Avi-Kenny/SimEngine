@@ -4,3 +4,4 @@
 ^Meta$
 ^\.travis\.yml$
 ^codecov\.yml$
+^docs$
