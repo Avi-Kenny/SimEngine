@@ -89,4 +89,4 @@ sim %<>% set_levels(alpha=c(3,4), gamma=c(7,8), .add=TRUE)
 sim$levels
 ```
 
-<hr /><div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>
+<hr /><div style="text-align: center;">[Package <em>simba</em> version 1.0.0 ]</div>

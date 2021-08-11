@@ -123,4 +123,4 @@ qsub -v run='last' -hold_jid 102 run_sim.sh
 ## End(Not run)
 ```
 
-<hr /><div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>
+<hr /><div style="text-align: center;">[Package <em>simba</em> version 1.0.0 ]</div>

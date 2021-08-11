@@ -13,8 +13,9 @@ new_sim()}
 \item{...}{Key-value pairs will be added as "simulation constants" (i.e.
 objects that don't change across simulations). Keys should be strings.
 The purpose of this (rather than "hard-coding" constants in your scripts)
-is that constants are automateically available on each cluster node if
-you decide to run your simulation code in parallel}
+is to serve as an organizational container to easily change constants
+later, and so that constants are automatically available on each cluster
+node if you decide to run your simulation code in parallel}
 }
 \value{
 The original simulation object with added constants

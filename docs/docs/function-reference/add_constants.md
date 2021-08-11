@@ -37,8 +37,9 @@ new_sim()</p>
 <p>Key-value pairs will be added as &quot;simulation constants&quot; (i.e.
 objects that don't change across simulations). Keys should be strings.
 The purpose of this (rather than &quot;hard-coding&quot; constants in your scripts)
-is that constants are automateically available on each cluster node if
-you decide to run your simulation code in parallel</p>
+is to serve as an organizational container to easily change constants
+later, and so that constants are automatically available on each cluster
+node if you decide to run your simulation code in parallel</p>
 </td></tr>
 </table>
 
@@ -56,4 +57,4 @@ sim <- new_sim()
 sim %<>% add_constants(alpha=4, beta=c(1,2,3))
 ```
 
-<hr /><div style="text-align: center;">[Package <em>simba</em> version 0.1.0.9000 ]</div>
+<hr /><div style="text-align: center;">[Package <em>simba</em> version 1.0.0 ]</div>
