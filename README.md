@@ -30,4 +30,4 @@ The full package documentation can be found at [avi-kenny.github.io/simba](https
 
 ## Bugs reports and feature requests
 
-To submit a bug report or request a new feature, please submit a new [GitHub Issue](https://github.com/Avi-Kenny/simba/issues)
+To submit a bug report or request a new feature, please submit a new [GitHub Issue](https://github.com/Avi-Kenny/simba/issues).
