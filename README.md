@@ -18,10 +18,11 @@ An open-source framework for statistical simulations in R
 
 ## Installation
 
-**simba** can easily be installed from CRAN, as follows:
+The latest stable version of **simba** can be installed from CRAN using `install.packages()`. The current development version can be installed using `devtools::install_github()`:
 
 ```R
 install.packages("simba")
+devtools::install_github(repo="Avi-Kenny/simba")
 ```
 
 ## Documentation
