@@ -8,7 +8,7 @@
 
 # simba <img src='man/figures/logo.png' align="right" height="150" />
 
-**sim**ulation **ba**ckbone
+<img src='man/figures/simulation_backbone.png' align="right" width="200" />
 
 An open-source framework for statistical simulations in R
 
