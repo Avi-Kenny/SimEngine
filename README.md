@@ -8,7 +8,7 @@
 
 # simba <img src='man/figures/logo.png' align="right" height="150" />
 
-<img src='man/figures/simulation_backbone.png' align="right" width="200" />
+<img src='man/figures/simulation_backbone.svg' align="left" width="200" /><br/>
 
 An open-source framework for statistical simulations in R
 
@@ -27,4 +27,8 @@ devtools::install_github(repo="Avi-Kenny/simba")
 
 ## Documentation
 
-The full package documentation can be found at [avi-kenny.github.io/simba](https://avi-kenny.github.io/simba). All of the CRAN documentation (i.e. the function reference and vignettes) can also be found on the website.
+The full package documentation can be found at [avi-kenny.github.io/simba](https://avi-kenny.github.io/simba). All of the CRAN documentation (i.e. the function reference and vignettes) can also be found here.
+
+## Bugs reports and feature requests
+
+To submit a bug report or request a new feature, please submit a new [GitHub Issue](https://github.com/Avi-Kenny/simba/issues).
