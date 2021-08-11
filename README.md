@@ -6,11 +6,11 @@
 <!-- badges: end -->
 
 
-# simba <img src='man/figures/logo.png' align="right" height="150" />
+<!-- <img src='man/figures/logo.png' align="right" height="150" /> -->
 
-<br>
+# simba ![simba](man/figures/logo.png)
 
-<span style="color:#FF8E22;font-weight:bold">sim</span>ulation <span style="color:#FF8E22;font-weight:bold">ba</span>ckbone
+### **sim**ulation **ba**ckbone
 
 An open-source framework for statistical simulations in R
 
