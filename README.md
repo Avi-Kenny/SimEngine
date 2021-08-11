@@ -10,8 +10,22 @@
 
 <br>
 
+<span style="color:#FF8E22;font-weight:bold">sim</span>ulation <span style="color:#FF8E22;font-weight:bold">ba</span>ckbone
+
+An open-source framework for statistical simulations in R
+
 ## Overview
 
-**simba** is an open-source framework for statistical simulations in R. Package is currently in initial development/testing; check back soon...
+**simba** is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on thorough documentation and scalability.
 
-Please reference the full package documentation at [avi-kenny.github.io/simba](https://avi-kenny.github.io/simba).
+## Installation
+
+**simba** can easily be installed from CRAN, as follows:
+
+```R
+install.packages("simba")
+```
+
+## Documentation
+
+The full package documentation can be found at [avi-kenny.github.io/simba](https://avi-kenny.github.io/simba). All of the CRAN documentation (i.e. the function reference and vignettes) can also be found on the website.

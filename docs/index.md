@@ -5,8 +5,6 @@ nav_order: 1
 permalink: /
 ---
 
-<!-- description: "simba: an open-source framework for statistical simulations in R" -->
-
 <img src="assets/images/logo.png" align="right" alt="simba" style="height:150px">
 
 # simba
@@ -25,16 +23,15 @@ An open-source framework for statistical simulations in R
 
 ## Overview
 
-**simba** is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on thorough documentation, and scalability.
+**simba** is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on thorough documentation and scalability.
 
 
 ## Installation
 
-**simba** is currently hosted on GitHub and can be easily installed using the **devtools** package.
+**simba** can easily be installed from CRAN, as follows:
 
 ```R
-library(devtools)
-install_github(repo="Avi-Kenny/simba")
+install.packages("simba")
 ```
 
 ## Getting started
