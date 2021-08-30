@@ -8,8 +8,6 @@
 
 # SimEngine <img src='man/figures/logo.png' align="right" height="150" />
 
-<img src='man/figures/simulation_backbone.svg' align="left" width="200" /><br/>
-
 An open-source framework for statistical simulations in R
 
 ## Overview
