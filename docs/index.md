@@ -5,53 +5,50 @@ nav_order: 1
 permalink: /
 ---
 
-<img src="assets/images/logo.png" align="right" alt="simba" style="height:150px">
+<img src="assets/images/logo.png" align="right" alt="SimEngine" style="height:150px">
 
-# simba
+# SimEngine
 {: .fs-9 .fw-500 }
-
-<span style="color:#FF8E22;font-weight:bold">sim</span>ulation <span style="color:#FF8E22;font-weight:bold">ba</span>ckbone
-{: .fs-6 .mb-0 }
 
 An open-source framework for statistical simulations in R
 {: .fs-5 }
 
 
-<a href="https://github.com/Avi-Kenny/simba" target="_blank">View source code on GitHub</a>{: .btn .btn-primary .fs-4 .mt-1 }
+<a href="https://github.com/Avi-Kenny/SimEngine" target="_blank">View source code on GitHub</a>{: .btn .btn-primary .fs-4 .mt-1 }
 
 ---
 
 ## Overview
 
-**simba** is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on thorough documentation and scalability.
+**SimEngine** is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on thorough documentation and scalability.
 
 ## Installation
 
-The latest stable version of **simba** can be installed from CRAN using `install.packages()`. The current development version can be installed using `devtools::install_github()`:
+The latest stable version of **SimEngine** can be installed from CRAN using `install.packages()`. The current development version can be installed using `devtools::install_github()`:
 
 ```R
-install.packages("simba")
-devtools::install_github(repo="Avi-Kenny/simba")
+install.packages("SimEngine")
+devtools::install_github(repo="Avi-Kenny/SimEngine")
 ```
 
 ## Getting started
 
 The goal of many statistical simulations is to test how a new statistical method performs against existing methods. Most statistical simulations include three basic phases: (1) generate some data, (2) run one or more methods using the generated data, and (3) compare the performance of the methods. 
 
-To briefly illustrate how these phases are implemented using **simba**, we will use the example of estimating the average treatment effect of a drug in the context of a randomized controlled trial (RCT).
+To briefly illustrate how these phases are implemented using **SimEngine**, we will use the example of estimating the average treatment effect of a drug in the context of a randomized controlled trial (RCT).
 
 ### 1) Load the package and create a "simulation object"
 
-The simulation object (an R object of class *simba*) will contain all data, functions, and results related to your simulation. Note that we make extensive use of the pipe operators (`%>%` and `%<>%`) from the **magrittr** package; if you have never used pipes, check out the <a href="https://magrittr.tidyverse.org" target="_blank">magrittr documentation</a>.
+The simulation object (an R object of class *SimEngine*) will contain all data, functions, and results related to your simulation. Note that we make extensive use of the pipe operators (`%>%` and `%<>%`) from the **magrittr** package; if you have never used pipes, check out the <a href="https://magrittr.tidyverse.org" target="_blank">magrittr documentation</a>.
 
 ```R
-library(simba)
+library(SimEngine)
 sim <- new_sim()
 ```
 
 ### 2) Write a function to generate some data
 
-In **simba**, functions that generate data are called *creators*. Our creator will simulate data from an RCT in which we compare a continuous outcome (e.g. blood pressure) between two groups (the "treatment group" versus the "control group"). We generate the data by looping through individuals, assigning them randomly to either the treatment group or the control group, and generating their outcome according to a simple model (note: although we use a for-loop for illustrative purposes, vectorized methods are often faster).
+In **SimEngine**, functions that generate data are called *creators*. Our creator will simulate data from an RCT in which we compare a continuous outcome (e.g. blood pressure) between two groups (the "treatment group" versus the "control group"). We generate the data by looping through individuals, assigning them randomly to either the treatment group or the control group, and generating their outcome according to a simple model (note: although we use a for-loop for illustrative purposes, vectorized methods are often faster).
 
 ```R
 create_rct_data <- function (num_patients) {
@@ -123,7 +120,7 @@ sim %<>% add_method(estimator_2)
 
 ### 4) Set the simulation levels
 
-Often, we want to run the same simulation multiple times (with each run referred to as a "simulation replicate"), but with certain things changed. In this example, perhaps we want to vary the number of patients and the method used to estimate the average treatment effect. We refer to the things that vary as "simulation levels". By default, **simba** will run our simulation 1,000 times for each level combination. Below, since there are two methods and three values of num_patients, we have six level combinations and so **simba** will run a total of 6,000 simulation replicates.
+Often, we want to run the same simulation multiple times (with each run referred to as a "simulation replicate"), but with certain things changed. In this example, perhaps we want to vary the number of patients and the method used to estimate the average treatment effect. We refer to the things that vary as "simulation levels". By default, **SimEngine** will run our simulation 1,000 times for each level combination. Below, since there are two methods and three values of num_patients, we have six level combinations and so **SimEngine** will run a total of 6,000 simulation replicates.
 
 ```R
 sim %<>% set_levels(
@@ -151,7 +148,7 @@ Your script should always return a named list, although your list can be complex
 
 ### 6) Set the simulation configuration
 
-This controls options related to your entire simulation, such as the number of simulation replicates to run for each level combination and how to <a href="/docs/parallelization.html" target="_blank">parallelize</a> your code. This is discussed in detail on the <a href="/docs/function-reference/set_config.html" target="_blank">`set_config`</a> page. We set `num_sim` to 10, and so **simba** will run a total of 60 simulation replicates (10 for each level combination).
+This controls options related to your entire simulation, such as the number of simulation replicates to run for each level combination and how to <a href="/docs/parallelization.html" target="_blank">parallelize</a> your code. This is discussed in detail on the <a href="/docs/function-reference/set_config.html" target="_blank">`set_config`</a> page. We set `num_sim` to 10, and so **SimEngine** will run a total of 60 simulation replicates (10 for each level combination).
 
 ```R
 sim %<>% set_config(
@@ -207,4 +204,4 @@ head(sim$results)
 
 ## About this project
 
-**simba** was created by <a href="https://github.com/Avi-Kenny" target="_blank">Avi Kenny</a> and <a href="https://github.com/cwolock" target="_blank">Charles Wolock</a>. The package is licensed using the <a href="https://github.com/Avi-Kenny/simba/blob/master/LICENSE.txt" target="_blank">GNU General Public Licence (GPL) V3</a>.
+**SimEngine** was created by <a href="https://github.com/Avi-Kenny" target="_blank">Avi Kenny</a> and <a href="https://github.com/cwolock" target="_blank">Charles Wolock</a>. The package is licensed using the <a href="https://github.com/Avi-Kenny/SimEngine/blob/master/LICENSE.txt" target="_blank">GNU General Public Licence (GPL) V3</a>.
