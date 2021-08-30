@@ -12,8 +12,8 @@ has_toc: false
 
 ---
 
-We illustrate the use of **simba** through the following examples:
+We illustrate the use of **SimEngine** through the following examples:
 
-[Example 1](/examples/1): Using **simba** to compute simulation-based power calculations
+[Example 1](/examples/1): Using **SimEngine** to compute simulation-based power calculations
 
-[Example 2](/examples/2): Using **simba** to compare the performance of two standard error estimators
+[Example 2](/examples/2): Using **SimEngine** to compare the performance of two standard error estimators

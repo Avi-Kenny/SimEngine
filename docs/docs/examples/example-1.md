@@ -58,7 +58,7 @@ sim %<>% add_method("run_test", function(data) {
 })
 ```
 
-Next, we write the simulation script and tell simba to run 1,000 simulation replicates each for four sample sizes.
+Next, we write the simulation script and tell **SimEngine** to run 1,000 simulation replicates each for four sample sizes.
 
 ```R
 sim %<>% set_script(function() {

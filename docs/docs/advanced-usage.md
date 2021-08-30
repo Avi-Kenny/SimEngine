@@ -131,13 +131,13 @@ c5$cov_mtx %>% print()
 
 ## Setting seeds
 
-In statistical research, it is often desirable to have the ability to reproduce the exact results of a simulation. Since R code often involves stochastic (random) functions like `rnorm()` or `sample()` that return different values when called multiple times, reproducibility is not guaranteed. In a simple R script, calling the `set.seed()` function at the top of your script ensures that the code that follows will produce the same results whenever the script is run. However, a more nuanced strategy is needed when running simulations. If we are running 100 replicates of the same simulation, we typically don't want each replicate to return identical results; rather, we would like for each replicate to be different from one another, but for *the entire set of replicates* to be the same when we run the entire simulation twice in a row. Luckily, **simba** manages this process for you, even when simulations are being run in parallel. **simba** uses a single "global seed" that changes the individual seeds for each simulation replicate; use `set_config()` to set or change this global seed:
+In statistical research, it is often desirable to have the ability to reproduce the exact results of a simulation. Since R code often involves stochastic (random) functions like `rnorm()` or `sample()` that return different values when called multiple times, reproducibility is not guaranteed. In a simple R script, calling the `set.seed()` function at the top of your script ensures that the code that follows will produce the same results whenever the script is run. However, a more nuanced strategy is needed when running simulations. If we are running 100 replicates of the same simulation, we typically don't want each replicate to return identical results; rather, we would like for each replicate to be different from one another, but for *the entire set of replicates* to be the same when we run the entire simulation twice in a row. Luckily, **SimEngine** manages this process for you, even when simulations are being run in parallel. **SimEngine** uses a single "global seed" that changes the individual seeds for each simulation replicate; use `set_config()` to set or change this global seed:
 
 ```R
 sim %<>% set_config(seed=123)
 ```
 
-If you did not set a seed with `set_config()`, **simba** will set a random seed automatically for you so that you can reproduce the results later if desired. To view this seed, use the `vars()` function:
+If you did not set a seed with `set_config()`, **SimEngine** will set a random seed automatically for you so that you can reproduce the results later if desired. To view this seed, use the `vars()` function:
 
 ```R
 sim <- new_sim()
@@ -168,7 +168,7 @@ sim %<>% set_script(function() {
 
 ## Handling errors and warnings
 
-As with any type of programming, debugging is a necessary part of the coding workflow. With simulations, sometimes errors occur that will affect all simulation replicates and sometimes errors occur that only affecet some replicates. By default, when a simulation is run, **simba** will not stop if an error occurs; instead, errors are logged and stored in a dataframe along with information about the simulation replicates that resulted in those errors. Examining this dataframe by typing `print(sim$errors)` can sometimes help to quickly pinpoint the issue. This is demonstrated below:
+As with any type of programming, debugging is a necessary part of the coding workflow. With simulations, sometimes errors occur that will affect all simulation replicates and sometimes errors occur that only affecet some replicates. By default, when a simulation is run, **SimEngine** will not stop if an error occurs; instead, errors are logged and stored in a dataframe along with information about the simulation replicates that resulted in those errors. Examining this dataframe by typing `print(sim$errors)` can sometimes help to quickly pinpoint the issue. This is demonstrated below:
 
 ```R
 sim <- new_sim()

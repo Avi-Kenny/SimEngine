@@ -26,9 +26,9 @@ The terminology associated with parallel computing can be confusing - what is th
 - A **job array** is a special type of job that contains a number of near-identical tasks
 - A **job scheduler (JS)** is the software that runs on a CCS and manages the process of running jobs and job arrays. Slurm and Oracle Grid Engine are examples of job schedulers.
 
-## Parallelization in **simba**
+## Parallelization in **SimEngine**
 
-There are three methods of parallelizing code using **simba**:
+There are three methods of parallelizing code using **SimEngine**:
 
 1) **Outer parallelization**. This is the most straightforward way to parallelize your code. Most statistical simulations involve running multiple <a href="/docs/concepts.html" target="_blank">replicates</a> of the same simulation, perhaps with certain things changing between replicates. With outer parallelization, a single simulation replicate is assigned to a single task.
 
@@ -36,7 +36,7 @@ There are three methods of parallelizing code using **simba**:
 
 3) **Cluster parallelization**. Cluster parallelization is like outer parallelization but on a cluster computing system (CCS). Each simulation replicate is assigned to a single task, and tasks are submitted as a job array to the cluster computing system. This is the most complex method of parallelizing your code, but also the most powerful in terms of potential speed gains.
 
-**simba** is designed to automate as much of the parallelization process as possible. We give an overview of each parallelization method below. Afterwards, we provide tips and tricks that apply to all methods.
+**SimEngine** is designed to automate as much of the parallelization process as possible. We give an overview of each parallelization method below. Afterwards, we provide tips and tricks that apply to all methods.
 
 ## Outer parallelization
 
@@ -47,11 +47,11 @@ sim <- new_sim()
 sim %<>% set_config(parallel = "outer")
 ```
 
-Note that if a single simulation replicate runs in a very short amount of time (e.g. less than one second), using outer parallelization can actually result in a *decrease* in total speed. This is because there is a certain amount of computational overhead involved in setting up the parallelization engine inside **simba**. If you want to do a quick speed comparison, try running your code twice, once with `set_config(parallel = "outer")` and once with `set_config(parallel = "none")`, and run `sim %<>% get("total_runtime")` each time to see the difference in total runtime. The exact overhead involved with outer parallelization will differ between machines.
+Note that if a single simulation replicate runs in a very short amount of time (e.g. less than one second), using outer parallelization can actually result in a *decrease* in total speed. This is because there is a certain amount of computational overhead involved in setting up the parallelization engine inside **SimEngine**. If you want to do a quick speed comparison, try running your code twice, once with `set_config(parallel = "outer")` and once with `set_config(parallel = "none")`, and run `sim %<>% get("total_runtime")` each time to see the difference in total runtime. The exact overhead involved with outer parallelization will differ between machines.
 
 ## Inner parallelization
 
-With inner parallelization, one or more pieces within a single simulation replicate are parallelized. This method of parallelization requires you to specify pieces of your code to run in parallel using functions from the **parallel** package. See the <a href="https://www.rdocumentation.org/packages/parallel" target="_blank">documentation</a> for the **parallel** package if you have never used this package before. **simba** will create and manage the cluster object; simply reference the special `CL` object in your code (note: the term "cluster object" refers to an R object of class `cluster`; this is distinct from the use use of the word "cluster" in "cluster parallelization").
+With inner parallelization, one or more pieces within a single simulation replicate are parallelized. This method of parallelization requires you to specify pieces of your code to run in parallel using functions from the **parallel** package. See the <a href="https://www.rdocumentation.org/packages/parallel" target="_blank">documentation</a> for the **parallel** package if you have never used this package before. **SimEngine** will create and manage the cluster object; simply reference the special `CL` object in your code (note: the term "cluster object" refers to an R object of class `cluster`; this is distinct from the use use of the word "cluster" in "cluster parallelization").
 
 In the example below, inner parallelization is used within the `create_data()` function through `parLapply()`. However, you can also use parallel functions within your simulation script itself or within methods.
 
@@ -87,14 +87,14 @@ sim %<>% run()
 
 ## Cluster parallelization
 
-Although the situation becomes more complicated when using a cluster computing system (CCS), **simba** is built to streamline this process as much as possible. Before diving in, it is important to understand the basic workflow with a CCS. A CCS is a supercomputer that consists of a number of nodes, each of which may have multiple cores. A user will typically log into the CCS via SSH or an SSH client (such as PuTTY), and then send files containing computer programs to the CCS, either using Linux commands or using an FTP Client (such as FileZilla). Next, the user will run these programs by submitting "jobs" to the CCS using a special program called a job scheduler (JS). The JS manages the process of taking your jobs and running it in parallel across multiple nodes and/or multiple cores. If this process is totally unfamiliar to you, ask the manager of your CCS or your IT team for a basic tutorial.
+Although the situation becomes more complicated when using a cluster computing system (CCS), **SimEngine** is built to streamline this process as much as possible. Before diving in, it is important to understand the basic workflow with a CCS. A CCS is a supercomputer that consists of a number of nodes, each of which may have multiple cores. A user will typically log into the CCS via SSH or an SSH client (such as PuTTY), and then send files containing computer programs to the CCS, either using Linux commands or using an FTP Client (such as FileZilla). Next, the user will run these programs by submitting "jobs" to the CCS using a special program called a job scheduler (JS). The JS manages the process of taking your jobs and running it in parallel across multiple nodes and/or multiple cores. If this process is totally unfamiliar to you, ask the manager of your CCS or your IT team for a basic tutorial.
 
-Although there are multiple ways to run code in parallel on a CCS, we focus on job arrays. The main **simba** function that we use is `run_on_cluster()`. Throughout this example, we use Oracle Grid Engine (GE) as our JS, but an analogous workflow will apply to other JS software.
+Although there are multiple ways to run code in parallel on a CCS, we focus on job arrays. The main **SimEngine** function that we use is `run_on_cluster()`. Throughout this example, we use Oracle Grid Engine (GE) as our JS, but an analogous workflow will apply to other JS software.
 
 Suppose we have written the following simulation and want to run it on a CCS:
 
 ```R
-library(simba)
+library(SimEngine)
 sim %<>% new_sim()
 sim %<>% add_creator("create_data", function(n){ rnorm(n) })
 sim %<>% set_script(function() {
@@ -107,10 +107,10 @@ sim %<>% run()
 sim %<>% summarize()
 ```
 
-To run this code on a CCS, we must wrap in the `run_on_cluster()` function. To use this function, you must break your code into three blocks, called `first`, `main`, and `last`. The code in the `first` block will run only once, and will set up the simulation object. When this is done, **simba** will save the simulation object in the filesystem of your CCS. The code in the `main` block will run for every simulation replicate, and will have access to the simulation object you created in the `first` block. Typically, the code here will just include a single call to `run()`, as illustrated below. Finally, the code in the `last` block will run after all your simulation replicates have finished running, and after **simba** has automatically compiled the results into your simulation object. Use the `run_on_cluster()` function as follows:
+To run this code on a CCS, we must wrap in the `run_on_cluster()` function. To use this function, you must break your code into three blocks, called `first`, `main`, and `last`. The code in the `first` block will run only once, and will set up the simulation object. When this is done, **SimEngine** will save the simulation object in the filesystem of your CCS. The code in the `main` block will run for every simulation replicate, and will have access to the simulation object you created in the `first` block. Typically, the code here will just include a single call to `run()`, as illustrated below. Finally, the code in the `last` block will run after all your simulation replicates have finished running, and after **SimEngine** has automatically compiled the results into your simulation object. Use the `run_on_cluster()` function as follows:
 
 ```R
-library(simba)
+library(SimEngine)
 run_on_cluster(
 
   first = {
@@ -137,7 +137,7 @@ run_on_cluster(
 )
 ```
 
-Note that none of our actual simulation code changed; we just took chunks of the code and placed these chunks into the appropriate slot within `run_on_cluster()` (either `first`, `main`, or `last`). Additionally, we had to tell **simba** which job scheduler we are using, by specifying this in the `cluster_config` argument list. Run `js_support()` in R to see a list of supported JS software; the value in the `js_code` column is the value that should be specified in the `cluster_config` argument. Even if your JS is not supported, you can still use **simba** on a CCS (see "Tips and tricks" below).
+Note that none of our actual simulation code changed; we just took chunks of the code and placed these chunks into the appropriate slot within `run_on_cluster()` (either `first`, `main`, or `last`). Additionally, we had to tell **SimEngine** which job scheduler we are using, by specifying this in the `cluster_config` argument list. Run `js_support()` in R to see a list of supported JS software; the value in the `js_code` column is the value that should be specified in the `cluster_config` argument. Even if your JS is not supported, you can still use **SimEngine** on a CCS (see "Tips and tricks" below).
 
 We're not done yet, though. We need to give our job scheduler instructions for how to run this code. Assume that the R code above is stored in a file called `my_simulation.R` that you have transferred to your CCS. First, we need to create a simple shell script that will run the my_simulation.R file. We use BASH as our scripting language, but you can use the shell scripting language of your choice. Create a file called `run_sim.sh` with the following two lines and place it in the same directory on your CCS as the `my_simulation.R` file:
 
@@ -149,19 +149,19 @@ Rscript my_simulation.R
 Finally, you will use your JS to submit three jobs. The first will run the `first` code, the second will run the `main` code, and the third will run the `last` code. With GE, you will type the following three commands into your shell:
 
 ```bash
-qsub -v simba_run='first' run_sim.sh
+qsub -v simengine_run='first' run_sim.sh
 #> Your job 101 ("run_sim.sh") has been submitted
-qsub -v simba_run='main' -t 1-20 -hold_jid 101 run_sim.sh
+qsub -v simengine_run='main' -t 1-20 -hold_jid 101 run_sim.sh
 #> Your job-array 102.1-10:1 ("run_sim.sh") has been submitted
-qsub -v simba_run='last' -hold_jid 102 run_sim.sh
+qsub -v simengine_run='last' -hold_jid 102 run_sim.sh
 #> Your job 103 ("run_sim.sh") has been submitted
 ```
 
-In the first line, we submit the script using the `-v simba_run='first'` option, which tells **simba** to only run the code in the `first` block within the `run_on_cluster()` function in `my_simulation.R`. Note that after running this line, GE gives us the message "*Your job 101 ("run_sim.sh") has been submitted*". The number `101` is called the "job ID" and uniquely identifies our job on the CCS.
+In the first line, we submit the script using the `-v simengine_run='first'` option, which tells **SimEngine** to only run the code in the `first` block within the `run_on_cluster()` function in `my_simulation.R`. Note that after running this line, GE gives us the message "*Your job 101 ("run_sim.sh") has been submitted*". The number `101` is called the "job ID" and uniquely identifies our job on the CCS.
 
-In the second line, we submit the script using the `-v simba_run='main'` option and we tell GE to run a job array with "task IDs" 1-20. Importantly, the number 20 corresponds to the total number of replicates in our simulation (see the "Tips and Tricks" section below if you are not sure how many replicates are in your simulation). This runs the code in the `main` block 20 times; each time, **simba** will automatically take the task ID and run the replicate with the corresponding `sim_uid` (the `sim_uid` uniquely identifies a single simulation replicate). Also note that we included the option `-hold_jid 101`, which tells GE to wait until the first job finishes before starting the job array. Change the number 102 to whatever number SGE assigned to the first job.
+In the second line, we submit the script using the `-v simengine_run='main'` option and we tell GE to run a job array with "task IDs" 1-20. Importantly, the number 20 corresponds to the total number of replicates in our simulation (see the "Tips and Tricks" section below if you are not sure how many replicates are in your simulation). This runs the code in the `main` block 20 times; each time, **SimEngine** will automatically take the task ID and run the replicate with the corresponding `sim_uid` (the `sim_uid` uniquely identifies a single simulation replicate). Also note that we included the option `-hold_jid 101`, which tells GE to wait until the first job finishes before starting the job array. Change the number 102 to whatever number SGE assigned to the first job.
 
-In the third line, we submit the script using the `-v simba_run='last'` option, which tells **simba** to only run the code in the `last` block. Again, we use `-hold_jid` to make sure this code doesn't run until all tasks in the job array have finished.
+In the third line, we submit the script using the `-v simengine_run='last'` option, which tells **SimEngine** to only run the code in the `last` block. Again, we use `-hold_jid` to make sure this code doesn't run until all tasks in the job array have finished.
 
 ## Tips and tricks
 
@@ -171,24 +171,24 @@ The `run_on_cluster` function is programmed such that it can also be run locally
 
 ### Dealing with Job Scheduler submission limits
 
-Sometimes, Job Schedulers will impose limits in terms of the number of job array tasks that can be submitted. This may result in a situation where you cannot submit a job array with task ID greater than a certain number (for example 10,000). In these situations, the special environment variable `simba_add_to_tid` may be used to submit the job array in multiple chunks. If your Scheduler's limit is 10,000 and you want to submit a job array of 15,000 simulation replicates, you can do so as follows (note: you may have to wait for the first batch to finish before submitting the second batch so that the second batch is not rejected by the Scheduler):
+Sometimes, Job Schedulers will impose limits in terms of the number of job array tasks that can be submitted. This may result in a situation where you cannot submit a job array with task ID greater than a certain number (for example 10,000). In these situations, the special environment variable `simengine_add_to_tid` may be used to submit the job array in multiple chunks. If your Scheduler's limit is 10,000 and you want to submit a job array of 15,000 simulation replicates, you can do so as follows (note: you may have to wait for the first batch to finish before submitting the second batch so that the second batch is not rejected by the Scheduler):
 
 ```bash
-qsub -v simba_run='first' run_sim.sh
+qsub -v simengine_run='first' run_sim.sh
 #> Your job 101 ("run_sim.sh") has been submitted
-qsub -v simba_run='main' -t 1-9000 -hold_jid 101 run_sim.sh
+qsub -v simengine_run='main' -t 1-9000 -hold_jid 101 run_sim.sh
 #> Your job-array 102.1-9000:1 ("run_sim.sh") has been submitted
-qsub -v simba_run='main',simba_add_to_tid=9000 -t 1-6000 -hold_jid 102 run_sim.sh
+qsub -v simengine_run='main',simengine_add_to_tid=9000 -t 1-6000 -hold_jid 102 run_sim.sh
 #> Your job-array 103.1-6000:1 ("run_sim.sh") has been submitted
-qsub -v simba_run='last' -hold_jid 103 run_sim.sh
+qsub -v simengine_run='last' -hold_jid 103 run_sim.sh
 #> Your job 104 ("run_sim.sh") has been submitted
 ```
 
-When the first batch is submitted, the task IDs 1 through 9,000 will be passed directly to **simba** and the simulation replicates with `sim_uid` values 1 through 9,000 will be run, as usual. However, when the second batch is submitted, each of the task IDs 1 through 6,000 will have the number 9,000 (corresponding to the value set for `simba_add_to_tid`) added to them after they are passed to **simba**, and so the simulation replicates with `sim_uid` values 9,001 through 15,000 will be run.
+When the first batch is submitted, the task IDs 1 through 9,000 will be passed directly to **SimEngine** and the simulation replicates with `sim_uid` values 1 through 9,000 will be run, as usual. However, when the second batch is submitted, each of the task IDs 1 through 6,000 will have the number 9,000 (corresponding to the value set for `simengine_add_to_tid`) added to them after they are passed to **SimEngine**, and so the simulation replicates with `sim_uid` values 9,001 through 15,000 will be run.
 
 ### Using "unsupported" job schedulers
 
-It may be the case that you are using a Job Scheduler that **simba** does not natively support. If this is the case, you can still use **simba**; the key will be to identify the environment variable that your JS uses to uniquely identify tasks within a job array. For example, Oracle Grid Engine uses the variable `"SGE_TASK_ID"` and Slurm uses the variable `"SLURM_ARRAY_TASK_ID"`. Once you have identified this variable, specify it in your `cluster_config` block, as follows:
+It may be the case that you are using a Job Scheduler that **SimEngine** does not natively support. If this is the case, you can still use **SimEngine**; the key will be to identify the environment variable that your JS uses to uniquely identify tasks within a job array. For example, Oracle Grid Engine uses the variable `"SGE_TASK_ID"` and Slurm uses the variable `"SLURM_ARRAY_TASK_ID"`. Once you have identified this variable, specify it in your `cluster_config` block, as follows:
 
 ```R
 run_on_cluster(
@@ -202,4 +202,4 @@ run_on_cluster(
 )
 ```
 
-Alternatively, if you'd like for a job scheduler to be supported by **simba**, please submit an issue on the <a href="https://github.com/Avi-Kenny/simba/issues" target="_blank">**simba** GitHub</a> page.
+Alternatively, if you'd like for a job scheduler to be supported by **SimEngine**, please submit an issue on the <a href="https://github.com/Avi-Kenny/SimEngine/issues" target="_blank">**SimEngine** GitHub</a> page.

@@ -18,14 +18,14 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: simba
+title: SimEngine
 email: avikenny@uw.edu
 description: >- # this means to ignore newlines until "baseurl:"
   A simple but powerful simulation framework
-url: "https://avi-kenny.github.io/simba" # production
+url: "https://avi-kenny.github.io/SimEngine" # production
 baseurl: ""
 github_username:  Avi-Kenny
-repository: Avi-Kenny/simba.github.io
+repository: Avi-Kenny/SimEngine.github.io
 
 # Build settings
 #theme: minima
@@ -37,7 +37,7 @@ markdown: kramdown
 
 
 logo: "/assets/images/logo.png"
-color_scheme: simba
+color_scheme: SimEngine
 
 
 # Exclude from processing.
