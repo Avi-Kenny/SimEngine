@@ -8,7 +8,7 @@ use_method(method, args = list())
 }
 \arguments{
 \item{method}{A character string naming a function that has been added to
-your simulation object via \link{add_method}}
+your simulation object via \code{\link{add_method}}}
 
 \item{args}{A list of arguments to be passed onto \code{method}}
 }

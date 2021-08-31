@@ -14,12 +14,12 @@ parent: Function reference
 <h3>Description</h3>
 
 <p>This function updates a previously run simulation. After a
-simulation has been run, you can alter the levels of the
-resulting object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span> using set_levels, or
-change the configuration (including the number of simulation replicates)
-using set_config. Executing <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>update_sim</span> on this simulation
-object will only run the added levels/replicates, without repeating
-anything that has already been run.
+simulation has been <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>run</span>, you can alter the levels of the
+resulting object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span> using <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set_levels</span>,
+or change the configuration (including the number of simulation
+replicates) using <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set_config</span>. Executing <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>update_sim</span> on
+this simulation object will only run the added levels/replicates, without
+repeating anything that has already been run.
 </p>
 
 
@@ -36,7 +36,8 @@ update_sim(sim, keep_errors = TRUE, keep_extra = FALSE)
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span></td>
 <td>
 <p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span>, usually created by
-new_sim, that has already been run by the run function</p>
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>new_sim</span>, that has already been run by the <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>run</span>
+function</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>keep_errors</span></td>
 <td>

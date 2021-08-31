@@ -45,9 +45,9 @@ and 'last' code blocks run.</p>
 <td>
 <p>Code that will run for every simulation replicate. This should be
 a block of code enclosed by curly braces  that includes a call to
-run. This code block will have access to the simulation object you
-created in the 'first' code block, but any changes made here to the
-simulation object will not be saved.</p>
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>run</span>. This code block will have access to the simulation
+object you created in the 'first' code block, but any changes made here
+to the simulation object will not be saved.</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>last</span></td>
 <td>

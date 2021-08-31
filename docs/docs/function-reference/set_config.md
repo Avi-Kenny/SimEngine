@@ -44,7 +44,7 @@ set_config(
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span></td>
 <td>
 <p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span>, usually created by
-new_sim</p>
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>new_sim</span></p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>num_sim</span></td>
 <td>
@@ -85,8 +85,8 @@ debugging.</p>
 seed is specified, then consecutive runs of the same simulation with the
 same seed will lead to identical results (under normal circumstances). If
 a seed was not set in advance by the user, <span class="pkg">SimEngine</span> will set a
-random seed, which can later be retrieved using the vars function.
-See details for further info.</p>
+random seed, which can later be retrieved using the <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>vars</span>
+function. See details for further info.</p>
 </td></tr>
 </table>
 
@@ -100,7 +100,7 @@ seed is used twice by <span class="pkg">SimEngine</span>. First, <span class="pk
 <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set.seed(4)</span> at the end of the <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set_config</span> call. Second, this
 seed is used to generate a new set of seeds, one for each simulation
 replicate. Each of these seeds is set in turn (or in parallel) when
-run is called.
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>run</span> is called.
 </p>
 </li>
 <li><p>Even if seeds are used, not all code will be reproducible. For

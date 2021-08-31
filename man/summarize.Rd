@@ -8,7 +8,7 @@ summarize(sim, ...)
 }
 \arguments{
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by
-\link{new_sim}}
+\code{\link{new_sim}}}
 
 \item{...}{Name-value pairs of summary statistic functions. The possible
     functions (names) are listed below. The value for each summary

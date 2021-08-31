@@ -8,7 +8,8 @@ update_sim(sim, keep_errors = TRUE, keep_extra = FALSE)
 }
 \arguments{
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by
-\link{new_sim}, that has already been run by the \link{run} function}
+\code{\link{new_sim}}, that has already been run by the \code{\link{run}}
+function}
 
 \item{keep_errors}{logical (\code{TRUE} by default); if \code{TRUE}, do not
 try to re-run simulation reps that results in errors previously; if
@@ -26,12 +27,12 @@ The original simulation object with additional simulation replicates
 }
 \description{
 This function updates a previously run simulation. After a
-   simulation has been \link{run}, you can alter the levels of the
-   resulting object of class \code{sim_obj} using \link{set_levels}, or
-   change the configuration (including the number of simulation replicates)
-   using \link{set_config}. Executing \code{update_sim} on this simulation
-   object will only run the added levels/replicates, without repeating
-   anything that has already been run.
+   simulation has been \code{\link{run}}, you can alter the levels of the
+   resulting object of class \code{sim_obj} using \code{\link{set_levels}},
+   or change the configuration (including the number of simulation
+   replicates) using \code{\link{set_config}}. Executing \code{update_sim} on
+   this simulation object will only run the added levels/replicates, without
+   repeating anything that has already been run.
 }
 \details{
 \itemize{

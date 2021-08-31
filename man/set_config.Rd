@@ -16,7 +16,7 @@ set_config(
 }
 \arguments{
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by
-\link{new_sim}}
+\code{\link{new_sim}}}
 
 \item{num_sim}{An integer; the number of simulations to conduct for each
 level combination}
@@ -45,8 +45,8 @@ debugging.}
 seed is specified, then consecutive runs of the same simulation with the
 same seed will lead to identical results (under normal circumstances). If
 a seed was not set in advance by the user, \pkg{SimEngine} will set a
-random seed, which can later be retrieved using the \link{vars} function.
-See details for further info.}
+random seed, which can later be retrieved using the \code{\link{vars}}
+function. See details for further info.}
 }
 \value{
 The original simulation object with a modified configuration
@@ -67,7 +67,7 @@ This function sets configuration options for the simulation. If
   \code{set.seed(4)} at the end of the \code{set_config} call. Second, this
   seed is used to generate a new set of seeds, one for each simulation
   replicate. Each of these seeds is set in turn (or in parallel) when
-  \link{run} is called.}
+  \code{\link{run}} is called.}
   \item{Even if seeds are used, not all code will be reproducible. For
   example, a simulation that involves getting the current date/time with
   \code{Sys.time()} or dynamically retrieving external data may produce

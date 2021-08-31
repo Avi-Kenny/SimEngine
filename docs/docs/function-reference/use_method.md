@@ -34,7 +34,7 @@ use_method(method, args = list())
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>method</span></td>
 <td>
 <p>A character string naming a function that has been added to
-your simulation object via add_method</p>
+your simulation object via <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>add_method</span></p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>args</span></td>
 <td>

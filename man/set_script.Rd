@@ -8,7 +8,7 @@ set_script(sim, fn)
 }
 \arguments{
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by
-\link{new_sim}}
+\code{\link{new_sim}}}
 
 \item{fn}{A function that runs a single simulation replicate and returns the
 results. The results must be a list of key-value pairs. Values are

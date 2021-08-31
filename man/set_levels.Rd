@@ -8,16 +8,16 @@ set_levels(sim, ..., .add = FALSE)
 }
 \arguments{
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by
-\link{new_sim}}
+\code{\link{new_sim}}}
 
 \item{...}{One or more key-value pairs representing simulation levels. Each
 value can either be a vector (for simple levels) or a list of lists (for
 more complex levels). See examples.}
 
-\item{.add}{Only relevant if \link{set_levels} is called twice or more. On the
-second call, if add=FALSE (default) the old set of levels will be
-replaced by the new set, whereas if add=TRUE the new set of levels will
-be merged with the old set. See examples.}
+\item{.add}{Only relevant if \code{\link{set_levels}} is called twice or
+more. On the second call, if add=FALSE (default) the old set of levels
+will be replaced by the new set, whereas if add=TRUE the new set of
+levels will be merged with the old set. See examples.}
 }
 \value{
 The original simulation object with the old set of levels replaced

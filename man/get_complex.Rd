@@ -8,7 +8,7 @@ get_complex(sim, sim_uid)
 }
 \arguments{
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by
-\link{new_sim}}
+\code{\link{new_sim}}}
 
 \item{sim_uid}{The unique identifier of a single simulation replicate. This
 corresponds to the \code{sim_uid} column in \code{sim$results}.}

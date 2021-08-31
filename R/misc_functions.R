@@ -161,7 +161,7 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
 #' Function for creating levels_grid_big
 #'
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
-#'     \link{new_sim}
+#'     \code{\link{new_sim}}
 #' @importFrom rlang .data
 #' @importFrom stats runif
 #' @noRd

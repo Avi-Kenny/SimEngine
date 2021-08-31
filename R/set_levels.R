@@ -3,14 +3,14 @@
 #' @description Set one or more simulation levels, which are things that vary
 #'     between simulation replicates.
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
-#'     \link{new_sim}
+#'     \code{\link{new_sim}}
 #' @param ... One or more key-value pairs representing simulation levels. Each
 #'     value can either be a vector (for simple levels) or a list of lists (for
 #'     more complex levels). See examples.
-#' @param .add Only relevant if \link{set_levels} is called twice or more. On the
-#'     second call, if add=FALSE (default) the old set of levels will be
-#'     replaced by the new set, whereas if add=TRUE the new set of levels will
-#'     be merged with the old set. See examples.
+#' @param .add Only relevant if \code{\link{set_levels}} is called twice or
+#'     more. On the second call, if add=FALSE (default) the old set of levels
+#'     will be replaced by the new set, whereas if add=TRUE the new set of
+#'     levels will be merged with the old set. See examples.
 #' @return The original simulation object with the old set of levels replaced
 #'     with the new set
 #' @examples

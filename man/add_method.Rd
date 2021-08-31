@@ -8,7 +8,7 @@ add_method(sim, name, fn)
 }
 \arguments{
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by
-\link{new_sim}}
+\code{\link{new_sim}}}
 
 \item{name}{A name for the method function}
 
@@ -31,7 +31,7 @@ Add a "method" function to your simulation object. A method
 }
 \details{
 \itemize{
-  \item{As with \link{add_creator}, there are two ways to use
+  \item{As with \code{\link{add_creator}}, there are two ways to use
     \code{add_method}. If two arguments are supplied (\code{sim} and
     \code{fn}), you can create a function separately and add it to your
     simulation object later. If three arguments are supplied, you can do both

@@ -4,7 +4,7 @@
 #'     simulation script is a function that runs a single simulation replicate
 #'     and returns the results.
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
-#'     \link{new_sim}
+#'     \code{\link{new_sim}}
 #' @param fn A function that runs a single simulation replicate and returns the
 #'     results. The results must be a list of key-value pairs. Values are
 #'     categorized as simple (a number, a character string, etc.) or complex

@@ -2,9 +2,9 @@
 #' #'
 #' #' @description !!!!! This function is unfinished and undocumented
 #' #' @param sim_1 A simulation object of class \code{sim_obj}, usually created
-#' #'     by \link{new_sim}
+#' #'     by \code{\link{new_sim}}
 #' #' @param sim_2 A simulation object of class \code{sim_obj}, usually created
-#' #'     by \link{new_sim}
+#' #'     by \code{\link{new_sim}}
 #' #' @return A simulation object containing the results from both sim_1 and
 #' #'     sim_2
 #' #' @examples

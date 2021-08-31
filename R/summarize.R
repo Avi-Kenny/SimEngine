@@ -6,7 +6,7 @@
 #'     coverage). All summary statistics are calculated over simulation replicates
 #'     within a single simulation level.
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
-#'     \link{new_sim}
+#'     \code{\link{new_sim}}
 #' @param ... Name-value pairs of summary statistic functions. The possible
 #'     functions (names) are listed below. The value for each summary
 #'     function is a list of summaries to perform.

@@ -11,11 +11,11 @@
 #'     take in a dataset returned by a creator function as its first argument;
 #'     however, this is not always the case.
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
-#'     \link{new_sim}
+#'     \code{\link{new_sim}}
 #' @param name A name for the method function
 #' @param fn A method function
 #' @details \itemize{
-#'   \item{As with \link{add_creator}, there are two ways to use
+#'   \item{As with \code{\link{add_creator}}, there are two ways to use
 #'     \code{add_method}. If two arguments are supplied (\code{sim} and
 #'     \code{fn}), you can create a function separately and add it to your
 #'     simulation object later. If three arguments are supplied, you can do both

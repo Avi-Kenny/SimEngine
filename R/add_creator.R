@@ -3,7 +3,7 @@
 #' @description Add a "creator" function to your simulation object. A creator is
 #'     a function that generates a dataset for use in your simulation.
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
-#'     \link{new_sim}
+#'     \code{\link{new_sim}}
 #' @param name A name for the creator function
 #' @param fn A creator function
 #' @details \itemize{

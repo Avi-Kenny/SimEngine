@@ -15,7 +15,7 @@ parent: Function reference
 
 <p>This function provides a scaffold for updating a previously run
 simulation in a cluster computing environment. Like
-run_on_cluster, it acts as a wrapper for the code in your
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>run_on_cluster</span>, it acts as a wrapper for the code in your
 simulation script, organizing the code into sections that are run just
 once per simulation (e.g. changing simulation levels/replicate numbers
 and compiling results) and sections that are run many times (e.g.
@@ -54,9 +54,9 @@ and 'last' code blocks run.</p>
 <td>
 <p>Code that will run for every simulation replicate. This should be
 a block of code enclosed by curly braces  that includes a call to
-update_sim. This code block will have access to the simulation object you
-read in the 'first' code block, but any changes made here to the
-simulation object will not be saved.</p>
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>update_sim</span>. This code block will have access to the
+simulation object you read in the 'first' code block, but any changes
+made here to the simulation object will not be saved.</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>last</span></td>
 <td>

@@ -22,9 +22,9 @@ and 'last' code blocks run.}
 
 \item{main}{Code that will run for every simulation replicate. This should be
 a block of code enclosed by curly braces {} that includes a call to
-\link{update_sim}. This code block will have access to the simulation object you
-read in the 'first' code block, but any changes made here to the
-simulation object will not be saved.}
+\code{\link{update_sim}}. This code block will have access to the
+simulation object you read in the 'first' code block, but any changes
+made here to the simulation object will not be saved.}
 
 \item{last}{Code that will run after all additional simulation replicates have been run.
 This should be a block of code enclosed by curly braces {} that takes
@@ -55,7 +55,7 @@ particular simulation level)}
 \description{
 This function provides a scaffold for updating a previously run
     simulation in a cluster computing environment. Like
-    \link{run_on_cluster}, it acts as a wrapper for the code in your
+    \code{\link{run_on_cluster}}, it acts as a wrapper for the code in your
     simulation script, organizing the code into sections that are run just
     once per simulation (e.g. changing simulation levels/replicate numbers
     and compiling results) and sections that are run many times (e.g.

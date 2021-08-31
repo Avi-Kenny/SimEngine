@@ -15,9 +15,9 @@ and 'last' code blocks run.}
 
 \item{main}{Code that will run for every simulation replicate. This should be
 a block of code enclosed by curly braces {} that includes a call to
-\link{run}. This code block will have access to the simulation object you
-created in the 'first' code block, but any changes made here to the
-simulation object will not be saved.}
+\code{\link{run}}. This code block will have access to the simulation
+object you created in the 'first' code block, but any changes made here
+to the simulation object will not be saved.}
 
 \item{last}{Code that will run after all simulation replicates have been run.
 This should be a block of code enclosed by curly braces {} that takes

@@ -8,7 +8,7 @@ add_creator(sim, name, fn)
 }
 \arguments{
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by
-\link{new_sim}}
+\code{\link{new_sim}}}
 
 \item{name}{A name for the creator function}
 

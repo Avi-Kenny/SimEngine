@@ -5,7 +5,7 @@
 #'     up the simulation (\code{add_creator}, \code{set_config}, etc.) have been
 #'     called.
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
-#'     \link{new_sim}
+#'     \code{\link{new_sim}}
 #' @param sim_uids Advanced; a vector of \code{sim_uid} values, each of which
 #'     uniquely identifies a simulation replicate. This will normally be
 #'     omitted. If this is specified, only the simulation replicates with a

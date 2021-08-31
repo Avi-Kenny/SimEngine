@@ -31,7 +31,7 @@ set_levels(sim, ..., .add = FALSE)
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span></td>
 <td>
 <p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span>, usually created by
-new_sim</p>
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>new_sim</span></p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>...</span></td>
 <td>
@@ -41,10 +41,10 @@ more complex levels). See examples.</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>.add</span></td>
 <td>
-<p>Only relevant if set_levels is called twice or more. On the
-second call, if add=FALSE (default) the old set of levels will be
-replaced by the new set, whereas if add=TRUE the new set of levels will
-be merged with the old set. See examples.</p>
+<p>Only relevant if <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set_levels</span> is called twice or
+more. On the second call, if add=FALSE (default) the old set of levels
+will be replaced by the new set, whereas if add=TRUE the new set of
+levels will be merged with the old set. See examples.</p>
 </td></tr>
 </table>
 

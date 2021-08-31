@@ -8,7 +8,7 @@ run(sim, sim_uids = NA)
 }
 \arguments{
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by
-\link{new_sim}}
+\code{\link{new_sim}}}
 
 \item{sim_uids}{Advanced; a vector of \code{sim_uid} values, each of which
 uniquely identifies a simulation replicate. This will normally be

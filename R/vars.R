@@ -4,14 +4,14 @@
 #'     internal simulation variable. Do not change any of these variables
 #'     manually.
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
-#'     \link{new_sim}
+#'     \code{\link{new_sim}}
 #' @param var If this argument is omitted, \code{vars()} will return a list
 #'     containing all available internal variables. If this argument is
 #'     provided, it should equal one of the following character strings:
 #'     \itemize{
 #'
-#'     \item{\code{seed}: the simulation seed; see \link{set_config} for more
-#'     info on seeds.}
+#'     \item{\code{seed}: the simulation seed; see \code{\link{set_config}} for
+#'     more info on seeds.}
 #'
 #'     \item{\code{env}: a reference to the environment in which individual
 #'     simulation replicates are run (advanced)}
