@@ -1,45 +1,45 @@
 # This section contains functions that are either intentionally not documented
 #   or that are not exported
 
-# Print method for class "simba"
+#' Print method for class \code{sim_obj}
 #' @noRd
 #' @export
-print.simba <- function(x, ...) {
-  sim_obj <- x
-  cat("Simulation object (class \"simba\")\n")
-  cat("---------------------------------\n")
+print.sim <- function(x, ...) {
+  sim <- x
+  cat("SimEngine: simulation object (class \"sim_obj\")\n")
+  cat("----------------------------------------------\n")
   cat("Configuration: \n")
-  for (i in 1:length(sim_obj$config)) {
-    cat(paste0("    ",names(sim_obj$config)[i],": ",sim_obj$config[i],"\n"))
+  for (i in 1:length(sim$config)) {
+    cat(paste0("    ",names(sim$config)[i],": ",sim$config[i],"\n"))
   }
-  if (length(sim_obj$levels)>0) {
+  if (length(sim$levels)>0) {
     cat("Levels: \n")
-    for (i in 1:length(sim_obj$levels)) {
-      cat(paste0("    ",names(sim_obj$levels)[i],": ",sim_obj$levels[i],"\n"))
+    for (i in 1:length(sim$levels)) {
+      cat(paste0("    ",names(sim$levels)[i],": ",sim$levels[i],"\n"))
     }
   }
-  if (length(sim_obj$constants)>0) {
+  if (length(sim$constants)>0) {
     cat("Constants: \n")
-    for (i in 1:length(sim_obj$constants)) {
-      cat(paste0("    ",names(sim_obj$constants)[i],"\n"))
+    for (i in 1:length(sim$constants)) {
+      cat(paste0("    ",names(sim$constants)[i],"\n"))
     }
   }
-  if (length(sim_obj$creators)>0) {
+  if (length(sim$creators)>0) {
     cat("Creators: \n")
-    for (i in 1:length(sim_obj$creators)) {
-      cat(paste0("    ",names(sim_obj$creators)[i],"\n"))
+    for (i in 1:length(sim$creators)) {
+      cat(paste0("    ",names(sim$creators)[i],"\n"))
     }
   }
-  if (length(sim_obj$methods)>0) {
+  if (length(sim$methods)>0) {
     cat("Methods: \n")
-    for (i in 1:length(sim_obj$methods)) {
-      cat(paste0("    ",names(sim_obj$methods)[i],"\n"))
+    for (i in 1:length(sim$methods)) {
+      cat(paste0("    ",names(sim$methods)[i],"\n"))
     }
   }
-  if (length(sim_obj$scripts)>0) {
+  if (length(sim$scripts)>0) {
     cat("Scripts: \n")
-    for (i in 1:length(sim_obj$scripts)) {
-      cat(paste0("    ",names(sim_obj$scripts)[i],"\n"))
+    for (i in 1:length(sim$scripts)) {
+      cat(paste0("    ",names(sim$scripts)[i],"\n"))
     }
   }
 }
@@ -70,10 +70,10 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
 
   switch(err,
 
-    "is.simba" = {
-      if (class(obj)!="simba") {
+    "is.sim_obj" = {
+      if (class(obj)!="sim_obj") {
         if(is.na(msg)) {
-          msg <- paste0("`",name,"` must be of class `simba`")
+          msg <- paste0("`",name,"` must be of class `sim_obj`")
         }
         stop(msg, call.=FALSE)
       }
@@ -160,20 +160,21 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
 
 #' Function for creating levels_grid_big
 #'
-#' @param sim_obj A simulation object of class `simba`
+#' @param sim A simulation object of class \code{sim_obj}, usually created by
+#'     \link{new_sim}
 #' @importFrom rlang .data
 #' @importFrom stats runif
 #' @noRd
-create_levels_grid_big <- function(sim_obj) {
+create_levels_grid_big <- function(sim) {
 
   levels_grid_big <- expand.grid(list(
-    "level_id" = sim_obj$levels_grid$level_id,
-    "sim_id" = 1:sim_obj$config$num_sim
+    "level_id" = sim$levels_grid$level_id,
+    "sim_id" = 1:sim$config$num_sim
   ))
 
   levels_grid_big <- dplyr::inner_join(
     levels_grid_big,
-    sim_obj$levels_grid,
+    sim$levels_grid,
     by = "level_id"
   )
   levels_grid_big <- dplyr::arrange(levels_grid_big, .data$level_id, .data$sim_id)
@@ -183,21 +184,3 @@ create_levels_grid_big <- function(sim_obj) {
 
   return(levels_grid_big)
 }
-
-
-
-# !!!!! Recycle this code eventually
-
-#' # Print method for class "simba_results"
-#' #' @export
-#' print.simba_results <- function(results) {
-#'   cat("Simulation results (raw):\n\n")
-#'   print(results$raw)
-#' }
-#'
-#' # Print method for class "simba_summary"
-#' #' @export
-#' print.simba_summary <- function(summary) {
-#'   cat("Simulation results (summary across simulations):\n\n")
-#'   print(summary$summary)
-#' }

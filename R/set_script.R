@@ -3,7 +3,7 @@
 #' @description Specify a function to be used as the "simulation script". The
 #'     simulation script is a function that runs a single simulation replicate
 #'     and returns the results.
-#' @param sim_obj A simulation object of class \code{simba}, usually created by
+#' @param sim A simulation object of class \code{sim_obj}, usually created by
 #'     \link{new_sim}
 #' @param fn A function that runs a single simulation replicate and returns the
 #'     results. The results must be a list of key-value pairs. Values are
@@ -52,23 +52,23 @@
 #' sim %<>% run()
 #'
 #' @export
-set_script <- function(sim_obj, fn) UseMethod("set_script")
+set_script <- function(sim, fn) UseMethod("set_script")
 
 #' @export
-set_script.simba <- function(sim_obj, fn) {
+set_script.sim_obj <- function(sim, fn) {
 
-  handle_errors(sim_obj, "is.simba")
+  handle_errors(sim, "is.sim_obj")
   handle_errors(fn, "is.function")
 
-  if (substr(sim_obj$vars$run_state, 1, 3) == "run") {
+  if (substr(sim$vars$run_state, 1, 3) == "run") {
     stop(paste("A simulation object's script cannot be changed after the",
                "simulation has been run."))
   }
 
-  environment(fn) <- sim_obj$vars$env
-  sim_obj$script <- fn
-  assign(x="..script", value=fn, envir=sim_obj$vars$env)
+  environment(fn) <- sim$vars$env
+  sim$script <- fn
+  assign(x="..script", value=fn, envir=sim$vars$env)
 
-  return (sim_obj)
+  return (sim)
 
 }

@@ -1,6 +1,6 @@
 #' Add one or more simulation constants
 #'
-#' @param sim_obj A simulation object of class "simba", usually created by
+#' @param sim A simulation object of class \code{sim_obj}, usually created by
 #'     new_sim()
 #' @param ... Key-value pairs will be added as "simulation constants" (i.e.
 #'     objects that don't change across simulations). Keys should be strings.
@@ -13,15 +13,15 @@
 #' sim <- new_sim()
 #' sim %<>% add_constants(alpha=4, beta=c(1,2,3))
 #' @export
-add_constants <- function(sim_obj, ...) UseMethod("add_constants")
+add_constants <- function(sim, ...) UseMethod("add_constants")
 
 #' @export
-add_constants.simba <- function(sim_obj, ...) {
+add_constants.SimEngine <- function(sim, ...) {
 
-  handle_errors(sim_obj, "is.simba")
+  handle_errors(sim_obj, "is.sim_obj")
 
-  sim_obj$constants <- c(sim_obj$constants, list(...))
+  sim$constants <- c(sim$constants, list(...))
 
-  return (sim_obj)
+  return (sim)
 
 }

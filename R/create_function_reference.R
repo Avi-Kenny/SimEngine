@@ -1,5 +1,6 @@
 
-# This file will update the "function reference" section of the simba website (https://avi-kenny.github.io/simba/function-reference)
+# This file will update the "function reference" section of the SimEngine
+#     website (https://avi-kenny.github.io/SimEngine/function-reference)
 # !!!!! Run this file manually for now (eventually automate it via devtools)
 
 if (FALSE) {
@@ -7,7 +8,7 @@ if (FALSE) {
   library(tools)
   library(magrittr)
 
-  fns <- dir("man")[!(dir("man") %in% c("figures", "simba.Rd"))]
+  fns <- dir("man")[!(dir("man") %in% c("figures", "SimEngine.Rd"))]
   fns <- substring(fns, 1, nchar(fns)-3)
   fn_ref_path <- "docs/docs/function-reference/"
 
@@ -22,7 +23,7 @@ if (FALSE) {
 
     # Variables
     fn <- fns[i]
-    if (substr(fn, start = nchar(fn) - 5, stop = nchar(fn)) == ".simba"){
+    if (substr(fn, start = nchar(fn) - 5, stop = nchar(fn)) == ".sim_obj"){
       fn2 <- substr(fn, start = 1, stop = nchar(fn) - 6)
     } else{
       fn2 <- fn
@@ -35,7 +36,7 @@ if (FALSE) {
     Rd2HTML(
       Rd = parse_Rd(path_rd),
       out = path_html,
-      package = "simba"
+      package = "SimEngine"
     )
 
     # Read in HTML, line by line

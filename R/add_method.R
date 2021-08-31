@@ -10,18 +10,18 @@
 #'     statistical method that you want to test (e.g. an estimator), and will
 #'     take in a dataset returned by a creator function as its first argument;
 #'     however, this is not always the case.
-#' @param sim_obj A simulation object of class \code{simba}, usually created by
+#' @param sim A simulation object of class \code{sim_obj}, usually created by
 #'     \link{new_sim}
 #' @param name A name for the method function
 #' @param fn A method function
 #' @details \itemize{
 #'   \item{As with \link{add_creator}, there are two ways to use
-#'     \code{add_method}. If two arguments are supplied (\code{sim_obj} and
+#'     \code{add_method}. If two arguments are supplied (\code{sim} and
 #'     \code{fn}), you can create a function separately and add it to your
 #'     simulation object later. If three arguments are supplied, you can do both
 #'     at the same time, using an anonymous function for the \code{fn} argument.
 #'     See examples.}
-#'   \item{Your method will be stored in \code{sim_obj$methods}. If you added a
+#'   \item{Your method will be stored in \code{sim$methods}. If you added a
 #'     method called \code{estimator_1}, you can test it out by running
 #'     \code{sim$creators$estimator_1()}. See examples.}
 #' }
@@ -48,12 +48,12 @@
 #' sim$methods$estimator_1(dat)
 #' sim$methods$estimator_2(dat)
 #' @export
-add_method <- function(sim_obj, name, fn) UseMethod("add_method")
+add_method <- function(sim, name, fn) UseMethod("add_method")
 
 #' @export
-add_method.simba <- function(sim_obj, name, fn) {
+add_method.sim_obj <- function(sim, name, fn) {
 
-  handle_errors(sim_obj, "is.simba")
+  handle_errors(sim, "is.sim_obj")
   if (missing(name) && missing(fn)) {
     stop("You must provide a function to add_method.")
   }
@@ -70,10 +70,10 @@ add_method.simba <- function(sim_obj, name, fn) {
   handle_errors(name, "is.character")
   handle_errors(fn, "is.function")
 
-  environment(fn) <- sim_obj$vars$env
-  sim_obj$methods[[name]] <- fn
-  assign(x=name, value=fn, envir=sim_obj$vars$env)
+  environment(fn) <- sim$vars$env
+  sim$methods[[name]] <- fn
+  assign(x=name, value=fn, envir=sim$vars$env)
 
-  return (sim_obj)
+  return (sim)
 
 }

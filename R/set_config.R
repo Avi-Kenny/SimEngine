@@ -7,7 +7,7 @@
 #'     are specified in the subsequent calls, leaving others in place. You can
 #'     see the current configuration via \code{print(sim)}, where \code{sim} is
 #'     your simulation object.
-#' @param sim_obj A simulation object of class \code{simba}, usually created by
+#' @param sim A simulation object of class \code{sim_obj}, usually created by
 #'     \link{new_sim}
 #' @param num_sim An integer; the number of simulations to conduct for each
 #'     level combination
@@ -16,9 +16,10 @@
 #'     simulation per core. Setting to "inner" will allow for parallelization
 #'     within a single simulation replicate. Setting to "none" will not
 #'     parallelize any code. See
-#'     \url{https://avi-kenny.github.io/simba/parallelization} for an overview
-#'     of how parallelization works in \pkg{simba}. This option will be ignored
-#'     if the simulation is being run on a cluster computing system.
+#'     \url{https://avi-kenny.github.io/SimEngine/parallelization} for an
+#'     overview of how parallelization works in \pkg{SimEngine}. This option
+#'     will be ignored if the simulation is being run on a cluster computing
+#'     system.
 #' @param packages A character vector of packages to load and attach
 #' @param stop_at_error A Boolean. If set to TRUE, the simulation will
 #'     stop if it encounters an error in any single replicate Useful for
@@ -26,15 +27,15 @@
 #' @param seed An integer; seeds allow for reproducible simulation results. If a
 #'     seed is specified, then consecutive runs of the same simulation with the
 #'     same seed will lead to identical results (under normal circumstances). If
-#'     a seed was not set in advance by the user, \pkg{simba} will set a random
-#'     seed, which can later be retrieved using the \link{vars} function. See
-#'     details for further info.
+#'     a seed was not set in advance by the user, \pkg{SimEngine} will set a
+#'     random seed, which can later be retrieved using the \link{vars} function.
+#'     See details for further info.
 #' @param n_cores An integer; determines the number of CPUs on which the simulation
 #'     will run if using parallelization. Defaults to one fewer than the number of
 #'     available CPUs on the current host.
 #' @details \itemize{
 #'   \item{If a user specifies, for example, \code{set_config(seed=4)}, this
-#'   seed is used twice by \pkg{simba}. First, \pkg{simba} executes
+#'   seed is used twice by \pkg{SimEngine}. First, \pkg{SimEngine} executes
 #'   \code{set.seed(4)} at the end of the \code{set_config} call. Second, this
 #'   seed is used to generate a new set of seeds, one for each simulation
 #'   replicate. Each of these seeds is set in turn (or in parallel) when
@@ -54,19 +55,19 @@
 #' sim
 #' @export
 set_config <- function(
-  sim_obj, num_sim=1000, parallel="none",
+  sim, num_sim=1000, parallel="none",
   n_cores=parallel::detectCores()-1, packages=NULL,
   stop_at_error=FALSE, seed=NA
 ) UseMethod("set_config")
 
 #' @export
-set_config.simba <- function(
-  sim_obj, num_sim=1000, parallel="none",
+set_config.sim_obj <- function(
+  sim, num_sim=1000, parallel="none",
   n_cores=parallel::detectCores()-1, packages=NULL,
   stop_at_error=FALSE, seed=NA
 ) {
 
-  handle_errors(sim_obj, "is.simba")
+  handle_errors(sim, "is.sim_obj")
 
   if (length(as.list(match.call()))==2) {
     stop("No configuration options were specified")
@@ -74,23 +75,23 @@ set_config.simba <- function(
 
   if (!missing(num_sim)) {
     handle_errors(num_sim, "is.numeric")
-    sim_obj$config[["num_sim"]] <- num_sim
-    sim_obj$vars$num_sim_total <- nrow(sim_obj$levels_grid)*num_sim
+    sim$config[["num_sim"]] <- num_sim
+    sim$vars$num_sim_total <- nrow(sim$levels_grid)*num_sim
   }
 
   if (!missing(parallel)) {
     handle_errors(parallel, "is.in", other=c("outer","inner","none"))
-    sim_obj$config[["parallel"]] <- parallel
+    sim$config[["parallel"]] <- parallel
   }
 
   if (!missing(n_cores)) {
     handle_errors(n_cores, "is.numeric")
-    sim_obj$config[["n_cores"]] <- n_cores
+    sim$config[["n_cores"]] <- n_cores
   }
 
   if (!missing(packages)) {
     handle_errors(packages, "is.character.vec")
-    sim_obj$config[["packages"]] <- packages
+    sim$config[["packages"]] <- packages
     for (pkg in packages) {
       do.call("library", list(pkg))
     }
@@ -98,17 +99,17 @@ set_config.simba <- function(
 
   if (!missing(stop_at_error)) {
     handle_errors(stop_at_error, "is.boolean")
-    sim_obj$config[["stop_at_error"]] <- stop_at_error
+    sim$config[["stop_at_error"]] <- stop_at_error
   }
 
   if (!missing(seed)) {
     handle_errors(seed, "is.numeric")
-    sim_obj$config[["seed"]] <- seed
-    sim_obj$vars[["seed"]] <- seed
+    sim$config[["seed"]] <- seed
+    sim$vars[["seed"]] <- seed
   }
 
-  set.seed(sim_obj$config[["seed"]])
+  set.seed(sim$config[["seed"]])
 
-  return (sim_obj)
+  return (sim)
 
 }

@@ -149,19 +149,19 @@ Rscript my_simulation.R
 Finally, you will use your JS to submit three jobs. The first will run the `first` code, the second will run the `main` code, and the third will run the `last` code. With GE, you will type the following three commands into your shell:
 
 ```bash
-qsub -v simengine_run='first' run_sim.sh
+qsub -v sim_run='first' run_sim.sh
 #> Your job 101 ("run_sim.sh") has been submitted
-qsub -v simengine_run='main' -t 1-20 -hold_jid 101 run_sim.sh
+qsub -v sim_run='main' -t 1-20 -hold_jid 101 run_sim.sh
 #> Your job-array 102.1-10:1 ("run_sim.sh") has been submitted
-qsub -v simengine_run='last' -hold_jid 102 run_sim.sh
+qsub -v sim_run='last' -hold_jid 102 run_sim.sh
 #> Your job 103 ("run_sim.sh") has been submitted
 ```
 
-In the first line, we submit the script using the `-v simengine_run='first'` option, which tells **SimEngine** to only run the code in the `first` block within the `run_on_cluster()` function in `my_simulation.R`. Note that after running this line, GE gives us the message "*Your job 101 ("run_sim.sh") has been submitted*". The number `101` is called the "job ID" and uniquely identifies our job on the CCS.
+In the first line, we submit the script using the `-v sim_run='first'` option, which tells **SimEngine** to only run the code in the `first` block within the `run_on_cluster()` function in `my_simulation.R`. Note that after running this line, GE gives us the message "*Your job 101 ("run_sim.sh") has been submitted*". The number `101` is called the "job ID" and uniquely identifies our job on the CCS.
 
-In the second line, we submit the script using the `-v simengine_run='main'` option and we tell GE to run a job array with "task IDs" 1-20. Importantly, the number 20 corresponds to the total number of replicates in our simulation (see the "Tips and Tricks" section below if you are not sure how many replicates are in your simulation). This runs the code in the `main` block 20 times; each time, **SimEngine** will automatically take the task ID and run the replicate with the corresponding `sim_uid` (the `sim_uid` uniquely identifies a single simulation replicate). Also note that we included the option `-hold_jid 101`, which tells GE to wait until the first job finishes before starting the job array. Change the number 102 to whatever number SGE assigned to the first job.
+In the second line, we submit the script using the `-v sim_run='main'` option and we tell GE to run a job array with "task IDs" 1-20. Importantly, the number 20 corresponds to the total number of replicates in our simulation (see the "Tips and Tricks" section below if you are not sure how many replicates are in your simulation). This runs the code in the `main` block 20 times; each time, **SimEngine** will automatically take the task ID and run the replicate with the corresponding `sim_uid` (the `sim_uid` uniquely identifies a single simulation replicate). Also note that we included the option `-hold_jid 101`, which tells GE to wait until the first job finishes before starting the job array. Change the number 102 to whatever number SGE assigned to the first job.
 
-In the third line, we submit the script using the `-v simengine_run='last'` option, which tells **SimEngine** to only run the code in the `last` block. Again, we use `-hold_jid` to make sure this code doesn't run until all tasks in the job array have finished.
+In the third line, we submit the script using the `-v sim_run='last'` option, which tells **SimEngine** to only run the code in the `last` block. Again, we use `-hold_jid` to make sure this code doesn't run until all tasks in the job array have finished.
 
 ## Tips and tricks
 
@@ -171,20 +171,20 @@ The `run_on_cluster` function is programmed such that it can also be run locally
 
 ### Dealing with Job Scheduler submission limits
 
-Sometimes, Job Schedulers will impose limits in terms of the number of job array tasks that can be submitted. This may result in a situation where you cannot submit a job array with task ID greater than a certain number (for example 10,000). In these situations, the special environment variable `simengine_add_to_tid` may be used to submit the job array in multiple chunks. If your Scheduler's limit is 10,000 and you want to submit a job array of 15,000 simulation replicates, you can do so as follows (note: you may have to wait for the first batch to finish before submitting the second batch so that the second batch is not rejected by the Scheduler):
+Sometimes, Job Schedulers will impose limits in terms of the number of job array tasks that can be submitted. This may result in a situation where you cannot submit a job array with task ID greater than a certain number (for example 10,000). In these situations, the special environment variable `sim_add_to_tid` may be used to submit the job array in multiple chunks. If your Scheduler's limit is 10,000 and you want to submit a job array of 15,000 simulation replicates, you can do so as follows (note: you may have to wait for the first batch to finish before submitting the second batch so that the second batch is not rejected by the Scheduler):
 
 ```bash
-qsub -v simengine_run='first' run_sim.sh
+qsub -v sim_run='first' run_sim.sh
 #> Your job 101 ("run_sim.sh") has been submitted
-qsub -v simengine_run='main' -t 1-9000 -hold_jid 101 run_sim.sh
+qsub -v sim_run='main' -t 1-9000 -hold_jid 101 run_sim.sh
 #> Your job-array 102.1-9000:1 ("run_sim.sh") has been submitted
-qsub -v simengine_run='main',simengine_add_to_tid=9000 -t 1-6000 -hold_jid 102 run_sim.sh
+qsub -v sim_run='main',sim_add_to_tid=9000 -t 1-6000 -hold_jid 102 run_sim.sh
 #> Your job-array 103.1-6000:1 ("run_sim.sh") has been submitted
-qsub -v simengine_run='last' -hold_jid 103 run_sim.sh
+qsub -v sim_run='last' -hold_jid 103 run_sim.sh
 #> Your job 104 ("run_sim.sh") has been submitted
 ```
 
-When the first batch is submitted, the task IDs 1 through 9,000 will be passed directly to **SimEngine** and the simulation replicates with `sim_uid` values 1 through 9,000 will be run, as usual. However, when the second batch is submitted, each of the task IDs 1 through 6,000 will have the number 9,000 (corresponding to the value set for `simengine_add_to_tid`) added to them after they are passed to **SimEngine**, and so the simulation replicates with `sim_uid` values 9,001 through 15,000 will be run.
+When the first batch is submitted, the task IDs 1 through 9,000 will be passed directly to **SimEngine** and the simulation replicates with `sim_uid` values 1 through 9,000 will be run, as usual. However, when the second batch is submitted, each of the task IDs 1 through 6,000 will have the number 9,000 (corresponding to the value set for `sim_add_to_tid`) added to them after they are passed to **SimEngine**, and so the simulation replicates with `sim_uid` values 9,001 through 15,000 will be run.
 
 ### Using "unsupported" job schedulers
 

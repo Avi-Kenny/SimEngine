@@ -3,7 +3,7 @@
 #' @description This is a "getter function" that returns the value of an
 #'     internal simulation variable. Do not change any of these variables
 #'     manually.
-#' @param sim_obj A simulation object of class \code{simba}, usually created by
+#' @param sim A simulation object of class \code{sim_obj}, usually created by
 #'     \link{new_sim}
 #' @param var If this argument is omitted, \code{vars()} will return a list
 #'     containing all available internal variables. If this argument is
@@ -44,20 +44,20 @@
 #' sim$vars$num_sim_total %>% print()
 #' vars(sim) %>% print()
 #' @export
-vars <- function(sim_obj, var) UseMethod("vars")
+vars <- function(sim, var) UseMethod("vars")
 
 #' @export
-vars <- function(sim_obj, var) {
+vars <- function(sim, var) {
 
   # Error handling
-  handle_errors(sim_obj, "is.simba")
+  handle_errors(sim, "is.sim_obj")
   if (!missing(var)) {
     valid_vars <- c("seed", "env", "num_sim_total", "run_state")
     handle_errors(var, "is.in", other=valid_vars)
   }
 
   # Parse list of variables
-  v <- sim_obj$vars
+  v <- sim$vars
   if (!missing(var)) {
     v <- v[[var]]
   }

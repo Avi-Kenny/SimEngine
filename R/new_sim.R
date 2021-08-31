@@ -1,13 +1,13 @@
 #' Create a new simulation object
 #'
 #' @description Create a new simulation object. This is typically the first
-#'     function to be called when running a simulation using \pkg{simba}. Most
-#'     other \pkg{simba} functions take a simulation object as their first
+#'     function to be called when running a simulation using \pkg{SimEngine}. Most
+#'     other \pkg{SimEngine} functions take a simulation object as their first
 #'     argument.
-#' @return A simulation object, of class \code{simba}
+#' @return A simulation object, of class \code{sim_obj}
 #' @seealso
-#' Visit \url{https://avi-kenny.github.io/simba} for more information on how to
-#'     use the \pkg{simba} simulation framework.
+#' Visit \url{https://avi-kenny.github.io/SimEngine} for more information on how to
+#'     use the \pkg{SimEngine} simulation framework.
 #' @examples
 #' sim <- new_sim()
 #' sim
@@ -18,7 +18,7 @@ new_sim <- function() {
   for (pkg in c("magrittr", "parallel", "pbapply", "data.table")) {
     if (!requireNamespace(pkg, quietly=TRUE)) {
       stop(paste0(
-        "You need to install the package '", pkg, "' for simba to work."
+        "You need to install the package '", pkg, "' for SimEngine to work."
       ))
     }
   }
@@ -26,7 +26,7 @@ new_sim <- function() {
 
   # Create "blank" simulation object
   ..seed <- as.integer(1e9*runif(1))
-  ...sim_obj <- list(
+  ...sim <- list(
     config = list(
       num_sim = 10,
       datasets = "many",
@@ -48,7 +48,7 @@ new_sim <- function() {
       levels_shallow = list("no levels"=TRUE),
       levels_prev = list(),
       num_sim_prev = NA,
-      num_sim_cumulative = 0,
+      num_sim_cuml = 0,
       tid = NA,
       sim_var = "",
       update_sim = FALSE
@@ -66,8 +66,8 @@ new_sim <- function() {
     errors = NULL
   )
 
-  class(...sim_obj) <- "simba"
+  class(...simj) <- "sim_obj"
 
-  return (...sim_obj)
+  return (...sim)
 
 }
