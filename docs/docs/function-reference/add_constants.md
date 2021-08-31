@@ -7,7 +7,7 @@ parent: Function reference
 ---
 
 
-<table width="100%" summary="page for add_constants {simba}"><tr><td>add_constants {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table width="100%" summary="page for add_constants {SimEngine}"><tr><td>add_constants {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Add one or more simulation constants</h2>
 
@@ -20,16 +20,16 @@ parent: Function reference
 <h3>Usage</h3>
 
 ```R
-add_constants(sim_obj, ...)
+add_constants(sim, ...)
 ```
 
 
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span></td>
+<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span></td>
 <td>
-<p>A simulation object of class &quot;simba&quot;, usually created by
+<p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span>, usually created by
 new_sim()</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>...</span></td>
@@ -57,4 +57,4 @@ sim <- new_sim()
 sim %<>% add_constants(alpha=4, beta=c(1,2,3))
 ```
 
-<hr /><div style="text-align: center;">[Package <em>simba</em> version 1.0.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.0.0 ]</div>

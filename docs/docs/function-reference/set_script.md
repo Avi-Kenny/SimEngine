@@ -7,7 +7,7 @@ parent: Function reference
 ---
 
 
-<table width="100%" summary="page for set_script {simba}"><tr><td>set_script {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table width="100%" summary="page for set_script {SimEngine}"><tr><td>set_script {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Set the &quot;simulation script&quot;</h2>
 
@@ -22,16 +22,16 @@ and returns the results.
 <h3>Usage</h3>
 
 ```R
-set_script(sim_obj, fn)
+set_script(sim, fn)
 ```
 
 
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span></td>
+<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span></td>
 <td>
-<p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>simba</span>, usually created by
+<p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span>, usually created by
 new_sim</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>fn</span></td>
@@ -95,4 +95,4 @@ sim %<>% run()
 
 ```
 
-<hr /><div style="text-align: center;">[Package <em>simba</em> version 1.0.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.0.0 ]</div>

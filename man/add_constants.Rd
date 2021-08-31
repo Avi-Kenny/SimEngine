@@ -4,10 +4,10 @@
 \alias{add_constants}
 \title{Add one or more simulation constants}
 \usage{
-add_constants(sim_obj, ...)
+add_constants(sim, ...)
 }
 \arguments{
-\item{sim_obj}{A simulation object of class "simba", usually created by
+\item{sim}{A simulation object of class \code{sim_obj}, usually created by
 new_sim()}
 
 \item{...}{Key-value pairs will be added as "simulation constants" (i.e.

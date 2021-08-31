@@ -4,10 +4,10 @@
 \alias{get_complex}
 \title{Access internal simulation variables}
 \usage{
-get_complex(sim_obj, sim_uid)
+get_complex(sim, sim_uid)
 }
 \arguments{
-\item{sim_obj}{A simulation object of class \code{simba}, usually created by
+\item{sim}{A simulation object of class \code{sim_obj}, usually created by
 \link{new_sim}}
 
 \item{sim_uid}{The unique identifier of a single simulation replicate. This

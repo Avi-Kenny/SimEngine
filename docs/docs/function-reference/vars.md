@@ -7,7 +7,7 @@ parent: Function reference
 ---
 
 
-<table width="100%" summary="page for vars {simba}"><tr><td>vars {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table width="100%" summary="page for vars {SimEngine}"><tr><td>vars {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Access internal simulation variables</h2>
 
@@ -22,16 +22,16 @@ manually.
 <h3>Usage</h3>
 
 ```R
-vars(sim_obj, var)
+vars(sim, var)
 ```
 
 
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span></td>
+<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span></td>
 <td>
-<p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>simba</span>, usually created by
+<p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span>, usually created by
 new_sim</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>var</span></td>
@@ -98,4 +98,4 @@ sim$vars$num_sim_total %>% print()
 vars(sim) %>% print()
 ```
 
-<hr /><div style="text-align: center;">[Package <em>simba</em> version 1.0.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.0.0 ]</div>

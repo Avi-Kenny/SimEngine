@@ -4,10 +4,10 @@
 \alias{set_levels}
 \title{Set simulation levels}
 \usage{
-set_levels(sim_obj, ..., .add = FALSE)
+set_levels(sim, ..., .add = FALSE)
 }
 \arguments{
-\item{sim_obj}{A simulation object of class \code{simba}, usually created by
+\item{sim}{A simulation object of class \code{sim_obj}, usually created by
 \link{new_sim}}
 
 \item{...}{One or more key-value pairs representing simulation levels. Each

@@ -4,43 +4,46 @@
 \alias{update_sim}
 \title{Update a simulation}
 \usage{
-update_sim(sim_obj, keep_errors = TRUE, keep_extra = FALSE)
+update_sim(sim, keep_errors = TRUE, keep_extra = FALSE)
 }
 \arguments{
-\item{sim_obj}{A simulation object of class \code{simba}, usually created by
+\item{sim}{A simulation object of class \code{sim_obj}, usually created by
 \link{new_sim}, that has already been run by the \link{run} function}
 
-\item{keep_errors}{logical (\code{TRUE} by default); if \code{TRUE}, do not try to re-run
-simulation reps that results in errors previously; if \code{FALSE}, attempt to
-run those reps again}
+\item{keep_errors}{logical (\code{TRUE} by default); if \code{TRUE}, do not
+try to re-run simulation reps that results in errors previously; if
+\code{FALSE}, attempt to run those reps again}
 
-\item{keep_extra}{logical (\code{FALSE} by default); if \code{TRUE}, keep previously run
-simulation reps even if they exceed the current \code{num_sim} in config or are from
-a level that has been dropped; if \code{FALSE}, drop excess reps (starting from the last rep
-for that particular simulation level)}
+\item{keep_extra}{logical (\code{FALSE} by default); if \code{TRUE}, keep
+previously run simulation reps even if they exceed the current
+\code{num_sim} in config or are from a level that has been dropped; if
+\code{FALSE}, drop excess reps (starting from the last rep for that
+particular simulation level)}
 }
 \value{
-The original simulation object with additional simulation replicates in
-    \code{results} or \code{errors}
+The original simulation object with additional simulation replicates
+    in \code{results} or \code{errors}
 }
 \description{
-This function updates a previously run simulation. After a simulation
-   has been \link{run}, you can alter the levels of the
-   resulting object of class \code{simba} using \link{set_levels}, or change the configuration
-   (including the number of simulation replicates) using \link{set_config}. Executing
-   \code{update_sim} on this simulation object will only run the added levels/replicates,
-   without repeating anything that has already been run.
+This function updates a previously run simulation. After a
+   simulation has been \link{run}, you can alter the levels of the
+   resulting object of class \code{sim_obj} using \link{set_levels}, or
+   change the configuration (including the number of simulation replicates)
+   using \link{set_config}. Executing \code{update_sim} on this simulation
+   object will only run the added levels/replicates, without repeating
+   anything that has already been run.
 }
 \details{
 \itemize{
   \item{It is not possible to add new level variables, only new levels of the
-  existing variables. Because of this, it is best practice to include all potential
-  level variables before initially running a simulation, even if some of them only
-  contain a single level. This way, additional levels can be added later.}
-  \item {In general, if \code{num_sim} has been reduced prior to running \code{update_sim},
-  it is best to use the default option \code{keep_extra = FALSE}. Otherwise, some
-  simulation levels will have more replicates than others, which makes comparison
-  difficult.}
+  existing variables. Because of this, it is best practice to include all
+  potential level variables before initially running a simulation, even if
+  some of them only contain a single level. This way, additional levels can
+  be added later.}
+  \item {In general, if \code{num_sim} has been reduced prior to running
+  \code{update_sim}, it is best to use the default option
+  \code{keep_extra = FALSE}. Otherwise, some simulation levels will have more
+  replicates than others, which makes comparison difficult.}
 }
 }
 \examples{

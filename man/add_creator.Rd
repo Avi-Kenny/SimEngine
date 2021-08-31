@@ -4,10 +4,10 @@
 \alias{add_creator}
 \title{Add a "creator" function}
 \usage{
-add_creator(sim_obj, name, fn)
+add_creator(sim, name, fn)
 }
 \arguments{
-\item{sim_obj}{A simulation object of class \code{simba}, usually created by
+\item{sim}{A simulation object of class \code{sim_obj}, usually created by
 \link{new_sim}}
 
 \item{name}{A name for the creator function}
@@ -24,11 +24,11 @@ Add a "creator" function to your simulation object. A creator is
 \details{
 \itemize{
   \item{There are two ways to use \code{add_creator}. If two arguments are
-    supplied (\code{sim_obj} and \code{fn}), you can create a function
+    supplied (\code{sim} and \code{fn}), you can create a function
     separately and add it to your simulation object later. If three arguments
     are supplied, you can do both at the same time, using an anonymous
     function for the \code{fn} argument. See examples.}
-  \item{Your creator will be stored in \code{sim_obj$creators}. If you added a
+  \item{Your creator will be stored in \code{sim$creators}. If you added a
     creator called \code{create_data}, you can test it out by running
     \code{sim$creators$create_data()}. See examples.}
 }

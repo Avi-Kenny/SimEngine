@@ -4,10 +4,10 @@
 \alias{run}
 \title{Run the simulation}
 \usage{
-run(sim_obj, sim_uids = NA)
+run(sim, sim_uids = NA)
 }
 \arguments{
-\item{sim_obj}{A simulation object of class \code{simba}, usually created by
+\item{sim}{A simulation object of class \code{sim_obj}, usually created by
 \link{new_sim}}
 
 \item{sim_uids}{Advanced; a vector of \code{sim_uid} values, each of which
@@ -22,9 +22,9 @@ The original simulation object but with the results attached (along
     \code{sim$warnings}.
 }
 \description{
-This is the workhorse function of \pkg{simba} that actually runs
-    the simulation. This should be called after all functions that set up the
-    simulation (\code{add_creator}, \code{set_config}, etc.) have been
+This is the workhorse function of \pkg{SimEngine} that actually
+    runs the simulation. This should be called after all functions that set
+    up the simulation (\code{add_creator}, \code{set_config}, etc.) have been
     called.
 }
 \examples{

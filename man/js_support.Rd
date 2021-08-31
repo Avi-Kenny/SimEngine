@@ -8,7 +8,7 @@ js_support()
 }
 \description{
 Run this function to display information about job schedulers
-    that are currently supported for running \pkg{simba} simulations on a
+    that are currently supported for running \pkg{SimEngine} simulations on a
     cluster computing system (CCS).
 }
 \examples{

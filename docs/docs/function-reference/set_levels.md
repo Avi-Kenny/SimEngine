@@ -7,7 +7,7 @@ parent: Function reference
 ---
 
 
-<table width="100%" summary="page for set_levels {simba}"><tr><td>set_levels {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table width="100%" summary="page for set_levels {SimEngine}"><tr><td>set_levels {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Set simulation levels</h2>
 
@@ -21,16 +21,16 @@ between simulation replicates.
 <h3>Usage</h3>
 
 ```R
-set_levels(sim_obj, ..., .add = FALSE)
+set_levels(sim, ..., .add = FALSE)
 ```
 
 
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span></td>
+<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span></td>
 <td>
-<p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>simba</span>, usually created by
+<p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span>, usually created by
 new_sim</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>...</span></td>
@@ -89,4 +89,4 @@ sim %<>% set_levels(alpha=c(3,4), gamma=c(7,8), .add=TRUE)
 sim$levels
 ```
 
-<hr /><div style="text-align: center;">[Package <em>simba</em> version 1.0.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.0.0 ]</div>

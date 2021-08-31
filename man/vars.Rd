@@ -4,10 +4,10 @@
 \alias{vars}
 \title{Access internal simulation variables}
 \usage{
-vars(sim_obj, var)
+vars(sim, var)
 }
 \arguments{
-\item{sim_obj}{A simulation object of class \code{simba}, usually created by
+\item{sim}{A simulation object of class \code{sim_obj}, usually created by
 \link{new_sim}}
 
 \item{var}{If this argument is omitted, \code{vars()} will return a list

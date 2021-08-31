@@ -3,7 +3,7 @@
 #     website (https://avi-kenny.github.io/SimEngine/function-reference)
 # !!!!! Run this file manually for now (eventually automate it via devtools)
 
-if (FALSE) {
+if (F) {
 
   library(tools)
   library(magrittr)

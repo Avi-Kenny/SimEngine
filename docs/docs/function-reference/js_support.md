@@ -7,14 +7,14 @@ parent: Function reference
 ---
 
 
-<table width="100%" summary="page for js_support {simba}"><tr><td>js_support {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table width="100%" summary="page for js_support {SimEngine}"><tr><td>js_support {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Display information about currently-supported job schedulers</h2>
 
 <h3>Description</h3>
 
 <p>Run this function to display information about job schedulers
-that are currently supported for running <span class="pkg">simba</span> simulations on a
+that are currently supported for running <span class="pkg">SimEngine</span> simulations on a
 cluster computing system (CCS).
 </p>
 
@@ -32,4 +32,4 @@ js_support()
 js_support()
 ```
 
-<hr /><div style="text-align: center;">[Package <em>simba</em> version 1.0.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.0.0 ]</div>

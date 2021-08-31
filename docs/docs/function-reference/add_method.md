@@ -7,7 +7,7 @@ parent: Function reference
 ---
 
 
-<table width="100%" summary="page for add_method {simba}"><tr><td>add_method {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table width="100%" summary="page for add_method {SimEngine}"><tr><td>add_method {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Add a &quot;method&quot; function</h2>
 
@@ -29,16 +29,16 @@ however, this is not always the case.
 <h3>Usage</h3>
 
 ```R
-add_method(sim_obj, name, fn)
+add_method(sim, name, fn)
 ```
 
 
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span></td>
+<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span></td>
 <td>
-<p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>simba</span>, usually created by
+<p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span>, usually created by
 new_sim</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>name</span></td>
@@ -57,14 +57,14 @@ new_sim</p>
 
 <ul>
 <li><p>As with add_creator, there are two ways to use
-<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>add_method</span>. If two arguments are supplied (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span> and
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>add_method</span>. If two arguments are supplied (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span> and
 <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>fn</span>), you can create a function separately and add it to your
 simulation object later. If three arguments are supplied, you can do both
 at the same time, using an anonymous function for the <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>fn</span> argument.
 See examples.
 </p>
 </li>
-<li><p>Your method will be stored in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj$methods</span>. If you added a
+<li><p>Your method will be stored in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim$methods</span>. If you added a
 method called <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>estimator_1</span>, you can test it out by running
 <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim$creators$estimator_1()</span>. See examples.
 </p>
@@ -103,4 +103,4 @@ sim$methods$estimator_1(dat)
 sim$methods$estimator_2(dat)
 ```
 
-<hr /><div style="text-align: center;">[Package <em>simba</em> version 1.0.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.0.0 ]</div>

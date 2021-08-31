@@ -7,7 +7,7 @@ parent: Function reference
 ---
 
 
-<table width="100%" summary="page for run_on_cluster {simba}"><tr><td>run_on_cluster {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table width="100%" summary="page for run_on_cluster {SimEngine}"><tr><td>run_on_cluster {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Framework for running simulations on a cluster computing system</h2>
 
@@ -15,12 +15,11 @@ parent: Function reference
 
 <p>This function provides a scaffold for running simulations in
 parallel in a cluster computing environment. It acts as a wrapper for
-<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>simba</span> simulation code, organizing the code into sections that are
-run just once per simulation (e.g. simulation setup and compiling
-results) and sections that are run many times (e.g. simulation
-replicates). This function interfaces with the cluster job scheduler to
-divide parallel tasks over cluster nodes. Job schedulers currently
-supported include Slurm and Sun Grid Engine.
+the code in your simulation script, organizing the code into sections
+that are run just once per simulation (e.g. simulation setup and
+compiling results) and sections that are run many times (e.g. simulation
+replicates). This function interfaces with cluster job scheduler software
+(e.g. Slurm ) to divide parallel tasks over cluster nodes.
 </p>
 
 
@@ -66,8 +65,8 @@ name of the environment variable that your task ID is stored in). Run
 supported. You can optionally also specify <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>dir</span>, which is a
 character string representing a path to a directory; this directory will
 serve as your working directory and hold your simulation object,
-temporary <span class="pkg">simba</span> objects, and simulation results (this defaults to
-the working directory of the R script that contains your simulation
+temporary <span class="pkg">SimEngine</span> objects, and simulation results (this defaults
+to the working directory of the R script that contains your simulation
 code).</p>
 </td></tr>
 </table>
@@ -85,7 +84,7 @@ code).</p>
 # commands for your scheduler.
 
 # This code is saved in a file called my_simulation.R
-library(simba)
+library(SimEngine)
 run_on_cluster(
 
   first = {
@@ -123,4 +122,4 @@ qsub -v run='last' -hold_jid 102 run_sim.sh
 ## End(Not run)
 ```
 
-<hr /><div style="text-align: center;">[Package <em>simba</em> version 1.0.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.0.0 ]</div>

@@ -7,7 +7,7 @@ parent: Function reference
 ---
 
 
-<table width="100%" summary="page for add_creator {simba}"><tr><td>add_creator {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table width="100%" summary="page for add_creator {SimEngine}"><tr><td>add_creator {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Add a &quot;creator&quot; function</h2>
 
@@ -21,16 +21,16 @@ a function that generates a dataset for use in your simulation.
 <h3>Usage</h3>
 
 ```R
-add_creator(sim_obj, name, fn)
+add_creator(sim, name, fn)
 ```
 
 
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span></td>
+<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span></td>
 <td>
-<p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>simba</span>, usually created by
+<p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span>, usually created by
 new_sim</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>name</span></td>
@@ -49,13 +49,13 @@ new_sim</p>
 
 <ul>
 <li><p>There are two ways to use <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>add_creator</span>. If two arguments are
-supplied (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span> and <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>fn</span>), you can create a function
+supplied (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span> and <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>fn</span>), you can create a function
 separately and add it to your simulation object later. If three arguments
 are supplied, you can do both at the same time, using an anonymous
 function for the <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>fn</span> argument. See examples.
 </p>
 </li>
-<li><p>Your creator will be stored in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj$creators</span>. If you added a
+<li><p>Your creator will be stored in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim$creators</span>. If you added a
 creator called <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>create_data</span>, you can test it out by running
 <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim$creators$create_data()</span>. See examples.
 </p>
@@ -91,4 +91,4 @@ sim %<>% add_creator("create_data", function(n) {
 sim$creators$create_data(10)
 ```
 
-<hr /><div style="text-align: center;">[Package <em>simba</em> version 1.0.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.0.0 ]</div>

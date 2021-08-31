@@ -22,7 +22,7 @@ and 'last' code blocks run.}
 
 \item{main}{Code that will run for every simulation replicate. This should be
 a block of code enclosed by curly braces {} that includes a call to
-\link[simba]{update_sim}. This code block will have access to the simulation object you
+\link{update_sim}. This code block will have access to the simulation object you
 read in the 'first' code block, but any changes made here to the
 simulation object will not be saved.}
 
@@ -38,27 +38,30 @@ name of the environment variable that your task ID is stored in). Run
 supported. You can optionally also specify \code{dir}, which is a
 character string representing a path to a directory; this directory will
 serve as your working directory and hold your simulation object,
-temporary \pkg{simba} objects, and simulation results (this defaults to
-the working directory of the R script that contains your simulation
+temporary \pkg{SimEngine} objects, and simulation results (this defaults
+to the working directory of the R script that contains your simulation
 code).}
 
-\item{keep_errors}{logical (\code{TRUE} by default); if \code{TRUE}, do not try to re-run
-simulation reps that results in errors previously; if \code{FALSE}, attempt to
-run those reps again}
+\item{keep_errors}{logical (\code{TRUE} by default); if \code{TRUE}, do not
+try to re-run simulation reps that results in errors previously; if
+\code{FALSE}, attempt to run those reps again}
 
-\item{keep_extra}{logical (\code{FALSE} by default); if \code{TRUE}, keep previously run
-simulation reps even if they exceed the current \code{num_sim} in config or are from
-a level that has been dropped; if \code{FALSE}, drop excess reps (starting from the last rep
-for that particular simulation level)}
+\item{keep_extra}{logical (\code{FALSE} by default); if \code{TRUE}, keep
+previously run simulation reps even if they exceed the current
+\code{num_sim} in config or are from a level that has been dropped; if
+\code{FALSE}, drop excess reps (starting from the last rep for that
+particular simulation level)}
 }
 \description{
 This function provides a scaffold for updating a previously run
-    simulation in a cluster computing environment. Like \link{run_on_cluster},
-    it acts as a wrapper for \code{simba} code, organizing the code into sections that
-    are run just once per simulation (e.g. changing simulation levels/replicate numbers and compiling results)
-    and sections that are run many times (e.g. simulation replicates).
-    This function interfaces with the cluster job scheduler to divide parallel tasks over cluster nodes.
-    Job schedulers currently supported include Slurm and Sun Grid Engine.
+    simulation in a cluster computing environment. Like
+    \link{run_on_cluster}, it acts as a wrapper for the code in your
+    simulation script, organizing the code into sections that are run just
+    once per simulation (e.g. changing simulation levels/replicate numbers
+    and compiling results) and sections that are run many times (e.g.
+    simulation replicates). This function interfaces with cluster job
+    scheduler software (e.g. Slurm ) to divide parallel tasks over cluster
+    nodes.
 }
 \examples{
 \dontrun{
@@ -69,7 +72,7 @@ This function provides a scaffold for updating a previously run
 # summarizes the results.
 
 # This code is saved in a file called my_simulation.R
-library(simba)
+library(SimEngine)
 run_on_cluster(
 
   first = {
@@ -103,12 +106,12 @@ qsub -v run='main' -t 1-20 -hold_jid 101 run_sim.sh
 qsub -v run='last' -hold_jid 102 run_sim.sh
 
 # This code is saved in a file called update_my_simulation.R.
-# Note that it reads in 'sim.simba' from the previous simulation run.
-library(simba)
+# Note that it reads in 'sim.rds' from the previous simulation run.
+library(SimEngine)
 update_sim_on_cluster(
 
   first = {
-    sim <- readRDS('sim.simba')
+    sim <- readRDS('sim.rds')
 
     sim \%<>\% set_levels(n = c(100,500,1000))
 

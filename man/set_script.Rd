@@ -4,10 +4,10 @@
 \alias{set_script}
 \title{Set the "simulation script"}
 \usage{
-set_script(sim_obj, fn)
+set_script(sim, fn)
 }
 \arguments{
-\item{sim_obj}{A simulation object of class \code{simba}, usually created by
+\item{sim}{A simulation object of class \code{sim_obj}, usually created by
 \link{new_sim}}
 
 \item{fn}{A function that runs a single simulation replicate and returns the

@@ -7,7 +7,7 @@ parent: Function reference
 ---
 
 
-<table width="100%" summary="page for use_method {simba}"><tr><td>use_method {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table width="100%" summary="page for use_method {SimEngine}"><tr><td>use_method {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Use a method</h2>
 
@@ -72,4 +72,4 @@ sim %<>% run()
 sim$results
 ```
 
-<hr /><div style="text-align: center;">[Package <em>simba</em> version 1.0.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.0.0 ]</div>

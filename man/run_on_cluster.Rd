@@ -31,19 +31,18 @@ name of the environment variable that your task ID is stored in). Run
 supported. You can optionally also specify \code{dir}, which is a
 character string representing a path to a directory; this directory will
 serve as your working directory and hold your simulation object,
-temporary \pkg{simba} objects, and simulation results (this defaults to
-the working directory of the R script that contains your simulation
+temporary \pkg{SimEngine} objects, and simulation results (this defaults
+to the working directory of the R script that contains your simulation
 code).}
 }
 \description{
 This function provides a scaffold for running simulations in
     parallel in a cluster computing environment. It acts as a wrapper for
-    \code{simba} simulation code, organizing the code into sections that are
-    run just once per simulation (e.g. simulation setup and compiling
-    results) and sections that are run many times (e.g. simulation
-    replicates). This function interfaces with the cluster job scheduler to
-    divide parallel tasks over cluster nodes. Job schedulers currently
-    supported include Slurm and Sun Grid Engine.
+    the code in your simulation script, organizing the code into sections
+    that are run just once per simulation (e.g. simulation setup and
+    compiling results) and sections that are run many times (e.g. simulation
+    replicates). This function interfaces with cluster job scheduler software
+    (e.g. Slurm ) to divide parallel tasks over cluster nodes.
 }
 \examples{
 \dontrun{
@@ -55,7 +54,7 @@ This function provides a scaffold for running simulations in
 # commands for your scheduler.
 
 # This code is saved in a file called my_simulation.R
-library(simba)
+library(SimEngine)
 run_on_cluster(
 
   first = {

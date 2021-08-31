@@ -7,19 +7,21 @@ parent: Function reference
 ---
 
 
-<table width="100%" summary="page for update_sim_on_cluster {simba}"><tr><td>update_sim_on_cluster {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table width="100%" summary="page for update_sim_on_cluster {SimEngine}"><tr><td>update_sim_on_cluster {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Framework for updating simulations on a cluster computing system</h2>
 
 <h3>Description</h3>
 
 <p>This function provides a scaffold for updating a previously run
-simulation in a cluster computing environment. Like run_on_cluster,
-it acts as a wrapper for <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>simba</span> code, organizing the code into sections that
-are run just once per simulation (e.g. changing simulation levels/replicate numbers and compiling results)
-and sections that are run many times (e.g. simulation replicates).
-This function interfaces with the cluster job scheduler to divide parallel tasks over cluster nodes.
-Job schedulers currently supported include Slurm and Sun Grid Engine.
+simulation in a cluster computing environment. Like
+run_on_cluster, it acts as a wrapper for the code in your
+simulation script, organizing the code into sections that are run just
+once per simulation (e.g. changing simulation levels/replicate numbers
+and compiling results) and sections that are run many times (e.g.
+simulation replicates). This function interfaces with cluster job
+scheduler software (e.g. Slurm ) to divide parallel tasks over cluster
+nodes.
 </p>
 
 
@@ -72,22 +74,23 @@ name of the environment variable that your task ID is stored in). Run
 supported. You can optionally also specify <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>dir</span>, which is a
 character string representing a path to a directory; this directory will
 serve as your working directory and hold your simulation object,
-temporary <span class="pkg">simba</span> objects, and simulation results (this defaults to
-the working directory of the R script that contains your simulation
+temporary <span class="pkg">SimEngine</span> objects, and simulation results (this defaults
+to the working directory of the R script that contains your simulation
 code).</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>keep_errors</span></td>
 <td>
-<p>logical (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>TRUE</span> by default); if <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>TRUE</span>, do not try to re-run
-simulation reps that results in errors previously; if <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>FALSE</span>, attempt to
-run those reps again</p>
+<p>logical (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>TRUE</span> by default); if <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>TRUE</span>, do not
+try to re-run simulation reps that results in errors previously; if
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>FALSE</span>, attempt to run those reps again</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>keep_extra</span></td>
 <td>
-<p>logical (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>FALSE</span> by default); if <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>TRUE</span>, keep previously run
-simulation reps even if they exceed the current <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>num_sim</span> in config or are from
-a level that has been dropped; if <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>FALSE</span>, drop excess reps (starting from the last rep
-for that particular simulation level)</p>
+<p>logical (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>FALSE</span> by default); if <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>TRUE</span>, keep
+previously run simulation reps even if they exceed the current
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>num_sim</span> in config or are from a level that has been dropped; if
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>FALSE</span>, drop excess reps (starting from the last rep for that
+particular simulation level)</p>
 </td></tr>
 </table>
 
@@ -103,7 +106,7 @@ for that particular simulation level)</p>
 # summarizes the results.
 
 # This code is saved in a file called my_simulation.R
-library(simba)
+library(SimEngine)
 run_on_cluster(
 
   first = {
@@ -137,12 +140,12 @@ qsub -v run='main' -t 1-20 -hold_jid 101 run_sim.sh
 qsub -v run='last' -hold_jid 102 run_sim.sh
 
 # This code is saved in a file called update_my_simulation.R.
-# Note that it reads in 'sim.simba' from the previous simulation run.
-library(simba)
+# Note that it reads in 'sim.rds' from the previous simulation run.
+library(SimEngine)
 update_sim_on_cluster(
 
   first = {
-    sim <- readRDS('sim.simba')
+    sim <- readRDS('sim.rds')
 
     sim %<>% set_levels(n = c(100,500,1000))
 
@@ -174,4 +177,4 @@ qsub -v run='last' -hold_jid 105 update_sim.sh
 ## End(Not run)
 ```
 
-<hr /><div style="text-align: center;">[Package <em>simba</em> version 1.0.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.0.0 ]</div>

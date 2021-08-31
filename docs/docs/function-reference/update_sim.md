@@ -7,48 +7,50 @@ parent: Function reference
 ---
 
 
-<table width="100%" summary="page for update_sim {simba}"><tr><td>update_sim {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table width="100%" summary="page for update_sim {SimEngine}"><tr><td>update_sim {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Update a simulation</h2>
 
 <h3>Description</h3>
 
-<p>This function updates a previously run simulation. After a simulation
-has been run, you can alter the levels of the
-resulting object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>simba</span> using set_levels, or change the configuration
-(including the number of simulation replicates) using set_config. Executing
-<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>update_sim</span> on this simulation object will only run the added levels/replicates,
-without repeating anything that has already been run.
+<p>This function updates a previously run simulation. After a
+simulation has been run, you can alter the levels of the
+resulting object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span> using set_levels, or
+change the configuration (including the number of simulation replicates)
+using set_config. Executing <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>update_sim</span> on this simulation
+object will only run the added levels/replicates, without repeating
+anything that has already been run.
 </p>
 
 
 <h3>Usage</h3>
 
 ```R
-update_sim(sim_obj, keep_errors = TRUE, keep_extra = FALSE)
+update_sim(sim, keep_errors = TRUE, keep_extra = FALSE)
 ```
 
 
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span></td>
+<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span></td>
 <td>
-<p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>simba</span>, usually created by
+<p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span>, usually created by
 new_sim, that has already been run by the run function</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>keep_errors</span></td>
 <td>
-<p>logical (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>TRUE</span> by default); if <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>TRUE</span>, do not try to re-run
-simulation reps that results in errors previously; if <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>FALSE</span>, attempt to
-run those reps again</p>
+<p>logical (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>TRUE</span> by default); if <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>TRUE</span>, do not
+try to re-run simulation reps that results in errors previously; if
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>FALSE</span>, attempt to run those reps again</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>keep_extra</span></td>
 <td>
-<p>logical (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>FALSE</span> by default); if <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>TRUE</span>, keep previously run
-simulation reps even if they exceed the current <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>num_sim</span> in config or are from
-a level that has been dropped; if <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>FALSE</span>, drop excess reps (starting from the last rep
-for that particular simulation level)</p>
+<p>logical (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>FALSE</span> by default); if <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>TRUE</span>, keep
+previously run simulation reps even if they exceed the current
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>num_sim</span> in config or are from a level that has been dropped; if
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>FALSE</span>, drop excess reps (starting from the last rep for that
+particular simulation level)</p>
 </td></tr>
 </table>
 
@@ -58,15 +60,16 @@ for that particular simulation level)</p>
 
 <ul>
 <li><p>It is not possible to add new level variables, only new levels of the
-existing variables. Because of this, it is best practice to include all potential
-level variables before initially running a simulation, even if some of them only
-contain a single level. This way, additional levels can be added later.
+existing variables. Because of this, it is best practice to include all
+potential level variables before initially running a simulation, even if
+some of them only contain a single level. This way, additional levels can
+be added later.
 </p>
 </li>
-<li> <p>In general, if <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>num_sim</span> has been reduced prior to running <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>update_sim</span>,
-it is best to use the default option <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>keep_extra = FALSE</span>. Otherwise, some
-simulation levels will have more replicates than others, which makes comparison
-difficult.
+<li> <p>In general, if <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>num_sim</span> has been reduced prior to running
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>update_sim</span>, it is best to use the default option
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>keep_extra = FALSE</span>. Otherwise, some simulation levels will have more
+replicates than others, which makes comparison difficult.
 </p>
 </li></ul>
 
@@ -74,8 +77,8 @@ difficult.
 
 <h3>Value</h3>
 
-<p>The original simulation object with additional simulation replicates in
-<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>results</span> or <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>errors</span>
+<p>The original simulation object with additional simulation replicates
+in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>results</span> or <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>errors</span>
 </p>
 
 
@@ -105,4 +108,4 @@ sim %<>% set_config(num_sim=5)
 sim %<>% update_sim()
 ```
 
-<hr /><div style="text-align: center;">[Package <em>simba</em> version 1.0.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.0.0 ]</div>

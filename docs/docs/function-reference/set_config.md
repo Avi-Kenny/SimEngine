@@ -7,7 +7,7 @@ parent: Function reference
 ---
 
 
-<table width="100%" summary="page for set_config {simba}"><tr><td>set_config {simba}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table width="100%" summary="page for set_config {SimEngine}"><tr><td>set_config {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Modify the simulation configuration</h2>
 
@@ -27,7 +27,7 @@ your simulation object.
 
 ```R
 set_config(
-  sim_obj,
+  sim,
   num_sim = 1000,
   parallel = "none",
   n_cores = parallel::detectCores() - 1,
@@ -41,9 +41,9 @@ set_config(
 <h3>Arguments</h3>
 
 <table summary="R argblock">
-<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span></td>
+<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span></td>
 <td>
-<p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>simba</span>, usually created by
+<p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span>, usually created by
 new_sim</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>num_sim</span></td>
@@ -58,9 +58,10 @@ sections of the code are parallelized. Setting to &quot;outer&quot; will run one
 simulation per core. Setting to &quot;inner&quot; will allow for parallelization
 within a single simulation replicate. Setting to &quot;none&quot; will not
 parallelize any code. See
-<a href="https://avi-kenny.github.io/simba/parallelization">https://avi-kenny.github.io/simba/parallelization</a> for an overview
-of how parallelization works in <span class="pkg">simba</span>. This option will be ignored
-if the simulation is being run on a cluster computing system.</p>
+<a href="https://avi-kenny.github.io/SimEngine/parallelization">https://avi-kenny.github.io/SimEngine/parallelization</a> for an
+overview of how parallelization works in <span class="pkg">SimEngine</span>. This option
+will be ignored if the simulation is being run on a cluster computing
+system.</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>n_cores</span></td>
 <td>
@@ -83,9 +84,9 @@ debugging.</p>
 <p>An integer; seeds allow for reproducible simulation results. If a
 seed is specified, then consecutive runs of the same simulation with the
 same seed will lead to identical results (under normal circumstances). If
-a seed was not set in advance by the user, <span class="pkg">simba</span> will set a random
-seed, which can later be retrieved using the vars function. See
-details for further info.</p>
+a seed was not set in advance by the user, <span class="pkg">SimEngine</span> will set a
+random seed, which can later be retrieved using the vars function.
+See details for further info.</p>
 </td></tr>
 </table>
 
@@ -95,7 +96,7 @@ details for further info.</p>
 
 <ul>
 <li><p>If a user specifies, for example, <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set_config(seed=4)</span>, this
-seed is used twice by <span class="pkg">simba</span>. First, <span class="pkg">simba</span> executes
+seed is used twice by <span class="pkg">SimEngine</span>. First, <span class="pkg">SimEngine</span> executes
 <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set.seed(4)</span> at the end of the <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set_config</span> call. Second, this
 seed is used to generate a new set of seeds, one for each simulation
 replicate. Each of these seeds is set in turn (or in parallel) when
@@ -128,4 +129,4 @@ sim %<>% set_config(
 sim
 ```
 
-<hr /><div style="text-align: center;">[Package <em>simba</em> version 1.0.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.0.0 ]</div>
