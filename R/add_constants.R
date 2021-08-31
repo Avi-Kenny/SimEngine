@@ -16,9 +16,9 @@
 add_constants <- function(sim, ...) UseMethod("add_constants")
 
 #' @export
-add_constants.SimEngine <- function(sim, ...) {
+add_constants.sim_obj <- function(sim, ...) {
 
-  handle_errors(sim_obj, "is.sim_obj")
+  handle_errors(sim, "is.sim_obj")
 
   sim$constants <- c(sim$constants, list(...))
 

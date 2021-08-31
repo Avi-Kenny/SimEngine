@@ -66,7 +66,7 @@ new_sim <- function() {
     errors = NULL
   )
 
-  class(...simj) <- "sim_obj"
+  class(...sim) <- "sim_obj"
 
   return (...sim)
 
