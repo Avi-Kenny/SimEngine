@@ -1,8 +1,8 @@
 ---
-title: "Introduction to simba"
+title: "Introduction to SimEngine"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to simba}
+  %\VignetteIndexEntry{Introduction to SimEngine}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,34 +14,34 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette is adapted from the <a href="https://avi-kenny.github.io/simba/" target="_blank">homepage</a> of the simba website. 
+This vignette is adapted from the <a href="https://avi-kenny.github.io/SimEngine/" target="_blank">homepage</a> of the SimEngine website. 
 
 ```{r setup}
-library(simba)
+library(SimEngine)
 ```
 
 ## Overview
 
-**simba** is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on thorough documentation, and scalability.
+**SimEngine** is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on thorough documentation, and scalability.
 
 ## Getting started
 
 The goal of many statistical simulations is to test how a new statistical method performs against existing methods. Most statistical simulations include three basic phases: (1) generate some data, (2) run one or more methods using the generated data, and (3) compare the performance of the methods. 
 
-To briefly illustrate how these phases are implemented using **simba**, we will use the example of estimating the average treatment effect of a drug in the context of a randomized controlled trial (RCT).
+To briefly illustrate how these phases are implemented using **SimEngine**, we will use the example of estimating the average treatment effect of a drug in the context of a randomized controlled trial (RCT).
 
 ### 1) Load the package and create a "simulation object"
 
-The simulation object (an R object of class *simba*) will contain all data, functions, and results related to your simulation. Note that we make extensive use of the pipe operators (`%>%` and `%<>%`) from the **magrittr** package; if you have never used pipes, check out the <a href="https://magrittr.tidyverse.org" target="_blank">magrittr documentation</a>.
+The simulation object (an R object of class *sim_obj*) will contain all data, functions, and results related to your simulation. Note that we make extensive use of the pipe operators (`%>%` and `%<>%`) from the **magrittr** package; if you have never used pipes, check out the <a href="https://magrittr.tidyverse.org" target="_blank">magrittr documentation</a>.
 
 ```{r}
-library(simba)
+library(SimEngine)
 sim <- new_sim()
 ```
 
 ### 2) Write a function to generate some data
 
-In **simba**, functions that generate data are called *creators*. Our creator will simulate data from an RCT in which we compare a continuous outcome (e.g. blood pressure) between two groups (the "treatment group" versus the "control group"). We generate the data by looping through individuals, assigning them randomly to either the treatment group or the control group, and generating their outcome according to a simple model (note: although we use a for-loop for illustrative purposes, vectorized methods are often faster).
+In **SimEngine**, functions that generate data are called *creators*. Our creator will simulate data from an RCT in which we compare a continuous outcome (e.g. blood pressure) between two groups (the "treatment group" versus the "control group"). We generate the data by looping through individuals, assigning them randomly to either the treatment group or the control group, and generating their outcome according to a simple model (note: although we use a for-loop for illustrative purposes, vectorized methods are often faster).
 
 ```{r}
 create_rct_data <- function (num_patients) {
@@ -105,7 +105,7 @@ sim %<>% add_method(estimator_2)
 
 ### 4) Set the simulation levels
 
-Often, we want to run the same simulation multiple times (with each run referred to as a "simulation replicate"), but with certain things changed. In this example, perhaps we want to vary the number of patients and the method used to estimate the average treatment effect. We refer to the things that vary as "simulation levels". By default, **simba** will run our simulation 1,000 times for each level combination. Below, since there are two methods and three values of num_patients, we have six level combinations and so **simba** will run a total of 6,000 simulation replicates.
+Often, we want to run the same simulation multiple times (with each run referred to as a "simulation replicate"), but with certain things changed. In this example, perhaps we want to vary the number of patients and the method used to estimate the average treatment effect. We refer to the things that vary as "simulation levels". By default, **SimEngine** will run our simulation 1,000 times for each level combination. Below, since there are two methods and three values of num_patients, we have six level combinations and so **SimEngine** will run a total of 6,000 simulation replicates.
 
 ```{r}
 sim %<>% set_levels(
@@ -133,7 +133,7 @@ Your script should always return a named list, although your list can be complex
 
 ### 6) Set the simulation configuration
 
-This controls options related to your entire simulation, such as the number of simulation replicates to run for each level combination and how to <a href="https://avi-kenny.github.io/simba/parallelization/" target="_blank">parallelize</a> your code. This is discussed in detail on the <a href="https://avi-kenny.github.io/simba/function-reference/set_config/" target="_blank">`set_config`</a> page. We set `num_sim` to 10, and so **simba** will run a total of 60 simulation replicates (10 for each level combination).
+This controls options related to your entire simulation, such as the number of simulation replicates to run for each level combination and how to <a href="https://avi-kenny.github.io/SimEngine/parallelization/" target="_blank">parallelize</a> your code. This is discussed in detail on the <a href="https://avi-kenny.github.io/SimEngine/function-reference/set_config/" target="_blank">`set_config`</a> page. We set `num_sim` to 10, and so **SimEngine** will run a total of 60 simulation replicates (10 for each level combination).
 
 ```{r}
 sim %<>% set_config(

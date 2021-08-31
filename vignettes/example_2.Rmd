@@ -14,10 +14,10 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette is adapted from <a href="https://avi-kenny.github.io/simba/examples/2" target="_blank">Example 2</a> on the simba website. 
+This vignette is adapted from <a href="https://avi-kenny.github.io/SimEngine/examples/2" target="_blank">Example 2</a> on the SimEngine website. 
 
 ```{r setup}
-library(simba)
+library(SimEngine)
 ```
 
 When developing a novel statistical method, we often wish to compare our proposed method with one or more existing methods. This serves to highlight the differences between our method and whatever is used in common practice. Generally, we wish to examine realistic settings, motivated by statistical theory, in which the novel method confers some advantage over the alternatives. 
@@ -76,7 +76,7 @@ sim %<>% add_method("sandwich_vcov", function(data){
 })
 ```
 
-Next, we write the simulation script. This script returns a point estimate and a standard error estimate for both the intercept parameter $\beta_0$ and the slope parameter $\beta_1$. We will tell simba to run 500 simulation replicates for each of three sample sizes. It is important to use the `seed` argument in `set_config` so that our results will be reproducible. In addition, we will use the `packages` option to load the sandwich package. Using this method (as opposed to running `library(sandwich)`) is required if running simulations in parallel. Finally, we run the simulation.  
+Next, we write the simulation script. This script returns a point estimate and a standard error estimate for both the intercept parameter $\beta_0$ and the slope parameter $\beta_1$. We will tell SimEngine to run 500 simulation replicates for each of three sample sizes. It is important to use the `seed` argument in `set_config` so that our results will be reproducible. In addition, we will use the `packages` option to load the sandwich package. Using this method (as opposed to running `library(sandwich)`) is required if running simulations in parallel. Finally, we run the simulation.  
 
 ```{r}
 sim %<>% set_script(function() {

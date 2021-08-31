@@ -1,8 +1,8 @@
-# simba 1.0.0
+# SimEngine 1.0.0
 
 ## Major changes
 
-First package release
+Initial package release
 
 ## Minor changes
 

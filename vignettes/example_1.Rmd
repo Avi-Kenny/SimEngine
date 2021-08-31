@@ -14,10 +14,10 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette is adapted from <a href="https://avi-kenny.github.io/simba/examples/1" target="_blank">Example 1</a> on the simba website. 
+This vignette is adapted from <a href="https://avi-kenny.github.io/SimEngine/examples/1" target="_blank">Example 1</a> on the SimEngine website. 
 
 ```{r setup}
-library(simba)
+library(SimEngine)
 ```
 
 Calculating statistical power is a critical step in the design of experiments. For a given study design, the statistical power is defined as the probability that a hypothesis test correctly rejects the null hypothesis (assuming it is false). Sometimes, the sample size for a study is considered fixed, and interest lies in calculating power. More often, investigators want to know what sample size is needed to reject the null hypothesis at a given power level (e.g. 80% or 90%). We assume that the reader has some familiarity with statistical hypothesis testing.
@@ -59,7 +59,7 @@ sim %<>% add_method("run_test", function(data) {
 })
 ```
 
-Next, we write the simulation script and tell simba to run 1,000 simulation replicates each for four sample sizes.
+Next, we write the simulation script and tell SimEngine to run 1,000 simulation replicates each for four sample sizes.
 
 ```{r}
 sim %<>% set_script(function() {

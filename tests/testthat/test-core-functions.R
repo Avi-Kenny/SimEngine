@@ -17,7 +17,7 @@ test_that("new_sim() creates correctly-specified object", {
 #library('magrittr')
 #detach('package:magrittr', unload = TRUE)
 #test_that("new_sim() with missing dependencies throws error", {
-#  expect_error(new_sim(), "You need to install the package 'magrittr' for simba to work.")
+#  expect_error(new_sim(), "You need to install the package 'magrittr' for SimEngine to work.")
 #})
 
 ### add_creator() ###
@@ -476,7 +476,7 @@ test_that("vars() works; after run()", {
 })
 test_that("vars() handles incorrect variables properly", {
   expect_error(vars(list(x=1), "fake_var"),
-               "`sim_obj` must be of class `simba`")
+               "`sim` must be of class `sim_obj`")
   expect_error(vars(sim, "fake_var"),
                "'fake_var' is not a valid option for `var`")
   expect_null(sim$vars$fake_var)

@@ -1,5 +1,5 @@
 library(testthat)
-library(simba)
+library(SimEngine)
 library(magrittr)
 
-test_check("simba")
+test_check("SimEngine")
