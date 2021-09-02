@@ -1,7 +1,7 @@
 <!-- badges: start -->
   ![GitHub R package version](https://img.shields.io/github/r-package/v/Avi-Kenny/SimEngine)
   ![GitHub](https://img.shields.io/github/license/Avi-Kenny/SimEngine)
-  [![Travis build status](https://travis-ci.com/Avi-Kenny/SimEngine.svg?branch=master)](https://travis-ci.com/Avi-Kenny/SimEngine)
+  [![Travis build status](https://www.travis-ci.com/Avi-Kenny/SimEngine.svg?branch=master)](https://www.travis-ci.com/Avi-Kenny/SimEngine)
   [![Codecov test coverage](https://codecov.io/gh/Avi-Kenny/SimEngine/branch/master/graph/badge.svg)](https://codecov.io/gh/Avi-Kenny/SimEngine?branch=master)
 <!-- badges: end -->
 
