@@ -1,7 +1,7 @@
 <!-- badges: start -->
   ![GitHub R package version](https://img.shields.io/github/r-package/v/Avi-Kenny/SimEngine)
   ![GitHub](https://img.shields.io/github/license/Avi-Kenny/SimEngine)
-  [![Travis build status](https://www.travis-ci.com/Avi-Kenny/SimEngine.svg?branch=master)](https://www.travis-ci.com/Avi-Kenny/SimEngine)
+  [![Build Status](https://app.travis-ci.com/Avi-Kenny/SimEngine.svg?branch=master)](https://app.travis-ci.com/Avi-Kenny/SimEngine)
   [![Codecov test coverage](https://codecov.io/gh/Avi-Kenny/SimEngine/branch/master/graph/badge.svg)](https://codecov.io/gh/Avi-Kenny/SimEngine?branch=master)
 <!-- badges: end -->
 
@@ -25,7 +25,7 @@ devtools::install_github(repo="Avi-Kenny/SimEngine")
 
 ## Documentation
 
-The full package documentation can be found at [avi-kenny.github.io/SimEngine](https://avi-kenny.github.io/SimEngine/). All of the CRAN documentation (i.e. the function reference and vignettes) can also be found here.
+The full package documentation can be found at [https://avi-kenny.github.io/SimEngine/](https://avi-kenny.github.io/SimEngine/). All of the CRAN documentation (i.e. the function reference and vignettes) can also be found here.
 
 ## Bugs reports and feature requests
 
