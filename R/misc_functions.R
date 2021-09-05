@@ -4,7 +4,7 @@
 #' Print method for class \code{sim_obj}
 #' @noRd
 #' @export
-print.sim <- function(x, ...) {
+print.sim_obj <- function(x, ...) {
   sim <- x
   cat("SimEngine: simulation object (class \"sim_obj\")\n")
   cat("----------------------------------------------\n")
