@@ -124,7 +124,10 @@ sim %<>% set_config(
 )
 
 ### update_sim removes extra reps/levels ###
-sim %<>% update_sim()
+suppressWarnings({
+  sim %<>% update_sim()
+})
+
 test_that("update_sim() can remove extra reps/levels", {
   expect_type(sim$results, "list")
   expect_equal(length(sim$results), prev_ncol)
@@ -191,7 +194,9 @@ sim %<>% set_config(
 )
 
 ### update_sim properly removes extra errors and warnings
-sim %<>% update_sim()
+suppressWarnings({
+  sim %<>% update_sim()
+})
 test_that("update_sim() removes extra errors and warnings", {
   expect_type(sim$errors, "list")
   expect_type(sim$warnings, "list")

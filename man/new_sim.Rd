@@ -20,6 +20,6 @@ sim <- new_sim()
 sim
 }
 \seealso{
-Visit \url{https://avi-kenny.github.io/SimEngine} for more information on how to
+Visit \url{https://avi-kenny.github.io/SimEngine/} for more information on how to
     use the \pkg{SimEngine} simulation framework.
 }

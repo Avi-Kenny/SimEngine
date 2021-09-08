@@ -35,7 +35,7 @@ new_sim()
 
 <h3>See Also</h3>
 
-<p>Visit <a href="https://avi-kenny.github.io/SimEngine">https://avi-kenny.github.io/SimEngine</a> for more information on how to
+<p>Visit <a href="https://avi-kenny.github.io/SimEngine/">https://avi-kenny.github.io/SimEngine/</a> for more information on how to
 use the <span class="pkg">SimEngine</span> simulation framework.
 </p>
 

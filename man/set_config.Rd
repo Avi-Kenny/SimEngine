@@ -26,7 +26,7 @@ sections of the code are parallelized. Setting to "outer" will run one
 simulation per core. Setting to "inner" will allow for parallelization
 within a single simulation replicate. Setting to "none" will not
 parallelize any code. See
-\url{https://avi-kenny.github.io/SimEngine/parallelization} for an
+\url{https://avi-kenny.github.io/SimEngine/parallelization/} for an
 overview of how parallelization works in \pkg{SimEngine}. This option
 will be ignored if the simulation is being run on a cluster computing
 system.}

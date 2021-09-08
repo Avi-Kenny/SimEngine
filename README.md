@@ -25,7 +25,7 @@ devtools::install_github(repo="Avi-Kenny/SimEngine")
 
 ## Documentation
 
-The full package documentation can be found at [avi-kenny.github.io/SimEngine](https://avi-kenny.github.io/SimEngine). All of the CRAN documentation (i.e. the function reference and vignettes) can also be found here.
+The full package documentation can be found at [https://avi-kenny.github.io/SimEngine/](https://avi-kenny.github.io/SimEngine/). All of the CRAN documentation (i.e. the function reference and vignettes) can also be found here.
 
 ## Bugs reports and feature requests
 

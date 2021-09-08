@@ -80,7 +80,8 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
     order(names(sim$internals$levels_shallow))]
 
   # disallow adding new level variables
-  if (sum(names(sorted_prev_levels) != names(sorted_curr_levels)) != 0){
+  if (length(names(sorted_prev_levels))!=length(names(sorted_curr_levels)) ||
+      !all.equal(names(sorted_prev_levels),names(sorted_curr_levels))) {
     stop("Updating a sim cannot include new level variables, only new levels.")
   }
 

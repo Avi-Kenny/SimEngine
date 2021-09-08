@@ -6,7 +6,7 @@
 #'     argument.
 #' @return A simulation object, of class \code{sim_obj}
 #' @seealso
-#' Visit \url{https://avi-kenny.github.io/SimEngine} for more information on how to
+#' Visit \url{https://avi-kenny.github.io/SimEngine/} for more information on how to
 #'     use the \pkg{SimEngine} simulation framework.
 #' @examples
 #' sim <- new_sim()

@@ -70,7 +70,7 @@ sim %<>% add_method("sandwich_vcov", function(data){
 })
 ```
 
-Next, we write the simulation script. This script returns a point estimate and a standard error estimate for both the intercept parameter $$\beta_0$$ and the slope parameter $$\beta_1$$. We will tell **SimEngine** to run 500 simulation replicates for each of three sample sizes. It is important to use the `seed` argument in `set_config` so that our results will be reproducible. In addition, we will use the `packages` option to load the sandwich package. Using this method (as opposed to running `library(sandwich)`) is required if running simulations in parallel. Finally, we run the simulation.  
+Next, we write the simulation script. This script returns a point estimate and a standard error estimate for both the intercept parameter $$\beta_0$$ and the slope parameter $$\beta_1$$. We will tell **SimEngine** to run 500 simulation replicates for each of four sample sizes. It is important to use the `seed` argument in `set_config` so that our results will be reproducible. In addition, we will use the `packages` option to load the sandwich package. Using this method (as opposed to running `library(sandwich)`) is required if running simulations in parallel. Finally, we run the simulation.  
 
 ```R
 sim %<>% set_script(function() {

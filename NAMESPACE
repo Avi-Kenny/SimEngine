@@ -3,7 +3,7 @@
 S3method(add_constants,sim_obj)
 S3method(add_creator,sim_obj)
 S3method(add_method,sim_obj)
-S3method(print,sim)
+S3method(print,sim_obj)
 S3method(run,sim_obj)
 S3method(set_config,sim_obj)
 S3method(set_levels,sim_obj)

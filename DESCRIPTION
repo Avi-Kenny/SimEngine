@@ -1,12 +1,11 @@
 Package: SimEngine
 Type: Package
-Title: SimEngine: An open-source framework for statistical simulations in R
+Title: An Open-Source Framework for Statistical Simulations in R
 Version: 1.0.0
 Authors@R: c(person("Avi", "Kenny", email = "avikenny@uw.edu", role = c("aut", "cre")),
-             person("Charles", "Wolock", email = "cwolock@uw.edu", role = "aut"),
-             person("Rachel", "Kenny", email = "rachel.leah.kenny@gmail.com", role = "ctb"))
-Description: SimEngine is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on thorough documentation and scalability. See full documentation at https://avi-kenny.github.io/SimEngine.
-License: GPL-3 + file LICENSE
+             person("Charles", "Wolock", email = "cwolock@uw.edu", role = "aut"))
+Description: An open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on thorough documentation and scalability. See full documentation at <https://avi-kenny.github.io/SimEngine/>.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1

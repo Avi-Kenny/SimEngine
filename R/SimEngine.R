@@ -6,7 +6,7 @@
 #' scalability.
 #' @section Documentation:
 #' The primary documentation for \pkg{SimEngine} is housed at
-#' \url{https://avi-kenny.github.io/SimEngine} - we recommend that users start
+#' \url{https://avi-kenny.github.io/SimEngine/} - we recommend that users start
 #' here when first learning how to use the package. Additionally, standard R
 #' documentation is provided, which can be accessed in the usual way (e.g.
 #' \code{?new_sim}).
