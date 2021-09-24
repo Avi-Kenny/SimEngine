@@ -11,6 +11,7 @@ set_config(
   n_cores = parallel::detectCores() - 1,
   packages = NULL,
   stop_at_error = FALSE,
+  progress_bar = TRUE,
   seed = NA
 )
 }
@@ -21,7 +22,7 @@ set_config(
 \item{num_sim}{An integer; the number of simulations to conduct for each
 level combination}
 
-\item{parallel}{String; one of c("outer", "inner", "none"). Controls which
+\item{parallel}{A string; one of c("outer", "inner", "none"). Controls which
 sections of the code are parallelized. Setting to "outer" will run one
 simulation per core. Setting to "inner" will allow for parallelization
 within a single simulation replicate. Setting to "none" will not
@@ -40,6 +41,9 @@ available CPUs on the current host.}
 \item{stop_at_error}{A Boolean. If set to TRUE, the simulation will
 stop if it encounters an error in any single replicate Useful for
 debugging.}
+
+\item{progress_bar}{A Boolean. If set to FALSE, the progress bar that is
+normally displayed while the simulation is running is suppressed.}
 
 \item{seed}{An integer; seeds allow for reproducible simulation results. If a
 seed is specified, then consecutive runs of the same simulation with the

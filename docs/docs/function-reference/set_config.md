@@ -33,6 +33,7 @@ set_config(
   n_cores = parallel::detectCores() - 1,
   packages = NULL,
   stop_at_error = FALSE,
+  progress_bar = TRUE,
   seed = NA
 )
 ```
@@ -53,7 +54,7 @@ level combination</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>parallel</span></td>
 <td>
-<p>String; one of c(&quot;outer&quot;, &quot;inner&quot;, &quot;none&quot;). Controls which
+<p>A string; one of c(&quot;outer&quot;, &quot;inner&quot;, &quot;none&quot;). Controls which
 sections of the code are parallelized. Setting to &quot;outer&quot; will run one
 simulation per core. Setting to &quot;inner&quot; will allow for parallelization
 within a single simulation replicate. Setting to &quot;none&quot; will not
@@ -78,6 +79,11 @@ available CPUs on the current host.</p>
 <p>A Boolean. If set to TRUE, the simulation will
 stop if it encounters an error in any single replicate Useful for
 debugging.</p>
+</td></tr>
+<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>progress_bar</span></td>
+<td>
+<p>A Boolean. If set to FALSE, the progress bar that is
+normally displayed while the simulation is running is suppressed.</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>seed</span></td>
 <td>

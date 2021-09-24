@@ -243,8 +243,5 @@ test_that("Correct behavior if 'first' fails", {
 Sys.sleep(1)
 x <- unlink("sim_results", recursive = TRUE)
 print(x)
-# unlink("sim.rds")
-
-
 Sys.setenv(sim_run="")
 unlink("sim.rds")
