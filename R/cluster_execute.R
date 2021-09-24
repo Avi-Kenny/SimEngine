@@ -65,7 +65,6 @@ cluster_execute <- function(first,
 
     # Construct necessary paths
     ..path_sim_obj <- "sim.rds"
-    ..path_sim_out <- "sim_output.txt"
     ..path_sim_res <- "sim_results"
 
     # Error handling: incorrect Sys.getenv("run") variable
@@ -281,17 +280,6 @@ cluster_execute <- function(first,
     # skip this rep
     err_reps <- list.files(path = ..path_sim_res, pattern = "e_*")
     if (length(err_reps) > 0 & ..sim$config$stop_at_error){
-      ..f <- file(..path_sim_out, open="wt")
-      sink(..f, type="output", append=FALSE)
-      sink(..f, type="message", append=FALSE)
-      cat(paste("SimEngine output START:",Sys.time(),"\n\n"))
-      cat(paste("\nThe simluation was stopped because of an error. See error",
-                "files in sim_results directory.\n\n"))
-      cat(paste("\n\nSimEngine output END:",Sys.time(),"\n"))
-      sink(type="output")
-      sink(type="message")
-      close(..f)
-
       unlink(paste0(..path_sim_res, "/r_*"))
     } else {
       # Process result/error files
@@ -461,20 +449,11 @@ cluster_execute <- function(first,
       saveRDS(..sim, file=..path_sim_obj)
 
       # Run 'last' code
-      # Divert output to sim_output.txt file
-      ..f <- file(..path_sim_out, open="wt")
-      sink(..f, type="output", append=FALSE)
-      sink(..f, type="message", append=FALSE)
-      cat(paste("SimEngine output START:",Sys.time(),"\n\n"))
       for (pkg in ..sim$config$packages) {
         do.call("library", list(pkg))
       }
       assign(..sim$internals$sim_var, ..sim)
       eval(..last)
-      cat(paste("\n\nSimEngine output END:",Sys.time(),"\n"))
-      sink(type="output")
-      sink(type="message")
-      close(..f)
 
       # Save final simulation object (a second time, if 'last' code had no errors)
       assign("..sim", eval(as.name(..sim$internals$sim_var)))

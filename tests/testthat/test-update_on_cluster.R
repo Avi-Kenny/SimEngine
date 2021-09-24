@@ -135,7 +135,7 @@ Sys.setenv(SLURM_ARRAY_TASK_ID="")
 Sys.setenv(sim_run="last")
 update_c()
 sim <- readRDS("sim.rds")
-output <- readChar("sim_output.txt", file.info("sim_output.txt")$size)
+# output <- readChar("sim_output.txt", file.info("sim_output.txt")$size)
 
 test_that("update_sim_on_cluster() 'last' section works", {
   expect_equal(dir.exists("sim_results"), FALSE)
@@ -145,13 +145,11 @@ test_that("update_sim_on_cluster() 'last' section works", {
   expect_equal(sim$internals$num_sim_cuml, 8)
   expect_true(sim$internals$update_sim)
   expect_equal(sim$internals$levels_prev$beta, c(4,5))
-  expect_equal(grepl("SimEngine output START", output, fixed=TRUE), TRUE)
-  expect_equal(grepl("SimEngine output END", output, fixed=TRUE), TRUE)
-  expect_equal(grepl("level_id alpha", output, fixed=TRUE), TRUE)
+  # expect_equal(grepl("level_id alpha", output, fixed=TRUE), TRUE)
 })
 Sys.setenv(sim_run="")
 rm(sim)
-rm(output)
+# rm(output)
 
 
 
@@ -188,7 +186,7 @@ Sys.setenv(SLURM_ARRAY_TASK_ID="")
 Sys.setenv(sim_run="last")
 update_c2()
 sim <- readRDS("sim.rds")
-output <- readChar("sim_output.txt", file.info("sim_output.txt")$size)
+# output <- readChar("sim_output.txt", file.info("sim_output.txt")$size)
 
 test_that("update_sim_on_cluster() 'last' section works", {
   expect_equal(dir.exists("sim_results"), FALSE)
@@ -199,14 +197,11 @@ test_that("update_sim_on_cluster() 'last' section works", {
   expect_equal(sim$internals$num_sim_cuml, 10)
   expect_true(sim$internals$update_sim)
   expect_equal(sim$internals$levels_prev$alpha, c(2,3,4))
-  expect_equal(grepl("SimEngine output START", output, fixed=TRUE), TRUE)
-  expect_equal(grepl("SimEngine output END", output, fixed=TRUE), TRUE)
-  expect_equal(grepl("level_id alpha", output, fixed=TRUE), TRUE)
+  # expect_equal(grepl("level_id alpha", output, fixed=TRUE), TRUE)
 })
 Sys.setenv(sim_run="")
-unlink("sim_output.txt")
 rm(sim)
-rm(output)
+# rm(output)
 
 # Correct behavior if 'first' fails
 # Create wrapper function for testing run_on_cluster()
