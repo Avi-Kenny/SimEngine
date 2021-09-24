@@ -34,7 +34,8 @@ new_sim <- function() {
       n_cores = parallel::detectCores() - 1,
       packages = NULL,
       stop_at_error = FALSE,
-      seed = ..seed
+      seed = ..seed,
+      progress_bar = TRUE
     ),
     constants = list(),
     levels = list("no levels"=TRUE),

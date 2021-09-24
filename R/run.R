@@ -157,7 +157,11 @@ run.sim_obj <- function(sim, sim_uids=NA) {
   }
 
   # Set up progress bar
-  pbapply::pboptions(type="txt", char="#", txt.width=40, style=3)
+  if (sim$config$progrss_bar) {
+    pbapply::pboptions(type="txt", char="#", txt.width=40, style=3)
+  } else {
+    pbapply::pboptions(type="none")
+  }
 
   # Run simulations
   if (sim$config$parallel=="outer") {
@@ -311,7 +315,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
     stop("An unknown error occurred")
   }
 
-  cat(comp_msg)
+  message(comp_msg)
 
   sim$vars$end_time <- Sys.time()
   sim$vars$total_runtime <- as.numeric(

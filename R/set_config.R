@@ -11,7 +11,7 @@
 #'     \code{\link{new_sim}}
 #' @param num_sim An integer; the number of simulations to conduct for each
 #'     level combination
-#' @param parallel String; one of c("outer", "inner", "none"). Controls which
+#' @param parallel A string; one of c("outer", "inner", "none"). Controls which
 #'     sections of the code are parallelized. Setting to "outer" will run one
 #'     simulation per core. Setting to "inner" will allow for parallelization
 #'     within a single simulation replicate. Setting to "none" will not
@@ -20,19 +20,21 @@
 #'     overview of how parallelization works in \pkg{SimEngine}. This option
 #'     will be ignored if the simulation is being run on a cluster computing
 #'     system.
+#' @param n_cores An integer; determines the number of CPUs on which the simulation
+#'     will run if using parallelization. Defaults to one fewer than the number of
+#'     available CPUs on the current host.
 #' @param packages A character vector of packages to load and attach
 #' @param stop_at_error A Boolean. If set to TRUE, the simulation will
 #'     stop if it encounters an error in any single replicate Useful for
 #'     debugging.
+#' @param progress_bar A Boolean. If set to FALSE, the progress bar that is
+#'     normally displayed while the simulation is running is suppressed.
 #' @param seed An integer; seeds allow for reproducible simulation results. If a
 #'     seed is specified, then consecutive runs of the same simulation with the
 #'     same seed will lead to identical results (under normal circumstances). If
 #'     a seed was not set in advance by the user, \pkg{SimEngine} will set a
 #'     random seed, which can later be retrieved using the \code{\link{vars}}
 #'     function. See details for further info.
-#' @param n_cores An integer; determines the number of CPUs on which the simulation
-#'     will run if using parallelization. Defaults to one fewer than the number of
-#'     available CPUs on the current host.
 #' @details \itemize{
 #'   \item{If a user specifies, for example, \code{set_config(seed=4)}, this
 #'   seed is used twice by \pkg{SimEngine}. First, \pkg{SimEngine} executes
@@ -57,14 +59,14 @@
 set_config <- function(
   sim, num_sim=1000, parallel="none",
   n_cores=parallel::detectCores()-1, packages=NULL,
-  stop_at_error=FALSE, seed=NA
+  stop_at_error=FALSE, progress_bar=TRUE, seed=NA
 ) UseMethod("set_config")
 
 #' @export
 set_config.sim_obj <- function(
   sim, num_sim=1000, parallel="none",
   n_cores=parallel::detectCores()-1, packages=NULL,
-  stop_at_error=FALSE, seed=NA
+  stop_at_error=FALSE, progress_bar=TRUE, seed=NA
 ) {
 
   handle_errors(sim, "is.sim_obj")
@@ -100,6 +102,11 @@ set_config.sim_obj <- function(
   if (!missing(stop_at_error)) {
     handle_errors(stop_at_error, "is.boolean")
     sim$config[["stop_at_error"]] <- stop_at_error
+  }
+
+  if (!missing(progress_bar)) {
+    handle_errors(progress_bar, "is.boolean")
+    sim$config[["progress_bar"]] <- progress_bar
   }
 
   if (!missing(seed)) {
