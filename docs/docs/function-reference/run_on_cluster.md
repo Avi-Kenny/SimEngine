@@ -13,13 +13,16 @@ parent: Function reference
 
 <h3>Description</h3>
 
-<p>This function provides a scaffold for running simulations in
-parallel in a cluster computing environment. It acts as a wrapper for
-the code in your simulation script, organizing the code into sections
-that are run just once per simulation (e.g. simulation setup and
-compiling results) and sections that are run many times (e.g. simulation
-replicates). This function interfaces with cluster job scheduler software
-(e.g. Slurm ) to divide parallel tasks over cluster nodes.
+<p>This function serves a scaffold for running simulations in
+parallel on a cluster computing system. It acts as a wrapper for the code
+in your simulation script, organizing the code into three sections,
+labeled &quot;first&quot; (code that is run once at the start of the simulation,
+e.g. setting simulation levels), &quot;main&quot; (the simulation script, which is
+run repeatedly), and &quot;last&quot; (code to combine and summarize simulation
+results). This function interacts with cluster job scheduler software
+(e.g. Slurm or Oracle Grid Engine) to divide parallel tasks over cluster
+nodes. See <a href="https://avi-kenny.github.io/SimEngine/parallelization/">https://avi-kenny.github.io/SimEngine/parallelization/</a>
+for an overview of how cluster parallelization works in <span class="pkg">SimEngine</span>.
 </p>
 
 
@@ -76,12 +79,12 @@ code).</p>
 
 ```R
 ## Not run: 
-# The following is a toy simulation that could be run in a cluster computing
-# environment using the Oracle Grid Engine job scheduler. It runs 10
-# replicates of 2 simulation levels as 20 separate cluster jobs, and then
-# summarizes the results. If a different scheduler is being used, modify the
-# shell script accordingly (i.e. change the qsub commands to the relevant
-# commands for your scheduler.
+# The following is a toy simulation that could be run on a cluster computing
+# environment. It runs 10 replicates of 2 simulation levels as 20 separate
+# cluster jobs, and then summarizes the results. This function is designed to
+# be used in conjunction with cluster job scheduler software (e.g. Slurm or
+# Oracle Grid Engine). We include both the R code as well as sample BASH code
+# for running the simulation using Oracle Grid Engine.
 
 # This code is saved in a file called my_simulation.R
 library(SimEngine)
@@ -111,13 +114,13 @@ run_on_cluster(
 )
 
 # This code is saved in a file called run_sim.sh
-#!/bin/bash
-Rscript my_simulation.R
+# #!/bin/bash
+# Rscript my_simulation.R
 
-# The following lines of code are run from the cluster head node.
-qsub -v run='first' run_sim.sh
-qsub -v run='main' -t 1-20 -hold_jid 101 run_sim.sh
-qsub -v run='last' -hold_jid 102 run_sim.sh
+# The following lines of code are run on the cluster head node.
+# qsub -v run='first' run_sim.sh
+# qsub -v run='main' -t 1-20 -hold_jid 101 run_sim.sh
+# qsub -v run='last' -hold_jid 102 run_sim.sh
 
 ## End(Not run)
 ```

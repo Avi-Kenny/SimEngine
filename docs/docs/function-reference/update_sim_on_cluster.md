@@ -13,15 +13,17 @@ parent: Function reference
 
 <h3>Description</h3>
 
-<p>This function provides a scaffold for updating a previously run
-simulation in a cluster computing environment. Like
+<p>This function serves a scaffold for updating a previously-run in
+parallel on a cluster computing system. Like
 <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>run_on_cluster</span>, it acts as a wrapper for the code in your
-simulation script, organizing the code into sections that are run just
-once per simulation (e.g. changing simulation levels/replicate numbers
-and compiling results) and sections that are run many times (e.g.
-simulation replicates). This function interfaces with cluster job
-scheduler software (e.g. Slurm ) to divide parallel tasks over cluster
-nodes.
+simulation script, organizing the code into three sections, labeled
+&quot;first&quot; (code that is run once at the start of the simulation, e.g.
+setting simulation levels), &quot;main&quot; (the simulation script, which is run
+repeatedly), and &quot;last&quot; (code to combine and summarize simulation
+results). This function interacts with cluster job scheduler software
+(e.g. Slurm or Oracle Grid Engine) to divide parallel tasks over cluster
+nodes. See <a href="https://avi-kenny.github.io/SimEngine/parallelization/">https://avi-kenny.github.io/SimEngine/parallelization/</a>
+for an overview of how cluster parallelization works in <span class="pkg">SimEngine</span>.
 </p>
 
 
@@ -99,18 +101,16 @@ particular simulation level)</p>
 
 ```R
 ## Not run: 
-# The following is a toy simulation that could be run in a cluster computing
-# environment using the Oracle Grid Engine job scheduler. It runs 10
-# replicates of 2 simulation levels as 20 separate cluster jobs. It then adds
-# an additional simulation level and updates the simulation. Finally, it
-# summarizes the results.
+# The following code creates, runs, and subsequently updates a toy simulation
+# on a cluster computing environment. We include both the R code as well as
+# sample BASH code for running the simulation using Oracle Grid Engine.
 
 # This code is saved in a file called my_simulation.R
 library(SimEngine)
 run_on_cluster(
 
   first = {
-    sim %<>% new_sim()
+    sim <- new_sim()
     sim %<>% add_creator("create_data", function(n){ rnorm(n) })
     sim %<>% set_script(function() {
       data <- create_data(L$n)
@@ -124,31 +124,32 @@ run_on_cluster(
     sim %<>% run()
   },
 
-  last = {},
+  last = {
+    sim %<>% summarize()
+  },
 
   cluster_config = list(js="ge")
 
 )
 
 # This code is saved in a file called run_sim.sh
-#!/bin/bash
-Rscript my_simulation.R
+# #!/bin/bash
+# Rscript my_simulation.R
 
-# The following lines of code are run from the cluster head node.
-qsub -v run='first' run_sim.sh
-qsub -v run='main' -t 1-20 -hold_jid 101 run_sim.sh
-qsub -v run='last' -hold_jid 102 run_sim.sh
+# The following lines of code are run on the cluster head node.
+# qsub -v run='first' run_sim.sh
+# qsub -v run='main' -t 1-20 -hold_jid 101 run_sim.sh
+# qsub -v run='last' -hold_jid 102 run_sim.sh
 
-# This code is saved in a file called update_my_simulation.R.
-# Note that it reads in 'sim.rds' from the previous simulation run.
+# This code is saved in a file called update_my_simulation.R. Note that it
+# reads in the simulation object created above, which is saved in a file
+# called "sim.rds".
 library(SimEngine)
 update_sim_on_cluster(
 
   first = {
-    sim <- readRDS('sim.rds')
-
+    sim <- readRDS("sim.rds")
     sim %<>% set_levels(n = c(100,500,1000))
-
   },
 
   main = {
@@ -159,20 +160,20 @@ update_sim_on_cluster(
     sim %<>% summarize()
   },
 
-  cluster_config = list(js = "ge")
+  cluster_config = list(js="ge")
 
 )
 
 # This code is saved in a file called update_sim.sh
-#!/bin/bash
-Rscript update_my_simulation.R
+# #!/bin/bash
+# Rscript update_my_simulation.R
 
-# The following lines of code are run from the cluster head node.
-# Note that only 10 new tasks are run, since 20 of 30 simulation reps
-# were completed in the original run.
-qsub -v run='first' update_sim.sh
-qsub -v run='main' -t 1-10 -hold_jid 104 update_sim.sh
-qsub -v run='last' -hold_jid 105 update_sim.sh
+# The following lines of code are run on the cluster head node. Note that
+# only 10 new replicates are run, since 20 of 30 simulation replicates were
+# run in the original call to run_on_cluster.
+# qsub -v run='first' update_sim.sh
+# qsub -v run='main' -t 1-10 -hold_jid 104 update_sim.sh
+# qsub -v run='last' -hold_jid 105 update_sim.sh
 
 ## End(Not run)
 ```

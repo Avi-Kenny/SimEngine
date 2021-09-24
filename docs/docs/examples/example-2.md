@@ -70,7 +70,7 @@ sim %<>% add_method("sandwich_vcov", function(data){
 })
 ```
 
-Next, we write the simulation script. This script returns a point estimate and a standard error estimate for both the intercept parameter $$\beta_0$$ and the slope parameter $$\beta_1$$. We will tell **SimEngine** to run 500 simulation replicates for each of four sample sizes. It is important to use the `seed` argument in `set_config` so that our results will be reproducible. In addition, we will use the `packages` option to load the sandwich package. Using this method (as opposed to running `library(sandwich)`) is required if running simulations in parallel. Finally, we run the simulation.  
+Next, we write the simulation script. This script returns a point estimate and a standard error estimate for both the intercept parameter $$\beta_0$$ and the slope parameter $$\beta_1$$. We will tell **SimEngine** to run 500 simulation replicates for each of four sample sizes. It is important to use the `seed` argument in `set_config` so that our results will be reproducible. In addition, we will use the `packages` option to load the sandwich package. Loading packages via `set_config` (as opposed to running `library(sandwich)`) is required if running simulations in parallel. Finally, we run the simulation.  
 
 ```R
 sim %<>% set_script(function() {
@@ -127,17 +127,17 @@ print(summarized_results)
 To visualize our results, we set up a plotting function.
 
 ```R
-plot_results <- function(which_graph, n_est){
+plot_results <- function(which_graph, n_est) {
   if (n_est == 3) {
-    values=c("#999999", "#E69F00", "#56B4E9")
-    breaks = c("model_vcov", "sandwich_vcov", "bootstrap_vcov")
-    labels = c("Model-based", "Sandwich", "Bootstrap")
-  } else{
-    values=c("#999999", "#E69F00")
-    breaks = c("model_vcov", "sandwich_vcov")
-    labels = c("Model-based", "Sandwich")
+    values <- c("#999999", "#E69F00", "#56B4E9")
+    breaks <- c("model_vcov", "sandwich_vcov", "bootstrap_vcov")
+    labels <- c("Model-based", "Sandwich", "Bootstrap")
+  } else {
+    values <- c("#999999", "#E69F00")
+    breaks <- c("model_vcov", "sandwich_vcov")
+    labels <- c("Model-based", "Sandwich")
   }
-  if (which_graph == "width"){
+  if (which_graph == "width") {
     summarized_results %>%
     pivot_longer(
       cols = c("mean_se_beta0", "mean_se_beta1"),
@@ -160,7 +160,7 @@ plot_results <- function(which_graph, n_est){
       name = "Parameter",
       labels = c(expression(beta[0]), expression(beta[1]))
     )
-  } else{
+  } else {
     summarized_results %>%
     pivot_longer(
       cols = c("cov_beta0","cov_beta1"),
@@ -173,7 +173,7 @@ plot_results <- function(which_graph, n_est){
     theme_bw() +
     ylab("Coverage") +
     scale_color_manual(
-      values= values,
+      values = values,
       breaks = breaks,
       name = "SE estimator",
       labels = labels
