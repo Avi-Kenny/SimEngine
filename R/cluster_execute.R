@@ -9,6 +9,10 @@ cluster_execute <- function(first,
                             keep_extra = FALSE,
                             update_switch = FALSE) {
 
+  # Capture current working directory and reset it on function exit
+  oldwd <- getwd()
+  on.exit(setwd(oldwd))
+
   # error handle invalid options
   handle_errors(keep_errors, "is.boolean")
   handle_errors(keep_extra, "is.boolean")
