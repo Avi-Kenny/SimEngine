@@ -157,7 +157,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
   }
 
   # Set up progress bar
-  if (sim$config$progrss_bar) {
+  if (sim$config$progress_bar) {
     pbapply::pboptions(type="txt", char="#", txt.width=40, style=3)
   } else {
     pbapply::pboptions(type="none")
