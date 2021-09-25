@@ -15,13 +15,12 @@ sim %<>% set_config(
   parallel = "none"
 )
 
-msg <- capture_output(
+msg <- capture_messages(
   sim %<>% run()
 )
 
 test_that("run() behaves correctly; no errors", {
-  expect_equal(substring(msg,nchar(msg)-36,nchar(msg)),
-               "Done. No errors or warnings detected.")
+  expect_equal(msg, "Done. No errors or warnings detected.\n\n")
   expect_equal(sim$errors, "No errors")
   expect_equal(sim$warnings, "No warnings")
   expect_type(sim$results, "list")
@@ -51,13 +50,12 @@ sim %<>% set_config(
   parallel = "none"
 )
 
-msg <- capture_output(
+msg <- capture_messages(
   sim %<>% run()
 )
 
 test_that("run() behaves correctly; no errors and some warnings", {
-  expect_equal(substring(msg, nchar(msg) - 76, nchar(msg)),
-               "Done. No errors detected. Warnings detected in 100% of simulation replicates.")
+  expect_equal(msg, "Done. No errors detected. Warnings detected in 100% of simulation replicates.\n\n")
   expect_equal(sim$errors, "No errors")
   expect_type(sim$results, "list")
   expect_type(sim$warnings, "list")
@@ -95,15 +93,14 @@ sim %<>% set_config(
   parallel = "none"
 )
 
-msg <- capture_output(
+msg <- capture_messages(
   sim %<>% run()
 )
 
 pct_error <- nrow(sim$errors)
 
 test_that("run() behaves correctly; some errors", {
-  expect_equal(substring(msg, nchar(msg)-103, nchar(msg)),
-               paste0("Done. Errors detected in ", pct_error, "% of simulation replicates. Warnings detected in 0% of simulation replicates."))
+  expect_equal(msg, paste0("Done. Errors detected in ", pct_error, "% of simulation replicates. Warnings detected in 0% of simulation replicates.\n\n"))
   expect_type(sim$results, "list")
   expect_type(sim$errors, "list")
   expect_equal(substring(sim$errors[1,"message"], 1, 14), "Lapack routine")
@@ -129,13 +126,12 @@ sim %<>% set_config(
   parallel = "none"
 )
 
-msg <- capture_output(
+msg <- capture_messages(
   sim %<>% run()
 )
 
 test_that("run() behaves correctly; all errors", {
-  expect_equal(substring(msg, nchar(msg)-104, nchar(msg)),
-               "Done. Errors detected in 100% of simulation replicates. Warnings detected in 0% of simulation replicates.")
+  expect_equal(msg, "Done. Errors detected in 100% of simulation replicates. Warnings detected in 0% of simulation replicates.\n\n")
   expect_type(sim$results, "character")
   expect_type(sim$errors, "list")
   expect_equal(substring(sim$errors[1,"message"], 1, 14), "Lapack routine")
