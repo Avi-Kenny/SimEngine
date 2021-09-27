@@ -1,5 +1,6 @@
-<!-- badges: start -->
-  ![GitHub R package version](https://img.shields.io/github/r-package/v/Avi-Kenny/SimEngine)
+<!-- badges: start
+  ![GitHub R package version](https://img.shields.io/github/r-package/v/Avi-Kenny/SimEngine) -->
+  [![CRAN status](https://www.r-pkg.org/badges/version/SimEngine)](https://CRAN.R-project.org/package=SimEngine)
   ![GitHub](https://img.shields.io/github/license/Avi-Kenny/SimEngine)
   [![R-CMD-check](https://github.com/Avi-Kenny/SimEngine/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/Avi-Kenny/SimEngine/actions/workflows/R-CMD-check.yml)
   [![Codecov test coverage](https://codecov.io/gh/Avi-Kenny/SimEngine/branch/master/graph/badge.svg)](https://codecov.io/gh/Avi-Kenny/SimEngine?branch=master)
