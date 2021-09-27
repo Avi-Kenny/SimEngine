@@ -16,7 +16,9 @@ knitr::opts_chunk$set(
 
 This vignette is adapted from <a href="https://avi-kenny.github.io/SimEngine/examples/2" target="_blank">Example 2</a> on the SimEngine website. 
 
-```{r setup}
+```{r setup, message = FALSE}
+library(tidyr)
+library(dplyr)
 library(SimEngine)
 ```
 
@@ -107,7 +109,7 @@ sim %<>% run()
 Now we can summarize the results using `summarize`. There are two main quantities of interest for us. The primary purpose of the standard error estimate for $\hat{\beta}$ is to form confidence intervals, so we will look at (1) the average width of the resulting interval (simply 1.96 times the average standard error estimate across simulation replicates), and (2) the estimated coverage of the interval, which is simply the proportion of simulation replicates in which the interval contains the true value of $\beta$. We will focus on 95% confidence intervals in this simulation. 
 
 ```{r}
-summarized_results <- sim %>% SimEngine::summarize(
+summarized_results <- sim %>% summarize(
   mean = list(
     list(name="mean_se_beta0", x="beta0_se_est"),
     list(name="mean_se_beta1", x="beta1_se_est")
@@ -190,8 +192,6 @@ plot_results <- function(which_graph, n_est) {
 We then use the plotting function to make our figures. 
 
 ```{r, message = FALSE, fig.width = 6}
-library(tidyr)
-library(dplyr)
 plot_results("width", 2)
 plot_results("coverage", 2)
 ```
@@ -234,7 +234,7 @@ sim %<>% update_sim()
 Now that we have the bootstrap results included in our simulation object, we can look at the updated results. 
 
 ```{r, fig.width = 6}
-summarized_results <- sim %>% SimEngine::summarize(
+summarized_results <- sim %>% summarize(
   mean = list(
     list(name="mean_se_beta0", x="beta0_se_est"),
     list(name="mean_se_beta1", x="beta1_se_est")

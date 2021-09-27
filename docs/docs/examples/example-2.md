@@ -29,6 +29,9 @@ We will carry out a small simulation study to compare these two estimators.
 We start by declaring a new simulation object and writing a creator function that generates some data according to our model. For this simulation, we will make $$\sigma^2_i$$ larger for larger values of $$X_i$$. 
 
 ```R
+library(tidyr)
+library(dplyr)
+library(SimEngine)
 sim <- new_sim()
 
 sim %<>% add_creator("create_regression_data", function(n) {
@@ -193,8 +196,6 @@ plot_results <- function(which_graph, n_est) {
 We then use the plotting function to make our figures. 
 
 ```R
-library(tidyr)
-library(dplyr)
 plot_results("width")
 plot_results("coverage")
 ```
