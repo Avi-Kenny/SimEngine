@@ -30,7 +30,6 @@ We start by declaring a new simulation object and writing a creator function tha
 
 ```R
 library(tidyr)
-library(dplyr)
 library(SimEngine)
 sim <- new_sim()
 
@@ -147,7 +146,7 @@ plot_results <- function(which_graph, n_est) {
       names_to = "parameter",
       names_prefix = "mean_se_"
     ) %>%
-    mutate(value_j = jitter(value, amount = 0.01)) %>%
+    dplyr::mutate(value_j = jitter(value, amount = 0.01)) %>%
     ggplot(aes(x=n, y=1.96*value, color=estimator)) +
     geom_line(aes(linetype=parameter)) +
     geom_point() +
@@ -171,7 +170,7 @@ plot_results <- function(which_graph, n_est) {
       names_to = "parameter",
       names_prefix = "cov_"
     ) %>%
-    mutate(value_j = jitter(value, amount = 0.01)) %>%
+    dplyr::mutate(value_j = jitter(value, amount = 0.01)) %>%
     ggplot(aes(x=n, y=value, color=estimator)) +
     geom_line(aes(linetype = parameter)) +
     geom_point() +

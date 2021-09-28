@@ -471,7 +471,7 @@ summ <- sim %>% summarize(
 test_that("quantile summary with na.rm returns quantile", {
   expect_type(summ, "list")
   expect_equal(dim(summ), c(1, 2))
-  expect_equal(summ$my_summary, 2)
+  expect_equal(as.numeric(summ$my_summary), 2)
 })
 
 summ <- sim %>% summarize(
@@ -482,8 +482,8 @@ summ <- sim %>% summarize(
 test_that("quantile summary of two variables returns both quantiles", {
   expect_type(summ, "list")
   expect_equal(dim(summ), c(1, 3))
-  expect_equal(summ$my_summary, 2)
-  expect_equal(summ$quantile_0.75_y, 9.75)
+  expect_equal(as.numeric(summ$my_summary), 2)
+  expect_equal(as.numeric(summ$quantile_0.75_y), 9.75)
   expect_equal(names(summ), c("level_id",  "my_summary", "quantile_0.75_y"))
 })
 
