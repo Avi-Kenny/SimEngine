@@ -29,6 +29,8 @@ We will carry out a small simulation study to compare these two estimators.
 We start by declaring a new simulation object and writing a creator function that generates some data according to our model. For this simulation, we will make $$\sigma^2_i$$ larger for larger values of $$X_i$$. 
 
 ```R
+library(tidyr)
+library(SimEngine)
 sim <- new_sim()
 
 sim %<>% add_creator("create_regression_data", function(n) {
@@ -101,7 +103,7 @@ sim %<>% run()
 Now we can summarize the results using `summarize`. There are two main quantities of interest for us. The primary purpose of the standard error estimate for $$\hat{\beta}$$ is to form confidence intervals, so we will look at (1) the average width of the resulting interval (simply 1.96 times the average standard error estimate across simulation replicates), and (2) the estimated coverage of the interval, which is simply the proportion of simulation replicates in which the interval contains the true value of $$\beta$$. We will focus on 95% confidence intervals in this simulation. 
 
 ```R
-summarized_results <- sim %>% summarize(
+summarized_results <- sim %>% SimEngine::summarize(
   mean = list(
     list(name="mean_se_beta0", x="beta0_se_est"),
     list(name="mean_se_beta1", x="beta1_se_est")
@@ -144,6 +146,7 @@ plot_results <- function(which_graph, n_est) {
       names_to = "parameter",
       names_prefix = "mean_se_"
     ) %>%
+    dplyr::mutate(value_j = jitter(value, amount = 0.01)) %>%
     ggplot(aes(x=n, y=1.96*value, color=estimator)) +
     geom_line(aes(linetype=parameter)) +
     geom_point() +
@@ -167,6 +170,7 @@ plot_results <- function(which_graph, n_est) {
       names_to = "parameter",
       names_prefix = "cov_"
     ) %>%
+    dplyr::mutate(value_j = jitter(value, amount = 0.01)) %>%
     ggplot(aes(x=n, y=value, color=estimator)) +
     geom_line(aes(linetype = parameter)) +
     geom_point() +
@@ -191,7 +195,6 @@ plot_results <- function(which_graph, n_est) {
 We then use the plotting function to make our figures. 
 
 ```R
-library(tidyr)
 plot_results("width")
 plot_results("coverage")
 ```
@@ -237,7 +240,7 @@ sim %<>% update_sim()
 Now that we have the bootstrap results included in our simulation object, we can look at the updated results. 
 
 ```R
-summarized_results <- sim %>% summarize(
+summarized_results <- sim %>% SimEngine::summarize(
   mean = list(
     list(name="mean_se_beta0", x="beta0_se_est"),
     list(name="mean_se_beta1", x="beta1_se_est")

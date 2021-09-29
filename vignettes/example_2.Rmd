@@ -16,7 +16,8 @@ knitr::opts_chunk$set(
 
 This vignette is adapted from <a href="https://avi-kenny.github.io/SimEngine/examples/2" target="_blank">Example 2</a> on the SimEngine website. 
 
-```{r setup}
+```{r setup, message = FALSE}
+library(tidyr)
 library(SimEngine)
 ```
 
@@ -141,7 +142,8 @@ plot_results <- function(which_graph, n_est) {
       names_to = "parameter",
       names_prefix = "mean_se_"
     ) %>%
-    ggplot(aes(x=n, y=1.96*value, color=estimator)) +
+    dplyr::mutate(value_j = jitter(value, amount = 0.01)) %>%
+    ggplot(aes(x=n, y=1.96*value_j, color=estimator)) +
     geom_line(aes(linetype=parameter)) +
     geom_point() +
     theme_bw() +
@@ -164,6 +166,7 @@ plot_results <- function(which_graph, n_est) {
       names_to = "parameter",
       names_prefix = "cov_"
     ) %>%
+    dplyr::mutate(value_j = jitter(value, amount = 0.01)) %>%
     ggplot(aes(x=n, y=value, color=estimator)) +
     geom_line(aes(linetype = parameter)) +
     geom_point() +
@@ -188,7 +191,6 @@ plot_results <- function(which_graph, n_est) {
 We then use the plotting function to make our figures. 
 
 ```{r, message = FALSE, fig.width = 6}
-library(tidyr)
 plot_results("width", 2)
 plot_results("coverage", 2)
 ```
