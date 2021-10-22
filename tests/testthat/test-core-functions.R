@@ -243,8 +243,6 @@ test_that("set_levels() works with list levels provided", {
                c("estimator_1", "estimator_2"))
 })
 
-
-
 # no levels supplied
 test_that("set_levels() throws error with no levels provided", {
   expect_error(set_levels(sim), "No levels supplied")
@@ -255,6 +253,7 @@ test_that("set_levels() throws error if levels are not a list of key-value pairs
                "Simulation levels must be a list of key-value pairs." )
 })
 
+# Use of the .add argument
 sim <- new_sim()
 sim %<>% set_levels(
   num_patients = c(50, 100)
@@ -266,6 +265,17 @@ sim %<>% set_levels(
 test_that(".add argument works to add new levels to existing", {
   expect_equal(sim$levels$num_patients, c(50, 100, 200))
 })
+
+# Use of the .keep argument
+sim %<>% set_levels(alpha=c(1,2,3), beta=c(5,6))
+sim %<>% set_levels(.keep=c(1,2,6))
+test_that(".add argument works to add new levels to existing", {
+  expect_equal(sim$levels_grid$level_id, c(1,2,6))
+  expect_equal(sim$levels_grid$alpha, c(1,2,3))
+  expect_equal(sim$levels_grid$beta, c(5,5,6))
+})
+
+
 
 ### set_config() ###
 
