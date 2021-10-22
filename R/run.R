@@ -62,10 +62,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
     # Create levels_grid_big
     levels_grid_big <- create_levels_grid_big(sim)
     sim$internals$levels_grid_big <- levels_grid_big
-  }# else{
-  #  sim_uids <- sim$internals$levels_grid_big$sim_uid
-  #}
-
+  }
 
   # Set up parallelization code
   if (sim$config$parallel %in% c("inner", "outer")) {
@@ -106,6 +103,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
     ])
     levs <- names(sim$levels)
     for (j in 1:length(levs)) {
+      # Handle list-type levels
       if (sim$internals$levels_types[j]) {
         L[[levs[j]]] <- sim$levels[[levs[j]]][[L[[levs[j]]]]]
       }
@@ -247,7 +245,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
       sim$results_complex <- results_complex
     }
 
-    # Join results data frames with `levels_grid_big`and attach to sim
+    # Join results data frames with `levels_grid_big` and attach to sim
     results_df <- dplyr::inner_join(
       sim$internals$levels_grid_big,
       results_df,
@@ -269,7 +267,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
     })
     errors_df <- data.table::rbindlist(results_lists_err)
 
-    # Join error data frames with `levels_grid_big`and attach to sim
+    # Join error data frames with `levels_grid_big` and attach to sim
     errors_df <- dplyr::inner_join(
       sim$internals$levels_grid_big,
       errors_df,
@@ -289,7 +287,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
     })
     warn_df <- data.table::rbindlist(results_lists_warn)
 
-    # Join warnings data frames with `levels_grid_big`and attach to sim
+    # Join warnings data frames with `levels_grid_big` and attach to sim
     warn_df <- dplyr::inner_join(
       sim$internals$levels_grid_big,
       warn_df,

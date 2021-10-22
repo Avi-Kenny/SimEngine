@@ -11,6 +11,10 @@
 #'     more. On the second call, if add=FALSE (default) the old set of levels
 #'     will be replaced by the new set, whereas if add=TRUE the new set of
 #'     levels will be merged with the old set. See examples.
+#' @param .add Only relevant if \code{\link{set_levels}} is called twice or
+#'     more. On the second call, if add=FALSE (default) the old set of levels
+#'     will be replaced by the new set, whereas if add=TRUE the new set of
+#'     levels will be merged with the old set. See examples.
 #' @return The original simulation object with the old set of levels replaced
 #'     with the new set
 #' @examples
@@ -39,6 +43,11 @@
 #' sim$levels
 #'
 #' # To merge the old levels with the new levels instead, specify .add=TRUE:
+#' sim %<>% set_levels(alpha=c(1,2), beta=c(5,6))
+#' sim %<>% set_levels(alpha=c(3,4), gamma=c(7,8), .add=TRUE)
+#' sim$levels
+#'
+#' # If you don't want to run simulations for all level combinations
 #' sim %<>% set_levels(alpha=c(1,2), beta=c(5,6))
 #' sim %<>% set_levels(alpha=c(3,4), gamma=c(7,8), .add=TRUE)
 #' sim$levels

@@ -120,7 +120,7 @@ sim %<>% add_method(estimator_2)
 
 ### 4) Set the simulation levels
 
-Often, we want to run the same simulation multiple times (with each run referred to as a "simulation replicate"), but with certain things changed. In this example, perhaps we want to vary the number of patients and the method used to estimate the average treatment effect. We refer to the things that vary as "simulation levels". By default, **SimEngine** will run our simulation 1,000 times for each level combination. Below, since there are two methods and three values of num_patients, we have six level combinations and so **SimEngine** will run a total of 6,000 simulation replicates.
+Often, we want to run the same simulation multiple times (with each run referred to as a "simulation replicate"), but with certain things changed. In this example, perhaps we want to vary the number of patients and the method used to estimate the average treatment effect. We refer to the things that vary as "simulation levels". By default, **SimEngine** will run our simulation 10 times for each level combination. Below, since there are two methods and three values of num_patients, we have six level combinations and so **SimEngine** will run a total of 60 simulation replicates.
 
 ```R
 sim %<>% set_levels(
