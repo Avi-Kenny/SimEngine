@@ -140,7 +140,7 @@ sim <- new_sim()
 
 sim %<>% set_script(
   function() {
-    if (L$index %% 2 != 0){
+    if (L$index %% 2 != 0) {
       warning('Odd warning.')
       stop('Odd error.')
     }

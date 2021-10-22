@@ -57,7 +57,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
     }
   }
 
-  if (!sim$internals$update_sim){
+  if (!sim$internals$update_sim) {
 
     # Create levels_grid_big
     levels_grid_big <- create_levels_grid_big(sim)
@@ -136,10 +136,10 @@ run.sim_obj <- function(sim, sim_uids=NA) {
       } else {
         script_results <- tryCatch(
           expr = do.call(what="..script", args=list(), envir=env),
-          error = function(e){ return(e) }
+          error = function(e) { return(e) }
         )
       }},
-      warning = function(w){
+      warning = function(w) {
         .gotWarnings <<- c(.gotWarnings, conditionMessage(w))
         invokeRestart("muffleWarning")
       }
@@ -185,7 +185,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
     } else {
       results_lists_ok[[length(results_lists_ok)+1]] <- results_lists[[i]]
     }
-    if (length(results_lists[[i]]$warnings) > 0){
+    if (length(results_lists[[i]]$warnings) > 0) {
       results_lists_warn[[length(results_lists_warn)+1]] <- results_lists[[i]]
     }
   }
@@ -260,7 +260,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
   # Convert errors to data frame
   if (num_err>0) {
 
-    results_lists_err <- lapply(results_lists_err, function(r){
+    results_lists_err <- lapply(results_lists_err, function(r) {
       list("sim_uid" = r$sim_uid,
            "runtime" = r$runtime,
            "message" = r$results$message,
@@ -282,7 +282,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
   # Convert warnings to data frame
   if (num_warn>0) {
 
-    results_lists_warn <- lapply(results_lists_warn, function(r){
+    results_lists_warn <- lapply(results_lists_warn, function(r) {
       list("sim_uid" = r$sim_uid,
            "runtime" = r$runtime,
            "message" = paste(r$warnings, collapse="; "))

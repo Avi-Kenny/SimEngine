@@ -49,7 +49,7 @@
 #'
 #'   first = {
 #'     sim <- new_sim()
-#'     sim %<>% add_creator("create_data", function(n){ rnorm(n) })
+#'     sim %<>% add_creator("create_data", function(n) { rnorm(n) })
 #'     sim %<>% set_script(function() {
 #'       data <- create_data(L$n)
 #'       return(mean(data))

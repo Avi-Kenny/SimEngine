@@ -1,10 +1,10 @@
 
 sim <- new_sim()
 
-sim %<>% add_method("return_one", function(){ 1 })
-sim %<>% add_method("access_level", function(){ L$alpha })
-sim %<>% add_method("access_constant", function(){ C$beta })
-sim %<>% add_creator("create_data", function(){
+sim %<>% add_method("return_one", function() { 1 })
+sim %<>% add_method("access_level", function() { L$alpha })
+sim %<>% add_method("access_constant", function() { C$beta })
+sim %<>% add_creator("create_data", function() {
   x <- return_one()
   y <- access_level()
   z <- access_constant()

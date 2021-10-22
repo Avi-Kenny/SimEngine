@@ -65,7 +65,7 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
   handle_errors(sim, "is.sim_obj")
 
   # Error if simulation has not yet been run
-  if (sim$vars$run_state == "pre run"){
+  if (sim$vars$run_state == "pre run") {
     stop("Simulation has not been run yet.")
   }
 
@@ -89,14 +89,14 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
   prev_levels_grid_big <- sim$internals$levels_grid_big
   prev_levels_grid <- prev_levels_grid_big[,-c(1,3), drop = FALSE] %>%
     dplyr::distinct()
-  if (!("no levels" %in% names(sorted_prev_levels))){
+  if (!("no levels" %in% names(sorted_prev_levels))) {
     sim$levels_grid <- dplyr::left_join(
       sim$levels_grid[,-which(names(sim$levels_grid)=="level_id"), drop=FALSE],
       prev_levels_grid,
       by = names(sorted_prev_levels)
     )
     max_levelid <- max(prev_levels_grid$level_id)
-    if (sum(is.na(sim$levels_grid$level_id)) > 0){
+    if (sum(is.na(sim$levels_grid$level_id)) > 0) {
       new_levelids <- (max_levelid + 1):(
         max_levelid + sum(is.na(sim$levels_grid$level_id))
       )
@@ -112,7 +112,7 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
     by = names(levels_grid_big)[-which(names(levels_grid_big)=="sim_uid")])
   # !!!!! use the internal total_sim here instead. this is currently not quite correct
   max_uid <- sim$internals$num_sim_cuml
-  if (sum(is.na(levels_grid_big$sim_uid)) > 0){
+  if (sum(is.na(levels_grid_big$sim_uid)) > 0) {
     new_uids <- (max_uid + 1):(max_uid + sum(is.na(levels_grid_big$sim_uid)))
     levels_grid_big$sim_uid[is.na(levels_grid_big$sim_uid)] <- new_uids
   }
@@ -125,7 +125,7 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
 
   # if re-running error reps, limit the prev_levels_grid to only those in
   #     results and revert the error df
-  if (!keep_errors){
+  if (!keep_errors) {
     prev_levels_grid_big <- dplyr::semi_join(prev_levels_grid_big,
                                          sim$results,
                                          by = names(prev_levels_grid_big))
@@ -152,19 +152,19 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
 
   # if keep_extra = FALSE, remove excess runs (from results, errors, and
   #     warnings)
-  if (!keep_extra & nrow(extra_run) > 0){
+  if (!keep_extra & nrow(extra_run) > 0) {
 
-    if (!is.character(sim$results)){
+    if (!is.character(sim$results)) {
       sim$results <- dplyr::anti_join(sim$results,
                                           extra_run,
                                           by = names(extra_run))
     }
-    if (!is.character(sim$errors)){
+    if (!is.character(sim$errors)) {
       sim$errors <- dplyr::anti_join(sim$errors,
                                          extra_run,
                                          by = names(extra_run))
     }
-    if (!is.character(sim$warnings)){
+    if (!is.character(sim$warnings)) {
       sim$warnings <- dplyr::anti_join(sim$warnings,
                                            extra_run,
                                            by = names(extra_run))
@@ -172,7 +172,7 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
   }
 
   # if on cluster, delete old results, errors, etc
-  if (Sys.getenv("sim_run")!=""){
+  if (Sys.getenv("sim_run")!="") {
     sim$results <- NULL
     sim$errors <- NULL
     sim$warnings <- NULL
@@ -183,7 +183,7 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
   #sim_copy$internals$levels_grid_big <- levels_grid_big
 
   # if there are extra runs to do
-  if (nrow(not_run) > 0){
+  if (nrow(not_run) > 0) {
 
     sim_copy$internals$levels_grid_big <- not_run
 
@@ -197,8 +197,8 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
     sim_copy <- run(sim_copy)
 
     # combine results/errors/warnings of original run and update
-    if (!is.character(sim_copy$results)){
-      if (!is.character(sim$results)){
+    if (!is.character(sim_copy$results)) {
+      if (!is.character(sim$results)) {
         sim_copy$results <- rbind(sim$results, sim_copy$results)
       }
       sim_copy$results <- sim_copy$results[order(sim_copy$results$sim_uid),]
@@ -206,8 +206,8 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
     else{
       sim_copy$results <- sim$results
     }
-    if (!is.character(sim_copy$errors)){
-      if (!is.character(sim$errors)){
+    if (!is.character(sim_copy$errors)) {
+      if (!is.character(sim$errors)) {
         sim_copy$errors <- rbind(sim$errors, sim_copy$errors)
       }
       sim_copy$errors <- sim_copy$errors[order(sim_copy$errors$sim_uid),]
@@ -215,8 +215,8 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
     else{
       sim_copy$errors <- sim$errors
     }
-    if (!is.character(sim_copy$warnings)){
-      if (!is.character(sim$warnings)){
+    if (!is.character(sim_copy$warnings)) {
+      if (!is.character(sim$warnings)) {
         sim_copy$warnings <- rbind(sim$warnings, sim_copy$warnings)
       }
       sim_copy$warnings <- sim_copy$warnings[order(sim_copy$warnings$sim_uid),]

@@ -63,7 +63,7 @@ sim %<>% set_config(parallel = "inner")
 sim %<>% add_creator(
   "create_data",
   function(sample_size) {
-    data <- parLapply(CL, c(1:sample_size), function(x){
+    data <- parLapply(CL, c(1:sample_size), function(x) {
       x <- rnorm(n=1, mean=10, sd=1)
       y <- 3*x + 9
       z <- x / y
@@ -96,7 +96,7 @@ Suppose we have written the following simulation and want to run it on a CCS:
 ```R
 library(SimEngine)
 sim %<>% new_sim()
-sim %<>% add_creator("create_data", function(n){ rnorm(n) })
+sim %<>% add_creator("create_data", function(n) { rnorm(n) })
 sim %<>% set_script(function() {
   data <- create_data(L$n)
   return(mean(data))
@@ -115,7 +115,7 @@ run_on_cluster(
 
   first = {
     sim %<>% new_sim()
-    sim %<>% add_creator("create_data", function(n){ rnorm(n) })
+    sim %<>% add_creator("create_data", function(n) { rnorm(n) })
     sim %<>% set_script(function() {
       data <- create_data(L$n)
       return(mean(data))

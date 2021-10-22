@@ -80,7 +80,7 @@ test_that("add_creator() works with function defined in call", {
 
 # add_creator() throws error for non-string name
 test_that("add_creator() throws error for non-string name", {
-  expect_error(add_creator(sim, 2, function(y){return(y)}),
+  expect_error(add_creator(sim, 2, function(y) {return(y)}),
                "`name` must be a character string")
 })
 
@@ -144,7 +144,7 @@ test_that("add_method() works with function defined in call", {
 
 # add_method() throws error for non-string name
 test_that("add_method() throws error for non-string name", {
-  expect_error(add_method(sim, 2, function(y){return(y)}),
+  expect_error(add_method(sim, 2, function(y) {return(y)}),
                "`name` must be a character string")
 })
 
@@ -421,7 +421,7 @@ test_that("sim_3 has only non-complex data", {
 sim <- new_sim()
 sim %<>% add_method("estimator_1", function() { L$val })
 sim %<>% add_method("estimator_2", function() { L$val })
-sim %<>% add_method("wrapper_1", function(){
+sim %<>% add_method("wrapper_1", function() {
   val_hat <- use_method(L$estimator, list())
   return(val_hat)
 })
@@ -431,7 +431,7 @@ sim %<>% set_levels(
 )
 sim %<>% set_config(num_sim=1)
 sim %<>% set_script(function() {
-  wrapper_2 <- function(){use_method(L$estimator, list())}
+  wrapper_2 <- function() { use_method(L$estimator, list()) }
   val_hat_1 <- wrapper_1()
   val_hat_2 <- wrapper_2()
   val_hat_3 <- use_method(L$estimator)

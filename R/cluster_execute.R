@@ -183,7 +183,7 @@ cluster_execute <- function(first,
     # if there are error files in the results directory and stop_at_error==TRUE
     # skip this rep
     err_reps <- list.files(path = ..path_sim_res, pattern = "e_*")
-    if (!(length(err_reps) > 0 & ..sim$config$stop_at_error)){
+    if (!(length(err_reps) > 0 & ..sim$config$stop_at_error)) {
 
       # Error handling: tid_var and js
       if (is.null(..cfg$tid_var) && is.null(..cfg$js)) {
@@ -283,7 +283,7 @@ cluster_execute <- function(first,
     # if there are error files in the results directory and stop_at_error==TRUE
     # skip this rep
     err_reps <- list.files(path = ..path_sim_res, pattern = "e_*")
-    if (length(err_reps) > 0 & ..sim$config$stop_at_error){
+    if (length(err_reps) > 0 & ..sim$config$stop_at_error) {
       unlink(paste0(..path_sim_res, "/r_*"))
     } else {
       # Process result/error files
@@ -406,19 +406,19 @@ cluster_execute <- function(first,
 
         # if keep_extra = FALSE, remove excess runs (from results, errors, and
         #     warnings)
-        if (!keep_extra & nrow(extra_run) > 0){
+        if (!keep_extra & nrow(extra_run) > 0) {
 
-          if (!is.character(..sim$results)){
+          if (!is.character(..sim$results)) {
             ..sim$results <- dplyr::anti_join(..sim$results,
                                                   extra_run,
                                                   by = names(extra_run))
           }
-          if (!is.character(..sim$errors)){
+          if (!is.character(..sim$errors)) {
             ..sim$errors <- dplyr::anti_join(..sim$errors,
                                                  extra_run,
                                                  by = names(extra_run))
           }
-          if (!is.character(..sim$warnings)){
+          if (!is.character(..sim$warnings)) {
             ..sim$warnings <- dplyr::anti_join(..sim$warnings,
                                                    extra_run,
                                                    by = names(extra_run))
@@ -443,9 +443,9 @@ cluster_execute <- function(first,
       # This is done before running the 'last' code so that the compiled
       #   simulation object is saved even if there's an error with the 'last'
       #   code
-      for (i in 1:5){
+      for (i in 1:5) {
         x <- unlink(..path_sim_res, recursive=TRUE)
-        if (x == 0){
+        if (x == 0) {
           break
         }
         Sys.sleep(0.2)

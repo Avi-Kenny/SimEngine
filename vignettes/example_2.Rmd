@@ -66,12 +66,12 @@ ggplot(dat, aes(x=x, y=residuals)) +
 Now we add two methods to our simulation object: one returns the least squares estimate and model-based estimator of the variance-covariance matrix of $\hat{\beta}$, and the other returns the least squares estimate and sandwich estimator (using the sandwich package). 
 
 ```{r}
-sim %<>% add_method("model_vcov", function(data){
+sim %<>% add_method("model_vcov", function(data) {
   mod <- lm(y~x, data=data)
   return(list("coef"=mod$coefficients, "vcov"=diag(vcov(mod))))
 })
 
-sim %<>% add_method("sandwich_vcov", function(data){
+sim %<>% add_method("sandwich_vcov", function(data) {
   mod <- lm(y~x, data=data)
   return(list("coef"=mod$coefficients, "vcov"=diag(vcovHC(mod))))
 })
@@ -203,7 +203,7 @@ The bootstrap is another popular approach to estimating standard errors. We can 
 sim %<>% add_method("bootstrap_vcov", function(data) {
   mod <- lm(y~x, data=data)
   boot_ests <- matrix(NA, nrow=100, ncol=2)
-  for (j in 1:100){
+  for (j in 1:100) {
     indices <- sample(1:nrow(data), size=nrow(data), replace=TRUE)
     boot_dat <- data[indices,]
     boot_mod <- lm(y~x, data=boot_dat)

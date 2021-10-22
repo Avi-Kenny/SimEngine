@@ -83,12 +83,12 @@ set_levels.sim_obj <- function(sim, ..., .add=FALSE) {
     if (class(sim$levels[[i]])=="list") {
       # if the level is a list, it must be a named list of lists
       # first, make sure it has names
-      if (length(names(sim$levels[[i]])) != length(sim$levels[[i]]) || "" %in% names(sim$levels[[i]])){
+      if (length(names(sim$levels[[i]])) != length(sim$levels[[i]]) || "" %in% names(sim$levels[[i]])) {
         stop("Each item in a list level must have a name.")
       }
       # then, make sure each item in the list is, itself, a list
-      for (j in 1:length(sim$levels[[i]])){
-        if (!is.list(sim$levels[[i]][[j]])){
+      for (j in 1:length(sim$levels[[i]])) {
+        if (!is.list(sim$levels[[i]][[j]])) {
           stop("Each item in a list level must be a list.")
         }
       }

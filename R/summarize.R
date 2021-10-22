@@ -181,8 +181,8 @@ summarize.sim_obj <- function(sim, ...) {
                "mse",
                "mae",
                "coverage")
-  for (arg_name in names(o_args)){
-    if (!(arg_name %in% metrics)){
+  for (arg_name in names(o_args)) {
+    if (!(arg_name %in% metrics)) {
       stop(paste0(arg_name, " is an invalid summary metric."))
     }
   }
@@ -206,7 +206,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (m in o_args$mean) {
 
       # if name missing, create a name
-      if (is.null(m$name)){
+      if (is.null(m$name)) {
         m$name <- paste0("mean_", m$x)
       }
 
@@ -239,7 +239,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (sd in o_args$sd) {
 
       # if name missing, create a name
-      if (is.null(sd$name)){
+      if (is.null(sd$name)) {
         sd$name <- paste0("sd_", sd$x)
       }
 
@@ -272,7 +272,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (var in o_args$var) {
 
       # if name missing, create a name
-      if (is.null(var$name)){
+      if (is.null(var$name)) {
         var$name <- paste0("var_", var$x)
       }
 
@@ -306,7 +306,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (m in o_args$mad) {
 
       # if name missing, create a name
-      if (is.null(m$name)){
+      if (is.null(m$name)) {
         m$name <- paste0("MAD_", m$x)
       }
 
@@ -340,7 +340,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (i in o_args$iqr) {
 
       # if name missing, create a name
-      if (is.null(i$name)){
+      if (is.null(i$name)) {
         i$name <- paste0("IQR_", i$x)
       }
 
@@ -360,7 +360,7 @@ summarize.sim_obj <- function(sim, ...) {
       code_iqr <- c(code_iqr, paste0(
         #i$name, " = IQR(", i$x, na_1
         pre, i$name, " = tryCatch(IQR(", i$x, na_1,
-        " error = function(e){return(NA)}),"
+        " error = function(e) {return(NA)}),"
       ))
 
     }
@@ -376,7 +376,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (q in o_args$quantile) {
 
       # if name missing, create a name
-      if (is.null(q$name)){
+      if (is.null(q$name)) {
         q$name <- paste0("quantile_", q$prob, "_", q$x)
       }
 
@@ -388,7 +388,7 @@ summarize.sim_obj <- function(sim, ...) {
                     msg=paste0("`",q$x,"` is not a variable in results"))
       handle_errors(R[[q$x]], "is.numeric.vec", name=q$x)
       handle_errors(q$prob, "is.numeric", name=q$prob)
-      if (length(q$prob) > 1 | q$prob > 1 | q$prob < 0){
+      if (length(q$prob) > 1 | q$prob > 1 | q$prob < 0) {
         stop(paste0(q$prob, " is not a number between 0 and 1."))
       }
 
@@ -401,7 +401,7 @@ summarize.sim_obj <- function(sim, ...) {
       code_q <- c(code_q, paste0(
         #q$name, " = quantile(", q$x, ", probs=", q$prob, ",", na_1
         pre, q$name, " = tryCatch(quantile(", q$x, ", probs=", q$prob, ",",
-        na_1, " error = function(e){return(NA)}),"
+        na_1, " error = function(e) {return(NA)}),"
       ))
 
     }
@@ -417,7 +417,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (m in o_args$min) {
 
       # if name missing, create a name
-      if (is.null(m$name)){
+      if (is.null(m$name)) {
         m$name <- paste0("min_", m$x)
       }
 
@@ -450,7 +450,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (m in o_args$max) {
 
       # if name missing, create a name
-      if (is.null(m$name)){
+      if (is.null(m$name)) {
         m$name <- paste0("max_", m$x)
       }
 
@@ -484,7 +484,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (m in o_args$median) {
 
       # if name missing, create a name
-      if (is.null(m$name)){
+      if (is.null(m$name)) {
         m$name <- paste0("median_", m$x)
       }
 
@@ -518,7 +518,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (b in o_args$bias) {
 
       # if name missing, create a name
-      if (is.null(b$name)){
+      if (is.null(b$name)) {
         b$name <- paste0("bias_", b$estimate)
       }
 
@@ -561,7 +561,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (b in o_args$bias_pct) {
 
       # if name missing, create a name
-      if (is.null(b$name)){
+      if (is.null(b$name)) {
         b$name <- paste0("bias_pct_", b$estimate)
       }
 
@@ -605,7 +605,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (m in o_args$mse) {
 
       # if name missing, create a name
-      if (is.null(m$name)){
+      if (is.null(m$name)) {
         m$name <- paste0("MSE_", m$estimate)
       }
 
@@ -648,7 +648,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (m in o_args$mae) {
 
       # if name missing, create a name
-      if (is.null(m$name)){
+      if (is.null(m$name)) {
         m$name <- paste0("MAE_", m$estimate)
       }
 
