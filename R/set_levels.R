@@ -65,9 +65,9 @@ set_levels.sim_obj <- function(sim, ..., .add=FALSE, .keep=NA) {
   if (!is.na(.keep[[1]])) {
     handle_errors(.keep, "is.numeric.vec")
     if (.add) { stop("set_levels cannot be called with both .add=T and .keep") }
-  }
-  if (any(!(.keep %in% sim$levels_grid$level_id))) {
-    stop(".keep argument incorrectly specified")
+    if (any(!(.keep %in% sim$levels_grid$level_id))) {
+      stop(".keep argument incorrectly specified")
+    }
   }
   if (length(list(...))==0 && is.na(.keep)) { stop("No levels supplied") }
 

@@ -21,7 +21,7 @@ between simulation replicates.
 <h3>Usage</h3>
 
 ```R
-set_levels(sim, ..., .add = FALSE)
+set_levels(sim, ..., .add = FALSE, .keep = NA)
 ```
 
 
@@ -45,6 +45,11 @@ more complex levels). See examples.</p>
 more. On the second call, if add=FALSE (default) the old set of levels
 will be replaced by the new set, whereas if add=TRUE the new set of
 levels will be merged with the old set. See examples.</p>
+</td></tr>
+<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>.keep</span></td>
+<td>
+<p>An integer vector specifying which level combinations to keep;
+see examples.</p>
 </td></tr>
 </table>
 
@@ -87,6 +92,16 @@ sim$levels
 sim %<>% set_levels(alpha=c(1,2), beta=c(5,6))
 sim %<>% set_levels(alpha=c(3,4), gamma=c(7,8), .add=TRUE)
 sim$levels
+
+# If you don't want to run simulations for all level combinations, use the
+.keep option. First, set the levels normally. Second, view the
+sim$levels_grid dataframe to examine the level combinations and the
+associated level_id values. Third, call set_levels again with the .keep
+option to specify which levels to keep (via a vector of level_id values).
+sim %<>% set_levels(alpha=c(1,2,3), beta=c(5,6))
+sim$levels_grid
+sim %<>% set_levels(.keep=c(1,2,6))
+sim$levels_grid
 ```
 
 <hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.0.0 ]</div>

@@ -4,7 +4,7 @@
 \alias{set_levels}
 \title{Set simulation levels}
 \usage{
-set_levels(sim, ..., .add = FALSE)
+set_levels(sim, ..., .add = FALSE, .keep = NA)
 }
 \arguments{
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by
@@ -18,6 +18,9 @@ more complex levels). See examples.}
 more. On the second call, if add=FALSE (default) the old set of levels
 will be replaced by the new set, whereas if add=TRUE the new set of
 levels will be merged with the old set. See examples.}
+
+\item{.keep}{An integer vector specifying which level combinations to keep;
+see examples.}
 }
 \value{
 The original simulation object with the old set of levels replaced
@@ -56,4 +59,14 @@ sim$levels
 sim \%<>\% set_levels(alpha=c(1,2), beta=c(5,6))
 sim \%<>\% set_levels(alpha=c(3,4), gamma=c(7,8), .add=TRUE)
 sim$levels
+
+# If you don't want to run simulations for all level combinations, use the
+.keep option. First, set the levels normally. Second, view the
+sim$levels_grid dataframe to examine the level combinations and the
+associated level_id values. Third, call set_levels again with the .keep
+option to specify which levels to keep (via a vector of level_id values).
+sim \%<>\% set_levels(alpha=c(1,2,3), beta=c(5,6))
+sim$levels_grid
+sim \%<>\% set_levels(.keep=c(1,2,6))
+sim$levels_grid
 }
