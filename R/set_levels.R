@@ -132,7 +132,6 @@ set_levels.sim_obj <- function(sim, ..., .add=FALSE, .keep=NA) {
     sim$internals$levels_shallow <- levels_shallow
     sim$internals$levels_types <- levels_types
     sim$levels_grid <- levels_grid
-    sim$vars$num_sim_total <- nrow(sim$levels_grid) * sim$config$num_sim
 
   }
 
@@ -140,6 +139,8 @@ set_levels.sim_obj <- function(sim, ..., .add=FALSE, .keep=NA) {
     rows_to_keep <- which(sim$levels_grid$level_id %in% .keep)
     sim$levels_grid <- sim$levels_grid[rows_to_keep,]
   }
+
+  sim$vars$num_sim_total <- nrow(sim$levels_grid) * sim$config$num_sim
 
   return (sim)
 
