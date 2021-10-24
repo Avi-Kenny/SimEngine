@@ -46,10 +46,10 @@
 #' sim$levels
 #'
 #' # If you don't want to run simulations for all level combinations, use the
-#' .keep option. First, set the levels normally. Second, view the
-#' sim$levels_grid dataframe to examine the level combinations and the
-#' associated level_id values. Third, call set_levels again with the .keep
-#' option to specify which levels to keep (via a vector of level_id values).
+#' # .keep option. First, set the levels normally. Second, view the
+#' # sim$levels_grid dataframe to examine the level combinations and the
+#' # associated level_id values. Third, call set_levels again with the .keep
+#' # option to specify which levels to keep (via a vector of level_id values).
 #' sim %<>% set_levels(alpha=c(1,2,3), beta=c(5,6))
 #' sim$levels_grid
 #' sim %<>% set_levels(.keep=c(1,2,6))
@@ -69,7 +69,7 @@ set_levels.sim_obj <- function(sim, ..., .add=FALSE, .keep=NA) {
       stop(".keep argument incorrectly specified")
     }
   }
-  if (length(list(...))==0 && is.na(.keep)) { stop("No levels supplied") }
+  if (length(list(...))==0 && is.na(.keep[[1]])) { stop("No levels supplied") }
 
   # Merge with existing levels if .add=TRUE; otherwise, overwrite
   if (.add) {
