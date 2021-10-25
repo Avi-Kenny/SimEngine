@@ -15,7 +15,8 @@
 new_sim <- function() {
 
   # First check if dependencies are installed
-  for (pkg in c("magrittr", "parallel", "pbapply", "data.table")) {
+  for (pkg in c("magrittr", "dplyr", "parallel", "pbapply", "data.table",
+                "rlang", "methods")) {
     if (!requireNamespace(pkg, quietly=TRUE)) {
       stop(paste0(
         "You need to install the package '", pkg, "' for SimEngine to work."
