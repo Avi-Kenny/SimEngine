@@ -25,7 +25,7 @@ if (F) {
     fn <- fns[i]
     if (substr(fn, start = nchar(fn) - 5, stop = nchar(fn)) == ".sim_obj") {
       fn2 <- substr(fn, start = 1, stop = nchar(fn) - 6)
-    } else{
+    } else {
       fn2 <- fn
     }
     path_rd <- paste0("man/", fn, ".Rd")

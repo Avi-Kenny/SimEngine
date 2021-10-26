@@ -135,10 +135,12 @@ summarize.sim_obj <- function(sim, ...) {
 
   # Error handling
   handle_errors(sim, "is.sim_obj")
-  if (sim$vars$run_state == "pre run")
+  if (sim$vars$run_state == "pre run") {
     stop("Simulation has not been run yet.")
-  if (sim$vars$run_state == "run, all errors")
+  }
+  if (sim$vars$run_state == "run, all errors") {
     stop("100% of simulations had errors.")
+  }
 
   # Parse passed arguments
   R <- sim$results
@@ -206,9 +208,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (m in o_args$mean) {
 
       # if name missing, create a name
-      if (is.null(m$name)) {
-        m$name <- paste0("mean_", m$x)
-      }
+      if (is.null(m$name)) { m$name <- paste0("mean_", m$x) }
 
       # Handle errors
       handle_errors(m$x, "is.null", msg="`x` argument is required")
@@ -239,9 +239,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (sd in o_args$sd) {
 
       # if name missing, create a name
-      if (is.null(sd$name)) {
-        sd$name <- paste0("sd_", sd$x)
-      }
+      if (is.null(sd$name)) { sd$name <- paste0("sd_", sd$x) }
 
       # Handle errors
       handle_errors(sd$x, "is.null", msg="`x` argument is required")
@@ -272,9 +270,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (var in o_args$var) {
 
       # if name missing, create a name
-      if (is.null(var$name)) {
-        var$name <- paste0("var_", var$x)
-      }
+      if (is.null(var$name)) { var$name <- paste0("var_", var$x) }
 
       # Handle errors
       handle_errors(var$x, "is.null", msg="`x` argument is required")
@@ -306,9 +302,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (m in o_args$mad) {
 
       # if name missing, create a name
-      if (is.null(m$name)) {
-        m$name <- paste0("MAD_", m$x)
-      }
+      if (is.null(m$name)) { m$name <- paste0("MAD_", m$x) }
 
       # Handle errors
       handle_errors(m$x, "is.null", msg="`x` argument is required")
@@ -340,9 +334,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (i in o_args$iqr) {
 
       # if name missing, create a name
-      if (is.null(i$name)) {
-        i$name <- paste0("IQR_", i$x)
-      }
+      if (is.null(i$name)) { i$name <- paste0("IQR_", i$x) }
 
       # Handle errors
       handle_errors(i$x, "is.null", msg="`x` argument is required")
@@ -376,9 +368,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (q in o_args$quantile) {
 
       # if name missing, create a name
-      if (is.null(q$name)) {
-        q$name <- paste0("quantile_", q$prob, "_", q$x)
-      }
+      if (is.null(q$name)) { q$name <- paste0("quantile_", q$prob, "_", q$x) }
 
       # Handle errors
       handle_errors(q$x, "is.null", msg="`x` argument is required")
@@ -417,9 +407,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (m in o_args$min) {
 
       # if name missing, create a name
-      if (is.null(m$name)) {
-        m$name <- paste0("min_", m$x)
-      }
+      if (is.null(m$name)) { m$name <- paste0("min_", m$x) }
 
       # Handle errors
       handle_errors(m$x, "is.null", msg="`x` argument is required")
@@ -450,9 +438,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (m in o_args$max) {
 
       # if name missing, create a name
-      if (is.null(m$name)) {
-        m$name <- paste0("max_", m$x)
-      }
+      if (is.null(m$name)) { m$name <- paste0("max_", m$x) }
 
       # Handle errors
       handle_errors(m$x, "is.null", msg="`x` argument is required")
@@ -484,9 +470,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (m in o_args$median) {
 
       # if name missing, create a name
-      if (is.null(m$name)) {
-        m$name <- paste0("median_", m$x)
-      }
+      if (is.null(m$name)) { m$name <- paste0("median_", m$x) }
 
       # Handle errors
       handle_errors(m$x, "is.null", msg="`x` argument is required")
@@ -518,9 +502,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (b in o_args$bias) {
 
       # if name missing, create a name
-      if (is.null(b$name)) {
-        b$name <- paste0("bias_", b$estimate)
-      }
+      if (is.null(b$name)) { b$name <- paste0("bias_", b$estimate) }
 
       # Handle errors
       handle_errors(b$estimate, "is.null", msg="`estimate` argument is required")
@@ -529,11 +511,9 @@ summarize.sim_obj <- function(sim, ...) {
       handle_errors(b$estimate, "is.in", other=names(R),
                     msg=paste0("`",b$estimate,"` is not a variable in results"))
       handle_errors(R[[b$estimate]], "is.numeric.vec", name=b$estimate)
-      if (
-        length(b$truth)>1 ||
-        (!is.numeric(b$truth) && !(b$truth %in% names(R))) ||
-        (b$truth %in% names(R) && !is.numeric(R[[b$truth]]))
-      ) {
+      if (length(b$truth)>1 ||
+          (!is.numeric(b$truth) && !(b$truth %in% names(R))) ||
+          (b$truth %in% names(R) && !is.numeric(R[[b$truth]]))) {
         stop(paste0("`", b$truth, "` is neither a number nor a variable in results"))
       }
 
@@ -561,9 +541,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (b in o_args$bias_pct) {
 
       # if name missing, create a name
-      if (is.null(b$name)) {
-        b$name <- paste0("bias_pct_", b$estimate)
-      }
+      if (is.null(b$name)) { b$name <- paste0("bias_pct_", b$estimate) }
 
       # Handle errors
       handle_errors(b$estimate, "is.null",msg="`estimate` argument is required")
@@ -572,11 +550,9 @@ summarize.sim_obj <- function(sim, ...) {
       handle_errors(b$estimate, "is.in", other=names(R),
                     msg=paste0("`",b$estimate,"` is not a variable in results"))
       handle_errors(R[[b$estimate]], "is.numeric.vec", name=b$estimate)
-      if (
-        length(b$truth)>1 ||
-        (!is.numeric(b$truth) && !(b$truth %in% names(R))) ||
-        (b$truth %in% names(R) && !is.numeric(R[[b$truth]]))
-      ) {
+      if (length(b$truth)>1 ||
+          (!is.numeric(b$truth) && !(b$truth %in% names(R))) ||
+          (b$truth %in% names(R) && !is.numeric(R[[b$truth]]))) {
         stop(paste0("`", b$truth, "` is neither a number nor a variable in results"))
       }
 
@@ -605,9 +581,7 @@ summarize.sim_obj <- function(sim, ...) {
     for (m in o_args$mse) {
 
       # if name missing, create a name
-      if (is.null(m$name)) {
-        m$name <- paste0("MSE_", m$estimate)
-      }
+      if (is.null(m$name)) { m$name <- paste0("MSE_", m$estimate) }
 
       # Handle errors
       handle_errors(m$estimate, "is.null", msg="`estimate` argument is required")
@@ -616,11 +590,9 @@ summarize.sim_obj <- function(sim, ...) {
       handle_errors(m$estimate, "is.in", other=names(R),
                     msg=paste0("`",m$estimate,"` is not a variable in results"))
       handle_errors(R[[m$estimate]], "is.numeric.vec", name=m$estimate)
-      if (
-        length(m$truth)>1 ||
-        (!is.numeric(m$truth) && !(m$truth %in% names(R))) ||
-        (m$truth %in% names(R) && !is.numeric(R[[m$truth]]))
-      ) {
+      if (length(m$truth)>1 ||
+          (!is.numeric(m$truth) && !(m$truth %in% names(R))) ||
+          (m$truth %in% names(R) && !is.numeric(R[[m$truth]]))) {
         stop(paste0("`", m$truth, "` is neither a number nor a variable in results"))
       }
 
@@ -642,15 +614,13 @@ summarize.sim_obj <- function(sim, ...) {
 
 
   ### Calculate MAE and parse summary code
-  if(!is.null(o_args[["mae"]])) {
+  if (!is.null(o_args[["mae"]])) {
 
     code_mae <- ""
     for (m in o_args$mae) {
 
       # if name missing, create a name
-      if (is.null(m$name)) {
-        m$name <- paste0("MAE_", m$estimate)
-      }
+      if (is.null(m$name)) { m$name <- paste0("MAE_", m$estimate) }
 
       # Handle errors
       handle_errors(m$estimate, "is.null", msg="`estimate` argument is required")
@@ -659,11 +629,9 @@ summarize.sim_obj <- function(sim, ...) {
       handle_errors(m$estimate, "is.in", other=names(R),
                     msg=paste0("`",m$estimate,"` is not a variable in results"))
       handle_errors(R[[m$estimate]], "is.numeric.vec", name=m$estimate)
-      if (
-        length(m$truth)>1 ||
-        (!is.numeric(m$truth) && !(m$truth %in% names(R))) ||
-        (m$truth %in% names(R) && !is.numeric(R[[m$truth]]))
-      ) {
+      if (length(m$truth)>1 ||
+          (!is.numeric(m$truth) && !(m$truth %in% names(R))) ||
+          (m$truth %in% names(R) && !is.numeric(R[[m$truth]]))) {
         stop(paste0("`", m$truth, "` is neither a number nor a variable in results"))
       }
 
@@ -696,11 +664,9 @@ summarize.sim_obj <- function(sim, ...) {
       handle_errors(cov$name, "is.null", msg="`name` argument is required")
       handle_errors(cov$truth, "is.null", msg="`truth` argument is required")
       handle_errors(cov$name, "is.character", name="name")
-      if (
-        length(cov$truth)>1 ||
-        (!is.numeric(cov$truth) && !(cov$truth %in% names(R))) ||
-        (cov$truth %in% names(R) && !is.numeric(R[[cov$truth]]))
-      ) {
+      if (length(cov$truth)>1 ||
+          (!is.numeric(cov$truth) && !(cov$truth %in% names(R))) ||
+          (cov$truth %in% names(R) && !is.numeric(R[[cov$truth]]))) {
         stop(paste0("`", cov$truth, "` is neither a number nor a variable in results"))
       }
       if (!((!is.null(cov$est) && !is.null(cov$se)) ||

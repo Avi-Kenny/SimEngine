@@ -113,7 +113,7 @@ cluster_execute <- function(first,
     )
 
     # Set working directory
-    if (!is.null(..cfg$dir)) setwd(..cfg$dir)
+    if (!is.null(..cfg$dir)) { setwd(..cfg$dir) }
 
     # Remove old files
     if (dir.exists(..path_sim_res)) { unlink(..path_sim_res, recursive=TRUE) }
@@ -161,7 +161,7 @@ cluster_execute <- function(first,
   } else if (Sys.getenv("sim_run") %in% c("main","last")) {
 
     # Set working directory
-    if (!is.null(..cfg$dir)) setwd(..cfg$dir)
+    if (!is.null(..cfg$dir)) { setwd(..cfg$dir) }
 
     tryCatch(
       ..sim <- readRDS(..path_sim_obj),
@@ -216,14 +216,10 @@ cluster_execute <- function(first,
 
       tid <- as.numeric(Sys.getenv(tid_var))
 
-      if (is.na(tid)) {
-        stop("Task ID is missing.")
-      }
+      if (is.na(tid)) { stop("Task ID is missing.") }
 
       add_to_tid <- as.numeric(Sys.getenv("sim_add_to_tid"))
-      if (!is.na(add_to_tid)) {
-        tid <- tid + add_to_tid
-      }
+      if (!is.na(add_to_tid)) { tid <- tid + add_to_tid }
 
       if (tid<1 || tid>..sim$vars$num_sim_total) {
         stop(paste(
@@ -231,18 +227,15 @@ cluster_execute <- function(first,
           ..sim$vars$num_sim_total
         ))
       } else {
-        if (update_switch) {
-          # for updating, need to add number of previously run sims
-          #     (num_sim_cuml)
-          tid <- tid + ..sim$internals$num_sim_cuml
-        }
+        # For updating, need to add number of previously run sims
+        #     (num_sim_cuml)
+        if (update_switch) { tid <- tid + ..sim$internals$num_sim_cuml }
+
         # Run 'main' code
         ..sim$internals$tid <- tid
         rm(tid)
         rm(add_to_tid)
-        for (pkg in ..sim$config$packages) {
-          do.call("library", list(pkg))
-        }
+        for (pkg in ..sim$config$packages) { do.call("library", list(pkg)) }
         assign(..sim$internals$sim_var, ..sim)
         eval(..main)
         assign("..sim", eval(as.name(..sim$internals$sim_var)))
@@ -339,9 +332,7 @@ cluster_execute <- function(first,
         }
       }
 
-      if (identical(results_complex,list())) {
-        results_complex <- NA
-      }
+      if (identical(results_complex,list())) { results_complex <- NA }
 
       if (update_switch) {
         # combine results and errors with existing results and errors
@@ -366,8 +357,7 @@ cluster_execute <- function(first,
       # Note: this code is somewhat redundant with the end of SimEngine::run
       if (!is.null(warnings_df)) {
         ..sim$warnings <- warnings_df
-      }
-      else {
+      } else {
         ..sim$warnings <- "No warnings"
       }
       if (!is.null(results_df) && !is.null(errors_df)) {
@@ -393,7 +383,7 @@ cluster_execute <- function(first,
       if (update_switch) {
         prev_levels_grid_big <- ..sim$internals$levels_grid_big
 
-        # get levels / sim_ids that were previously run but are no longer needed
+        # Get levels / sim_ids that were previously run but are no longer needed
         extra_run <- dplyr::anti_join(
           prev_levels_grid_big[,-which(names(prev_levels_grid_big) %in%
                                          c("sim_uid", "level_id")),drop=F],
@@ -404,24 +394,24 @@ cluster_execute <- function(first,
                                         drop=F])
         )
 
-        # if keep_extra = FALSE, remove excess runs (from results, errors, and
+        # If keep_extra = FALSE, remove excess runs (from results, errors, and
         #     warnings)
         if (!keep_extra & nrow(extra_run) > 0) {
 
           if (!is.character(..sim$results)) {
             ..sim$results <- dplyr::anti_join(..sim$results,
-                                                  extra_run,
-                                                  by = names(extra_run))
+                                              extra_run,
+                                              by = names(extra_run))
           }
           if (!is.character(..sim$errors)) {
             ..sim$errors <- dplyr::anti_join(..sim$errors,
-                                                 extra_run,
-                                                 by = names(extra_run))
+                                             extra_run,
+                                             by = names(extra_run))
           }
           if (!is.character(..sim$warnings)) {
             ..sim$warnings <- dplyr::anti_join(..sim$warnings,
-                                                   extra_run,
-                                                   by = names(extra_run))
+                                               extra_run,
+                                               by = names(extra_run))
           }
         }
       }
@@ -443,19 +433,16 @@ cluster_execute <- function(first,
       # This is done before running the 'last' code so that the compiled
       #   simulation object is saved even if there's an error with the 'last'
       #   code
+      # Note: the for-loop helps get around a bug related to file-locking
       for (i in 1:5) {
         x <- unlink(..path_sim_res, recursive=TRUE)
-        if (x == 0) {
-          break
-        }
+        if (x == 0) { break }
         Sys.sleep(0.2)
       }
       saveRDS(..sim, file=..path_sim_obj)
 
       # Run 'last' code
-      for (pkg in ..sim$config$packages) {
-        do.call("library", list(pkg))
-      }
+      for (pkg in ..sim$config$packages) { do.call("library", list(pkg)) }
       assign(..sim$internals$sim_var, ..sim)
       eval(..last)
 

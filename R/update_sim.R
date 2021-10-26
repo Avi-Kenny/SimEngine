@@ -203,7 +203,7 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
       }
       sim_copy$results <- sim_copy$results[order(sim_copy$results$sim_uid),]
     }
-    else{
+    else {
       sim_copy$results <- sim$results
     }
     if (!is.character(sim_copy$errors)) {
@@ -212,7 +212,7 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
       }
       sim_copy$errors <- sim_copy$errors[order(sim_copy$errors$sim_uid),]
     }
-    else{
+    else {
       sim_copy$errors <- sim$errors
     }
     if (!is.character(sim_copy$warnings)) {
@@ -221,7 +221,7 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
       }
       sim_copy$warnings <- sim_copy$warnings[order(sim_copy$warnings$sim_uid),]
     }
-    else{
+    else {
       sim_copy$warnings <- sim$warnings
     }
 

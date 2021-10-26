@@ -59,9 +59,7 @@ add_method.sim_obj <- function(sim, name, fn) {
   }
 
   # Handle case when only one of {name,fn} is given
-  if (missing(name)) {
-    name <- deparse(substitute(fn))
-  }
+  if (missing(name)) { name <- deparse(substitute(fn)) }
   if (missing(fn)) {
     fn <- name
     name <- deparse(substitute(name))

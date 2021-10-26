@@ -37,10 +37,12 @@ get_complex <- function(sim, sim_uid) {
 
   # Error handling
   handle_errors(sim, "is.sim_obj")
-  if (sim$vars$run_state == "pre run")
+  if (sim$vars$run_state == "pre run") {
     stop("Simulation has not been run yet.")
-  if (sim$vars$run_state == "run, all errors")
+  }
+  if (sim$vars$run_state == "run, all errors") {
     stop("100% of simulations had errors.")
+  }
   handle_errors(sim_uid, "is.numeric")
   # handle_errors(sim_uid, "is.in", other=sim$results$sim_uid, # !!!!! add error handling for sim_uid
   #               msg="sim_uid not found in results")
@@ -48,7 +50,7 @@ get_complex <- function(sim, sim_uid) {
   if (length(sim_uid==1)) {
     return (sim$results_complex[[paste0("sim_uid_",sim_uid)]])
   } else {
-    # !!!!! Options for sim_uid=NA or sim_uid=c(1,2) ?????
+    # !!!!! TO DO: options for sim_uid=NA or sim_uid=c(1,2) ?????
   }
 
 }

@@ -58,7 +58,6 @@ run.sim_obj <- function(sim, sim_uids=NA) {
   }
 
   if (!sim$internals$update_sim) {
-
     # Create levels_grid_big
     levels_grid_big <- create_levels_grid_big(sim)
     sim$internals$levels_grid_big <- levels_grid_big
@@ -298,9 +297,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
   }
 
   # Set states
-  if (num_warn==0) {
-    sim$warnings <- "No warnings"
-  }
+  if (num_warn==0) { sim$warnings <- "No warnings" }
   if (num_ok>0 && num_err>0) {
     sim$vars$run_state <- "run, some errors"
   } else if (num_ok>0) {

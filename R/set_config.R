@@ -94,9 +94,7 @@ set_config.sim_obj <- function(
   if (!missing(packages)) {
     handle_errors(packages, "is.character.vec")
     sim$config[["packages"]] <- packages
-    for (pkg in packages) {
-      do.call("library", list(pkg))
-    }
+    for (pkg in packages) { do.call("library", list(pkg)) }
   }
 
   if (!missing(stop_at_error)) {

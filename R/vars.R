@@ -58,9 +58,7 @@ vars <- function(sim, var) {
 
   # Parse list of variables
   v <- sim$vars
-  if (!missing(var)) {
-    v <- v[[var]]
-  }
+  if (!missing(var)) { v <- v[[var]] }
 
   return (v)
 
