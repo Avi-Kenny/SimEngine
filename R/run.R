@@ -126,21 +126,25 @@ run.sim_obj <- function(sim, sim_uids=NA) {
 
     # Actually run the run
     # Use withCallingHandlers to catch all warnings and tryCatch to catch errors
-    withCallingHandlers(
-      {.gotWarnings <- character(0) # holds the warnings
-      if (sim$config$stop_at_error==TRUE & Sys.getenv("sim_run")=="") {
-        script_results <- do.call(what="..script", args=list(), envir=env)
-      } else {
-        script_results <- tryCatch(
-          expr = do.call(what="..script", args=list(), envir=env),
-          error = function(e) { return(e) }
-        )
-      }},
-      warning = function(w) {
-        .gotWarnings <<- c(.gotWarnings, conditionMessage(w))
-        invokeRestart("muffleWarning")
-      }
-    )
+    .gotWarnings <- character(0) # holds the warnings
+    .catch_errors_and_warnings <- as.logical(sim$config$stop_at_error==FALSE ||
+                                               Sys.getenv("sim_run")!="")
+    if (.catch_errors_and_warnings) {
+      withCallingHandlers(
+        expr = {
+          script_results <- tryCatch(
+            expr = do.call(what="..script", args=list(), envir=env),
+            error = function(e) { return(e) }
+          )
+        },
+        warning = function(w) {
+          .gotWarnings <<- c(.gotWarnings, conditionMessage(w))
+          invokeRestart("muffleWarning")
+        }
+      )
+    } else {
+      script_results <- do.call(what="..script", args=list(), envir=env)
+    }
 
     runtime <- as.numeric(difftime(Sys.time(), ..start_time), units="secs")
 
