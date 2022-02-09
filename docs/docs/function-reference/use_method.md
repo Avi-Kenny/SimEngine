@@ -56,11 +56,11 @@ your simulation object via <span style='font-family:&quot;SFMono-Regular&quot;,M
 # the use_method function.
 sim <- new_sim()
 sim %<>% add_creator("create_data", function(n) { rpois(n, lambda=5) })
-sim %<>% add_method("estimator_1", function(dat) { mean(dat) })
-sim %<>% add_method("estimator_2", function(dat) { var(dat) })
+sim %<>% add_method("est_mean_1", function(dat) { mean(dat) })
+sim %<>% add_method("est_mean_2", function(dat) { var(dat) })
 sim %<>% set_levels(
   "n" = c(10, 100, 1000),
-  "estimator" = c("estimator_1", "estimator_2")
+  "estimator" = c("est_mean_1", "est_mean_2")
 )
 sim %<>% set_config(num_sim=1)
 sim %<>% set_script(function() {

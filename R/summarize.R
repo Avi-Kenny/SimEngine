@@ -110,16 +110,15 @@
 #' # the summarize function.
 #' sim <- new_sim()
 #' sim %<>% add_creator("create_data", function(n) { rpois(n, lambda=5) })
-#' sim %<>% add_method("estimator_1", function(dat) { mean(dat) })
-#' sim %<>% add_method("estimator_2", function(dat) { var(dat) })
-#' sim %<>% set_levels(
-#'   "n" = c(10, 100, 1000),
-#'   "estimator" = c("estimator_1", "estimator_2")
-#' )
+#' sim %<>% add_method("est_mean", function(dat, type) {
+#'   if (type=="M") { return(mean(dat)) }
+#'   if (type=="V") { return(var(dat)) }
+#' })
+#' sim %<>% set_levels(n=c(10,100,1000), est=c("M","V"))
 #' sim %<>% set_config(num_sim=5)
 #' sim %<>% set_script(function() {
 #'   dat <- create_data(L$n)
-#'   lambda_hat <- use_method(L$estimator, list(dat))
+#'   lambda_hat <- est_mean(dat=dat, type=L$est)
 #'   return (list("lambda_hat"=lambda_hat))
 #' })
 #' sim %<>% run()
