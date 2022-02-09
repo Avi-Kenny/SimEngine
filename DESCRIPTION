@@ -1,6 +1,6 @@
 Package: SimEngine
 Type: Package
-Title: An Open-Source Framework for Statistical Simulations in R
+Title: A Modular Framework for Statistical Simulations in R
 Version: 1.0.0
 Authors@R: c(person("Avi", "Kenny", email = "avikenny@uw.edu", role = c("aut", "cre")),
              person("Charles", "Wolock", email = "cwolock@uw.edu", role = "aut"))

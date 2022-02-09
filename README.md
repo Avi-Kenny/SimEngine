@@ -10,7 +10,7 @@
 
 # SimEngine <img src='man/figures/logo.png' align="right" height="150" />
 
-An open-source framework for statistical simulations in R
+A modular framework for statistical simulations in R
 
 ## Overview
 

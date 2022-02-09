@@ -3,7 +3,7 @@
 \docType{package}
 \name{SimEngine}
 \alias{SimEngine}
-\title{SimEngine: An open-source framework for statistical simulations in R}
+\title{SimEngine: A modular framework for statistical simulations in R}
 \description{
 SimEngine is an open-source R package for structuring, maintaining, running,
 and debugging statistical simulations on both local and cluster-based

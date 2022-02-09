@@ -10,7 +10,7 @@ permalink: /
 # SimEngine
 {: .fs-9 .fw-500 }
 
-An open-source framework for statistical simulations in R
+A modular framework for statistical simulations in R
 {: .fs-5 }
 
 
