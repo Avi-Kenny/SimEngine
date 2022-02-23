@@ -95,7 +95,7 @@ Suppose we have written the following simulation and want to run it on a CCS:
 
 ```R
 library(SimEngine)
-sim %<>% new_sim()
+sim <- new_sim()
 sim %<>% add_creator("create_data", function(n) { rnorm(n) })
 sim %<>% set_script(function() {
   data <- create_data(L$n)
@@ -114,7 +114,7 @@ library(SimEngine)
 run_on_cluster(
 
   first = {
-    sim %<>% new_sim()
+    sim <- new_sim()
     sim %<>% add_creator("create_data", function(n) { rnorm(n) })
     sim %<>% set_script(function() {
       data <- create_data(L$n)
