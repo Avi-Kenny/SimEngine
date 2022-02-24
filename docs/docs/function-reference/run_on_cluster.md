@@ -118,9 +118,9 @@ run_on_cluster(
 # Rscript my_simulation.R
 
 # The following lines of code are run on the cluster head node.
-# qsub -v run='first' run_sim.sh
-# qsub -v run='main' -t 1-20 -hold_jid 101 run_sim.sh
-# qsub -v run='last' -hold_jid 102 run_sim.sh
+# qsub -v sim_run='first' run_sim.sh
+# qsub -v sim_run='main' -t 1-20 -hold_jid 101 run_sim.sh
+# qsub -v sim_run='last' -hold_jid 102 run_sim.sh
 
 ## End(Not run)
 ```

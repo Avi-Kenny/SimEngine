@@ -103,9 +103,9 @@ run_on_cluster(
 # Rscript my_simulation.R
 
 # The following lines of code are run on the cluster head node.
-# qsub -v run='first' run_sim.sh
-# qsub -v run='main' -t 1-20 -hold_jid 101 run_sim.sh
-# qsub -v run='last' -hold_jid 102 run_sim.sh
+# qsub -v sim_run='first' run_sim.sh
+# qsub -v sim_run='main' -t 1-20 -hold_jid 101 run_sim.sh
+# qsub -v sim_run='last' -hold_jid 102 run_sim.sh
 
 # This code is saved in a file called update_my_simulation.R. Note that it
 # reads in the simulation object created above, which is saved in a file
@@ -137,8 +137,8 @@ update_sim_on_cluster(
 # The following lines of code are run on the cluster head node. Note that
 # only 10 new replicates are run, since 20 of 30 simulation replicates were
 # run in the original call to run_on_cluster.
-# qsub -v run='first' update_sim.sh
-# qsub -v run='main' -t 1-10 -hold_jid 104 update_sim.sh
-# qsub -v run='last' -hold_jid 105 update_sim.sh
+# qsub -v sim_run='first' update_sim.sh
+# qsub -v sim_run='main' -t 1-10 -hold_jid 104 update_sim.sh
+# qsub -v sim_run='last' -hold_jid 105 update_sim.sh
 }
 }
