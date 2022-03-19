@@ -1,7 +1,7 @@
 ---
 layout: page
 title: js_support 
-nav_order: 5 
+nav_order: 2 
 permalink: /function-reference/js_support/
 parent: Function reference
 ---

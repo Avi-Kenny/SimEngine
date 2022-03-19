@@ -1,7 +1,7 @@
 ---
 layout: page
 title: run_on_cluster 
-nav_order: 8 
+nav_order: 5 
 permalink: /function-reference/run_on_cluster/
 parent: Function reference
 ---
