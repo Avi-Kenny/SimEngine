@@ -42,8 +42,17 @@ run.sim_obj <- function(sim, sim_uids=NA) {
 
   sim$vars$start_time <- Sys.time()
 
-  # All objects will be stored in this environment
+  # All functions will be given this environment
   env <- sim$vars$env
+
+  # Add global objects to this environment (excluding simulation object)
+  for (obj_name in ls(.GlobalEnv)) {
+    obj <- get(x=obj_name, envir=.GlobalEnv)
+    if (!(class(obj)=="sim_obj")) {
+      environment(obj) <- env
+      assign(x=obj_name, value=obj, envir=env)
+    }
+  }
 
   if (is.na(sim_uids)) {
   # !!!!! add error handling for sim_uids
