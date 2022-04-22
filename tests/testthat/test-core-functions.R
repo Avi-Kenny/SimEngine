@@ -151,7 +151,7 @@ test_that("set_levels() throws error with no levels provided", {
 
 test_that("set_levels() throws error if levels are not a list of key-value pairs", {
   expect_error(set_levels(sim, estimator = c("estimator_1", "estimator_2"), c(50, 100)),
-               "Simulation levels must be a list of key-value pairs." )
+               "Simulation levels must be key-value pairs." )
 })
 
 # Use of the .add argument
