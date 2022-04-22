@@ -412,13 +412,13 @@ test_that("vars() handles incorrect variables properly", {
     access_level <- function() { L$alpha }
     fn_outer <- function(x) { fn_inner(x) }
     fn_inner <- function(x) { x }
-    C <- list(beta=4)
-    access_constant <- function() { C$beta }
+    glb <- list(beta=4)
+    access_glb <- function() { glb$beta }
     create_data <- function() {
       w <- return_one()
       x <- fn_outer(fn_inner(return_one()))
       y <- access_level()
-      z <- access_constant()
+      z <- access_glb()
       return (list(w=w,x=x,y=y,z=z))
     }
     sim %<>% set_levels(alpha=c(2,3))

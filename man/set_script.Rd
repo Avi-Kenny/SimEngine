@@ -15,8 +15,8 @@ results. The results must be a list of key-value pairs. Values are
 categorized as simple (a number, a character string, etc.) or complex
 (vectors, dataframes, lists, etc.). Complex data must go inside a key
 called ".complex" and the associated value must be a list (see examples).
-The function body can contain references to the special objects \code{L}
-(simulation levels) and \code{C} (simulation constants) (see examples).
+The function body can contain references to the special object \code{L}
+that stores the current set of simulation levels (see examples).
 The keys must be valid R names (see ?make.names).}
 }
 \value{

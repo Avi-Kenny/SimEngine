@@ -41,8 +41,8 @@ results. The results must be a list of key-value pairs. Values are
 categorized as simple (a number, a character string, etc.) or complex
 (vectors, dataframes, lists, etc.). Complex data must go inside a key
 called &quot;.complex&quot; and the associated value must be a list (see examples).
-The function body can contain references to the special objects <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>L</span>
-(simulation levels) and <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>C</span> (simulation constants) (see examples).
+The function body can contain references to the special object <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>L</span>
+that stores the current set of simulation levels (see examples).
 The keys must be valid R names (see ?make.names).</p>
 </td></tr>
 </table>
