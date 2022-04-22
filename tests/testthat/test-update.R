@@ -17,8 +17,6 @@ create_rct_data <- function (num_patients, ate) {
   return (df)
 }
 
-sim %<>% add_creator(create_rct_data)
-
 estimator_1 <- function(df) {
   n <- nrow(df)
   true_prob <- 0.5
@@ -33,8 +31,6 @@ estimator_2 <- function(df) {
   sum_c <- sum(df$outcome * (df$group=="control"))
   return ( sum_t/(n*est_prob) - sum_c/(n*(1-est_prob)) )
 }
-
-sim %<>% add_method(estimator_1)
 
 sim %<>% set_levels(
   estimator = c("estimator_1"),
@@ -77,8 +73,7 @@ test_that("Adding new level variables throws an error", {
   expect_error(update_sim(sim), "Updating a sim cannot include new level variables, only new levels.")
 })
 
-# add method, change levels
-sim %<>% add_method(estimator_2)
+# change levels
 sim %<>% set_levels(
   estimator = c("estimator_1", "estimator_2"),
   num_patients = c(50, 75, 100),

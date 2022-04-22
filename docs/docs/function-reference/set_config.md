@@ -1,7 +1,7 @@
 ---
 layout: page
 title: set_config 
-nav_order: 9 
+nav_order: 6 
 permalink: /function-reference/set_config/
 parent: Function reference
 ---

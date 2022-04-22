@@ -53,7 +53,8 @@ new_sim <- function() {
       num_sim_cuml = 0,
       tid = NA,
       sim_var = "",
-      update_sim = FALSE
+      update_sim = FALSE,
+      env_calling = parent.frame(n=1)
     ),
     vars = list(
       seed = ..seed,
@@ -67,6 +68,11 @@ new_sim <- function() {
     results = NULL,
     errors = NULL
   )
+
+  # Create a global reference to the environment that can be searched for via
+  #     get() by methods (currently only use_method) that need to access the
+  #     simulation environment but don't take sim as an argument
+  assign(x="..env", value=...sim$vars$env, envir=.GlobalEnv)
 
   class(...sim) <- "sim_obj"
 

@@ -1,7 +1,7 @@
 ---
 layout: page
 title: new_sim 
-nav_order: 6 
+nav_order: 3 
 permalink: /function-reference/new_sim/
 parent: Function reference
 ---

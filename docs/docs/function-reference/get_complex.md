@@ -1,7 +1,7 @@
 ---
 layout: page
 title: get_complex 
-nav_order: 4 
+nav_order: 1 
 permalink: /function-reference/get_complex/
 parent: Function reference
 ---

@@ -10,8 +10,8 @@ cluster_execute <- function(first,
                             update_switch = FALSE) {
 
   # Capture current working directory and reset it on function exit
-  oldwd <- getwd()
-  on.exit(setwd(oldwd))
+  ..oldwd <- getwd()
+  on.exit(setwd(..oldwd))
 
   # error handle invalid options
   handle_errors(keep_errors, "is.boolean")
@@ -29,19 +29,21 @@ cluster_execute <- function(first,
   rm(last)
   rm(cluster_config)
 
+  # Create a new environment to evaluate code blocks within
+  ..env_cl <- new.env()
+
   # Run all code locally if simulation is not being run on cluster
   # !!!!! TO-DO make this work for update_switch = TRUE
   if (Sys.getenv("sim_run")=="") {
 
-    # Run code locally (`first` block)
-    eval(..first)
+    # Run code (`first` block)
+    eval(..first, envir=..env_cl)
 
     # Extract the simulation object variable name
-    ..env <- environment()
     ..count <- 0
     ..sim_var <- NA
-    for (obj_name in ls(..env)) {
-      if ("sim_obj" %in% class(get(x=obj_name, envir=..env))) {
+    for (obj_name in ls(..env_cl)) {
+      if ("sim_obj" %in% class(get(x=obj_name, envir=..env_cl))) {
         ..sim_var <- obj_name
         ..count <- ..count + 1
       }
@@ -54,16 +56,21 @@ cluster_execute <- function(first,
                  "created in the `first` block"))
     }
     rm(..count)
-    rm(..env)
 
-    # Assign simulation object to ..sim_var in the parent environment
-    assign(x=..sim_var, value=eval(as.name(..sim_var)), envir=parent.frame(n=2))
+    # Save a copy of simulation object to global environment
+    assign(x = ..sim_var,
+           value = eval(as.name(..sim_var), envir=..env_cl),
+           envir = .GlobalEnv)
 
     # Run code locally (`main` and `last` blocks)
-    eval(..main)
-    assign(x=..sim_var, value=eval(as.name(..sim_var)), envir=parent.frame(n=2))
-    eval(..last)
-    assign(x=..sim_var, value=eval(as.name(..sim_var)), envir=parent.frame(n=2))
+    eval(..main, envir=..env_cl)
+    assign(x = ..sim_var,
+           value = eval(as.name(..sim_var), envir=..env_cl),
+           envir = .GlobalEnv)
+    eval(..last, envir=..env_cl)
+    assign(x = ..sim_var,
+           value = eval(as.name(..sim_var), envir=..env_cl),
+           envir = .GlobalEnv)
 
   } else {
 
@@ -88,9 +95,9 @@ cluster_execute <- function(first,
     }
 
     # Error handling: test to see that we can write to cfg$dir
-    test_file <- paste0(..path_sim_obj, '.test')
+    ..test_file <- paste0(..path_sim_obj, '.test')
     tryCatch(
-      expr = { saveRDS(list(a=123,b=456), file=test_file) },
+      expr = { saveRDS(list(a=123,b=456), file=..test_file) },
       error = function(e) {
         stop(paste0("Directory ", ..cfg$dir, " is not writable."))
       }
@@ -98,7 +105,7 @@ cluster_execute <- function(first,
 
     # Error handling: test to see that we can read from cfg$dir
     tryCatch(
-      expr = { x <- readRDS(file=test_file) },
+      expr = { x <- readRDS(file=..test_file) },
       error = function(e) {
         stop(paste0("Directory ", ..cfg$dir, " is not readable."))
       }
@@ -106,7 +113,7 @@ cluster_execute <- function(first,
 
     # Error handling: test to see that we can delete from cfg$dir
     tryCatch(
-      expr = { unlink(test_file) },
+      expr = { unlink(..test_file) },
       error = function(e) {
         stop(paste0("Files cannot be deleted from directory ", ..cfg$dir, "."))
       }
@@ -121,17 +128,15 @@ cluster_execute <- function(first,
     # Create directory to store simulation results
     dir.create(..path_sim_res)
 
-    ..start_time <- Sys.time()
-
     # Run 'first' code
-    eval(..first)
+    ..start_time <- Sys.time()
+    eval(..first, envir=..env_cl)
 
     # Extract the simulation object variable name
-    ..env <- environment()
     ..count <- 0
     ..sim_var <- NA
-    for (obj_name in ls(..env)) {
-      if ("sim_obj" %in% class(get(x=obj_name, envir=..env))) {
+    for (obj_name in ls(..env_cl)) {
+      if ("sim_obj" %in% class(get(x=obj_name, envir=..env_cl))) {
         ..sim_var <- obj_name
         ..count <- ..count + 1
       }
@@ -149,10 +154,9 @@ cluster_execute <- function(first,
                  "read in the `first` block"))
     }
     rm(..count)
-    rm(..env)
 
     # Save simulation object
-    ..sim <- eval(as.name(..sim_var))
+    ..sim <- eval(as.name(..sim_var), envir=..env_cl)
     ..sim$internals$sim_var <- ..sim_var
     ..sim$vars$start_time <- ..start_time
     ..sim$config$parallel <- "cluster"
@@ -180,7 +184,7 @@ cluster_execute <- function(first,
   # MAIN: run simulation replicate and save results/errors
   if (Sys.getenv("sim_run")=="main") {
 
-    # if there are error files in the results directory and stop_at_error==TRUE
+    # if there are error files in the results directory and stop_at_error==TRUE,
     # skip this rep
     err_reps <- list.files(path = ..path_sim_res, pattern = "e_*")
     if (!(length(err_reps) > 0 & ..sim$config$stop_at_error)) {
@@ -231,14 +235,15 @@ cluster_execute <- function(first,
         #     (num_sim_cuml)
         if (update_switch) { tid <- tid + ..sim$internals$num_sim_cuml }
 
-        # Run 'main' code
         ..sim$internals$tid <- tid
         rm(tid)
         rm(add_to_tid)
         for (pkg in ..sim$config$packages) { do.call("library", list(pkg)) }
-        assign(..sim$internals$sim_var, ..sim)
-        eval(..main)
-        assign("..sim", eval(as.name(..sim$internals$sim_var)))
+        assign(..sim$internals$sim_var, ..sim, envir=..env_cl)
+
+        # Run 'main' code
+        eval(..main, envir=..env_cl)
+        ..sim <- get("sim", envir=..env_cl)
       }
 
       # Parse results filename and save
@@ -375,7 +380,7 @@ cluster_execute <- function(first,
         ..sim$errors <- errors_df
         ..sim$vars$run_state <- "run, all errors"
       } else {
-        stop("An unknown error occurred.")
+        stop("An unknown error occurred (CODE 102)")
       }
 
       levels_grid_big <- create_levels_grid_big(..sim)
@@ -443,11 +448,11 @@ cluster_execute <- function(first,
 
       # Run 'last' code
       for (pkg in ..sim$config$packages) { do.call("library", list(pkg)) }
-      assign(..sim$internals$sim_var, ..sim)
-      eval(..last)
+      assign(..sim$internals$sim_var, ..sim, envir=..env_cl)
+      eval(..last, envir=..env_cl)
+      ..sim <- get("sim", envir=..env_cl)
 
       # Save final simulation object (a second time, if 'last' code had no errors)
-      assign("..sim", eval(as.name(..sim$internals$sim_var)))
       ..sim$vars$end_time <- Sys.time()
       ..sim$vars$total_runtime <- as.numeric(
         difftime(..sim$vars$end_time, ..sim$vars$start_time),

@@ -1,7 +1,7 @@
 ---
 layout: page
 title: set_levels 
-nav_order: 10 
+nav_order: 7 
 permalink: /function-reference/set_levels/
 parent: Function reference
 ---

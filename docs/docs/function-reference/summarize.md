@@ -1,7 +1,7 @@
 ---
 layout: page
 title: summarize 
-nav_order: 12 
+nav_order: 9 
 permalink: /function-reference/summarize/
 parent: Function reference
 ---

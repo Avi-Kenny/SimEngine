@@ -64,6 +64,16 @@ set_script.sim_obj <- function(sim, fn) {
                "simulation has been run."))
   }
 
+  # Add "global" objects to simulation object run environment (excluding
+  #     simulation object); these are not necessarily in the global environment,
+  #     but are in the environment the new_sim() call is executed within.
+  for (obj_name in ls(sim$internals$env_calling)) {
+    obj <- get(x=obj_name, envir=sim$internals$env_calling)
+    if (!(class(obj)=="sim_obj")) {
+      assign(x=obj_name, value=obj, envir=sim$vars$env)
+    }
+  }
+
   environment(fn) <- sim$vars$env
   sim$script <- fn
   assign(x="..script", value=fn, envir=sim$vars$env)

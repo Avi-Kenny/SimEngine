@@ -37,15 +37,8 @@ use_method <- function(method, args=list()) {
   }
 
   # Locate the method and its environment
-  ..env <- get("..env", envir=parent.frame(), inherits=TRUE)
+  ..env <- get("..env", envir=.GlobalEnv)
   ..m <- get(method, envir=..env, inherits=FALSE)
-  ..added_methods <- get("..added_methods", ..env)
-
-  # Additional error handling
-  if (!(method %in% ..added_methods)) {
-    stop(paste0("Method `", substitute(method),
-                "` has not been added to your simulation object"))
-  }
 
   # Call to do.call
   return (do.call(..m, args, envir=..env))
