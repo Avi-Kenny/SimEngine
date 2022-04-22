@@ -38,7 +38,6 @@ new_sim <- function() {
       seed = ..seed,
       progress_bar = TRUE
     ),
-    constants = list(),
     levels = list("no levels"=TRUE),
     levels_grid = data.frame(level_id=1),
     results = "Simulation has not been run yet.",
@@ -62,8 +61,6 @@ new_sim <- function() {
       num_sim_total = 10,
       run_state = "pre run"
     ),
-    creators = list(),
-    methods = list(),
     script = NULL,
     results = NULL,
     errors = NULL

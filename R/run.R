@@ -112,10 +112,6 @@ run.sim_obj <- function(sim, sim_uids=NA) {
     rm(levs)
     rm(L)
 
-    # # Create ..added_methods vector that use_method() will check to test whether
-    # #     a called method has been added to the simulation object
-    # assign(x="..added_methods", value=names(sim$methods), envir=sim$vars$env)
-
     # Set the seed
     set.seed(sim$config$seed)
     set.seed(as.integer((1e9*runif(i))[i]))

@@ -18,30 +18,13 @@ print.sim_obj <- function(x, ...) {
       cat(paste0("    ",names(sim$levels)[i],": ",sim$levels[i],"\n"))
     }
   }
-  if (length(sim$constants)>0) {
-    cat("Constants: \n")
-    for (i in 1:length(sim$constants)) {
-      cat(paste0("    ",names(sim$constants)[i],"\n"))
-    }
-  }
-  if (length(sim$creators)>0) {
-    cat("Creators: \n")
-    for (i in 1:length(sim$creators)) {
-      cat(paste0("    ",names(sim$creators)[i],"\n"))
-    }
-  }
-  if (length(sim$methods)>0) {
-    cat("Methods: \n")
-    for (i in 1:length(sim$methods)) {
-      cat(paste0("    ",names(sim$methods)[i],"\n"))
-    }
-  }
   if (length(sim$scripts)>0) {
     cat("Scripts: \n")
     for (i in 1:length(sim$scripts)) {
       cat(paste0("    ",names(sim$scripts)[i],"\n"))
     }
   }
+  cat(paste0("State: ",sim$vars$run_state,"\n"))
 }
 
 

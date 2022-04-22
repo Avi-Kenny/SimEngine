@@ -26,7 +26,7 @@ In linear regression, we use least-squares to estimate the coefficient vector $$
 
 We will carry out a small simulation study to compare these two estimators. 
 
-We start by declaring a new simulation object and writing a creator function that generates some data according to our model. For this simulation, we will make $$\sigma^2_i$$ larger for larger values of $$X_i$$. 
+We start by declaring a new simulation object and writing a function that generates some data according to our model. For this simulation, we will make $$\sigma^2_i$$ larger for larger values of $$X_i$$. 
 
 ```R
 library(tidyr)
@@ -42,10 +42,10 @@ create_regression_data <- function(n) {
 }
 ```
 
-To get a sense of what heteroskedasticity looks like in practice, we can generate a dataset using our creator function, fit a linear regression model, and make a scatterplot of the residuals against $$X$$.
+To get a sense of what heteroskedasticity looks like in practice, we can generate a dataset, fit a linear regression model, and make a scatterplot of the residuals against $$X$$.
 
 ```R
-dat <- sim$creators$create_regression_data(n=500)
+dat <- create_regression_data(n=500)
 linear_model <- lm(y~x, data=dat)
 dat$residuals <- linear_model$residuals
 
@@ -58,7 +58,7 @@ ggplot(dat, aes(x=x, y=residuals)) +
 
 ![Residual plot](../assets/images/example2_residual_plot.png)
 
-Now we add two methods to our simulation object: one returns the least squares estimate and model-based estimator of the variance-covariance matrix of $$\hat{\beta}$$, and the other returns the least squares estimate and sandwich estimator (using the sandwich package). 
+Now we declare two methods: one returns the least squares estimate and model-based estimator of the variance-covariance matrix of $$\hat{\beta}$$, and the other returns the least squares estimate and sandwich estimator (using the sandwich package). 
 
 ```R
 model_vcov <- function(data) {
