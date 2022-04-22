@@ -42,18 +42,6 @@ run.sim_obj <- function(sim, sim_uids=NA) {
 
   sim$vars$start_time <- Sys.time()
 
-  # All functions will be given this environment
-  env <- sim$vars$env
-
-  # Add global objects to this environment (excluding simulation object)
-  for (obj_name in ls(.GlobalEnv)) {
-    obj <- get(x=obj_name, envir=.GlobalEnv)
-    if (!(class(obj)=="sim_obj")) {
-      environment(obj) <- env
-      assign(x=obj_name, value=obj, envir=env)
-    }
-  }
-
   if (is.na(sim_uids)) {
   # !!!!! add error handling for sim_uids
     if (!is.na(sim$internals$tid)) {
@@ -91,7 +79,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
 
     # Create cluster and export everything in env
     cl <- parallel::makeCluster(n_cores)
-    parallel::clusterExport(cl, ls(env), env)
+    parallel::clusterExport(cl, ls(sim$vars$env), sim$vars$env)
     parallel::clusterExport(cl, c("sim","..packages"), environment())
     parallel::clusterCall(cl, function(x) {.libPaths(x)}, .libPaths())
     parallel::clusterEvalQ(cl, sapply(..packages, function(p) {
@@ -103,8 +91,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
 
     ..start_time <- Sys.time()
 
-    # Set up references to levels row (L) and constants (C)
-    assign(x="C", value=sim$constants, envir=env)
+    # Set up references to levels row (L)
     L <- as.list(sim$internals$levels_grid_big[
       sim$internals$levels_grid_big$sim_uid == i,
     ])
@@ -115,18 +102,19 @@ run.sim_obj <- function(sim, sim_uids=NA) {
         L[[levs[j]]] <- sim$levels[[levs[j]]][[L[[levs[j]]]]]
       }
     }
-    assign(x="L", value=L, envir=env)
+    for (obj_name in ls(sim$vars$env)) {
+      obj <- get(obj_name, envir=sim$vars$env, inherits=FALSE)
+      if (class(obj)=="function") {
+        assign(x="L", value=L, envir=environment(obj))
+      }
+    }
+    assign(x="L", value=L, envir=sim$vars$env)
     rm(levs)
     rm(L)
 
-    # Create a reference to the environment that can be searched for via get()
-    #     by methods (currently only use_method) that need to access the
-    #     simulation environment but don't take sim as an argument
-    assign(x="..env", value=env, envir=env)
-
-    # Create ..added_methods vector that use_method() will check to test whether
-    #     a called method has been added to the simulation object
-    assign(x="..added_methods", value=names(sim$methods), envir=env)
+    # # Create ..added_methods vector that use_method() will check to test whether
+    # #     a called method has been added to the simulation object
+    # assign(x="..added_methods", value=names(sim$methods), envir=sim$vars$env)
 
     # Set the seed
     set.seed(sim$config$seed)
@@ -141,7 +129,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
       withCallingHandlers(
         expr = {
           script_results <- tryCatch(
-            expr = do.call(what="..script", args=list(), envir=env),
+            expr = do.call(what="..script", args=list(), envir=sim$vars$env),
             error = function(e) { return(e) }
           )
         },
@@ -151,7 +139,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
         }
       )
     } else {
-      script_results <- do.call(what="..script", args=list(), envir=env)
+      script_results <- do.call(what="..script", args=list(), envir=sim$vars$env)
     }
 
     runtime <- as.numeric(difftime(Sys.time(), ..start_time), units="secs")
@@ -319,7 +307,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
     sim$vars$run_state <- "run, all errors"
     sim$results <- "Errors detected in 100% of simulation replicates"
   } else {
-    stop("An unknown error occurred")
+    stop("An unknown error occurred (CODE 101)")
   }
 
   message(comp_msg)

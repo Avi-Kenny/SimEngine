@@ -93,7 +93,7 @@ set_levels.sim_obj <- function(sim, ..., .add=FALSE, .keep=NA) {
     if (!(is.list(sim$levels)) ||
         !(length(names(sim$levels[which(names(sim$levels) != "")])) ==
           length(sim$levels))) {
-      stop("Simulation levels must be a list of key-value pairs.")
+      stop("Simulation levels must be key-value pairs.")
     }
 
     # handle_errors(sim$levels, "is.named.list") # !!!!! This is not implemented
