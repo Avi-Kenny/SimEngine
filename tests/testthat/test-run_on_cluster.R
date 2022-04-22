@@ -107,7 +107,6 @@ test_that("run_on_cluster() 'last' section works", {
 Sys.setenv(sim_run="")
 unlink("sim.rds")
 rm(sim)
-# rm(output)
 
 # Correct behavior if 'first' fails
 # Create wrapper function for testing run_on_cluster()
@@ -173,13 +172,11 @@ Sys.setenv(SLURM_ARRAY_TASK_ID="")
 Sys.setenv(sim_run="last")
 run_c(cmplx=TRUE)
 sim <- readRDS("sim.rds")
-# output <- readChar("sim_output.txt", file.info("sim_output.txt")$size)
 test_that("run_on_cluster() works with complex data", {
   expect_equal(dir.exists("sim_results"), FALSE)
   expect_equal(sim$results$sum, c(6,6))
   expect_equal(sim$errors, "No errors")
   expect_equal(sim$config$num_sim, 2)
-  # expect_equal(grepl("level_id alpha", output, fixed=TRUE), TRUE)
   expect_equal(length(sim$results_complex), 2)
   expect_equal(class(sim$results_complex), "list")
   expect_equal(sim$results_complex[[1]]$vec, c(2,4))
@@ -187,7 +184,6 @@ test_that("run_on_cluster() works with complex data", {
 Sys.setenv(sim_run="")
 unlink("sim.rds")
 rm(sim)
-# rm(output)
 # !!!!! test update_on_cluster with complex data
 
 

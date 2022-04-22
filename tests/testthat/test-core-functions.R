@@ -1,5 +1,34 @@
 ### new_sim() ###
 
+# !!!!!
+ff <- (function() {
+
+  x1 <- 11
+  x2 <- 22
+  f1 <- function() { return(33) }
+  sim <- new_sim()
+  sim %<>% set_levels(lev=c(1,2))
+  sim %<>% set_script(function() {
+    val <- use_method("f1", list())
+    return (list("estimate"=val))
+  })
+  sim %<>% set_config(num_sim=1)
+  sim %<>% run()
+  # run(sim)
+  sim$errors
+
+  test_that("!!!!! TEMP", {
+    expect_equal(sim$errors, "No errors")
+    # expect_equal(sim$errors[1,"message"], "")
+    # expect_equal(sim$errors[1,"call"], "")
+  })
+
+
+})
+# print("environment(ff)")
+# print(environment(ff))
+ff()
+
 # new_sim() creates a simulation object
 sim <- new_sim()
 
@@ -20,7 +49,7 @@ test_that("new_sim() creates correctly-specified object", {
 #  expect_error(new_sim(), "You need to install the package 'magrittr' for SimEngine to work.")
 #})
 
-### add_creator() ###
+### set_script ###
 
 create_rct_data <- function (num_patients) {
   df <- data.frame(
@@ -38,123 +67,6 @@ create_rct_data <- function (num_patients) {
   return (df)
 }
 
-test_that("add_creator() throws an error if no function is provided", {
-  expect_error(add_creator(sim), "You must provide a function to add_creator.")
-})
-
-sim %<>% add_creator(create_rct_data)
-df <- sim$creators[[1]](5)
-test_that("add_creator() works with predefined function", {
-  expect_type(sim$creators, "list")
-  expect_equal(length(sim$creators), 1)
-  expect_type(sim$creators[[1]], "closure")
-  expect_equal(df$patient_id, c(1:5))
-})
-
-# add_creator() works with function defined in call
-sim <- new_sim()
-sim %<>% add_creator("create_rct_data2",
-                     function (num_patients) {
-  df <- data.frame(
-    "patient_id" = integer(),
-    "group" = character(),
-    "outcome" = double(),
-    stringsAsFactors = FALSE
-  )
-  for (i in 1:num_patients) {
-    group <- ifelse(sample(c(0,1), size=1)==1, "treatment", "control")
-    treatment_effect <- ifelse(group=="treatment", -7, 0)
-    outcome <- rnorm(n=1, mean=130, sd=5) + treatment_effect
-    df[i,] <- list(i, group, outcome)
-  }
-  return (df)
-})
-df <- sim$creators[[1]](5)
-test_that("add_creator() works with function defined in call", {
-  expect_type(sim$creators, "list")
-  expect_equal(length(sim$creators), 1)
-  expect_equal(names(sim$creators), c("create_rct_data2"))
-  expect_type(sim$creators[[1]], "closure")
-  expect_equal(df$patient_id, c(1:5))
-})
-
-# add_creator() throws error for non-string name
-test_that("add_creator() throws error for non-string name", {
-  expect_error(add_creator(sim, 2, function(y) {return(y)}),
-               "`name` must be a character string")
-})
-
-# add_creator() throws error for non-function function
-test_that("add_creator() throws error for non-function function", {
-  expect_error(add_creator(sim, "func", 2),
-               "`fn` must be a function")
-})
-
-### add_method() ###
-
-estimator_1 <- function(df) {
-  n <- nrow(df)
-  true_prob <- 0.5
-  sum_t <- sum(df$outcome * (df$group=="treatment"))
-  sum_c <- sum(df$outcome * (df$group=="control"))
-  return ( sum_t/(n*true_prob) - sum_c/(n*(1-true_prob)) )
-}
-estimator_2 <- function(df) {
-  n <- nrow(df)
-  est_prob <- sum(df$group=="treatment") / n
-  sum_t <- sum(df$outcome * (df$group=="treatment"))
-  sum_c <- sum(df$outcome * (df$group=="control"))
-  return ( sum_t/(n*est_prob) - sum_c/(n*(1-est_prob)) )
-}
-
-test_that("add_method() throws an error if no function is provided", {
-  expect_error(add_method(sim), "You must provide a function to add_method.")
-})
-
-sim %<>% add_method(estimator_1)
-sim %<>% add_method(estimator_2)
-result <- sim$methods[[1]](df)
-test_that("add_method() works with predefined function", {
-  expect_type(sim$methods, "list")
-  expect_equal(length(sim$methods), 2)
-  expect_equal(names(sim$methods), c("estimator_1", "estimator_2"))
-  expect_type(sim$methods[[1]], "closure")
-  expect_type(sim$methods[[2]], "closure")
-  expect_type(result, "double")
-})
-
-# add_method() works with function defined in call
-sim <- new_sim()
-sim %<>% add_method("estimator_1",
-                    function(df) {
-                      n <- nrow(df)
-                      true_prob <- 0.5
-                      sum_t <- sum(df$outcome * (df$group=="treatment"))
-                      sum_c <- sum(df$outcome * (df$group=="control"))
-                      return ( sum_t/(n*true_prob) - sum_c/(n*(1-true_prob)) )
-                    })
-result <- sim$methods[[1]](df)
-test_that("add_method() works with function defined in call", {
-  expect_type(sim$methods, "list")
-  expect_equal(length(sim$methods), 1)
-  expect_equal(names(sim$methods), c("estimator_1"))
-  expect_type(sim$methods[[1]], "closure")
-  expect_type(result, "double")
-})
-
-# add_method() throws error for non-string name
-test_that("add_method() throws error for non-string name", {
-  expect_error(add_method(sim, 2, function(y) {return(y)}),
-               "`name` must be a character string")
-})
-
-# add_method() throws error for non-function function
-test_that("add_method() throws error for non-function function", {
-  expect_error(add_method(sim, "func", 2),
-               "`fn` must be a function")
-})
-
-### set_script ###
 my_script <- function() {
   df <- create_rct_data(L$num_patients)
   estimate <- use_method(L$estimator, list(df))
@@ -197,17 +109,6 @@ sim$vars$run_state <- "run, no errors"
 test_that("set_script() throws error if sim has already been run", {
   expect_error(set_script(sim, my_script), "A simulation object's script cannot be changed after the simulation has been run.")
 })
-
-### add_constants() ###
-
-sim %<>% add_constants("alpha" = 2)
-test_that("add_constant() works", {
-  expect_type(sim$constants, "list")
-  expect_equal(length(sim$constants), 1)
-  expect_equal(names(sim$constants), c("alpha"))
-  expect_equal(sim$constants[[1]], 2)
-})
-
 
 ### set_levels() ###
 
@@ -305,9 +206,20 @@ test_that("set_config() throws errors for invalid config option values", {
 
 # back to original everything
 sim <- new_sim()
-sim %<>% add_creator(create_rct_data)
-sim %<>% add_method(estimator_1)
-sim %<>% add_method(estimator_2)
+estimator_1 <- function(df) {
+  n <- nrow(df)
+  true_prob <- 0.5
+  sum_t <- sum(df$outcome * (df$group=="treatment"))
+  sum_c <- sum(df$outcome * (df$group=="control"))
+  return ( sum_t/(n*true_prob) - sum_c/(n*(1-true_prob)) )
+}
+estimator_2 <- function(df) {
+  n <- nrow(df)
+  est_prob <- sum(df$group=="treatment") / n
+  sum_t <- sum(df$outcome * (df$group=="treatment"))
+  sum_c <- sum(df$outcome * (df$group=="control"))
+  return ( sum_t/(n*est_prob) - sum_c/(n*(1-est_prob)) )
+}
 sim %<>% set_levels(
   estimator = c("estimator_1", "estimator_2"),
   num_patients = c(50, 200, 1000)
@@ -325,7 +237,7 @@ sim %<>% set_config(
   num_sim = 10,
   parallel = "none"
 )
-sim %<>% run()
+sim %<>% run() # ????? nothing is done with this; delete?
 
 
 ### seeds ###
@@ -429,12 +341,12 @@ test_that("sim_3 has only non-complex data", {
 
 ### Test that use_method can access the proper environment
 sim <- new_sim()
-sim %<>% add_method("estimator_1", function() { L$val })
-sim %<>% add_method("estimator_2", function() { L$val })
-sim %<>% add_method("wrapper_1", function() {
+estimator_1 <- function() { L$val }
+estimator_2 <- function() { L$val }
+wrapper_1 <- function() {
   val_hat <- use_method(L$estimator, list())
   return(val_hat)
-})
+}
 sim %<>% set_levels(
   "val" = 99,
   "estimator" = c("estimator_1", "estimator_2")
@@ -448,7 +360,6 @@ sim %<>% set_script(function() {
   return (list("v1"=val_hat_1, "v2"=val_hat_2, "v3"=val_hat_3))
 })
 sim %<>% run()
-sim$results
 test_that("use_method can access the proper environment", {
   expect_equal(sim$errors, "No errors")
   expect_equal(sim$results[1,"v1"], 99)
@@ -491,3 +402,51 @@ test_that("vars() handles incorrect variables properly", {
                "'fake_var' is not a valid option for `var`")
   expect_null(sim$vars$fake_var)
 })
+
+# Function scoping
+{
+  run_sim <- function(parallel) {
+
+    sim <- new_sim()
+    return_one <- function() { 1 }
+    access_level <- function() { L$alpha }
+    fn_outer <- function(x) { fn_inner(x) }
+    fn_inner <- function(x) { x }
+    C <- list(beta=4)
+    access_constant <- function() { C$beta }
+    create_data <- function() {
+      w <- return_one()
+      x <- fn_outer(fn_inner(return_one()))
+      y <- access_level()
+      z <- access_constant()
+      return (list(w=w,x=x,y=y,z=z))
+    }
+    sim %<>% set_levels(alpha=c(2,3))
+    sim %<>% set_config(num_sim=1, parallel=parallel, n_cores=2)
+    sim %<>% set_script(function() {
+      d <- create_data()
+      return (d)
+    })
+    sim %<>% run()
+    return(sim)
+  }
+
+  sim1 <- run_sim(parallel="none")
+  sim2 <- run_sim(parallel="outer")
+
+  test_that("Simulation ran and all objects were accessible (serial)", {
+    expect_equal(sim1$results[1,"w"], 1)
+    expect_equal(sim1$results[1,"x"], 1)
+    expect_equal(sim1$results[1,"y"], 2)
+    expect_equal(sim1$results[2,"y"], 3)
+    expect_equal(sim1$results[1,"z"], 4)
+  })
+
+  test_that("Simulation ran and all objects were accessible (parallel)", {
+    expect_equal(sim2$results[1,"w"], 1)
+    expect_equal(sim2$results[1,"x"], 1)
+    expect_equal(sim2$results[1,"y"], 2)
+    expect_equal(sim2$results[2,"y"], 3)
+    expect_equal(sim2$results[1,"z"], 4)
+  })
+}
