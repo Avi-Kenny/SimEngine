@@ -33,13 +33,13 @@ sim %<>% set_levels(
     "Normal" = list(type="Normal", params=c(3.0, 0.2))
   )
 )
-sim %<>% add_creator("create_data", function(n, type, params) {
+create_data <- function(n, type, params) {
   if (type=="Beta") {
     return(rbeta(n, shape1=params[1], shape2=params[2]))
   } else if (type=="Normal") {
     return(rnorm(n, mean=params[1], sd=params[2]))
   }
-})
+}
 sim %<>% set_script(function() {
   x <- create_data(L$n, L$distribution$type, L$distribution$params)
   return(list("y"=mean(x)))
@@ -64,11 +64,11 @@ In most situations, the results of simulations will be numeric. However, we may 
 ```R
 sim <- new_sim()
 sim %<>% set_levels(n=c(10, 100, 1000))
-sim %<>% add_creator("create_data", function(n) {
+create_data <- function(n) {
   x <- runif(n)
   y <- 3 + 2*x + rnorm(n)
   return(data.frame("x"=x, "y"=y))
-})
+}
 sim %<>% set_config(num_sim=2)
 sim %<>% set_script(function() {
   dat <- create_data(L$n)
@@ -147,7 +147,7 @@ vars(sim, "seed") %>% print()
 
 ## Using simulation constants
 
-A simulation constant is any R object that does not change across simulation replicates. It can be useful as an organizational "container" to store global values that you may want to change later. It can also be used to store external data that you need in your simulation. The code below demonstrates both uses of simulation constants.
+A "simulation constant"" is any R object that does not change across simulation replicates. It can be useful to "hack" the levels object an organizational "container" to store global values that you may want to change later. It can also be used to store external data that you need in your simulation. The code below demonstrates both uses of simulation constants.
 
 ```R
 sim <- new_sim()

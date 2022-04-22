@@ -33,13 +33,13 @@ library(tidyr)
 library(SimEngine)
 sim <- new_sim()
 
-sim %<>% add_creator("create_regression_data", function(n) {
+create_regression_data <- function(n) {
   beta <- c(-1, 10)
   x <- rnorm(n)
   sigma2 <- exp(x)
   y <- rnorm(n=n, mean=(beta[1]+beta[2]*x), sd = sqrt(sigma2))
   return(data.frame(x=x, y=y))
-})
+}
 ```
 
 To get a sense of what heteroskedasticity looks like in practice, we can generate a dataset using our creator function, fit a linear regression model, and make a scatterplot of the residuals against $$X$$.
@@ -61,15 +61,15 @@ ggplot(dat, aes(x=x, y=residuals)) +
 Now we add two methods to our simulation object: one returns the least squares estimate and model-based estimator of the variance-covariance matrix of $$\hat{\beta}$$, and the other returns the least squares estimate and sandwich estimator (using the sandwich package). 
 
 ```R
-sim %<>% add_method("model_vcov", function(data) {
+model_vcov <- function(data) {
   mod <- lm(y~x, data=data)
   return(list("coef"=mod$coefficients, "vcov"=diag(vcov(mod))))
-})
+}
 
-sim %<>% add_method("sandwich_vcov", function(data) {
+sandwich_vcov <- function(data) {
   mod <- lm(y~x, data=data)
   return(list("coef"=mod$coefficients, "vcov"=diag(vcovHC(mod))))
-})
+}
 ```
 
 Next, we write the simulation script. This script returns a point estimate and a standard error estimate for both the intercept parameter $$\beta_0$$ and the slope parameter $$\beta_1$$. We will tell **SimEngine** to run 500 simulation replicates for each of four sample sizes. It is important to use the `seed` argument in `set_config` so that our results will be reproducible. In addition, we will use the `packages` option to load the sandwich package. Loading packages via `set_config` (as opposed to running `library(sandwich)`) is required if running simulations in parallel. Finally, we run the simulation.  
@@ -204,10 +204,10 @@ plot_results("coverage")
 
 Looking at these plots, we can see that the sandwich method results in a wider interval, on average, for $$\beta_1$$. In terms of coverage, the sandwich estimator achieves near nominal coverage for both parameters, while there is moderate undercoverage for $$\beta_1$$ using the model-based estimator. 
 
-The bootstrap is another popular approach to estimating standard errors. We can add a bootstrap method to our simulation object and use `update_sim` to run the new simulation replicates without re-running any of our previous work. After adding the method using `add_method`, we will need to include the new estimator in our simulation levels. Since the bootstrap can be computationally intensive, we will use parallelization to speed things up. This requires us to specify the option `parallel = "outer"` in `set_config`. (Even with parallelization, `update_sim` will likely take a few minutes to run.)
+The bootstrap is another popular approach to estimating standard errors. We can add a bootstrap method and use `update_sim` to run the new simulation replicates without re-running any of our previous work. All we need to do is include the new estimator in our simulation levels. Since the bootstrap can be computationally intensive, we will use parallelization to speed things up. This requires us to specify the option `parallel = "outer"` in `set_config`. (Even with parallelization, `update_sim` will likely take a few minutes to run.)
 
 ```R
-sim %<>% add_method("bootstrap_vcov", function(data) {
+bootstrap_vcov <- function(data) {
   mod <- lm(y~x, data=data)
   boot_ests <- matrix(NA, nrow=100, ncol=2)
   for (j in 1:100) {
@@ -219,7 +219,7 @@ sim %<>% add_method("bootstrap_vcov", function(data) {
   boot_v1 <- var(boot_ests[,1])
   boot_v2 <- var(boot_ests[,2])
   return(list("coef"=mod$coefficients, "vcov"=c(boot_v1, boot_v2)))
-})
+}
 
 sim %<>% set_levels(
   estimator = c("model_vcov", "sandwich_vcov", "bootstrap_vcov"),
