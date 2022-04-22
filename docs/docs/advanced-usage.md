@@ -147,23 +147,22 @@ vars(sim, "seed") %>% print()
 
 ## Using simulation constants
 
-A "simulation constant"" is any R object that does not change across simulation replicates. It can be useful to "hack" the levels object an organizational "container" to store global values that you may want to change later. It can also be used to store external data that you need in your simulation. The code below demonstrates both uses of simulation constants.
+A "simulation constant"" is any R object that does not change across simulation replicates. Although constants can simply be declared as variables in the global namespace, it can be useful to "hack" the levels functionality of SimEngine to serve as an organizational container for global values that you may want to change later. The code below demonstrates this, where `beta1` and `beta2` are constants.
 
 ```R
 sim <- new_sim()
 my_data <- read.csv("my_data.csv")
-sim %<>% add_constants(
-  samp_size = 3,
-  my_data = read.csv("my_data.csv")
+sim %<>% set_levels(
+  n = c(100,1000),
+  beta0 = 3,
+  beta1 = 1
 )
-
-sim %<>% set_script(function() {
-  sample_indices <- sample(c(1:nrow(my_data)), size=C$samp_size)
-  my_sample <- C$my_data[sample_indices,]
-  estimate <- mean(my_sample$value)
-  return (list("estimate" = estimate))
-})
-
+create_data <- function() {
+  x <- runif(L$n)
+  y <- L$beta0 + L$beta1*x + rnorm(L$n)
+  return(data.frame(x,y))
+}
+# ... and so on ...
 ```
 
 ## Handling errors and warnings
