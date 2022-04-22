@@ -33,11 +33,11 @@
 #'     in \code{results} or \code{errors}
 #' @examples
 #' sim <- new_sim()
-#' sim %<>% add_creator("create_data", function(n) { rpois(n, lambda=5) })
-#' sim %<>% add_method("est_mean", function(dat, type) {
+#' create_data <- function(n) { rpois(n, lambda=5) }
+#' est_mean <- function(dat, type) {
 #'   if (type=="M") { return(mean(dat)) }
 #'   if (type=="V") { return(var(dat)) }
-#' })
+#' }
 #' sim %<>% set_levels(n=c(10,100), est="M")
 #' sim %<>% set_config(num_sim=10)
 #' sim %<>% set_script(function() {

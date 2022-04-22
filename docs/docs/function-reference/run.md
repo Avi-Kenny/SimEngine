@@ -15,7 +15,7 @@ parent: Function reference
 
 <p>This is the workhorse function of <span class="pkg">SimEngine</span> that actually
 runs the simulation. This should be called after all functions that set
-up the simulation (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>add_creator</span>, <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set_config</span>, etc.) have been
+up the simulation (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set_config</span>, <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set_script</span>, etc.) have been
 called.
 </p>
 
@@ -60,11 +60,11 @@ errors are stored in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,C
 # The following is a toy example of a simulation, illustrating the use of
 # the run function.
 sim <- new_sim()
-sim %<>% add_creator("create_data", function(n) { rpois(n, lambda=5) })
-sim %<>% add_method("est_mean", function(dat, type) {
+create_data <- function(n) { rpois(n, lambda=5) }
+est_mean <- function(dat, type) {
   if (type=="M") { return(mean(dat)) }
   if (type=="V") { return(var(dat)) }
-})
+}
 sim %<>% set_levels(n=c(10,100,1000), est=c("M","V"))
 sim %<>% set_config(num_sim=1)
 sim %<>% set_script(function() {

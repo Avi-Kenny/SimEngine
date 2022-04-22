@@ -2,7 +2,7 @@
 #'
 #' @description This is the workhorse function of \pkg{SimEngine} that actually
 #'     runs the simulation. This should be called after all functions that set
-#'     up the simulation (\code{add_creator}, \code{set_config}, etc.) have been
+#'     up the simulation (\code{set_config}, \code{set_script}, etc.) have been
 #'     called.
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
 #'     \code{\link{new_sim}}
@@ -18,11 +18,11 @@
 #' # The following is a toy example of a simulation, illustrating the use of
 #' # the run function.
 #' sim <- new_sim()
-#' sim %<>% add_creator("create_data", function(n) { rpois(n, lambda=5) })
-#' sim %<>% add_method("est_mean", function(dat, type) {
+#' create_data <- function(n) { rpois(n, lambda=5) }
+#' est_mean <- function(dat, type) {
 #'   if (type=="M") { return(mean(dat)) }
 #'   if (type=="V") { return(var(dat)) }
-#' })
+#' }
 #' sim %<>% set_levels(n=c(10,100,1000), est=c("M","V"))
 #' sim %<>% set_config(num_sim=1)
 #' sim %<>% set_script(function() {

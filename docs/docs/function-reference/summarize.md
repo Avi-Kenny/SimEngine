@@ -176,11 +176,11 @@ the simulation levels.
 # The following is a toy example of a simulation, illustrating the use of
 # the summarize function.
 sim <- new_sim()
-sim %<>% add_creator("create_data", function(n) { rpois(n, lambda=5) })
-sim %<>% add_method("est_mean", function(dat, type) {
+create_data <- function(n) { rpois(n, lambda=5) }
+est_mean <- function(dat, type) {
   if (type=="M") { return(mean(dat)) }
   if (type=="V") { return(var(dat)) }
-})
+}
 sim %<>% set_levels(n=c(10,100,1000), est=c("M","V"))
 sim %<>% set_config(num_sim=5)
 sim %<>% set_script(function() {

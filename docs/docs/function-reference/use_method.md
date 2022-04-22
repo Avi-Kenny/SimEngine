@@ -33,8 +33,8 @@ use_method(method, args = list())
 <table summary="R argblock">
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>method</span></td>
 <td>
-<p>A character string naming a function that has been added to
-your simulation object via <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>add_method</span></p>
+<p>A character string naming a function that has been declared or
+loaded via <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>source()</span>.</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>args</span></td>
 <td>
@@ -55,9 +55,9 @@ your simulation object via <span style='font-family:&quot;SFMono-Regular&quot;,M
 # The following is a toy example of a simulation, illustrating the use of
 # the use_method function.
 sim <- new_sim()
-sim %<>% add_creator("create_data", function(n) { rpois(n, lambda=5) })
-sim %<>% add_method("est_mean_1", function(dat) { mean(dat) })
-sim %<>% add_method("est_mean_2", function(dat) { var(dat) })
+create_data <- function(n) { rpois(n, lambda=5) }
+est_mean_1 <- function(dat) { mean(dat) }
+est_mean_2 <- function(dat) { var(dat) }
 sim %<>% set_levels(
   "n" = c(10, 100, 1000),
   "estimator" = c("est_mean_1", "est_mean_2")

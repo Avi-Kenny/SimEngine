@@ -5,17 +5,17 @@
 #'     used in conjunction with the special object L to dynamically run methods
 #'     that have been included as simulation levels. This function is a wrapper
 #'     around do.call and is used in a similar manner. See examples.
-#' @param method A character string naming a function that has been added to
-#'     your simulation object via \code{\link{add_method}}
+#' @param method A character string naming a function that has been declared or
+#'     loaded via \code{source()}.
 #' @param args A list of arguments to be passed onto \code{method}
 #' @return The result of the call to \code{method}
 #' @examples
 #' # The following is a toy example of a simulation, illustrating the use of
 #' # the use_method function.
 #' sim <- new_sim()
-#' sim %<>% add_creator("create_data", function(n) { rpois(n, lambda=5) })
-#' sim %<>% add_method("est_mean_1", function(dat) { mean(dat) })
-#' sim %<>% add_method("est_mean_2", function(dat) { var(dat) })
+#' create_data <- function(n) { rpois(n, lambda=5) }
+#' est_mean_1 <- function(dat) { mean(dat) }
+#' est_mean_2 <- function(dat) { var(dat) }
 #' sim %<>% set_levels(
 #'   "n" = c(10, 100, 1000),
 #'   "estimator" = c("est_mean_1", "est_mean_2")

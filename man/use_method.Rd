@@ -7,8 +7,8 @@
 use_method(method, args = list())
 }
 \arguments{
-\item{method}{A character string naming a function that has been added to
-your simulation object via \code{\link{add_method}}}
+\item{method}{A character string naming a function that has been declared or
+loaded via \code{source()}.}
 
 \item{args}{A list of arguments to be passed onto \code{method}}
 }
@@ -26,9 +26,9 @@ This function calls the specified method, passing along any
 # The following is a toy example of a simulation, illustrating the use of
 # the use_method function.
 sim <- new_sim()
-sim \%<>\% add_creator("create_data", function(n) { rpois(n, lambda=5) })
-sim \%<>\% add_method("est_mean_1", function(dat) { mean(dat) })
-sim \%<>\% add_method("est_mean_2", function(dat) { var(dat) })
+create_data <- function(n) { rpois(n, lambda=5) }
+est_mean_1 <- function(dat) { mean(dat) }
+est_mean_2 <- function(dat) { var(dat) }
 sim \%<>\% set_levels(
   "n" = c(10, 100, 1000),
   "estimator" = c("est_mean_1", "est_mean_2")

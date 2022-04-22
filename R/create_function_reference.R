@@ -1,7 +1,8 @@
 
 # This file will update the "function reference" section of the SimEngine
 #     website (https://avi-kenny.github.io/SimEngine/function-reference)
-# !!!!! Run this file manually for now (eventually automate it via devtools)
+# !!!!! Run this file manually for now (eventually automate it via devtools);
+# !!!!! it should be run after building the docs (SHFT+CTRL+D)
 
 if (F) {
 
