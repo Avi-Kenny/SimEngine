@@ -3,7 +3,7 @@
   [![CRAN status](https://www.r-pkg.org/badges/version/SimEngine)](https://CRAN.R-project.org/package=SimEngine)
   ![GitHub](https://img.shields.io/github/license/Avi-Kenny/SimEngine)
   [![R-CMD-check](https://github.com/Avi-Kenny/SimEngine/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/Avi-Kenny/SimEngine/actions/workflows/R-CMD-check.yml)
-  [![Codecov test coverage](https://codecov.io/gh/Avi-Kenny/SimEngine/branch/master/graph/badge.svg)](https://codecov.io/gh/Avi-Kenny/SimEngine?branch=master)
+  [![Codecov test coverage](https://codecov.io/gh/Avi-Kenny/SimEngine/branch/master/graph/badge.svg)](https://app.codecov.io/gh/Avi-Kenny/SimEngine?branch=master)
   [![](https://cranlogs.r-pkg.org/badges/SimEngine)](https://cran.rstudio.com/web/packages/SimEngine/index.html)
 <!-- badges: end -->
 
