@@ -450,3 +450,19 @@ test_that("vars() handles incorrect variables properly", {
     expect_equal(sim2$results[1,"z"], 4)
   })
 }
+
+# Using use_method() in parallel
+sim <- new_sim()
+f1 <- function() { 11 }
+f2 <- function() { 22 }
+sim %<>% set_levels(f=c("f1","f2"))
+sim %<>% set_script(function() {
+  val <- use_method(L$f, list())
+  return(list(val=val))
+})
+sim %<>% set_config(num_sim=1, parallel="outer", n_cores=2)
+sim %<>% run()
+test_that("Simulation ran and all objects were accessible (serial)", {
+  expect_equal(sim$results[1,"val"], 11)
+  expect_equal(sim$results[2,"val"], 22)
+})
