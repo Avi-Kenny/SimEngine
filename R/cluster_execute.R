@@ -29,8 +29,10 @@ cluster_execute <- function(first,
   rm(last)
   rm(cluster_config)
 
-  # Create a new environment to evaluate code blocks within
+  # Create a new environment to evaluate code blocks within and get a reference
+  # to the calling environment
   ..env_cl <- new.env()
+  ..env_calling <- parent.frame(n=2)
 
   # Run all code locally if simulation is not being run on cluster
   # !!!!! TO-DO make this work for update_switch = TRUE
@@ -57,20 +59,20 @@ cluster_execute <- function(first,
     }
     rm(..count)
 
-    # Save a copy of simulation object to global environment
+    # Save a copy of simulation object to the parent environment
     assign(x = ..sim_var,
            value = eval(as.name(..sim_var), envir=..env_cl),
-           envir = .GlobalEnv)
+           envir = ..env_calling)
 
     # Run code locally (`main` and `last` blocks)
     eval(..main, envir=..env_cl)
     assign(x = ..sim_var,
            value = eval(as.name(..sim_var), envir=..env_cl),
-           envir = .GlobalEnv)
+           envir = ..env_calling)
     eval(..last, envir=..env_cl)
     assign(x = ..sim_var,
            value = eval(as.name(..sim_var), envir=..env_cl),
-           envir = .GlobalEnv)
+           envir = ..env_calling)
 
   } else {
 
@@ -314,7 +316,7 @@ cluster_execute <- function(first,
 
           e <- readRDS(paste0(..path_sim_res, "/", file))
 
-          if (class(e)=="data.frame") {
+          if (methods::is(e,"data.frame")) {
             if (is.null(errors_df)) {
               errors_df <- e
             } else {
@@ -327,7 +329,7 @@ cluster_execute <- function(first,
         } else if (substr(file,1,1) == "w") {
           w <- readRDS(paste0(..path_sim_res, "/", file))
 
-          if (class(w)=="data.frame") {
+          if (methods::is(w,"data.frame")) {
             if (is.null(warnings_df)) {
               warnings_df <- w
             } else {

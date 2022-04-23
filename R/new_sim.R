@@ -27,6 +27,7 @@ new_sim <- function() {
 
   # Create "blank" simulation object
   ..seed <- as.integer(1e9*runif(1))
+  ..e <- .GlobalEnv
   ...sim <- list(
     config = list(
       num_sim = 10,
@@ -53,7 +54,7 @@ new_sim <- function() {
       tid = NA,
       sim_var = "",
       update_sim = FALSE,
-      env_calling = parent.frame(n=1)
+      env_calling = parent.frame()
     ),
     vars = list(
       seed = ..seed,
@@ -69,7 +70,8 @@ new_sim <- function() {
   # Create a global reference to the environment that can be searched for via
   #     get() by methods (currently only use_method) that need to access the
   #     simulation environment but don't take sim as an argument
-  assign(x="..env", value=...sim$vars$env, envir=.GlobalEnv)
+  assign(x="..env", value=...sim$vars$env, envir=..e)
+  rm(..e)
 
   class(...sim) <- "sim_obj"
 

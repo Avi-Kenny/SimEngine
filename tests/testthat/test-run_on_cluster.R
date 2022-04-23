@@ -38,8 +38,7 @@ run_c <- function(ret=FALSE, cmplx=FALSE) {
     )
   }
 
-
-  # The `sim` object should have been created in this environment
+  # The simulation object should have been created in this environment
   if (ret) { return (sim) }
 
 }
