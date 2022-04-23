@@ -102,7 +102,7 @@ set_levels.sim_obj <- function(sim, ..., .add=FALSE, .keep=NA) {
     levels_shallow <- list()
     levels_types <- c() # Stores whether level is a list (TRUE) or not (FALSE)
     for (i in 1:length(sim$levels)) {
-      if (is(sim$levels[[i]],"list")) {
+      if (methods::is(sim$levels[[i]],"list")) {
         # if the level is a list, it must be a named list of lists
         # first, make sure it has names
         if (length(names(sim$levels[[i]])) != length(sim$levels[[i]]) ||

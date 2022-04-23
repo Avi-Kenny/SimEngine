@@ -188,7 +188,7 @@ summarize.sim_obj <- function(sim, ...) {
     }
   }
   for (metric in metrics) {
-    if (!is.null(o_args[[metric]]) && !class(o_args[[metric]][[1]])=="list") {
+    if (!is.null(o_args[[metric]]) && !methods::is(o_args[[metric]][[1]],"list")) {
       o_args[[metric]] <- list(o_args[[metric]])
     }
   }

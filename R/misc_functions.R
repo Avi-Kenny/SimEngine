@@ -52,7 +52,7 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
   switch(err,
 
     "is.sim_obj" = {
-      if (class(obj)!="sim_obj") {
+      if (!methods::is(obj,"sim_obj")) {
         if (is.na(msg)) {
           msg <- paste0("`",name,"` must be of class `sim_obj`")
         }

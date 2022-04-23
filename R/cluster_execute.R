@@ -45,7 +45,7 @@ cluster_execute <- function(first,
     ..count <- 0
     ..sim_var <- NA
     for (obj_name in ls(..env_cl)) {
-      if ("sim_obj" %in% class(get(x=obj_name, envir=..env_cl))) {
+      if (methods::is(get(x=obj_name, envir=..env_cl), "sim_obj")) {
         ..sim_var <- obj_name
         ..count <- ..count + 1
       }
@@ -138,7 +138,7 @@ cluster_execute <- function(first,
     ..count <- 0
     ..sim_var <- NA
     for (obj_name in ls(..env_cl)) {
-      if ("sim_obj" %in% class(get(x=obj_name, envir=..env_cl))) {
+      if (methods::is(get(x=obj_name, envir=..env_cl),"sim_obj")) {
         ..sim_var <- obj_name
         ..count <- ..count + 1
       }
