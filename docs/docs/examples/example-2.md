@@ -227,7 +227,7 @@ sim %<>% set_levels(
 )
 
 sim %<>% set_config(
-  num_sim=500,
+  num_sim = 500,
   seed = 24,
   parallel = "outer",
   n_cores = 2,

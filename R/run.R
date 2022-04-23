@@ -81,6 +81,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
     cl <- parallel::makeCluster(n_cores)
     parallel::clusterExport(cl, ls(sim$vars$env), sim$vars$env)
     parallel::clusterExport(cl, c("sim","..packages"), environment())
+    parallel::clusterExport(cl, "..env", .GlobalEnv)
     parallel::clusterCall(cl, function(x) {.libPaths(x)}, .libPaths())
     parallel::clusterEvalQ(cl, sapply(..packages, function(p) {
       do.call("library", list(p))

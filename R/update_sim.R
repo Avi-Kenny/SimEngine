@@ -69,6 +69,16 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
   handle_errors(keep_errors, "is.boolean")
   handle_errors(keep_extra, "is.boolean")
 
+  # Add "global" objects to simulation object run environment (excluding
+  #     simulation object); these are not necessarily in the global environment,
+  #     but are in the environment the new_sim() call is executed within.
+  for (obj_name in ls(sim$internals$env_calling)) {
+    obj <- get(x=obj_name, envir=sim$internals$env_calling)
+    if (!(class(obj)=="sim_obj")) {
+      assign(x=obj_name, value=obj, envir=sim$vars$env)
+    }
+  }
+
   # make sorted list of current levels and previous levels
   sorted_prev_levels <- sim$internals$levels_prev[
     order(names(sim$internals$levels_prev))]
