@@ -30,7 +30,7 @@ The terminology associated with parallel computing can be confusing - what is th
 
 There are three methods of parallelizing code using **SimEngine**:
 
-1) **Outer parallelization**. This is the most straightforward way to parallelize your code. Most statistical simulations involve running multiple <a href="/docs/concepts.html" target="_blank">replicates</a> of the same simulation, perhaps with certain things changing between replicates. With outer parallelization, a single simulation replicate is assigned to a single task.
+1) **Outer parallelization**. This is the most straightforward way to parallelize your code. Most statistical simulations involve running multiple <a href="/docs/concepts.html">replicates</a> of the same simulation, perhaps with certain things changing between replicates. With outer parallelization, a single simulation replicate is assigned to a single task.
 
 2) **Inner parallelization**. With inner parallelization, one or more pieces within a single simulation replicate are parallelized. Inner parallelization is useful when your entire simulation only has a small handful of replicates (i.e. fewer replicates than available cores); otherwise, we recommend outer parallelization.
 
@@ -51,7 +51,7 @@ Note that if a single simulation replicate runs in a very short amount of time (
 
 ## Inner parallelization
 
-With inner parallelization, one or more pieces within a single simulation replicate are parallelized. This method of parallelization requires you to specify pieces of your code to run in parallel using functions from the **parallel** package. See the <a href="https://www.rdocumentation.org/packages/parallel" target="_blank">documentation</a> for the **parallel** package if you have never used this package before. **SimEngine** will create and manage the cluster object; simply reference the special `CL` object in your code (note: the term "cluster object" refers to an R object of class `cluster`; this is distinct from the use use of the word "cluster" in "cluster parallelization").
+With inner parallelization, one or more pieces within a single simulation replicate are parallelized. This method of parallelization requires you to specify pieces of your code to run in parallel using functions from the **parallel** package. See the <a href="https://www.rdocumentation.org/packages/parallel">documentation</a> for the **parallel** package if you have never used this package before. **SimEngine** will create and manage the cluster object; simply reference the special `CL` object in your code (note: the term "cluster object" refers to an R object of class `cluster`; this is distinct from the use use of the word "cluster" in "cluster parallelization").
 
 In the example below, inner parallelization is used within the `create_data()` function through `parLapply()`. However, you can also use parallel functions within your simulation script itself or within methods.
 
@@ -199,4 +199,4 @@ run_on_cluster(
 )
 ```
 
-Alternatively, if you'd like for a job scheduler to be supported by **SimEngine**, please submit an issue on the <a href="https://github.com/Avi-Kenny/SimEngine/issues" target="_blank">**SimEngine** GitHub</a> page.
+Alternatively, if you'd like for a job scheduler to be supported by **SimEngine**, please submit an issue on the <a href="https://github.com/Avi-Kenny/SimEngine/issues">**SimEngine** GitHub</a> page.

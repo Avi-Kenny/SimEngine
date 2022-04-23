@@ -13,7 +13,7 @@ permalink: /
 A modular framework for statistical simulations in R
 {: .fs-5 }
 
-<a href="https://github.com/Avi-Kenny/SimEngine" target="_blank">View source code on GitHub</a>{: .btn .btn-primary .fs-4 .mt-1 }
+<a href="https://github.com/Avi-Kenny/SimEngine">View source code on GitHub</a>{: .btn .btn-primary .fs-4 .mt-1 }
 
 ---
 
@@ -106,7 +106,7 @@ est_tx_effect(df, "est2")
 
 ### 4) Set the simulation levels
 
-Often, we want to run the same simulation multiple times (with each run referred to as a "simulation replicate"), but with certain things changed. In this example, perhaps we want to vary the number of patients and the method used to estimate the average treatment effect. We refer to the things that vary as "simulation levels". By default, **SimEngine** will run our simulation 10 times for each level combination. Below, since there are two methods and three values of num_patients, we have six level combinations and so **SimEngine** will run a total of 60 simulation replicates. Note that we make extensive use of the pipe operators (`%>%` and `%<>%`) from the **magrittr** package; if you have never used pipes, check out the <a href="https://magrittr.tidyverse.org" target="_blank">magrittr documentation</a>.
+Often, we want to run the same simulation multiple times (with each run referred to as a "simulation replicate"), but with certain things changed. In this example, perhaps we want to vary the number of patients and the method used to estimate the average treatment effect. We refer to the things that vary as "simulation levels". By default, **SimEngine** will run our simulation 10 times for each level combination. Below, since there are two methods and three values of num_patients, we have six level combinations and so **SimEngine** will run a total of 60 simulation replicates. Note that we make extensive use of the pipe operators (`%>%` and `%<>%`) from the **magrittr** package; if you have never used pipes, check out the <a href="https://magrittr.tidyverse.org">magrittr documentation</a>.
 
 ```R
 sim %<>% set_levels(
@@ -127,17 +127,18 @@ sim %<>% set_script(function() {
 })
 ```
 
-Your script should always return a named list, although your list can be complex and contain dataframes, multiple levels of nesting, etc. Note that you can also code your estimators as separate functions and call them from within the script using <a href="/docs/function-reference/use_method.html" target="_blank">`use_method`</a>.
+Your script should always return a named list, although your list can be complex and contain dataframes, multiple levels of nesting, etc. Note that you can also code your estimators as separate functions and call them from within the script using <a href="/docs/function-reference/use_method.html">`use_method`</a>.
 
 ### 6) Set the simulation configuration
 
-This controls options related to your entire simulation, such as the number of simulation replicates to run for each level combination and how to <a href="/docs/parallelization.html" target="_blank">parallelize</a> your code. This is discussed in detail on the <a href="/docs/function-reference/set_config.html" target="_blank">`set_config`</a> page. We set `num_sim` to 10, and so **SimEngine** will run a total of 60 simulation replicates (10 for each level combination).
+This controls options related to your entire simulation, such as the number of simulation replicates to run for each level combination and how to <a href="/docs/parallelization.html">parallelize</a> your code. This is also where you should specify any packages your simulation needs (instead of using `library()` or `require`). This is discussed in detail on the <a href="/docs/function-reference/set_config.html">`set_config`</a> page. We set `num_sim` to 10, and so **SimEngine** will run a total of 60 simulation replicates (10 for each level combination).
 
 ```R
 sim %<>% set_config(
   num_sim = 10,
   parallel = "outer",
-  n_cores = 2
+  n_cores = 2,
+  packages = c("ggplot2", "stringr")
 )
 ```
 
@@ -187,4 +188,4 @@ head(sim$results)
 
 ## About this project
 
-**SimEngine** was created by <a href="https://github.com/Avi-Kenny" target="_blank">Avi Kenny</a> and <a href="https://github.com/cwolock" target="_blank">Charles Wolock</a>. The package is licensed using the <a href="https://github.com/Avi-Kenny/SimEngine/blob/master/LICENSE.txt" target="_blank">GNU General Public Licence (GPL) V3</a>.
+**SimEngine** was created by <a href="https://github.com/Avi-Kenny">Avi Kenny</a> and <a href="https://github.com/cwolock">Charles Wolock</a>. The package is licensed using the <a href="https://github.com/Avi-Kenny/SimEngine/blob/master/LICENSE.txt">GNU General Public Licence (GPL) V3</a>.

@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette is adapted from <a href="https://avi-kenny.github.io/SimEngine/examples/1" target="_blank">Example 1</a> on the SimEngine website. 
+This vignette is adapted from <a href="https://avi-kenny.github.io/SimEngine/examples/1">Example 1</a> on the SimEngine website. 
 
 ```{r setup}
 library(SimEngine)
