@@ -30,7 +30,7 @@ The terminology associated with parallel computing can be confusing - what is th
 
 There are three methods of parallelizing code using **SimEngine**:
 
-1) **Outer parallelization**. This is the most straightforward way to parallelize your code. Most statistical simulations involve running multiple <a href="/docs/concepts.html">replicates</a> of the same simulation, perhaps with certain things changing between replicates. With outer parallelization, a single simulation replicate is assigned to a single task.
+1) **Outer parallelization**. This is the most straightforward way to parallelize your code. Most statistical simulations involve running multiple replicates of the same simulation, perhaps with certain things changing between replicates. With outer parallelization, a single simulation replicate is assigned to a single task.
 
 2) **Inner parallelization**. With inner parallelization, one or more pieces within a single simulation replicate are parallelized. Inner parallelization is useful when your entire simulation only has a small handful of replicates (i.e. fewer replicates than available cores); otherwise, we recommend outer parallelization.
 
