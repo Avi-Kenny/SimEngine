@@ -131,7 +131,7 @@ Your script should always return a named list, although your list can be complex
 
 ### 6) Set the simulation configuration
 
-This controls options related to your entire simulation, such as the number of simulation replicates to run for each level combination and how to <a href="/docs/parallelization.html">parallelize</a> your code. This is also where you should specify any packages your simulation needs (instead of using `library()` or `require`). This is discussed in detail on the <a href="/docs/function-reference/set_config.html">`set_config`</a> page. We set `num_sim` to 10, and so **SimEngine** will run a total of 60 simulation replicates (10 for each level combination).
+This controls options related to your entire simulation, such as the number of simulation replicates to run for each level combination and how to <a href="/docs/parallelization.html">parallelize</a> your code. This is also where you should specify any packages your simulation needs (instead of using `library()` or `require()`). This is discussed in detail on the <a href="/docs/function-reference/set_config.html">`set_config`</a> page. We set `num_sim` to 10, and so **SimEngine** will run a total of 60 simulation replicates (10 for each level combination).
 
 ```R
 sim %<>% set_config(
