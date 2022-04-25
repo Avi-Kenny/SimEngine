@@ -411,5 +411,6 @@ test_that("Simulation ran and all objects were accessible (cluster 1)", {
   expect_equal(sim3$results[1,"y"], 2)
   expect_equal(sim3$results[1,"z"], 4)
 })
+Sys.setenv(sim_run="")
 rm(sim3)
 unlink("sim.rds")

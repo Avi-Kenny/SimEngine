@@ -42,15 +42,11 @@ sim %<>% set_script(
   function() {
     df <- create_rct_data(L$num_patients, L$ate)
     estimate <- do.call(L$estimator, list(df))
-    return (
-      list("estimate" = estimate)
-    )
+    return (list("estimate"=estimate))
   }
 )
 
-sim %<>% set_config(
-  num_sim = 5
-)
+sim %<>% set_config(num_sim=5)
 
 sim %<>% run()
 prev_ncol <- length(sim$results)
@@ -95,9 +91,7 @@ sim %<>% set_levels(
   num_patients = c(50, 100),
   ate = c(-7)
 )
-sim %<>% set_config(
-  num_sim = 10
-)
+sim %<>% set_config(num_sim=10)
 
 ### update_sim adds reps ###
 sim %<>% update_sim()
@@ -114,14 +108,10 @@ sim %<>% set_levels(
   num_patients = c(50),
   ate = c(-7)
 )
-sim %<>% set_config(
-  num_sim = 4
-)
+sim %<>% set_config(num_sim=4)
 
 ### update_sim removes extra reps/levels ###
-suppressWarnings({
-  sim %<>% update_sim()
-})
+suppressWarnings({ sim %<>% update_sim() })
 
 test_that("update_sim() can remove extra reps/levels", {
   expect_type(sim$results, "list")
@@ -133,25 +123,18 @@ test_that("update_sim() can remove extra reps/levels", {
 # new sim, introduce errors and warnings
 sim <- new_sim()
 
-sim %<>% set_script(
-  function() {
-    if (L$index %% 2 != 0) {
-      warning('Odd warning.')
-      stop('Odd error.')
-    }
-    x <- sample(c(1,2),1)
-    return (list("x"=x))
+sim %<>% set_script(function() {
+  if (L$index %% 2 != 0) {
+    warning('Odd warning.')
+    stop('Odd error.')
   }
-)
+  x <- sample(c(1,2),1)
+  return (list("x"=x))
+})
 
-sim %<>% set_levels(
-  index = 1:10
-)
+sim %<>% set_levels(index=1:10)
 
-sim %<>% set_config(
-  num_sim = 2,
-  parallel = "none"
-)
+sim %<>% set_config(num_sim=2, parallel="none")
 
 sim %<>% run()
 prev_ncol <- c(length(sim$errors), length(sim$warnings))
@@ -159,9 +142,7 @@ prev_nrow <- c(nrow(sim$errors), nrow(sim$warnings))
 prev_row1 <- list(sim$errors[1,], sim$warnings[1,])
 
 # add levels
-sim %<>% set_levels(
-  index = 1:20
-)
+sim %<>% set_levels(index=1:20)
 
 ### update_sim properly appends errors and warnings
 sim %<>% update_sim()
@@ -177,21 +158,14 @@ test_that("update_sim() appends errors and warnings", {
 })
 
 # back to old levels
-sim %<>% set_levels(
-  index = 1:10
-)
+sim %<>% set_levels(index=1:10)
 
 # reduce number of reps
 
-sim %<>% set_config(
-  num_sim = 1,
-  parallel = "none"
-)
+sim %<>% set_config(num_sim=1, parallel="none")
 
 ### update_sim properly removes extra errors and warnings
-suppressWarnings({
-  sim %<>% update_sim()
-})
+suppressWarnings({ sim %<>% update_sim() })
 test_that("update_sim() removes extra errors and warnings", {
   expect_type(sim$errors, "list")
   expect_type(sim$warnings, "list")
@@ -207,27 +181,19 @@ test_that("update_sim() removes extra errors and warnings", {
 
 sim <- new_sim()
 
-sim %<>% set_script(
-  function() {
-    x <- sample(c(1,2),1)
-    return (list("x"=x))
-  }
-)
+sim %<>% set_script(function() {
+  x <- sample(c(1,2),1)
+  return (list("x"=x))
+})
 
-sim %<>% set_config(
-  num_sim = 100,
-  parallel = "none"
-)
+sim %<>% set_config(num_sim=100, parallel="none")
 
 sim %<>% run()
 prev_ncol <- length(sim$results)
 prev_nrow <- nrow(sim$results)
 prev_row1 <- sim$results[1,]
 
-sim %<>% set_config(
-  num_sim = 200,
-  parallel = "none"
-)
+sim %<>% set_config(num_sim=200, parallel="none")
 
 ### update_sim doesn't break with no levels
 sim %<>% update_sim()

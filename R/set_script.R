@@ -69,7 +69,7 @@ set_script.sim_obj <- function(sim, fn) {
   #     but are in the environment the new_sim() call is executed within.
   for (obj_name in ls(sim$internals$env_calling)) {
     obj <- get(x=obj_name, envir=sim$internals$env_calling)
-    if (!methods::is(obj,"sim_obj")) {
+    if (!methods::is(obj,"sim_obj") && obj_name!="L") {
       assign(x=obj_name, value=obj, envir=sim$vars$env)
     }
   }

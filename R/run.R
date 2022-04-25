@@ -320,6 +320,9 @@ run.sim_obj <- function(sim, sim_uids=NA) {
   sim$internals$num_sim_prev <- sim$config$num_sim
   sim$internals$num_sim_cumul <- sim$internals$num_sim_cuml + length(sim_uids)
 
+  # Remove global L if it was created
+  suppressWarnings( rm("L", envir=.GlobalEnv) )
+
   return (sim)
 
 }

@@ -63,7 +63,7 @@ cluster_execute <- function(first,
     # !!!!! Functionize this later
     for (obj_name in ls(..env_calling)) {
       obj <- get(x=obj_name, envir=..env_calling)
-      if (!methods::is(obj,"sim_obj")) {
+      if (!methods::is(obj,"sim_obj") && obj_name!="L") {
         assign(x=obj_name, value=obj,
                envir=get(..sim_var, envir=..env_cl)$vars$env)
       }
@@ -81,7 +81,7 @@ cluster_execute <- function(first,
     # !!!!! Functionize this later
     for (obj_name in ls(..env_calling)) {
       obj <- get(x=obj_name, envir=..env_calling)
-      if (!methods::is(obj,"sim_obj")) {
+      if (!methods::is(obj,"sim_obj") && obj_name!="L") {
         assign(x=obj_name, value=obj,
                envir=get(..sim_var, envir=..env_cl)$vars$env)
       }
@@ -96,7 +96,7 @@ cluster_execute <- function(first,
     # !!!!! Functionize this later
     for (obj_name in ls(..env_calling)) {
       obj <- get(x=obj_name, envir=..env_calling)
-      if (!methods::is(obj,"sim_obj")) {
+      if (!methods::is(obj,"sim_obj") && obj_name!="L") {
         assign(x=obj_name, value=obj,
                envir=get(..sim_var, envir=..env_cl)$vars$env)
       }
@@ -196,7 +196,7 @@ cluster_execute <- function(first,
     # !!!!! Functionize this later
     for (obj_name in ls(..env_calling)) {
       obj <- get(x=obj_name, envir=..env_calling)
-      if (!methods::is(obj,"sim_obj")) {
+      if (!methods::is(obj,"sim_obj") && obj_name!="L") {
         assign(x=obj_name, value=obj, envir=..sim$vars$env)
       }
     }
@@ -294,7 +294,7 @@ cluster_execute <- function(first,
         # !!!!! Functionize this later
         for (obj_name in ls(..env_calling)) {
           obj <- get(x=obj_name, envir=..env_calling)
-          if (!methods::is(obj,"sim_obj")) {
+          if (!methods::is(obj,"sim_obj") && obj_name!="L") {
             assign(x=obj_name, value=obj, envir=..sim$vars$env)
           }
         }
@@ -511,7 +511,7 @@ cluster_execute <- function(first,
       # !!!!! Functionize this later
       for (obj_name in ls(..env_calling)) {
         obj <- get(x=obj_name, envir=..env_calling)
-        if (!methods::is(obj,"sim_obj")) {
+        if (!methods::is(obj,"sim_obj") && obj_name!="L") {
           assign(x=obj_name, value=obj, envir=..sim$vars$env)
         }
       }
