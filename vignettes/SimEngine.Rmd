@@ -113,7 +113,7 @@ sim %<>% set_script(function() {
 })
 ```
 
-Your script should always return a named list, although your list can be complex and contain dataframes, multiple levels of nesting, etc. Note that you can also code your estimators as separate functions and call them from within the script using <a href="/docs/function-reference/use_method.html">`use_method`</a>.
+Your script should always return a named list, although your list can be complex and contain dataframes, multiple levels of nesting, etc. Note that you can also code your estimators as separate functions and call them from within the script using <a href="https://avi-kenny.github.io/SimEngine/function-reference/use_method.html">`use_method`</a>.
 
 ### 6) Set the simulation configuration
 
