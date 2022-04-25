@@ -2,7 +2,7 @@
 This is a resubmission. The following changes were made:
 
 **Found the following (possibly) invalid URLs...**
-We fixed the two URLs, changing the first to the canonical form, as requested, and putting the full path for the second.
+We apologize for the incorrect URL. We have fixed this.
 
 ## Test environments
 * local Windows 10  install, R 4.1.0
