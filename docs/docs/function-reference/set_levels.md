@@ -104,4 +104,4 @@ sim %<>% set_levels(.keep=c(1,2,6))
 sim$levels_grid
 ```
 
-<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.0.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.1.0 ]</div>

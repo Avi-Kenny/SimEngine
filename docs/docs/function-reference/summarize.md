@@ -195,4 +195,4 @@ sim %>% summarize(
 )
 ```
 
-<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.0.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.1.0 ]</div>
