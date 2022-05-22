@@ -443,7 +443,8 @@ cluster_execute <- function(first,
       if (update_switch) {
         prev_levels_grid_big <- ..sim$internals$levels_grid_big
 
-        # Get levels / sim_ids that were previously run but are no longer needed
+        # Get levels / sim_uids that were previously run but are no longer
+        # needed
         extra_run <- dplyr::anti_join(
           prev_levels_grid_big[,-which(names(prev_levels_grid_big) %in%
                                          c("sim_uid", "level_id")),drop=F],
@@ -455,7 +456,7 @@ cluster_execute <- function(first,
         )
 
         # If keep_extra = FALSE, remove excess runs (from results, errors, and
-        #     warnings)
+        # warnings)
         if (!keep_extra & nrow(extra_run) > 0) {
 
           if (!is.character(..sim$results)) {

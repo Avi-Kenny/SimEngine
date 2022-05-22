@@ -175,7 +175,7 @@ You can also directly access the results for individual simulation replicates.
 
 ```R
 head(sim$results)
-#>   sim_uid level_id sim_id estimator num_patients     runtime        est
+#>   sim_uid level_id rep_id estimator num_patients     runtime        est
 #> 1       1        1      1     est_1           50 0.007977009 -47.961709
 #> 2       2        1      2     est_1           50 0.010969162  23.805217
 #> 3       3        1      3     est_1           50 0.006983995  -8.066438

@@ -91,7 +91,7 @@ After running this simulation, we can examine the numeric results directly by ac
 
 ```R
 sim$results %>% print()
-#>   sim_uid level_id sim_id    n      runtime beta0_hat beta1_hat
+#>   sim_uid level_id rep_id    n      runtime beta0_hat beta1_hat
 #> 1       1        1      1   10 0.0030298233  3.352146  2.070652
 #> 2       2        1      2   10 0.0000000000  2.442415  3.557133
 #> 3       3        2      1  100 0.0040059090  2.688359  2.564584
@@ -190,7 +190,7 @@ sim %<>% run()
 #> Done. Errors detected in 25% of simulation replicates. Warnings detected in 0% of simulation replicates.
 
 print(sim$errors)
-#>   sim_uid level_id sim_id Sigma runtime                          message                                                call
+#>   sim_uid level_id rep_id Sigma runtime                          message                                                call
 #> 1       5        3      1    s2       0 'Sigma' is not positive definite MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma)
 #> 2       6        3      2    s2       0 'Sigma' is not positive definite MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma)
 ```

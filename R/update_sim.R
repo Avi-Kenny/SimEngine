@@ -91,7 +91,7 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
     stop("Updating a sim cannot include new level variables, only new levels.")
   }
 
-  # make grid of previously run levels / sim_ids
+  # make grid of previously run levels
   prev_levels_grid_big <- sim$internals$levels_grid_big
   prev_levels_grid <- prev_levels_grid_big[,-c(1,3), drop = FALSE] %>%
     dplyr::distinct()
@@ -123,7 +123,7 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
     levels_grid_big$sim_uid[is.na(levels_grid_big$sim_uid)] <- new_uids
   }
 
-  col_order <- c("sim_uid", "level_id", "sim_id",
+  col_order <- c("sim_uid", "level_id", "rep_id",
                  names(sim$internals$levels_shallow)[
                    !(names(sim$internals$levels_shallow) == "no levels")
                  ])
@@ -138,7 +138,7 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
     sim$errors <- "No errors"
   }
 
-  # get levels / sim_ids that have not previously been run
+  # get levels / sim_uids that have not previously been run
   not_run <- dplyr::anti_join(
     levels_grid_big,
     prev_levels_grid_big,
@@ -147,7 +147,7 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
     ])
   )
 
-  # get levels / sim_ids that were previously run but are no longer needed
+  # get levels / sim_uids that were previously run but are no longer needed
   extra_run <- dplyr::anti_join(
     prev_levels_grid_big[,-which(names(prev_levels_grid_big) %in%
                                    c("sim_uid", "level_id")),drop=F],
@@ -193,7 +193,7 @@ update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
 
     sim_copy$internals$levels_grid_big <- not_run
 
-    # for new run, do only levels / sim_ids that have not been run
+    # for new run, do only levels / sim_uids that have not been run
 
     sim_copy$results <- NULL
     sim_copy$errors <- NULL

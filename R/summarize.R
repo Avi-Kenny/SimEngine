@@ -156,7 +156,7 @@ summarize.sim_obj <- function(sim, ...) {
   if (identical(o_args,list())) {
 
     names_means <- names_results[!(names_results %in% c(
-      names_levels, "sim_uid", "sim_id", "level_id"
+      names_levels, "sim_uid", "rep_id", "level_id"
     ))]
 
     o_args <- list()

@@ -28,7 +28,7 @@ test_that("run() behaves correctly; no errors", {
   expect_equal(nrow(sim$results), 100)
   expect_equal(sim$results$sim_uid[1:5], c(1:5))
   expect_equal(sim$results$level_id[1:5], rep(1,5))
-  expect_equal(sim$results$sim_id[1:5], c(1:5))
+  expect_equal(sim$results$rep_id[1:5], c(1:5))
 })
 
 
@@ -65,10 +65,10 @@ test_that("run() behaves correctly; no errors and some warnings", {
   expect_equal(nrow(sim$warnings), 100)
   expect_equal(sim$results$sim_uid[1:5], c(1:5))
   expect_equal(sim$results$level_id[1:5], rep(1,5))
-  expect_equal(sim$results$sim_id[1:5], c(1:5))
+  expect_equal(sim$results$rep_id[1:5], c(1:5))
   expect_equal(sim$warnings$sim_uid[1:5], c(1:5))
   expect_equal(sim$warnings$level_id[1:5], rep(1,5))
-  expect_equal(sim$warnings$sim_id[1:5], c(1:5))
+  expect_equal(sim$warnings$rep_id[1:5], c(1:5))
 })
 
 
