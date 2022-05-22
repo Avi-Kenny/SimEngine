@@ -104,4 +104,4 @@ ggplot(data.frame(
 
 ![Power plot](../assets/images/example1_plot.png)
 
-Of course, real applications will typically involve much more complex data generating mechanisms and analyses, but the code above illustrates the basic approach of simulation-based power calculation.
+Of course, real applications will typically involve much more complex data generating mechanisms and analyses, but the same basic principles illustrated in the code above will always apply to simulation-based power calculations.

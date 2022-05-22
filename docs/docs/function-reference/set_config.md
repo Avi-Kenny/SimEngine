@@ -61,8 +61,8 @@ within a single simulation replicate. Setting to &quot;none&quot; will not
 parallelize any code. See
 <a href="https://avi-kenny.github.io/SimEngine/parallelization/">https://avi-kenny.github.io/SimEngine/parallelization/</a> for an
 overview of how parallelization works in <span class="pkg">SimEngine</span>. This option
-will be ignored if the simulation is being run on a cluster computing
-system.</p>
+will be ignored (and automatically set to &quot;cluster&quot;) if the simulation is
+being run on a cluster computing system.</p>
 </td></tr>
 <tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>n_cores</span></td>
 <td>

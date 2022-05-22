@@ -29,8 +29,8 @@ within a single simulation replicate. Setting to "none" will not
 parallelize any code. See
 \url{https://avi-kenny.github.io/SimEngine/parallelization/} for an
 overview of how parallelization works in \pkg{SimEngine}. This option
-will be ignored if the simulation is being run on a cluster computing
-system.}
+will be ignored (and automatically set to "cluster") if the simulation is
+being run on a cluster computing system.}
 
 \item{n_cores}{An integer; determines the number of CPUs on which the simulation
 will run if using parallelization. Defaults to one fewer than the number of
