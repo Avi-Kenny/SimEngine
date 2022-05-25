@@ -67,9 +67,9 @@ new_sim <- function() {
     errors = NULL
   )
 
-  # Create a global reference to the environment that can be searched for via
-  #     get() by methods (currently only use_method) that need to access the
-  #     simulation environment but don't take sim as an argument
+  # Create a global (hidden) reference to the environment that can be searched
+  #     for via get() by methods (currently only use_method) that need to access
+  #     the simulation environment but don't take sim as an argument
   assign(x="..env", value=...sim$vars$env, envir=..e)
   rm(..e)
 

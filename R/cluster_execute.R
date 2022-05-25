@@ -224,6 +224,10 @@ cluster_execute <- function(first,
 
     handle_errors(..sim, "is.sim_obj")
 
+    # Create hidden variable reference to simulation environment
+    ..e <- .GlobalEnv
+    assign(x="..env", value=..sim$vars$env, envir=..e)
+
   }
 
   # MAIN: run simulation replicate and save results/errors
