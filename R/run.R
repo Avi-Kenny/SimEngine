@@ -105,7 +105,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
     }
     for (obj_name in ls(sim$vars$env)) {
       obj <- get(obj_name, envir=sim$vars$env, inherits=FALSE)
-      if (methods::is(obj,"function")) {
+      if (methods::is(obj,"function") && !is.null(environment(obj))) {
         assign(x="L", value=L, envir=environment(obj))
       }
     }
