@@ -95,7 +95,7 @@ run_on_cluster(
     create_data <- function(n) { rnorm(n) }
     sim %<>% set_script(function() {
       data <- create_data(L$n)
-      return(mean(data))
+      return(list("x"=mean(data)))
     })
     sim %<>% set_levels(n=c(100,1000))
     sim %<>% set_config(num_sim=10)
@@ -106,7 +106,7 @@ run_on_cluster(
   },
 
   last = {
-    sim %<>% summarize()
+    sim %>% summarize()
   },
 
   cluster_config = list(js="ge")

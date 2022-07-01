@@ -96,12 +96,12 @@ sim <- new_sim()
 create_data <- function(n) { rnorm(n) }
 sim %<>% set_script(function() {
   data <- create_data(L$n)
-  return(mean(data))
+  return(list("x"=mean(data)))
 })
 sim %<>% set_levels(n=c(100,1000))
 sim %<>% set_config(num_sim=10)
 sim %<>% run()
-sim %<>% summarize()
+sim %>% summarize()
 ```
 
 To run this code on a CCS, we must wrap in the `run_on_cluster()` function. To use this function, you must break your code into three blocks, called `first`, `main`, and `last`. The code in the `first` block will run only once, and will set up the simulation object. When this is done, **SimEngine** will save the simulation object in the filesystem of your CCS. The code in the `main` block will run for every simulation replicate, and will have access to the simulation object you created in the `first` block. Typically, the code here will just include a single call to `run()`, as illustrated below. Finally, the code in the `last` block will run after all your simulation replicates have finished running, and after **SimEngine** has automatically compiled the results into your simulation object. Use the `run_on_cluster()` function as follows:
@@ -115,7 +115,7 @@ run_on_cluster(
     create_data <- function(n) { rnorm(n) }
     sim %<>% set_script(function() {
       data <- create_data(L$n)
-      return(mean(data))
+      return(list("x"=mean(data)))
     })
     sim %<>% set_levels(n=c(100,1000))
     sim %<>% set_config(num_sim=10)
@@ -126,7 +126,7 @@ run_on_cluster(
   },
 
   last = {
-    sim %<>% summarize()
+    sim %>% summarize()
   },
 
   cluster_config = list(js="ge")
