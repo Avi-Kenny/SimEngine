@@ -19,7 +19,6 @@ once <- function(code, warn=T) {
     # TO DO: throw warning if update is being used
   }
 
-  # TO DO: Remove once_id from L when compiling results
   # TO DO: Need a way to clear the cache after everything runs
 
   once_id <- L$once_id
