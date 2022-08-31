@@ -148,11 +148,31 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
 #' @noRd
 create_levels_grid_big <- function(sim) {
 
+  # Add once_id to levels_grid
+  if (!is.null(sim$config$once)) {
+    keys <- new.env()
+    once_ids <- rep(NA, nrow(sim$levels_grid))
+    counter <- 1
+    for (i in c(1:nrow(sim$levels_grid))) {
+      key <- paste(unlist(lapply(sim$config$once, function(key) {
+        paste0(key, "=", sim$levels_grid[i,key])
+      })), collapse=";")
+      if (is.null(keys[[key]])) {
+        keys[[key]] <- counter
+        once_ids[i] <- counter
+        counter <- counter + 1
+      } else {
+        once_ids[i] <- keys[[key]]
+      }
+    }
+    sim$levels_grid$once_id <- once_ids
+  }
+
+  # Create expanded levels grid, one row per replicate
   levels_grid_big <- expand.grid(list(
     "level_id" = sim$levels_grid$level_id,
     "rep_id" = 1:sim$config$num_sim
   ))
-
   levels_grid_big <- dplyr::inner_join(
     levels_grid_big,
     sim$levels_grid,
@@ -160,9 +180,18 @@ create_levels_grid_big <- function(sim) {
   )
   levels_grid_big <- dplyr::arrange(levels_grid_big, .data$level_id,
                                     .data$rep_id)
+
+  # Create sim_uid
   names_2 <- names(levels_grid_big)
   levels_grid_big <- cbind(1:nrow(levels_grid_big), levels_grid_big)
   names(levels_grid_big) <- c("sim_uid", names_2)
+
+  # Update once_id
+  if (!is.null(sim$config$once)) {
+    levels_grid_big$once_id <- as.integer(as.factor(paste0(
+      levels_grid_big$rep_id, "-", levels_grid_big$once_id
+    )))
+  }
 
   return(levels_grid_big)
 }

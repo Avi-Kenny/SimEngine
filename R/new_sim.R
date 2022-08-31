@@ -33,11 +33,12 @@ new_sim <- function() {
       num_sim = 10,
       datasets = "many",
       parallel = "none",
-      n_cores = parallel::detectCores() - 1,
+      n_cores = parallel::detectCores()-1,
       packages = NULL,
       stop_at_error = FALSE,
       seed = ..seed,
-      progress_bar = TRUE
+      progress_bar = TRUE,
+      once = NULL
     ),
     levels = list("no levels"=TRUE),
     levels_grid = data.frame(level_id=1),
@@ -54,11 +55,12 @@ new_sim <- function() {
       tid = NA,
       sim_var = "",
       update_sim = FALSE,
-      env_calling = parent.frame()
+      env_calling = parent.frame(),
+      once_cache = new.env()
     ),
     vars = list(
       seed = ..seed,
-      env = environment(),
+      env = new.env(),
       num_sim_total = 10,
       run_state = "pre run"
     ),
@@ -66,11 +68,13 @@ new_sim <- function() {
     results = NULL,
     errors = NULL
   )
+  ...sim$internals$once_cache[["once"]] <- NULL
 
-  # Create a global (hidden) reference to the environment that can be searched
-  #     for via get() by methods (currently only use_method) that need to access
-  #     the simulation environment but don't take sim as an argument
+  # Create (hidden) global references to simulation environments that can be
+  #     searched for via get() by methods (currently use_method and once) that
+  #     need to access these environments but don't take sim as an argument
   assign(x="..env", value=...sim$vars$env, envir=..e)
+  assign(x="..once_cache", value=...sim$internals$once_cache, envir=..e)
   rm(..e)
 
   class(...sim) <- "sim_obj"

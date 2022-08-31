@@ -47,6 +47,10 @@
 #'   \code{Sys.time()} or dynamically retrieving external data may produce
 #'   different results on different runs.}
 #' }
+#' @param once A character vector. If the \code{link{once}} function is being
+#'     used within set_script, this should contain the names of the simulation
+#'     levels that are used within the \code{link{once}} function code block.
+#'     See the documentation for the \code{link{once}} function.
 #' @return The original simulation object with a modified configuration
 #' @examples
 #' sim <- new_sim()
@@ -57,16 +61,16 @@
 #' sim
 #' @export
 set_config <- function(
-  sim, num_sim=1000, parallel="none",
-  n_cores=parallel::detectCores()-1, packages=NULL,
-  stop_at_error=FALSE, progress_bar=TRUE, seed=NA
+  sim, num_sim=1000, parallel="none", n_cores=parallel::detectCores()-1,
+  packages=NULL, stop_at_error=FALSE, progress_bar=TRUE,
+  seed=as.integer(1e9*runif(1)), once=NULL
 ) UseMethod("set_config")
 
 #' @export
 set_config.sim_obj <- function(
-  sim, num_sim=1000, parallel="none",
-  n_cores=parallel::detectCores()-1, packages=NULL,
-  stop_at_error=FALSE, progress_bar=TRUE, seed=NA
+  sim, num_sim=1000, parallel="none", n_cores=parallel::detectCores()-1,
+  packages=NULL, stop_at_error=FALSE, progress_bar=TRUE,
+  seed=as.integer(1e9*runif(1)), once=NULL
 ) {
 
   handle_errors(sim, "is.sim_obj")
@@ -111,6 +115,14 @@ set_config.sim_obj <- function(
     handle_errors(seed, "is.numeric")
     sim$config[["seed"]] <- seed
     sim$vars[["seed"]] <- seed
+  }
+
+  if (!missing(once)) {
+    handle_errors(once, "is.character.vec")
+    print("once (in set_config)") # !!!!!
+    print(once) # !!!!!
+    sim$config[["once"]] <- once
+    sim$internals$once_cache[["once"]] <- once
   }
 
   set.seed(sim$config[["seed"]])

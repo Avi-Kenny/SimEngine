@@ -12,7 +12,8 @@ set_config(
   packages = NULL,
   stop_at_error = FALSE,
   progress_bar = TRUE,
-  seed = NA
+  seed = as.integer(1e+09 * runif(1)),
+  once = NULL
 )
 }
 \arguments{
@@ -51,6 +52,11 @@ same seed will lead to identical results (under normal circumstances). If
 a seed was not set in advance by the user, \pkg{SimEngine} will set a
 random seed, which can later be retrieved using the \code{\link{vars}}
 function. See details for further info.}
+
+\item{once}{A character vector. If the \code{link{once}} function is being
+used within set_script, this should contain the names of the simulation
+levels that are used within the \code{link{once}} function code block.
+See the documentation for the \code{link{once}} function.}
 }
 \value{
 The original simulation object with a modified configuration
