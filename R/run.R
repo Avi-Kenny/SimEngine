@@ -248,6 +248,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
       by = "sim_uid"
     )
     results_df$batch_id <- NULL
+    results_df$core_id <- NULL
     sim$results <- results_df
 
   }
@@ -271,6 +272,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
       by = "sim_uid"
     )
     errors_df$batch_id <- NULL
+    errors_df$core_id <- NULL
     sim$errors <- errors_df
 
   }
@@ -292,6 +294,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
       by = "sim_uid"
     )
     warn_df$batch_id <- NULL
+    warn_df$core_id <- NULL
     sim$warnings <- warn_df
 
   }

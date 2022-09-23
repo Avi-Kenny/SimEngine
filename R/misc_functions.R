@@ -149,12 +149,12 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
 create_levels_grid_big <- function(sim) {
 
   # Add batch_id to levels_grid
-  if (!is.null(sim$config$batch)) {
+  if (!is.null(sim$config$batch_levels)) {
     keys <- new.env()
     batch_ids <- rep(NA, nrow(sim$levels_grid))
     counter <- 1
     for (i in c(1:nrow(sim$levels_grid))) {
-      key <- paste(unlist(lapply(sim$config$batch, function(key) {
+      key <- paste(unlist(lapply(sim$config$batch_levels, function(key) {
         paste0(key, "=", sim$levels_grid[i,key])
       })), collapse=";")
       if (is.null(keys[[key]])) {
@@ -186,11 +186,17 @@ create_levels_grid_big <- function(sim) {
   levels_grid_big <- cbind(1:nrow(levels_grid_big), levels_grid_big)
   names(levels_grid_big) <- c("sim_uid", names_2)
 
-  # Update batch_id
-  if (!is.null(sim$config$batch)) {
+  if (!is.null(sim$config$batch_levels)) {
+
+    # Update batch_id
     levels_grid_big$batch_id <- as.integer(as.factor(paste0(
       levels_grid_big$rep_id, "-", levels_grid_big$batch_id
     )))
+
+    # Create core_id
+    nc <- sim$config$n_cores
+    levels_grid_big$core_id <- ((levels_grid_big$batch_id-1)%%nc)+1
+
   }
 
   return(levels_grid_big)

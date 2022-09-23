@@ -10,8 +10,8 @@ batch <- function(code, warn=T) {
   ..env <- get("..env", envir=.GlobalEnv)
   ..cache <- get("..batch_cache", envir=.GlobalEnv)
 
-  handle_errors(get("batch", envir=..cache), "is.null", msg=paste0(
-    "If the batch() function is used, you must set the `batch` config option via",
+  handle_errors(get("batch_levels", envir=..cache), "is.null", msg=paste0(
+    "If the batch() function is used, you must set the `batch_levels` config option via",
     " set_config()"
   ))
 
