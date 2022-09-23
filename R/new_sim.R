@@ -38,7 +38,7 @@ new_sim <- function() {
       stop_at_error = FALSE,
       seed = ..seed,
       progress_bar = TRUE,
-      once = NULL
+      batch = NULL
     ),
     levels = list("no levels"=TRUE),
     levels_grid = data.frame(level_id=1),
@@ -56,7 +56,7 @@ new_sim <- function() {
       sim_var = "",
       update_sim = FALSE,
       env_calling = parent.frame(),
-      once_cache = new.env()
+      batch_cache = new.env()
     ),
     vars = list(
       seed = ..seed,
@@ -68,13 +68,13 @@ new_sim <- function() {
     results = NULL,
     errors = NULL
   )
-  ...sim$internals$once_cache[["once"]] <- NULL
+  ...sim$internals$batch_cache[["batch"]] <- NULL
 
   # Create (hidden) global references to simulation environments that can be
-  #     searched for via get() by methods (currently use_method and once) that
+  #     searched for via get() by methods (currently use_method and batch) that
   #     need to access these environments but don't take sim as an argument
   assign(x="..env", value=...sim$vars$env, envir=..e)
-  assign(x="..once_cache", value=...sim$internals$once_cache, envir=..e)
+  assign(x="..batch_cache", value=...sim$internals$batch_cache, envir=..e)
   rm(..e)
 
   class(...sim) <- "sim_obj"

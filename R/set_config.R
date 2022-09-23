@@ -47,10 +47,10 @@
 #'   \code{Sys.time()} or dynamically retrieving external data may produce
 #'   different results on different runs.}
 #' }
-#' @param once A character vector. If the \code{link{once}} function is being
+#' @param batch A character vector. If the \code{link{batch}} function is being
 #'     used within set_script, this should contain the names of the simulation
-#'     levels that are used within the \code{link{once}} function code block.
-#'     See the documentation for the \code{link{once}} function.
+#'     levels that are used within the \code{link{batch}} function code block.
+#'     See the documentation for the \code{link{batch}} function.
 #' @return The original simulation object with a modified configuration
 #' @examples
 #' sim <- new_sim()
@@ -63,14 +63,14 @@
 set_config <- function(
   sim, num_sim=1000, parallel="none", n_cores=parallel::detectCores()-1,
   packages=NULL, stop_at_error=FALSE, progress_bar=TRUE,
-  seed=as.integer(1e9*runif(1)), once=NULL
+  seed=as.integer(1e9*runif(1)), batch=NULL
 ) UseMethod("set_config")
 
 #' @export
 set_config.sim_obj <- function(
   sim, num_sim=1000, parallel="none", n_cores=parallel::detectCores()-1,
   packages=NULL, stop_at_error=FALSE, progress_bar=TRUE,
-  seed=as.integer(1e9*runif(1)), once=NULL
+  seed=as.integer(1e9*runif(1)), batch=NULL
 ) {
 
   handle_errors(sim, "is.sim_obj")
@@ -117,12 +117,10 @@ set_config.sim_obj <- function(
     sim$vars[["seed"]] <- seed
   }
 
-  if (!missing(once)) {
-    handle_errors(once, "is.character.vec")
-    print("once (in set_config)") # !!!!!
-    print(once) # !!!!!
-    sim$config[["once"]] <- once
-    sim$internals$once_cache[["once"]] <- once
+  if (!missing(batch)) {
+    handle_errors(batch, "is.character.vec")
+    sim$config[["batch"]] <- batch
+    sim$internals$batch_cache[["batch"]] <- batch
   }
 
   set.seed(sim$config[["seed"]])
