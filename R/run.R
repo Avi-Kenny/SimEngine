@@ -55,8 +55,7 @@ run.sim_obj <- function(sim, sim_uids=NA) {
 
   if (!sim$internals$update_sim) {
     # Create levels_grid_big
-    levels_grid_big <- create_levels_grid_big(sim)
-    sim$internals$levels_grid_big <- levels_grid_big
+    sim$internals$levels_grid_big <- create_levels_grid_big(sim)
   }
 
   # Set up parallelization code
