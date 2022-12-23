@@ -30,10 +30,12 @@
 #' @export
 
 #' @export
-get_complex <- function(sim, sim_uid) UseMethod("get_complex")
+get_complex <- function(sim, sim_uid) {
+  UseMethod("get_complex")
+}
 
 #' @export
-get_complex <- function(sim, sim_uid) {
+get_complex.sim_obj <- function(sim, sim_uid) {
 
   # Error handling
   handle_errors(sim, "is.sim_obj")

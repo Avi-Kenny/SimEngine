@@ -57,16 +57,16 @@
 #' sim
 #' @export
 set_config <- function(
-  sim, num_sim=1000, parallel="none",
-  n_cores=parallel::detectCores()-1, packages=NULL,
-  stop_at_error=FALSE, progress_bar=TRUE, seed=NA
-) UseMethod("set_config")
+  sim, num_sim=1000, parallel="none", n_cores=parallel::detectCores()-1,
+  packages=NULL, stop_at_error=F, progress_bar=T, seed=NA
+) {
+  UseMethod("set_config")
+}
 
 #' @export
 set_config.sim_obj <- function(
-  sim, num_sim=1000, parallel="none",
-  n_cores=parallel::detectCores()-1, packages=NULL,
-  stop_at_error=FALSE, progress_bar=TRUE, seed=NA
+  sim, num_sim=1000, parallel="none", n_cores=parallel::detectCores()-1,
+  packages=NULL, stop_at_error=F, progress_bar=T, seed=NA
 ) {
 
   handle_errors(sim, "is.sim_obj")

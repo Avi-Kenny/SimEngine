@@ -80,13 +80,13 @@
 #' # qsub -v sim_run='last' -hold_jid 102 run_sim.sh
 #' }
 #' @export
-run_on_cluster <- function(first,
-                           main,
-                           last,
-                           cluster_config) {
+run_on_cluster <- function(first, main, last, cluster_config) {
 
-  cluster_execute(substitute(first),
-                  substitute(main),
-                  substitute(last),
-                  cluster_config)
+  cluster_execute(
+    substitute(first),
+    substitute(main),
+    substitute(last),
+    cluster_config
+  )
+
 }

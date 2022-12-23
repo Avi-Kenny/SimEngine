@@ -10,8 +10,8 @@ set_config(
   parallel = "none",
   n_cores = parallel::detectCores() - 1,
   packages = NULL,
-  stop_at_error = FALSE,
-  progress_bar = TRUE,
+  stop_at_error = F,
+  progress_bar = T,
   seed = NA
 )
 }

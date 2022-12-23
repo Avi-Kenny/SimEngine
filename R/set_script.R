@@ -51,7 +51,9 @@
 #' sim %<>% run()
 #'
 #' @export
-set_script <- function(sim, fn) UseMethod("set_script")
+set_script <- function(sim, fn) {
+  UseMethod("set_script")
+}
 
 #' @export
 set_script.sim_obj <- function(sim, fn) {

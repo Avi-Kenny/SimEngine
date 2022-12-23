@@ -120,19 +120,18 @@
 #' # qsub -v sim_run='last' -hold_jid 105 update_sim.sh
 #' }
 #' @export
-update_sim_on_cluster <- function(first,
-                              main,
-                              last,
-                              cluster_config,
-                              keep_errors = TRUE,
-                              keep_extra = FALSE) {
+update_sim_on_cluster <- function(
+  first, main, last, cluster_config, keep_errors=T, keep_extra=F
+) {
 
-  cluster_execute(substitute(first),
-                  substitute(main),
-                  substitute(last),
-                  cluster_config,
-                  keep_errors = keep_errors,
-                  keep_extra = keep_extra,
-                  update_switch = TRUE)
+  cluster_execute(
+    substitute(first),
+    substitute(main),
+    substitute(last),
+    cluster_config,
+    keep_errors = keep_errors,
+    keep_extra = keep_extra,
+    update_switch = T
+  )
 
 }

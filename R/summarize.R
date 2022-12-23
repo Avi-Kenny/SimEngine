@@ -127,7 +127,9 @@
 #'   mse = list(name="lambda_mse", estimate="lambda_hat", truth=5)
 #' )
 #' @export
-summarize <- function(sim, ...) UseMethod("summarize")
+summarize <- function(sim, ...) {
+  UseMethod("summarize")
+}
 
 #' @export
 summarize.sim_obj <- function(sim, ...) {

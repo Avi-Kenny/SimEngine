@@ -33,7 +33,9 @@
 #' sim %<>% run()
 #' sim$results %>% print()
 #' @export
-run <- function(sim, sim_uids=NA) UseMethod("run")
+run <- function(sim, sim_uids=NA) {
+  UseMethod("run")
+}
 
 #' @export
 run.sim_obj <- function(sim, sim_uids=NA) {

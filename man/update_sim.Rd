@@ -4,7 +4,7 @@
 \alias{update_sim}
 \title{Update a simulation}
 \usage{
-update_sim(sim, keep_errors = TRUE, keep_extra = FALSE)
+update_sim(sim, keep_errors = T, keep_extra = F)
 }
 \arguments{
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by

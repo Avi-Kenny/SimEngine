@@ -44,10 +44,12 @@
 #' sim$vars$num_sim_total %>% print()
 #' vars(sim) %>% print()
 #' @export
-vars <- function(sim, var) UseMethod("vars")
+vars <- function(sim, var) {
+  UseMethod("vars")
+}
 
 #' @export
-vars <- function(sim, var) {
+vars.sim_obj <- function(sim, var) {
 
   # Error handling
   handle_errors(sim, "is.sim_obj")
