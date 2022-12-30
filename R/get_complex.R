@@ -38,7 +38,6 @@ get_complex <- function(sim, sim_uid) {
 get_complex.sim_obj <- function(sim, sim_uid) {
 
   # Error handling
-  handle_errors(sim, "is.sim_obj")
   if (sim$vars$run_state == "pre run") {
     stop("Simulation has not been run yet.")
   }

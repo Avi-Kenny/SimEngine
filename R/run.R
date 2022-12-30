@@ -40,8 +40,6 @@ run <- function(sim, sim_uids=NA) {
 #' @export
 run.sim_obj <- function(sim, sim_uids=NA) {
 
-  handle_errors(sim, "is.sim_obj")
-
   sim$vars$start_time <- Sys.time()
 
   if (is.na(sim_uids)) {

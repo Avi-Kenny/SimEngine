@@ -135,7 +135,6 @@ summarize <- function(sim, ...) {
 summarize.sim_obj <- function(sim, ...) {
 
   # Error handling
-  handle_errors(sim, "is.sim_obj")
   if (sim$vars$run_state == "pre run") {
     stop("Simulation has not been run yet.")
   }

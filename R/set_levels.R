@@ -62,7 +62,6 @@ set_levels <- function(sim, ..., .add=F, .keep=NA) {
 #' @export
 set_levels.sim_obj <- function(sim, ..., .add=F, .keep=NA) {
 
-  handle_errors(sim, "is.sim_obj")
   handle_errors(.add, "is.boolean")
   if (!is.na(.keep[[1]])) {
     handle_errors(.keep, "is.numeric.vec")

@@ -58,7 +58,6 @@ set_script <- function(sim, fn) {
 #' @export
 set_script.sim_obj <- function(sim, fn) {
 
-  handle_errors(sim, "is.sim_obj")
   handle_errors(fn, "is.function")
 
   if (substr(sim$vars$run_state, 1, 3) == "run") {
