@@ -397,7 +397,8 @@ test_that("vars() works; after run()", {
 })
 test_that("vars() handles incorrect variables properly", {
   expect_error(vars(list(x=1), "fake_var"),
-               "`sim` must be of class `sim_obj`")
+               paste0("no applicable method for 'vars' applied to an object of",
+                      " class \"list\""))
   expect_error(vars(sim, "fake_var"),
                "'fake_var' is not a valid option for `var`")
   expect_null(sim$vars$fake_var)
