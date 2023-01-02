@@ -64,7 +64,9 @@ set_config <- function(
   sim, num_sim=1000, parallel="none", n_cores=parallel::detectCores()-1,
   packages=NULL, stop_at_error=FALSE, progress_bar=TRUE,
   seed=as.integer(1e9*runif(1)), batch_levels=NULL
-) UseMethod("set_config")
+) {
+  UseMethod("set_config")
+}
 
 #' @export
 set_config.sim_obj <- function(

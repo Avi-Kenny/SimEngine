@@ -1,13 +1,13 @@
 #' Wrapper to run a block of code as part of a batch
 #'
-#' @description TO DO
+#' @description TO DO; note that you must create objects within batch()
 #' @return TO DO
 #' @examples
 #' TO DO
 #' @export
 batch <- function(code, warn=T) {
 
-  ..env <- get("..env", envir=.GlobalEnv)
+  # ..env <- get("..env", envir=.GlobalEnv)
   ..cache <- get("..batch_cache", envir=.GlobalEnv)
 
   handle_errors(get("batch_levels", envir=..cache), "is.null", msg=paste0(
@@ -16,10 +16,8 @@ batch <- function(code, warn=T) {
   ))
 
   if (warn) {
-    # TO DO: throw warning if update is being used
+    # TO DO: throw warning if update is being used; maybe throw error
   }
-
-  # TO DO: Need a way to clear the cache after everything runs
 
   batch_id <- L$batch_id
   objs <- ..cache[[as.character(batch_id)]]
@@ -27,20 +25,26 @@ batch <- function(code, warn=T) {
     objs_pre <- ls(envir=parent.frame())
     ..code <- substitute(code)
     rm(code)
-    ..env_cl <- new.env()
+    # ..env_cl <- new.env()
     eval(..code, envir=parent.frame())
     objs_post <- ls(envir=parent.frame())
     objs_diff <- objs_post[!(objs_post %in% objs_pre)]
     objs <- new.env()
-    for (i in c(1:length(objs_diff))) {
-      objs[[objs_diff[i]]] <- get(objs_diff[i], envir=parent.frame())
+    if (length(objs_diff)!=0) {
+      for (i in c(1:length(objs_diff))) {
+        objs[[objs_diff[i]]] <- get(objs_diff[i], envir=parent.frame())
+      }
+    } else {
+      warning("No new objects were created within batch()")
     }
     ..cache[[as.character(batch_id)]] <- objs
   } else {
-    for (i in c(1:length(ls(objs)))) {
-      key <- ls(objs)[i]
-      val <- get(ls(objs)[i], objs)
-      assign(key, val, envir=parent.frame())
+    if (length(ls(objs))!=0) {
+      for (i in c(1:length(ls(objs)))) {
+        key <- ls(objs)[i]
+        val <- get(ls(objs)[i], objs)
+        assign(key, val, envir=parent.frame())
+      }
     }
   }
 
