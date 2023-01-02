@@ -127,13 +127,14 @@
 #'   mse = list(name="lambda_mse", estimate="lambda_hat", truth=5)
 #' )
 #' @export
-summarize <- function(sim, ...) UseMethod("summarize")
+summarize <- function(sim, ...) {
+  UseMethod("summarize")
+}
 
 #' @export
 summarize.sim_obj <- function(sim, ...) {
 
   # Error handling
-  handle_errors(sim, "is.sim_obj")
   if (sim$vars$run_state == "pre run") {
     stop("Simulation has not been run yet.")
   }

@@ -9,8 +9,8 @@ update_sim_on_cluster(
   main,
   last,
   cluster_config,
-  keep_errors = TRUE,
-  keep_extra = FALSE
+  keep_errors = T,
+  keep_extra = F
 )
 }
 \arguments{

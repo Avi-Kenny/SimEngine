@@ -7,9 +7,6 @@
 #' @examples
 #' js_support()
 #' @export
-js_support <- function() UseMethod("js_support")
-
-#' @export
 js_support <- function() {
 
   df <- data.frame(

@@ -1,13 +1,10 @@
 #' Framework for updating simulations on a cluster computing system
 #'
 #' @noRd
-cluster_execute <- function(first,
-                            main,
-                            last,
-                            cluster_config,
-                            keep_errors = TRUE,
-                            keep_extra = FALSE,
-                            update_switch = FALSE) {
+cluster_execute <- function(
+  first, main, last, cluster_config, keep_errors=T, keep_extra=F,
+  update_switch=F
+) {
 
   # Capture current working directory and reset it on function exit
   ..oldwd <- getwd()

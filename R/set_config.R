@@ -73,8 +73,6 @@ set_config.sim_obj <- function(
   seed=as.integer(1e9*runif(1)), batch_levels=NULL
 ) {
 
-  handle_errors(sim, "is.sim_obj")
-
   if (length(as.list(match.call()))==2) {
     stop("No configuration options were specified")
   }

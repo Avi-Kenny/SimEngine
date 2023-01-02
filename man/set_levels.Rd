@@ -4,7 +4,7 @@
 \alias{set_levels}
 \title{Set simulation levels}
 \usage{
-set_levels(sim, ..., .add = FALSE, .keep = NA)
+set_levels(sim, ..., .add = F, .keep = NA)
 }
 \arguments{
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by

@@ -55,12 +55,13 @@
 #' sim %<>% set_levels(.keep=c(1,2,6))
 #' sim$levels_grid
 #' @export
-set_levels <- function(sim, ..., .add=FALSE, .keep=NA) UseMethod("set_levels")
+set_levels <- function(sim, ..., .add=F, .keep=NA) {
+  UseMethod("set_levels")
+}
 
 #' @export
-set_levels.sim_obj <- function(sim, ..., .add=FALSE, .keep=NA) {
+set_levels.sim_obj <- function(sim, ..., .add=F, .keep=NA) {
 
-  handle_errors(sim, "is.sim_obj")
   handle_errors(.add, "is.boolean")
   if (!is.na(.keep[[1]])) {
     handle_errors(.keep, "is.numeric.vec")

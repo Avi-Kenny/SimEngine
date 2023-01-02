@@ -51,14 +51,12 @@
 #' sim %<>% update_sim()
 #' @importFrom magrittr %>%
 #' @export
-update_sim <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
+update_sim <- function(sim, keep_errors=T, keep_extra=F) {
   UseMethod("update_sim")
 }
 
 #' @export
-update_sim.sim_obj <- function(sim, keep_errors=TRUE, keep_extra=FALSE) {
-
-  handle_errors(sim, "is.sim_obj")
+update_sim.sim_obj <- function(sim, keep_errors=T, keep_extra=F) {
 
   # Error if simulation has not yet been run
   if (sim$vars$run_state == "pre run") {
