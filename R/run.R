@@ -6,10 +6,6 @@
 #'     called.
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
 #'     \code{\link{new_sim}}
-#' @param sim_uids Advanced; a vector of \code{sim_uid} values, each of which
-#'     uniquely identifies a simulation replicate. This argument will almost
-#'     always be omitted. If this is specified, only the simulation replicates
-#'     with a matching \code{sim_uid} will be run.
 #' @return The original simulation object but with the results attached (along
 #'     with any errors and warnings). Results are stored in \code{sim$results},
 #'     errors are stored in \code{sim$errors}, and warnings are stored in
@@ -33,12 +29,12 @@
 #' sim %<>% run()
 #' sim$results %>% print()
 #' @export
-run <- function(sim, sim_uids=NA) {
+run <- function(sim) {
   UseMethod("run")
 }
 
 #' @export
-run.sim_obj <- function(sim, sim_uids=NA) {
+run.sim_obj <- function(sim) {
 
   sim$vars$start_time <- Sys.time()
 
