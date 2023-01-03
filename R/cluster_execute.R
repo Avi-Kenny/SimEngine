@@ -37,9 +37,7 @@ cluster_execute <- function(
     }
   }
 
-  # Create a new environment to evaluate code blocks within and get a reference
-  # to the calling environment
-  ..env_cl <- new.env()
+  # Get a reference to the calling environment
   ..env_calling <- parent.frame(n=2)
 
   # Run all code locally if simulation is not being run on cluster
@@ -67,23 +65,12 @@ cluster_execute <- function(
       stop("A simulation object must be created in the `first` block")
     }
 
-    # Save a copy of simulation object to the parent environment
-    .add_objs(..env_calling, get(..sim_var, envir=..env_calling)$vars$env)
-    # assign(x = ..sim_var,
-    #        value = get(..sim_var, envir=..env_cl),
-    #        envir = ..env_calling)
-
     # Run code locally (`main` and `last` blocks)
+    .add_objs(..env_calling, get(..sim_var, envir=..env_calling)$vars$env)
     eval(..main, envir=..env_calling)
     .add_objs(..env_calling, get(..sim_var, envir=..env_calling)$vars$env)
-    # assign(x = ..sim_var,
-    #        value = get(..sim_var, envir=..env_cl),
-    #        envir = ..env_calling)
     eval(..last, envir=..env_calling)
     .add_objs(..env_calling, get(..sim_var, envir=..env_calling)$vars$env)
-    # assign(x = ..sim_var,
-    #        value = get(..sim_var, envir=..env_cl),
-    #        envir = ..env_calling)
 
   } else {
 
@@ -141,15 +128,15 @@ cluster_execute <- function(
     # Create directory to store simulation results
     dir.create(..path_sim_res)
 
-    # Run 'first' code
+    # Run code (`first` block)
     ..start_time <- Sys.time()
-    eval(..first, envir=..env_cl)
+    eval(..first, envir=..env_calling)
 
     # Extract the simulation object variable name
     ..count <- 0
     ..sim_var <- NA
-    for (obj_name in ls(..env_cl)) {
-      if (methods::is(get(x=obj_name, envir=..env_cl),"sim_obj")) {
+    for (obj_name in ls(..env_calling)) {
+      if (methods::is(get(x=obj_name, envir=..env_calling),"sim_obj")) {
         ..sim_var <- obj_name
         ..count <- ..count + 1
       }
@@ -169,7 +156,7 @@ cluster_execute <- function(
     rm(..count)
 
     # Get reference to simulation object
-    ..sim <- get(..sim_var, envir=..env_cl)
+    ..sim <- get(..sim_var, envir=..env_calling)
     .add_objs(..env_calling, ..sim$vars$env)
 
     # Save simulation object
@@ -195,9 +182,10 @@ cluster_execute <- function(
 
     handle_errors(..sim, "is.sim_obj")
 
-    # Create hidden variable reference to simulation environment
+    # Create hidden variable references
     ..e <- .GlobalEnv
     assign(x="..env", value=..sim$vars$env, envir=..e)
+    assign(x="..batch_cache", value=..sim$internals$batch_cache, envir=..e)
 
   }
 
@@ -259,11 +247,11 @@ cluster_execute <- function(
         rm(tid)
         rm(add_to_tid)
         for (pkg in ..sim$config$packages) { do.call("library", list(pkg)) }
-        assign(..sim$internals$sim_var, ..sim, envir=..env_cl)
+        assign(..sim$internals$sim_var, ..sim, envir=..env_calling)
 
         # Run 'main' code
-        eval(..main, envir=..env_cl)
-        ..sim <- get(..sim$internals$sim_var, envir=..env_cl)
+        eval(..main, envir=..env_calling)
+        ..sim <- get(..sim$internals$sim_var, envir=..env_calling)
         .add_objs(..env_calling, ..sim$vars$env)
 
       }
@@ -471,9 +459,9 @@ cluster_execute <- function(
 
       # Run 'last' code
       for (pkg in ..sim$config$packages) { do.call("library", list(pkg)) }
-      assign(..sim$internals$sim_var, ..sim, envir=..env_cl)
-      eval(..last, envir=..env_cl)
-      ..sim <- get(..sim$internals$sim_var, envir=..env_cl)
+      assign(..sim$internals$sim_var, ..sim, envir=..env_calling)
+      eval(..last, envir=..env_calling)
+      ..sim <- get(..sim$internals$sim_var, envir=..env_calling)
       .add_objs(..env_calling, ..sim$vars$env)
 
       # Save final simulation object (a second time, if 'last' code had no errors)
