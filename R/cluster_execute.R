@@ -67,25 +67,20 @@ cluster_execute <- function(
       stop("A simulation object must be created in the `first` block")
     }
 
-    .add_objs(..env_calling, get(..sim_var, envir=..env_cl)$vars$env)
-
     # Save a copy of simulation object to the parent environment
+    .add_objs(..env_calling, get(..sim_var, envir=..env_cl)$vars$env)
     assign(x = ..sim_var,
            value = get(..sim_var, envir=..env_cl),
            envir = ..env_calling)
 
     # Run code locally (`main` and `last` blocks)
     eval(..main, envir=..env_cl)
-
     .add_objs(..env_calling, get(..sim_var, envir=..env_cl)$vars$env)
-
     assign(x = ..sim_var,
            value = get(..sim_var, envir=..env_cl),
            envir = ..env_calling)
     eval(..last, envir=..env_cl)
-
     .add_objs(..env_calling, get(..sim_var, envir=..env_cl)$vars$env)
-
     assign(x = ..sim_var,
            value = get(..sim_var, envir=..env_cl),
            envir = ..env_calling)
@@ -161,7 +156,7 @@ cluster_execute <- function(
     }
     if (is.na(..sim_var)) {
       if (update_switch) {
-        stop("A simulation object must be read in the `first` block")
+        stop("A simulation object must be loaded in the `first` block")
       } else {
         stop("A simulation object must be created in the `first` block")
       }
@@ -175,7 +170,6 @@ cluster_execute <- function(
 
     # Get reference to simulation object
     ..sim <- get(..sim_var, envir=..env_cl)
-
     .add_objs(..env_calling, ..sim$vars$env)
 
     # Save simulation object
@@ -270,7 +264,6 @@ cluster_execute <- function(
         # Run 'main' code
         eval(..main, envir=..env_cl)
         ..sim <- get(..sim$internals$sim_var, envir=..env_cl)
-
         .add_objs(..env_calling, ..sim$vars$env)
 
       }
@@ -481,7 +474,6 @@ cluster_execute <- function(
       assign(..sim$internals$sim_var, ..sim, envir=..env_cl)
       eval(..last, envir=..env_cl)
       ..sim <- get(..sim$internals$sim_var, envir=..env_cl)
-
       .add_objs(..env_calling, ..sim$vars$env)
 
       # Save final simulation object (a second time, if 'last' code had no errors)
