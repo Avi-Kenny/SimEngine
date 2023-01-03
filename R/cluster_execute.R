@@ -27,7 +27,7 @@ cluster_execute <- function(
   rm(last)
   rm(cluster_config)
 
-  # Helper function to add objects in an environment to the simulation object
+  # Helper function to add objects in calling envir to the sim_obj envir
   .add_objs <- function(..env_calling, env_sim) {
     for (obj_name in ls(..env_calling)) {
       obj <- get(x=obj_name, envir=..env_calling)
@@ -47,13 +47,13 @@ cluster_execute <- function(
   if (Sys.getenv("sim_run")=="") {
 
     # Run code (`first` block)
-    eval(..first, envir=..env_cl)
+    eval(..first, envir=..env_calling)
 
     # Extract the simulation object variable name
     ..count <- 0
     ..sim_var <- NA
-    for (obj_name in ls(..env_cl)) {
-      if (methods::is(get(x=obj_name, envir=..env_cl), "sim_obj")) {
+    for (obj_name in ls(..env_calling)) {
+      if (methods::is(get(x=obj_name, envir=..env_calling), "sim_obj")) {
         ..sim_var <- obj_name
         ..count <- ..count + 1
       }
@@ -68,22 +68,22 @@ cluster_execute <- function(
     }
 
     # Save a copy of simulation object to the parent environment
-    .add_objs(..env_calling, get(..sim_var, envir=..env_cl)$vars$env)
-    assign(x = ..sim_var,
-           value = get(..sim_var, envir=..env_cl),
-           envir = ..env_calling)
+    .add_objs(..env_calling, get(..sim_var, envir=..env_calling)$vars$env)
+    # assign(x = ..sim_var,
+    #        value = get(..sim_var, envir=..env_cl),
+    #        envir = ..env_calling)
 
     # Run code locally (`main` and `last` blocks)
-    eval(..main, envir=..env_cl)
-    .add_objs(..env_calling, get(..sim_var, envir=..env_cl)$vars$env)
-    assign(x = ..sim_var,
-           value = get(..sim_var, envir=..env_cl),
-           envir = ..env_calling)
-    eval(..last, envir=..env_cl)
-    .add_objs(..env_calling, get(..sim_var, envir=..env_cl)$vars$env)
-    assign(x = ..sim_var,
-           value = get(..sim_var, envir=..env_cl),
-           envir = ..env_calling)
+    eval(..main, envir=..env_calling)
+    .add_objs(..env_calling, get(..sim_var, envir=..env_calling)$vars$env)
+    # assign(x = ..sim_var,
+    #        value = get(..sim_var, envir=..env_cl),
+    #        envir = ..env_calling)
+    eval(..last, envir=..env_calling)
+    .add_objs(..env_calling, get(..sim_var, envir=..env_calling)$vars$env)
+    # assign(x = ..sim_var,
+    #        value = get(..sim_var, envir=..env_cl),
+    #        envir = ..env_calling)
 
   } else {
 
