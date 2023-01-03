@@ -31,9 +31,8 @@ new_sim <- function() {
   ...sim <- list(
     config = list(
       num_sim = 10,
-      datasets = "many",
       parallel = "none",
-      n_cores = parallel::detectCores()-1,
+      n_cores = NA,
       packages = NULL,
       stop_at_error = FALSE,
       seed = ..seed,

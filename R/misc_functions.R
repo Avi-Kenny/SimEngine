@@ -186,8 +186,12 @@ create_levels_grid_big <- function(sim) {
 
   # Create core_id
   nc <- sim$config$n_cores
-  levels_grid_big$core_id <- ((levels_grid_big$batch_id-1)%%nc)+1
+  if (sim$config$parallel=="cluster" && is.na(nc)) {
+    levels_grid_big$core_id <- levels_grid_big$sim_uid
+  } else {
+    levels_grid_big$core_id <- ((levels_grid_big$batch_id-1)%%nc)+1
+  }
 
-  levels_grid_big <<- levels_grid_big # !!!!!
   return(levels_grid_big)
+
 }
