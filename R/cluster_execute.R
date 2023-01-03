@@ -27,6 +27,16 @@ cluster_execute <- function(
   rm(last)
   rm(cluster_config)
 
+  # Helper function to add objects in an environment to the simulation object
+  .add_objs <- function(..env_calling, env_sim) {
+    for (obj_name in ls(..env_calling)) {
+      obj <- get(x=obj_name, envir=..env_calling)
+      if (!methods::is(obj,"sim_obj") && obj_name!="L") {
+        assign(x=obj_name, value=obj, envir=env_sim)
+      }
+    }
+  }
+
   # Create a new environment to evaluate code blocks within and get a reference
   # to the calling environment
   ..env_cl <- new.env()
@@ -57,15 +67,7 @@ cluster_execute <- function(
       stop("A simulation object must be created in the `first` block")
     }
 
-    # Add objects in the calling environment to the simulation object
-    # !!!!! Functionize this later
-    for (obj_name in ls(..env_calling)) {
-      obj <- get(x=obj_name, envir=..env_calling)
-      if (!methods::is(obj,"sim_obj") && obj_name!="L") {
-        assign(x=obj_name, value=obj,
-               envir=get(..sim_var, envir=..env_cl)$vars$env)
-      }
-    }
+    .add_objs(..env_calling, get(..sim_var, envir=..env_cl)$vars$env)
 
     # Save a copy of simulation object to the parent environment
     assign(x = ..sim_var,
@@ -75,30 +77,14 @@ cluster_execute <- function(
     # Run code locally (`main` and `last` blocks)
     eval(..main, envir=..env_cl)
 
-    # Add objects in the calling environment to the simulation object
-    # !!!!! Functionize this later
-    for (obj_name in ls(..env_calling)) {
-      obj <- get(x=obj_name, envir=..env_calling)
-      if (!methods::is(obj,"sim_obj") && obj_name!="L") {
-        assign(x=obj_name, value=obj,
-               envir=get(..sim_var, envir=..env_cl)$vars$env)
-      }
-    }
+    .add_objs(..env_calling, get(..sim_var, envir=..env_cl)$vars$env)
 
     assign(x = ..sim_var,
            value = get(..sim_var, envir=..env_cl),
            envir = ..env_calling)
     eval(..last, envir=..env_cl)
 
-    # Add objects in the calling environment to the simulation object
-    # !!!!! Functionize this later
-    for (obj_name in ls(..env_calling)) {
-      obj <- get(x=obj_name, envir=..env_calling)
-      if (!methods::is(obj,"sim_obj") && obj_name!="L") {
-        assign(x=obj_name, value=obj,
-               envir=get(..sim_var, envir=..env_cl)$vars$env)
-      }
-    }
+    .add_objs(..env_calling, get(..sim_var, envir=..env_cl)$vars$env)
 
     assign(x = ..sim_var,
            value = get(..sim_var, envir=..env_cl),
@@ -190,14 +176,7 @@ cluster_execute <- function(
     # Get reference to simulation object
     ..sim <- get(..sim_var, envir=..env_cl)
 
-    # Add objects in the calling environment to the simulation object
-    # !!!!! Functionize this later
-    for (obj_name in ls(..env_calling)) {
-      obj <- get(x=obj_name, envir=..env_calling)
-      if (!methods::is(obj,"sim_obj") && obj_name!="L") {
-        assign(x=obj_name, value=obj, envir=..sim$vars$env)
-      }
-    }
+    .add_objs(..env_calling, ..sim$vars$env)
 
     # Save simulation object
     ..sim$internals$sim_var <- ..sim_var
@@ -292,14 +271,7 @@ cluster_execute <- function(
         eval(..main, envir=..env_cl)
         ..sim <- get(..sim$internals$sim_var, envir=..env_cl)
 
-        # Add objects in the calling environment to the simulation object
-        # !!!!! Functionize this later
-        for (obj_name in ls(..env_calling)) {
-          obj <- get(x=obj_name, envir=..env_calling)
-          if (!methods::is(obj,"sim_obj") && obj_name!="L") {
-            assign(x=obj_name, value=obj, envir=..sim$vars$env)
-          }
-        }
+        .add_objs(..env_calling, ..sim$vars$env)
 
       }
 
@@ -510,14 +482,7 @@ cluster_execute <- function(
       eval(..last, envir=..env_cl)
       ..sim <- get(..sim$internals$sim_var, envir=..env_cl)
 
-      # Add objects in the calling environment to the simulation object
-      # !!!!! Functionize this later
-      for (obj_name in ls(..env_calling)) {
-        obj <- get(x=obj_name, envir=..env_calling)
-        if (!methods::is(obj,"sim_obj") && obj_name!="L") {
-          assign(x=obj_name, value=obj, envir=..sim$vars$env)
-        }
-      }
+      .add_objs(..env_calling, ..sim$vars$env)
 
       # Save final simulation object (a second time, if 'last' code had no errors)
       ..sim$vars$end_time <- Sys.time()
