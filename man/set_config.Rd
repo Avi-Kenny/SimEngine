@@ -13,7 +13,7 @@ set_config(
   stop_at_error = FALSE,
   progress_bar = TRUE,
   seed = as.integer(1e+09 * runif(1)),
-  batch_levels = NULL
+  batch_levels = NA
 )
 }
 \arguments{
@@ -33,9 +33,9 @@ overview of how parallelization works in \pkg{SimEngine}. This option
 will be ignored (and automatically set to "cluster") if the simulation is
 being run on a cluster computing system.}
 
-\item{n_cores}{An integer; determines the number of CPUs on which the simulation
-will run if using parallelization. Defaults to one fewer than the number of
-available CPUs on the current host.}
+\item{n_cores}{An integer; determines the number of cores on which the
+simulation will run if using parallelization. Defaults to one fewer than
+the number of available cores.}
 
 \item{packages}{A character vector of packages to load and attach}
 

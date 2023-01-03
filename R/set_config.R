@@ -20,9 +20,9 @@
 #'     overview of how parallelization works in \pkg{SimEngine}. This option
 #'     will be ignored (and automatically set to "cluster") if the simulation is
 #'     being run on a cluster computing system.
-#' @param n_cores An integer; determines the number of CPUs on which the simulation
-#'     will run if using parallelization. Defaults to one fewer than the number of
-#'     available CPUs on the current host.
+#' @param n_cores An integer; determines the number of cores on which the
+#'     simulation will run if using parallelization. Defaults to one fewer than
+#'     the number of available cores.
 #' @param packages A character vector of packages to load and attach
 #' @param stop_at_error A Boolean. If set to TRUE, the simulation will
 #'     stop if it encounters an error in any single replicate Useful for
@@ -61,18 +61,18 @@
 #' sim
 #' @export
 set_config <- function(
-  sim, num_sim=1000, parallel="none", n_cores=parallel::detectCores()-1,
+  sim, num_sim=1000, parallel="none", n_cores=NA,
   packages=NULL, stop_at_error=FALSE, progress_bar=TRUE,
-  seed=as.integer(1e9*runif(1)), batch_levels=NULL
+  seed=as.integer(1e9*runif(1)), batch_levels=NA
 ) {
   UseMethod("set_config")
 }
 
 #' @export
 set_config.sim_obj <- function(
-  sim, num_sim=1000, parallel="none", n_cores=parallel::detectCores()-1,
+  sim, num_sim=1000, parallel="none", n_cores=NA,
   packages=NULL, stop_at_error=FALSE, progress_bar=TRUE,
-  seed=as.integer(1e9*runif(1)), batch_levels=NULL
+  seed=as.integer(1e9*runif(1)), batch_levels=NA
 ) {
 
   if (length(as.list(match.call()))==2) {

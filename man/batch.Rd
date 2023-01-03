@@ -10,7 +10,7 @@ batch(code, warn = T)
 TO DO
 }
 \description{
-TO DO
+TO DO; note that you must create objects within batch(); do not change/delete existing objects
 }
 \examples{
 TO DO

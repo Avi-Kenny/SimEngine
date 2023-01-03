@@ -140,7 +140,7 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
 create_levels_grid_big <- function(sim) {
 
   # Add batch_id to levels_grid
-  if (!is.null(sim$config$batch_levels)) {
+  if (!is.na(sim$config$batch_levels[1])) {
     keys <- new.env()
     batch_ids <- rep(NA, nrow(sim$levels_grid))
     counter <- 1
@@ -157,6 +157,8 @@ create_levels_grid_big <- function(sim) {
       }
     }
     sim$levels_grid$batch_id <- batch_ids
+  } else {
+    sim$levels_grid$batch_id <- c(1:nrow(sim$levels_grid))
   }
 
   # Create expanded levels grid, one row per replicate
@@ -177,18 +179,15 @@ create_levels_grid_big <- function(sim) {
   levels_grid_big <- cbind(1:nrow(levels_grid_big), levels_grid_big)
   names(levels_grid_big) <- c("sim_uid", names_2)
 
-  if (!is.null(sim$config$batch_levels)) {
+  # Update batch_id
+  levels_grid_big$batch_id <- as.integer(as.factor(paste0(
+    levels_grid_big$rep_id, "-", levels_grid_big$batch_id
+  )))
 
-    # Update batch_id
-    levels_grid_big$batch_id <- as.integer(as.factor(paste0(
-      levels_grid_big$rep_id, "-", levels_grid_big$batch_id
-    )))
+  # Create core_id
+  nc <- sim$config$n_cores
+  levels_grid_big$core_id <- ((levels_grid_big$batch_id-1)%%nc)+1
 
-    # Create core_id
-    nc <- sim$config$n_cores
-    levels_grid_big$core_id <- ((levels_grid_big$batch_id-1)%%nc)+1
-
-  }
-
+  levels_grid_big <<- levels_grid_big # !!!!!
   return(levels_grid_big)
 }

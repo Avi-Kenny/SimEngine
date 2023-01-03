@@ -17,6 +17,7 @@ cluster_execute <- function(
 
   # Rename arguments to avoid potential naming conflicts with contents of
   #   first/main/last blocks
+  # !!!!! Probably no longer necessary since blocks are run in a dedicated envir
   ..first <- first
   ..main <- main
   ..last <- last
@@ -47,14 +48,14 @@ cluster_execute <- function(
         ..count <- ..count + 1
       }
     }
-    if (is.na(..sim_var)) {
-      stop("A simulation object must be created in the `first` block")
-    }
     if (..count>1) {
       stop(paste("Multiple simulation objects were detected; only one may be",
                  "created in the `first` block"))
     }
     rm(..count)
+    if (is.na(..sim_var)) {
+      stop("A simulation object must be created in the `first` block")
+    }
 
     # Add objects in the calling environment to the simulation object
     # !!!!! Functionize this later
@@ -233,7 +234,7 @@ cluster_execute <- function(
     # if there are error files in the results directory and stop_at_error==TRUE,
     # skip this rep
     err_reps <- list.files(path = ..path_sim_res, pattern = "e_*")
-    if (!(length(err_reps) > 0 & ..sim$config$stop_at_error)) {
+    if (!(length(err_reps)>0 && ..sim$config$stop_at_error)) {
 
       # Error handling: tid_var and js
       if (is.null(..cfg$tid_var) && is.null(..cfg$js)) {

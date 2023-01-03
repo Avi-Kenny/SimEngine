@@ -38,7 +38,7 @@ new_sim <- function() {
       stop_at_error = FALSE,
       seed = ..seed,
       progress_bar = TRUE,
-      batch_levels = NULL
+      batch_levels = NA
     ),
     levels = list("no levels"=TRUE),
     levels_grid = data.frame(level_id=1),
@@ -68,7 +68,7 @@ new_sim <- function() {
     results = NULL,
     errors = NULL
   )
-  ...sim$internals$batch_cache[["batch_levels"]] <- NULL
+  ...sim$internals$batch_cache[["batch_levels"]] <- NA
 
   # Create (hidden) global references to simulation environments that can be
   #     searched for via get() by methods (currently use_method and batch) that

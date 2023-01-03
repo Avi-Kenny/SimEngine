@@ -1,6 +1,6 @@
 #' Wrapper to run a block of code as part of a batch
 #'
-#' @description TO DO; note that you must create objects within batch()
+#' @description TO DO; note that you must create objects within batch(); do not change/delete existing objects
 #' @return TO DO
 #' @examples
 #' TO DO
@@ -10,7 +10,7 @@ batch <- function(code, warn=T) {
   # ..env <- get("..env", envir=.GlobalEnv)
   ..cache <- get("..batch_cache", envir=.GlobalEnv)
 
-  handle_errors(get("batch_levels", envir=..cache), "is.null", msg=paste0(
+  handle_errors(get("batch_levels", envir=..cache), "is.na", msg=paste0(
     "If the batch() function is used, you must set the `batch_levels` config option via",
     " set_config()"
   ))
@@ -35,7 +35,7 @@ batch <- function(code, warn=T) {
         objs[[objs_diff[i]]] <- get(objs_diff[i], envir=parent.frame())
       }
     } else {
-      warning("No new objects were created within batch()")
+      warning("No new objects were created within batch(); see documentation")
     }
     ..cache[[as.character(batch_id)]] <- objs
   } else {
@@ -45,6 +45,8 @@ batch <- function(code, warn=T) {
         val <- get(ls(objs)[i], objs)
         assign(key, val, envir=parent.frame())
       }
+    } else {
+      warning("No new objects were created within batch(); see documentation")
     }
   }
 
