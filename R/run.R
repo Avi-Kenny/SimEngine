@@ -46,21 +46,19 @@ run.sim_obj <- function(sim) {
       sim$config$n_cores <- n_available_cores - 1
     } else {
       if (sim$config$n_cores>n_available_cores) {
-        n_cores <- n_available_cores
+        sim$config$n_cores <- n_available_cores
         warning(paste(sim$config$n_cores, "cores requested but only",
                       n_available_cores, "cores available. Proceeding with",
                       n_available_cores, "cores."))
-      } else {
-        n_cores <- sim$config$n_cores
       }
     }
 
     # Create cluster and export everything in env
-    cl <- parallel::makeCluster(n_cores)
+    cl <- parallel::makeCluster(sim$config$n_cores)
     parallel::clusterExport(cl, ls(sim$vars$env), sim$vars$env)
     ..packages <- c(sim$config$packages, "magrittr")
     parallel::clusterExport(cl, c("sim","..packages"), environment())
-    parallel::clusterExport(cl, "..env", .GlobalEnv)
+    parallel::clusterExport(cl, c("..env","..batch_cache"), .GlobalEnv)
     parallel::clusterCall(cl, function(x) {.libPaths(x)}, .libPaths())
     parallel::clusterEvalQ(cl, sapply(..packages, function(p) {
       do.call("library", list(p))

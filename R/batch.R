@@ -1,6 +1,6 @@
 #' Wrapper to run a block of code as part of a batch
 #'
-#' @description TO DO; note that you must create objects within batch(); do not change/delete existing objects
+#' @description TO DO
 #' @return TO DO
 #' @examples
 #' TO DO
@@ -19,7 +19,7 @@ batch <- function(code, warn=T) {
     # TO DO: throw warning if update is being used; maybe throw error
   }
 
-  batch_id <- L$batch_id
+  batch_id <- get("L", envir=parent.frame())$batch_id
   objs <- ..cache[[as.character(batch_id)]]
   if (is.null(objs)) {
     objs_pre <- ls(envir=parent.frame())
