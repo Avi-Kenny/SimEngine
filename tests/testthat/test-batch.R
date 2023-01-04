@@ -66,7 +66,7 @@ run_and_test(which="07", parallel="inner", n_cores=1)
 run_and_test(which="08", parallel="inner", n_cores=2)
 
 # Wrapper function to run simulations and tests using run_on_cluster
-run_and_test_cl <- function(which, cmplx=FALSE, n_cores, run_tests=T) {
+run_and_test_cl <- function(which, cmplx=FALSE, n_cores, run_tests=T, ret=F) {
 
   # Creating this function here to test scoping
   create_data <- function(n, mu) { rnorm(n, mean=mu, sd=0.5) }
@@ -103,6 +103,9 @@ run_and_test_cl <- function(which, cmplx=FALSE, n_cores, run_tests=T) {
     cluster_config = list(js="slurm")
   )
 
+  # # Debugging
+  # sim <<- sim
+
   # Extract results and run tests
   if (run_tests) {
 
@@ -126,6 +129,8 @@ run_and_test_cl <- function(which, cmplx=FALSE, n_cores, run_tests=T) {
     }
 
   }
+
+  if (ret) { return(sim) }
 
 }
 
@@ -154,77 +159,81 @@ Sys.setenv(SLURM_ARRAY_TASK_ID="")
 run_and_test_cl(which="12", cmplx=F, n_cores=2, run_tests=T)
 
 # Test set #4
-Sys.setenv(sim_run="first")
-Sys.setenv(SLURM_ARRAY_TASK_ID="")
-run_and_test_cl(which="", cmplx=T, n_cores=2, run_tests=F)
-Sys.setenv(sim_run="main")
-for (i in c(1:2)) {
-  Sys.setenv(SLURM_ARRAY_TASK_ID=as.character(i))
-  suppressMessages({
-    run_and_test_cl(which="", cmplx=T, n_cores=2, run_tests=F)
-  })
+for (j in c(2,3,6)) {
+  Sys.setenv(sim_run="first")
+  Sys.setenv(SLURM_ARRAY_TASK_ID="")
+  run_and_test_cl(which="", cmplx=T, n_cores=j, run_tests=F)
+  Sys.setenv(sim_run="main")
+  for (i in c(1:j)) {
+    Sys.setenv(SLURM_ARRAY_TASK_ID=as.character(i))
+    suppressMessages({
+      run_and_test_cl(which="", cmplx=T, n_cores=2, run_tests=F)
+    })
+  }
+  Sys.setenv(sim_run="last")
+  Sys.setenv(SLURM_ARRAY_TASK_ID="")
+  run_and_test_cl(which="13", cmplx=F, n_cores=2, run_tests=T)
 }
-Sys.setenv(sim_run="last")
-Sys.setenv(SLURM_ARRAY_TASK_ID="")
-run_and_test_cl(which="13", cmplx=F, n_cores=2, run_tests=T)
 
 # Test set #5
-Sys.setenv(sim_run="first")
-Sys.setenv(SLURM_ARRAY_TASK_ID="")
-run_and_test_cl(which="", cmplx=T, n_cores=3, run_tests=F)
-Sys.setenv(sim_run="main")
-for (i in c(1:3)) {
-  Sys.setenv(SLURM_ARRAY_TASK_ID=as.character(i))
-  suppressMessages({
-    run_and_test_cl(which="", cmplx=T, n_cores=3, run_tests=F)
-  })
-}
-Sys.setenv(sim_run="last")
-Sys.setenv(SLURM_ARRAY_TASK_ID="")
-run_and_test_cl(which="14", cmplx=F, n_cores=3, run_tests=T)
-
-# Test set #5
-Sys.setenv(sim_run="first")
-Sys.setenv(SLURM_ARRAY_TASK_ID="")
-run_and_test_cl(which="", cmplx=T, n_cores=20, run_tests=F)
-Sys.setenv(sim_run="main")
-for (i in c(1:20)) {
-  print(i)
-  Sys.setenv(SLURM_ARRAY_TASK_ID=as.character(i))
-  suppressMessages({
-    run_and_test_cl(which="", cmplx=T, n_cores=20, run_tests=F)
-  })
-}
-Sys.setenv(sim_run="last")
-Sys.setenv(SLURM_ARRAY_TASK_ID="")
-run_and_test_cl(which="15", cmplx=F, n_cores=20, run_tests=T)
-
-
-
-
-
-
-# Run test sets (run_on_cluster / emulate cluster / n_cores=NA)
-Sys.setenv(sim_run="first")
-Sys.setenv(SLURM_ARRAY_TASK_ID="")
-run_and_test_cl(which="", cmplx=F, n_cores=NA, run_tests=F)
-# !!!!! this should throw an error
-
-# Run test sets (run_on_cluster / emulate cluster / n_cores=2)
 Sys.setenv(sim_run="first")
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 run_and_test_cl(which="", cmplx=F, n_cores=2, run_tests=F)
 Sys.setenv(sim_run="main")
 Sys.setenv(SLURM_ARRAY_TASK_ID="3")
-run_and_test_cl(which="", cmplx=F, n_cores=2, run_tests=F)
-# !!! This should throw an error
+test_that("Error handling: tid>n_cores", {
+  expect_error(run_and_test_cl(which="", cmplx=F, n_cores=2, run_tests=F),
+               "This simulation has n_cores=2, so this core will not be used.")
+})
 
+# Test set #6
+Sys.setenv(sim_run="first")
+Sys.setenv(SLURM_ARRAY_TASK_ID="")
+run_and_test_cl(which="", cmplx=F, n_cores=36, run_tests=F)
+Sys.setenv(sim_run="main")
+Sys.setenv(SLURM_ARRAY_TASK_ID="36")
+test_that("Error handling: tid>num_batches", {
+  expect_error(run_and_test_cl(which="", cmplx=F, n_cores=36, run_tests=F),
+               paste0("This simulation only contains 12 replicate batches, so ",
+                      "this core will not be used."))
+})
 
+# Test set #7
+Sys.setenv(sim_run="first")
+Sys.setenv(SLURM_ARRAY_TASK_ID="")
+run_and_test_cl(which="", cmplx=F, n_cores=NA, run_tests=F)
+Sys.setenv(sim_run="main")
+Sys.setenv(SLURM_ARRAY_TASK_ID="1")
+run_and_test_cl(which="", cmplx=F, n_cores=NA, run_tests=F)
+Sys.setenv(sim_run="last")
+Sys.setenv(SLURM_ARRAY_TASK_ID="")
+sim <- run_and_test_cl(which="", cmplx=F, n_cores=NA, run_tests=F, ret=T)
+test_that("batch() throws an error if n_cores=NA:", {
+  expect_equal(nrow(sim$errors), 3)
+  expect_equal(sim$errors[1,"message"], paste0(
+    "If the batch() function is used on a cluster computing system, you must s",
+    "et the `n_cores` config option via set_config()"
+  ))
+})
+rm(sim)
 
-
-
-
-
+# Test set #8
+sim <- new_sim()
+sim %<>% set_levels(n=c(10,100), mu=c(2,5))
+sim %<>% set_config(num_sim=2)
+sim %<>% set_script(function() {
+  batch({ dat <- rnorm(1) })
+  return (list("dat"=dat))
+})
+sim %<>% run()
+test_that("batch() throws an error if batch_levels=NA:", {
+  expect_equal(nrow(sim$errors), 8)
+  expect_equal(sim$errors[1,"message"], paste0(
+    "If the batch() function is used, you must set the `batch_levels` config o",
+    "ption via set_config()"
+  ))
+})
+rm(sim)
 
 # Cleanup
 Sys.setenv(sim_run="")
