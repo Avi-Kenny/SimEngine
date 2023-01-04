@@ -28,7 +28,7 @@ new_sim <- function() {
   # Create "blank" simulation object
   ..seed <- as.integer(1e9*runif(1))
   ..e <- .GlobalEnv
-  ...sim <- list(
+  ..sim <- list(
     config = list(
       num_sim = 10,
       parallel = "none",
@@ -68,23 +68,23 @@ new_sim <- function() {
   )
 
   # Create batch_cache and set initial values
-  assign(x="..batch_cache", value=new.env(), envir=...sim$vars$env)
+  assign(x="..batch_cache", value=new.env(), envir=..sim$vars$env)
   assign(x="batch_levels", value=NA,
-         envir=get(x="..batch_cache", envir=...sim$vars$env))
+         envir=get(x="..batch_cache", envir=..sim$vars$env))
 
   # Create flags container and set initial values
-  assign(x="..flag_batch_n_cores", value=F, envir=...sim$vars$env)
-  assign(x="..flag_batch_update", value=F, envir=...sim$vars$env)
+  assign(x="..flag_batch_n_cores", value=F, envir=..sim$vars$env)
+  assign(x="..flag_batch_update", value=F, envir=..sim$vars$env)
 
   # Create a (hidden) global reference to the simulation environment that can be
   #     searched for via get() by functions (currently use_method and batch)
   #     that need to access this environment but doesn't take sim as an argument
-  assign(x="..env", value=...sim$vars$env, envir=..e)
+  assign(x="..env", value=..sim$vars$env, envir=..e)
 
-  class(...sim) <- "sim_obj"
+  class(..sim) <- "sim_obj"
   rm(..e)
   rm(..seed)
 
-  return (...sim)
+  return (..sim)
 
 }

@@ -345,7 +345,7 @@ run.sim_obj <- function(sim) {
     units = "secs"
   )
 
-  # record levels and num_sim that were run
+  # Record levels and num_sim that were run
   sim$internals$levels_prev <- sim$internals$levels_shallow
   sim$internals$num_sim_prev <- sim$config$num_sim
   sim$internals$num_sim_cumul <- sim$internals$num_sim_cuml +
