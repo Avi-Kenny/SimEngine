@@ -142,7 +142,7 @@ test_that("Correct behavior if 'first' fails", {
     "shell commands are correct and properly sequenced."
   ))
 })
-unlink("sim_results", recursive = TRUE)
+unlink("sim_results", recursive=T)
 Sys.setenv(sim_run="")
 
 # Simulate running locally and on cluster with complex return data
@@ -414,3 +414,4 @@ test_that("Simulation ran and all objects were accessible (cluster 1)", {
 Sys.setenv(sim_run="")
 rm(sim3)
 unlink("sim.rds")
+
