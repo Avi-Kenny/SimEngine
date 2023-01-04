@@ -71,6 +71,9 @@ new_sim <- function() {
   assign(x="..batch_cache", value=new.env(), envir=...sim$vars$env)
   assign(x="batch_levels", value=NA,
          envir=get(x="..batch_cache", envir=...sim$vars$env))
+  assign(x="batch_flag_n_cores", value=F,
+         envir=get(x="..batch_cache", envir=...sim$vars$env))
+
 
   # Create a (hidden) global reference to the simulation environment that can be
   #     searched for via get() by functions (currently use_method and batch)

@@ -125,6 +125,15 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
       }
     },
 
+    "is.na" = {
+      if (is.na(obj)) {
+        if (is.na(msg)) {
+          msg <- paste0("`",name,"` must not be NA")
+        }
+        stop(msg, call.=FALSE)
+      }
+    },
+
     "error type" = {}
 
   )

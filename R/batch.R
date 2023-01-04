@@ -5,26 +5,28 @@
 #' @examples
 #' TO DO
 #' @export
-batch <- function(code, warn=T) {
+batch <- function(code) {
 
-  ..cache <- get(x="..batch_cache", envir=get("..env", envir=.GlobalEnv))
-
-  # ..env <- get("..env", envir=.GlobalEnv)
-  # ..cache <- get("..batch_cache", envir=.GlobalEnv)
+  ..env <- get("..env", envir=.GlobalEnv)
+  ..cache <- get(x="..batch_cache", envir=..env)
 
   handle_errors(get("batch_levels", envir=..cache), "is.na", msg=paste0(
-    "If the batch() function is used, you must set the `batch_levels` config option via",
-    " set_config()"
+    "If the batch() function is used, you must set the `batch_levels` config o",
+    "ption via set_config()"
   ))
 
-  # # !!!!! Get reference to sim and then run this; or set a hidden flag in ..env
-  # if (sim$config$parallel=="cluster" && is.na(sim$config$n_cores)) {
-  #   stop("You must specify n_cores in set_config() if using batch on cluster")
-  # }
+  browser() # !!!!!
 
-  if (warn) {
-    # TO DO: throw warning if update is being used; maybe throw error
+  # Get error flags
+  batch_flag_n_cores <- get(x="batch_flag_n_cores",
+                            envir=get(x="..batch_cache", envir=..env))
+
+  if (batch_flag_n_cores) {
+    stop(paste0("If the batch() function is used on a cluster computing system",
+                ", you must set the `n_cores` config option via set_config()"))
   }
+
+  # TO DO: throw error/warning if update is being used
 
   batch_id <- get("L", envir=parent.frame())$batch_id
   objs <- ..cache[[as.character(batch_id)]]
@@ -32,7 +34,6 @@ batch <- function(code, warn=T) {
     objs_pre <- ls(envir=parent.frame(), all.names=T)
     ..code <- substitute(code)
     rm(code)
-    # ..env_cl <- new.env()
     eval(..code, envir=parent.frame())
     objs_post <- ls(envir=parent.frame(), all.names=T)
     objs_diff <- objs_post[!(objs_post %in% objs_pre)]

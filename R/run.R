@@ -68,10 +68,19 @@ run.sim_obj <- function(sim) {
 
     sim$config$n_cores <- 1
 
+  } else if (sim$config$parallel=="cluster") {
+
+    if (is.na(sim$config$n_cores)) {
+      sim$config$n_cores <- sim$vars$num_sim_total
+      assign(x="batch_flag_n_cores", value=T,
+             envir=get(x="..batch_cache", envir=sim$vars$env))
+    }
+
   }
 
   if (!sim$internals$update_sim) {
     sim$internals$levels_grid_big <- create_levels_grid_big(sim)
+    sim$internals$num_batches <- max(sim$internals$levels_grid_big$batch_id)
   }
 
   run_script <- function(core_id) {
@@ -158,6 +167,14 @@ run.sim_obj <- function(sim) {
   # Set core_ids based on whether sims are running on cluster
   if (sim$config$parallel=="cluster") {
     core_ids <- sim$internals$tid
+    if (core_ids>sim$config$n_cores) {
+      stop(paste0("This simulation has n_cores=", sim$config$n_cores,
+                  ", so this core will not be used."))
+    }
+    if (core_ids>sim$internals$num_batches) {
+      stop(paste0("This simulation only contains ", sim$internals$num_batches,
+                  " replicate batches, so this core will not be used."))
+    }
   } else {
     core_ids <- c(1:max(sim$internals$levels_grid_big$core_id))
   }
