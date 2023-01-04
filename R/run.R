@@ -55,10 +55,10 @@ run.sim_obj <- function(sim) {
 
     # Create cluster and export everything in env
     cl <- parallel::makeCluster(sim$config$n_cores)
-    parallel::clusterExport(cl, ls(sim$vars$env), sim$vars$env)
+    parallel::clusterExport(cl, ls(sim$vars$env, all.names=T), sim$vars$env)
     ..packages <- c(sim$config$packages, "magrittr")
     parallel::clusterExport(cl, c("sim","..packages"), environment())
-    parallel::clusterExport(cl, c("..env","..batch_cache"), .GlobalEnv)
+    parallel::clusterExport(cl, c("..env"), .GlobalEnv)
     parallel::clusterCall(cl, function(x) {.libPaths(x)}, .libPaths())
     parallel::clusterEvalQ(cl, sapply(..packages, function(p) {
       do.call("library", list(p))
@@ -95,7 +95,7 @@ run.sim_obj <- function(sim) {
           L[[levs[j]]] <- sim$levels[[levs[j]]][[L[[levs[j]]]]]
         }
       }
-      for (obj_name in ls(sim$vars$env)) {
+      for (obj_name in ls(sim$vars$env, all.names=T)) {
         obj <- get(obj_name, envir=sim$vars$env, inherits=FALSE)
         if (methods::is(obj,"function") && !is.null(environment(obj))) {
           assign(x="L", value=L, envir=environment(obj))

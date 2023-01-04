@@ -54,8 +54,7 @@ new_sim <- function() {
       tid = NA,
       sim_var = "",
       update_sim = FALSE,
-      env_calling = parent.frame(),
-      batch_cache = new.env()
+      env_calling = parent.frame()
     ),
     vars = list(
       seed = ..seed,
@@ -67,16 +66,20 @@ new_sim <- function() {
     results = NULL,
     errors = NULL
   )
-  ...sim$internals$batch_cache[["batch_levels"]] <- NA
 
-  # Create (hidden) global references to simulation environments that can be
-  #     searched for via get() by methods (currently use_method and batch) that
-  #     need to access these environments but don't take sim as an argument
+  # Create batch_cache
+  assign(x="..batch_cache", value=new.env(), envir=...sim$vars$env)
+  assign(x="batch_levels", value=NA,
+         envir=get(x="..batch_cache", envir=...sim$vars$env))
+
+  # Create a (hidden) global reference to the simulation environment that can be
+  #     searched for via get() by functions (currently use_method and batch)
+  #     that need to access this environment but doesn't take sim as an argument
   assign(x="..env", value=...sim$vars$env, envir=..e)
-  assign(x="..batch_cache", value=...sim$internals$batch_cache, envir=..e)
-  rm(..e)
 
   class(...sim) <- "sim_obj"
+  rm(..e)
+  rm(..seed)
 
   return (...sim)
 

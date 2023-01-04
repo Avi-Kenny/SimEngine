@@ -120,7 +120,8 @@ set_config.sim_obj <- function(
   if (!missing(batch_levels)) {
     handle_errors(batch_levels, "is.character.vec")
     sim$config[["batch_levels"]] <- batch_levels
-    sim$internals$batch_cache[["batch_levels"]] <- batch_levels
+    assign(x="batch_levels", value=batch_levels,
+           envir=get(x="..batch_cache", envir=sim$vars$env))
   }
 
   set.seed(sim$config[["seed"]])

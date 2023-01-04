@@ -15,21 +15,13 @@ cluster_execute <- function(
   handle_errors(keep_extra, "is.boolean")
   handle_errors(update_switch, "is.boolean")
 
-  # Rename arguments to avoid potential naming conflicts with contents of
-  #   first/main/last blocks
-  # !!!!! Probably no longer necessary since blocks are run in a dedicated envir
-  ..first <- first
-  ..main <- main
-  ..last <- last
+  # Alias cluster_configvariable
   ..cfg <- cluster_config
-  rm(first)
-  rm(main)
-  rm(last)
   rm(cluster_config)
 
   # Helper function to add objects in calling envir to the sim_obj envir
   .add_objs <- function(..env_calling, env_sim) {
-    for (obj_name in ls(..env_calling)) {
+    for (obj_name in ls(..env_calling, all.names=T)) {
       obj <- get(x=obj_name, envir=..env_calling)
       if (!methods::is(obj,"sim_obj") && obj_name!="L") {
         assign(x=obj_name, value=obj, envir=env_sim)
@@ -45,12 +37,12 @@ cluster_execute <- function(
   if (Sys.getenv("sim_run")=="") {
 
     # Run code (`first` block)
-    eval(..first, envir=..env_calling)
+    eval(first, envir=..env_calling)
 
     # Extract the simulation object variable name
     ..count <- 0
     ..sim_var <- NA
-    for (obj_name in ls(..env_calling)) {
+    for (obj_name in ls(..env_calling, all.names=T)) {
       if (methods::is(get(x=obj_name, envir=..env_calling), "sim_obj")) {
         ..sim_var <- obj_name
         ..count <- ..count + 1
@@ -67,9 +59,9 @@ cluster_execute <- function(
 
     # Run code locally (`main` and `last` blocks)
     .add_objs(..env_calling, get(..sim_var, envir=..env_calling)$vars$env)
-    eval(..main, envir=..env_calling)
+    eval(main, envir=..env_calling)
     .add_objs(..env_calling, get(..sim_var, envir=..env_calling)$vars$env)
-    eval(..last, envir=..env_calling)
+    eval(last, envir=..env_calling)
     .add_objs(..env_calling, get(..sim_var, envir=..env_calling)$vars$env)
 
   } else {
@@ -130,12 +122,12 @@ cluster_execute <- function(
 
     # Run code (`first` block)
     ..start_time <- Sys.time()
-    eval(..first, envir=..env_calling)
+    eval(first, envir=..env_calling)
 
     # Extract the simulation object variable name
     ..count <- 0
     ..sim_var <- NA
-    for (obj_name in ls(..env_calling)) {
+    for (obj_name in ls(..env_calling, all.names=T)) {
       if (methods::is(get(x=obj_name, envir=..env_calling),"sim_obj")) {
         ..sim_var <- obj_name
         ..count <- ..count + 1
@@ -185,7 +177,6 @@ cluster_execute <- function(
     # Create hidden variable references
     ..e <- .GlobalEnv
     assign(x="..env", value=..sim$vars$env, envir=..e)
-    assign(x="..batch_cache", value=..sim$internals$batch_cache, envir=..e)
 
   }
 
@@ -250,7 +241,7 @@ cluster_execute <- function(
         assign(..sim$internals$sim_var, ..sim, envir=..env_calling)
 
         # Run 'main' code
-        eval(..main, envir=..env_calling)
+        eval(main, envir=..env_calling)
         ..sim <- get(..sim$internals$sim_var, envir=..env_calling)
         .add_objs(..env_calling, ..sim$vars$env)
 
@@ -259,7 +250,7 @@ cluster_execute <- function(
       # Parse results filename and save
       fmt <- paste0("%0", nchar(..sim$vars$num_sim_total), "d")
 
-      if (..sim$vars$run_state=="run, no errors") {
+      if (..sim$vars$run_state %in% c("run, no errors", "run, some errors")) {
         saveRDS(
           list(
             "results" = ..sim$results,
@@ -268,12 +259,15 @@ cluster_execute <- function(
           paste0(..path_sim_res, "/r_",
                  sprintf(fmt, ..sim$internals$tid), ".rds")
         )
-      } else if (..sim$vars$run_state=="run, all errors") {
+      } else if (..sim$vars$run_state %in% c("run, all errors",
+                                             "run, some errors")) {
         saveRDS(
           ..sim$errors,
           paste0(..path_sim_res, "/e_",
                  sprintf(fmt, ..sim$internals$tid), ".rds")
         )
+      } else {
+        stop("An unknown error occurred (CODE 103)")
       }
       if (!is.character(..sim$warnings)) {
         saveRDS(
@@ -301,6 +295,7 @@ cluster_execute <- function(
       errors_df <- NULL
       warnings_df <- NULL
       num_new <- 0
+
       for (file in files) {
 
         if (substr(file,1,1)=="r") {
@@ -310,12 +305,11 @@ cluster_execute <- function(
           if (is.null(results_df)) {
             results_df <- r$results
           } else {
-            results_df[nrow(results_df)+1,] <- r$results
+            results_df <- rbind(results_df, r$results)
           }
 
-          if (!is.na(r$results_complex)) {
-            results_complex[[length(results_complex)+1]] <-
-              r$results_complex[[1]]
+          if (!is.na(r$results_complex[1])) {
+            results_complex <- c(results_complex, r$results_complex)
           }
 
           num_new <- num_new + 1
@@ -328,20 +322,22 @@ cluster_execute <- function(
             if (is.null(errors_df)) {
               errors_df <- e
             } else {
-              errors_df[nrow(errors_df)+1,] <- e
+              errors_df <- rbind(errors_df, e)
             }
           }
 
           num_new <- num_new + 1
 
         } else if (substr(file,1,1) == "w") {
+
           w <- readRDS(paste0(..path_sim_res, "/", file))
 
           if (methods::is(w,"data.frame")) {
             if (is.null(warnings_df)) {
               warnings_df <- w
             } else {
-              warnings_df[nrow(warnings_df)+1,] <- w
+              # warnings_df[nrow(warnings_df)+1,] <- w
+              warnings_df <- rbind(warnings_df, w)
             }
           }
         }
@@ -460,7 +456,7 @@ cluster_execute <- function(
       # Run 'last' code
       for (pkg in ..sim$config$packages) { do.call("library", list(pkg)) }
       assign(..sim$internals$sim_var, ..sim, envir=..env_calling)
-      eval(..last, envir=..env_calling)
+      eval(last, envir=..env_calling)
       ..sim <- get(..sim$internals$sim_var, envir=..env_calling)
       .add_objs(..env_calling, ..sim$vars$env)
 
