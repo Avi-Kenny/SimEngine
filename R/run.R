@@ -347,8 +347,7 @@ run.sim_obj <- function(sim) {
 
   # Record levels and num_sim that were run
   sim$internals$levels_prev <- sim$internals$levels_shallow
-  sim$internals$num_sim_prev <- sim$config$num_sim
-  sim$internals$num_sim_cumul <- sim$internals$num_sim_cuml +
+  sim$internals$num_sim_cuml <- sim$internals$num_sim_cuml +
     sum(sim$internals$levels_grid_big$core_id %in% core_ids)
 
   # Remove global L if it was created

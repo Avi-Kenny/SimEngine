@@ -430,7 +430,6 @@ cluster_execute <- function(
 
       # record levels and num_sim that were run
       ..sim$internals$levels_prev <- ..sim$internals$levels_shallow
-      ..sim$internals$num_sim_prev <- ..sim$config$num_sim
       ..sim$internals$levels_grid_big <- levels_grid_big
 
       if (update_switch) {
