@@ -61,9 +61,7 @@ new_sim <- function() {
       num_sim_total = 10,
       run_state = "pre run"
     ),
-    script = NULL,
-    results = NULL,
-    errors = NULL
+    script = NULL
   )
 
   # Create batch_cache and set initial values
