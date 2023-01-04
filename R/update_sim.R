@@ -184,6 +184,8 @@ update_sim.sim_obj <- function(sim, keep_errors=T, keep_extra=F) {
   # create a copy of the sim to hold new results
   sim_copy <- sim
   sim_copy$internals$update_sim <- TRUE
+  assign(x="..flag_batch_update", value=T, envir=sim$vars$env)
+
   #sim_copy$internals$levels_grid_big <- levels_grid_big
 
   # if there are extra runs to do

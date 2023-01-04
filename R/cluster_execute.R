@@ -435,6 +435,7 @@ cluster_execute <- function(
 
       if (update_switch) {
         ..sim$internals$update_sim <- TRUE
+        assign(x="..flag_batch_update", value=T, envir=..sim$vars$env)
         ..sim$internals$num_sim_cuml <- ..sim$internals$num_sim_cuml + num_new
       } else {
         ..sim$internals$num_sim_cuml <- ..sim$internals$num_sim_cuml +

@@ -72,8 +72,7 @@ run.sim_obj <- function(sim) {
 
     if (is.na(sim$config$n_cores)) {
       sim$config$n_cores <- sim$vars$num_sim_total
-      assign(x="batch_flag_n_cores", value=T,
-             envir=get(x="..batch_cache", envir=sim$vars$env))
+      assign(x="..flag_batch_n_cores", value=T, envir=sim$vars$env)
     }
 
   }
@@ -354,6 +353,11 @@ run.sim_obj <- function(sim) {
 
   # Remove global L if it was created
   suppressWarnings( rm("L", envir=.GlobalEnv) )
+
+  # Clear the batch_cache
+  assign(x="..batch_cache", value=new.env(), envir=sim$vars$env)
+  assign(x="batch_levels", value=NA,
+         envir=get(x="..batch_cache", envir=sim$vars$env))
 
   return (sim)
 

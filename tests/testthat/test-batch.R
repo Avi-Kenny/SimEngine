@@ -41,6 +41,9 @@ run_and_test <- function(which, parallel, n_cores) {
   })
   sim %<>% run()
 
+  # # Debugging
+  # sim <<- sim
+
   # Extract results and run tests
   obj_A <- create_objs(sim$results)
   test_that(paste("batch() operates correctly:", which), {

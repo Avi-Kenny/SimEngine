@@ -10,23 +10,19 @@ batch <- function(code) {
   ..env <- get("..env", envir=.GlobalEnv)
   ..cache <- get(x="..batch_cache", envir=..env)
 
-  handle_errors(get("batch_levels", envir=..cache), "is.na", msg=paste0(
+  # Handle errors
+  handle_errors(get("batch_levels", envir=..cache)[1], "is.na", msg=paste0(
     "If the batch() function is used, you must set the `batch_levels` config o",
     "ption via set_config()"
   ))
-
-  browser() # !!!!!
-
-  # Get error flags
-  batch_flag_n_cores <- get(x="batch_flag_n_cores",
-                            envir=get(x="..batch_cache", envir=..env))
-
-  if (batch_flag_n_cores) {
+  if (get(x="..flag_batch_n_cores", envir=..env)) {
     stop(paste0("If the batch() function is used on a cluster computing system",
                 ", you must set the `n_cores` config option via set_config()"))
   }
-
-  # TO DO: throw error/warning if update is being used
+  if (get(x="..flag_batch_update", envir=..env)) {
+    stop(paste0("The batch() function cannot be used with update_sim() or upda",
+                "te_sim_on_cluster()"))
+  }
 
   batch_id <- get("L", envir=parent.frame())$batch_id
   objs <- ..cache[[as.character(batch_id)]]
