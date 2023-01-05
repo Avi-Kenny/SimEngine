@@ -56,7 +56,6 @@ prev_row1 <- sim$results[1,]
 ### update_sim handles errors ###
 test_that("Invalid options throw errors", {
   expect_error(update_sim(sim, keep_errors = "a"), "`keep_errors` must be of type 'logical'")
-  expect_error(update_sim(sim, keep_extra = "a"), "`keep_extra` must be of type 'logical'")
 })
 
 sim %<>% set_levels(

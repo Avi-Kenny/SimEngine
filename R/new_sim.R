@@ -49,7 +49,6 @@ new_sim <- function() {
       levels_types = FALSE,
       levels_shallow = list("no levels"=TRUE),
       levels_prev = list(),
-      num_sim_cuml = 0,
       tid = NA,
       sim_var = "",
       update_sim = FALSE,

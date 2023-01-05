@@ -146,10 +146,10 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
 #' @importFrom rlang .data
 #' @importFrom stats runif
 #' @noRd
-create_levels_grid_big <- function(sim) {
+create_levels_grid_big <- function(sim, update=F) {
 
   # Add batch_id to levels_grid
-  if (!is.na(sim$config$batch_levels[1])) {
+  if (!update && !is.na(sim$config$batch_levels[1])) {
     keys <- new.env()
     batch_ids <- rep(NA, nrow(sim$levels_grid))
     counter <- 1
@@ -200,6 +200,13 @@ create_levels_grid_big <- function(sim) {
   # } else {
   levels_grid_big$core_id <- ((levels_grid_big$batch_id-1)%%nc)+1
   # }
+
+  # Reorder columns
+  col_names <- names(levels_grid_big)
+  col_head <- c("sim_uid", "level_id", "rep_id", "core_id", "batch_id")
+  col_names <- col_names[!(col_names %in% col_head)]
+  col_order <- c(col_head, col_names)
+  levels_grid_big <- levels_grid_big[,col_order]
 
   return(levels_grid_big)
 

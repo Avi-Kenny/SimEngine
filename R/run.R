@@ -46,10 +46,10 @@ run.sim_obj <- function(sim) {
       sim$config$n_cores <- n_available_cores - 1
     } else {
       if (sim$config$n_cores>n_available_cores) {
-        sim$config$n_cores <- n_available_cores
         warning(paste(sim$config$n_cores, "cores requested but only",
                       n_available_cores, "cores available. Proceeding with",
                       n_available_cores, "cores."))
+        sim$config$n_cores <- n_available_cores
       }
     }
 
@@ -71,7 +71,7 @@ run.sim_obj <- function(sim) {
   } else if (sim$config$parallel=="cluster") {
 
     if (is.na(sim$config$n_cores)) {
-      sim$config$n_cores <- sim$vars$num_sim_total
+      sim$config$n_cores <- sim$vars$num_sim_total # !!!!! Will break with new update() code
       assign(x="..flag_batch_n_cores", value=T, envir=sim$vars$env)
     }
 
@@ -170,7 +170,7 @@ run.sim_obj <- function(sim) {
       stop(paste0("This simulation has n_cores=", sim$config$n_cores,
                   ", so this core will not be used."))
     }
-    if (core_ids>sim$internals$num_batches) {
+    if (!sim$internals$update_sim && core_ids>sim$internals$num_batches) {
       stop(paste0("This simulation only contains ", sim$internals$num_batches,
                   " replicate batches, so this core will not be used."))
     }
@@ -347,8 +347,6 @@ run.sim_obj <- function(sim) {
 
   # Record levels and num_sim that were run
   sim$internals$levels_prev <- sim$internals$levels_shallow
-  sim$internals$num_sim_cuml <- sim$internals$num_sim_cuml +
-    sum(sim$internals$levels_grid_big$core_id %in% core_ids)
 
   # Remove global L if it was created
   suppressWarnings( rm("L", envir=.GlobalEnv) )
