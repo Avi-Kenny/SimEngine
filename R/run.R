@@ -71,31 +71,33 @@ run.sim_obj <- function(sim) {
   } else if (sim$config$parallel=="cluster") {
 
     if (is.na(sim$config$n_cores)) {
-      sim$config$n_cores <- sim$vars$num_sim_total # !!!!! Will break with new update() code
+      sim$config$n_cores <- sim$vars$num_sim_total
       assign(x="..flag_batch_n_cores", value=T, envir=sim$vars$env)
     }
 
   }
 
   if (!sim$internals$update_sim) {
-    sim$internals$levels_grid_big <- create_levels_grid_big(sim)
-    sim$internals$num_batches <- max(sim$internals$levels_grid_big$batch_id)
+    sim$internals$num_batches <- max(sim$internals$sim_uid_grid$batch_id2)
   }
 
   run_script <- function(core_id) {
 
-    sim_uids <- sim$internals$levels_grid_big$sim_uid[
-      sim$internals$levels_grid_big$core_id==core_id
-    ]
+    .core_id <- core_id
+    sim_uids_to_run <- dplyr::filter(
+      sim$internals$sim_uid_grid, core_id==.core_id & to_run==T
+    )$sim_uid
 
-    res <- lapply(sim_uids, function(i) {
+    res <- lapply(sim_uids_to_run, function(i) {
 
       ..start_time <- Sys.time()
 
       # Set up references to levels row (L)
-      L <- as.list(sim$internals$levels_grid_big[
-        sim$internals$levels_grid_big$sim_uid == i,
-      ])
+      .level_id <- dplyr::filter(
+        sim$internals$sim_uid_grid, sim_uid==i
+      )$level_id
+      L <- as.list(dplyr::filter(sim$levels_grid, level_id==.level_id))
+      rm(.level_id)
       levs <- names(sim$levels)
       for (j in 1:length(levs)) {
         # Handle list-type levels
@@ -110,8 +112,7 @@ run.sim_obj <- function(sim) {
         }
       }
       assign(x="L", value=L, envir=sim$vars$env)
-      rm(levs)
-      rm(L)
+      rm(levs, L)
 
       # Set the seed
       set.seed(sim$config$seed)
@@ -175,7 +176,7 @@ run.sim_obj <- function(sim) {
                   " replicate batches, so this core will not be used."))
     }
   } else {
-    core_ids <- c(1:max(sim$internals$levels_grid_big$core_id))
+    core_ids <- c(1:max(sim$internals$sim_uid_grid$core_id))
   }
 
   # Run simulations
@@ -232,6 +233,27 @@ run.sim_obj <- function(sim) {
     )
   }
 
+  # Helper function to add level variables to results/errors/warnings dataframes
+  add_level_vars <- function(df) {
+
+    # Add level_id
+    df <- dplyr::inner_join(
+      df,
+      sim$internals$sim_uid_grid[,c("sim_uid","level_id")],
+      by = "sim_uid"
+    )
+
+    # Add level variables
+    df <- dplyr::inner_join(df, sim$levels_grid, by="level_id")
+
+    # Remove level_id, reorder columns, and return
+    df$level_id <- NULL
+    df$batch_id <- NULL
+    df %<>% dplyr::relocate(sim$internals$level_names, .after=sim_uid)
+    return(df)
+
+  }
+
   # Convert results to data frame and pull out complex data
   if (num_ok>0) {
 
@@ -259,21 +281,14 @@ run.sim_obj <- function(sim) {
     if (!is.null(results_lists_ok[[1]]$results$.complex)) {
       r_sim_uids <- results_df$sim_uid
       names(results_lists_ok) <- as.character(paste0("sim_uid_",r_sim_uids))
-      results_complex <- lapply(results_lists_ok, function(r) {
+      sim$results_complex <- lapply(results_lists_ok, function(r) {
         r$results$.complex
       })
-      sim$results_complex <- results_complex
     }
 
-    # Join results data frames with `levels_grid_big` and attach to sim
-    results_df <- dplyr::inner_join(
-      sim$internals$levels_grid_big,
-      results_df,
-      by = "sim_uid"
-    )
-    results_df$batch_id <- NULL
-    results_df$core_id <- NULL
-    sim$results <- results_df
+    # Add levels variables and attach to sim
+    results_df <- add_level_vars(results_df)
+    sim$results <- as.data.frame(results_df)
 
   }
 
@@ -289,15 +304,9 @@ run.sim_obj <- function(sim) {
     })
     errors_df <- data.table::rbindlist(results_lists_err)
 
-    # Join error data frames with `levels_grid_big` and attach to sim
-    errors_df <- dplyr::inner_join(
-      sim$internals$levels_grid_big,
-      errors_df,
-      by = "sim_uid"
-    )
-    errors_df$batch_id <- NULL
-    errors_df$core_id <- NULL
-    sim$errors <- errors_df
+    # Add levels variables and attach to sim
+    errors_df <- add_level_vars(errors_df)
+    sim$errors <- as.data.frame(errors_df)
 
   }
 
@@ -309,33 +318,26 @@ run.sim_obj <- function(sim) {
            "runtime" = r$runtime,
            "message" = paste(r$warnings, collapse="; "))
     })
-    warn_df <- data.table::rbindlist(results_lists_warn)
+    warnings_df <- data.table::rbindlist(results_lists_warn)
 
-    # Join warnings data frames with `levels_grid_big` and attach to sim
-    warn_df <- dplyr::inner_join(
-      sim$internals$levels_grid_big,
-      warn_df,
-      by = "sim_uid"
-    )
-    warn_df$batch_id <- NULL
-    warn_df$core_id <- NULL
-    sim$warnings <- warn_df
+    # Add levels variables and attach to sim
+    warnings_df <- add_level_vars(warnings_df)
+    sim$warnings <- as.data.frame(warnings_df)
 
   }
 
   # Set states
   if (num_warn==0) { sim$warnings <- "No warnings" }
-  if (num_ok>0 && num_err>0) {
-    sim$vars$run_state <- "run, some errors"
-  } else if (num_ok>0) {
-    sim$vars$run_state <- "run, no errors"
+  if (num_ok>0 && num_err==0) {
     sim$errors <- "No errors"
-  } else if (num_err>0) {
-    sim$vars$run_state <- "run, all errors"
+  } else if (num_err>0 && num_ok==0) {
     sim$results <- "Errors detected in 100% of simulation replicates"
-  } else {
+  } else if (num_ok==0 && num_err==0) {
     stop("An unknown error occurred (CODE 101)")
   }
+
+  # Update run_state variable
+  sim$vars$run_state <- update_run_state(sim)
 
   message(comp_msg)
 
@@ -344,9 +346,6 @@ run.sim_obj <- function(sim) {
     difftime(sim$vars$end_time, sim$vars$start_time),
     units = "secs"
   )
-
-  # Record levels and num_sim that were run
-  sim$internals$levels_prev <- sim$internals$levels_shallow
 
   # Remove global L if it was created
   suppressWarnings( rm("L", envir=.GlobalEnv) )

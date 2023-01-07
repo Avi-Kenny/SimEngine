@@ -58,16 +58,6 @@ test_that("Invalid options throw errors", {
   expect_error(update_sim(sim, keep_errors = "a"), "`keep_errors` must be of type 'logical'")
 })
 
-sim %<>% set_levels(
-  estimator = c("estimator_1"),
-  num_patients = c(50, 100),
-  ate = c(-7),
-  new_level = c(1, 2, 3)
-)
-test_that("Adding new level variables throws an error", {
-  expect_error(update_sim(sim), "Updating a sim cannot include new level variables, only new levels.")
-})
-
 # change levels
 sim %<>% set_levels(
   estimator = c("estimator_1", "estimator_2"),
@@ -201,4 +191,20 @@ test_that("update_sim() works with no levels", {
   expect_equal(length(sim$results), prev_ncol)
   expect_equal(nrow(sim$results), 2*prev_nrow)
   expect_equal(sim$results[1,], prev_row1)
+})
+
+# Error handling of invalid levels
+sim <- new_sim()
+create_data <- function(n) { rpois(n, lambda=5) }
+sim %<>% set_levels(n=c(10,100), est="M")
+sim %<>% set_config(num_sim=5)
+sim %<>% set_script(function() {
+  dat <- create_data(L$n)
+  return (list("lambda_hat"=mean(dat)))
+})
+sim %<>% run()
+test_that("Correct handling of updated levels", {
+  expect_error(sim %<>% set_levels(n=c(10,1000), est=c("M","V"), hey=2),
+               paste0("Updating a simulation cannot include new level variable",
+                      "s, only new levels."))
 })

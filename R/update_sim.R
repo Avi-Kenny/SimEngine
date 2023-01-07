@@ -65,116 +65,20 @@ update_sim.sim_obj <- function(sim, keep_errors=T) {
     }
   }
 
-  # Make sorted list of current levels and previous levels
-  sorted_prev_levels <- sim$internals$levels_prev[
-    order(names(sim$internals$levels_prev))]
-  sorted_curr_levels <- sim$internals$levels_shallow[
-    order(names(sim$internals$levels_shallow))]
-
-  # Disallow adding new level variables
-  if (length(names(sorted_prev_levels))!=length(names(sorted_curr_levels)) ||
-      !all.equal(names(sorted_prev_levels),names(sorted_curr_levels))) {
-    stop("Updating a sim cannot include new level variables, only new levels.")
-  }
-
-  # Make grid of previously run levels
-  prev_levels_grid_big <- sim$internals$levels_grid_big
-  i1 <- which(names(prev_levels_grid_big) %in% c(
-    "sim_uid", "rep_id", "batch_id", "core_id"
-  ))
-  prev_levels_grid <- prev_levels_grid_big[,-i1, drop=F] %>%
-    dplyr::distinct()
-
-  if (!("no levels" %in% names(sorted_prev_levels))) {
-
-    # Create level_ids for new levels; add to sim$levels_grid
-    sim$levels_grid <- dplyr::left_join(
-      sim$levels_grid[,-which(names(sim$levels_grid)=="level_id"), drop=F],
-      prev_levels_grid,
-      by = names(sorted_prev_levels)
-    )
-    if (sum(is.na(sim$levels_grid$level_id)) > 0) {
-      max_level_id <- max(prev_levels_grid$level_id)
-      num_new_levels <- sum(is.na(sim$levels_grid$level_id))
-      new_level_ids <- (max_level_id+1):(max_level_id+num_new_levels)
-      sim$levels_grid$level_id[is.na(sim$levels_grid$level_id)] <- new_level_ids
-    }
-
-    # Reorder columns
-    sim$levels_grid <- cbind(level_id=sim$levels_grid$level_id,
-                             sim$levels_grid[,-length(sim$levels_grid), drop=F])
-  }
-
-  # Create levels_grid_big
-  levels_grid_big <- create_levels_grid_big(sim, update=T)
-
-  # Create new sim_uids; add to levels_grid_big
-  i2 <- which(names(levels_grid_big)=="sim_uid")
-  i3 <- which(names(prev_levels_grid_big) %in% c("sim_uid", "level_id",
-                                                 "rep_id"))
-  levels_grid_big <- dplyr::left_join(
-    levels_grid_big[,-i2, drop=F],
-    prev_levels_grid_big[,i3, drop=F],
-    by = c("level_id", "rep_id")
-  )
-  if (sum(is.na(levels_grid_big$sim_uid)) > 0) {
-    max_uid <- max(prev_levels_grid_big$sim_uid)
-    num_new_uids <- sum(is.na(levels_grid_big$sim_uid))
-    new_uids <- (max_uid+1):(max_uid+num_new_uids)
-    levels_grid_big$sim_uid[is.na(levels_grid_big$sim_uid)] <- new_uids
-  }
-
-  # Reorder columns
-  levels_grid_big <- cbind(sim_uid=levels_grid_big$sim_uid,
-                           levels_grid_big[,-length(levels_grid_big)])
-
-  # If re-running error reps, limit the prev_levels_grid to only those in
-  #     results and revert the error df
-  if (!keep_errors) {
-    # !!!!! return to this
-    prev_levels_grid_big <- dplyr::semi_join(prev_levels_grid_big,
-                                             sim$results,
-                                             by="sim_uid")
-    sim$errors <- "No errors"
-  }
-
-  # Get levels / sim_uids that have not previously been run
-  uids_to_run <- setdiff(levels_grid_big$sim_uid,
-                          prev_levels_grid_big$sim_uid)
-
-  # Get levels / sim_uids that were previously run but are no longer needed
-  uids_to_delete <- setdiff(prev_levels_grid_big$sim_uid,
-                           levels_grid_big$sim_uid)
-
-  if (length(uids_to_run)==0 && length(uids_to_delete)==0) {
-    warning("There were no simulation replicates to run or remove.")
-  }
+  # if (!keep_errors) { sim$errors <- "No errors" }
 
   if (Sys.getenv("sim_run")!="") {
 
     # If on cluster, delete old results/errors/warnings
     sim$results <- NULL
-    # !!!!! results_complex
+    sim$results_complex <- NA
     sim$errors <- NULL
     sim$warnings <- NULL
 
   } else {
 
-    # Remove results/errors/warnings marked for deletion
-    if (length(uids_to_delete)>0) {
-
-      if (!is.character(sim$results)) {
-        sim$results %<>% dplyr::filter(!(sim_uid %in% uids_to_delete))
-      }
-      if (!is.character(sim$errors)) {
-        sim$errors %<>% dplyr::filter(!(sim_uid %in% uids_to_delete))
-      }
-      if (!is.character(sim$warnings)) {
-        sim$warnings %<>% dplyr::filter(!(sim_uid %in% uids_to_delete))
-      }
-      # !!!!! remove results_complex too
-
-    }
+    # Remove inactive results/errors/warnings
+    sim <- delete_inactive_rwe(sim)
 
   }
 
@@ -182,45 +86,40 @@ update_sim.sim_obj <- function(sim, keep_errors=T) {
   sim$internals$update_sim <- TRUE
   assign(x="..flag_batch_update", value=T, envir=sim$vars$env)
 
-  if (length(uids_to_run)>0) {
+  if (sum(sim$internals$sim_uid_grid$to_run)>0) {
 
-    # Create a copy of the sim to hold new results
+    # Create and run a copy of the sim
     sim_copy <- sim
-
-    # Run sim_uids that have not been run yet
-    sim_copy$internals$levels_grid_big <- dplyr::filter(
-      levels_grid_big, sim_uid %in% uids_to_run
-    )
     sim_copy$results <- NULL
+    sim_copy$results_complex <- NA
     sim_copy$errors <- NULL
     sim_copy$warnings <- NULL
     sim_copy %<>% run()
 
-    # Attach actual levels_grid_big
-    sim$internals$levels_grid_big <- levels_grid_big
-
     # Combine results/errors/warnings of original run and updated run
-    if (sim_copy$vars$run_state %in% c("run, no errors", "run, some errors")) {
-      if (!is.character(sim$results)) {
-        sim$results <- rbind(sim$results, sim_copy$results)
-      } else {
-        sim$results <- sim_copy$results
-      }
+    sim <- combine_original_with_update(
+      sim = sim,
+      results_new = sim_copy$results,
+      results_complex_new = sim_copy$results_complex,
+      errors_new = sim_copy$errors,
+      warnings_new = sim_copy$warnings
+    )
+
+    # Reset sim_uid_grid$to_run
+    sim$internals$sim_uid_grid$to_run <- F
+
+    # Set states
+    if (num_warn==0) { sim$warnings <- "No warnings" }
+    if (num_ok>0 && num_err==0) {
+      sim$errors <- "No errors"
+    } else if (num_err>0 && num_ok==0) {
+      sim$results <- "Errors detected in 100% of simulation replicates"
+    } else if (num_ok==0 && num_err==0) {
+      stop("An unknown error occurred (CODE 101)")
     }
-    if (sim_copy$vars$run_state %in% c("run, all errors", "run, some errors")) {
-      if (!is.character(sim$errors)) {
-        sim$errors <- rbind(sim$errors, sim_copy$errors)
-      } else {
-        sim$errors <- sim_copy$errors
-      }
-    }
-    if (!is.character(sim_copy$warnings)) {
-      if (!is.character(sim$warnings)) {
-        sim$warnings <- rbind(sim$warnings, sim_copy$warnings)
-      } else {
-        sim$warnings <- sim_copy$warnings
-      }
-    }
+
+    # Update run_state variable
+    sim$vars$run_state <- update_run_state(sim)
 
   }
 

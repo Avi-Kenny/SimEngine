@@ -113,6 +113,7 @@ test_that("set_script() throws error if sim has already been run", {
 ### set_levels() ###
 
 # non-list levels
+sim <- new_sim()
 sim %<>% set_levels(
   estimator = c("estimator_1", "estimator_2"),
   num_patients = c(50, 100, 200)

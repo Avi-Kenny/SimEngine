@@ -13,6 +13,7 @@ js_support <- function() {
     "name" = character(),
     "js_code" = character(),
     "developer" = character(),
+    "tid" = character(),
     "notes" = character(),
     stringsAsFactors = FALSE
   )
@@ -26,12 +27,14 @@ js_support <- function() {
     name = "Slurm workload manager",
     js_code = "slurm",
     developer = "SchedMD",
+    tid = "SLURM_ARRAY_TASK_ID",
     notes = ""
   ))
   df <- add(df, list(
     name = "Oracle Grid Engine",
     js_code = "ge",
     developer = "Oracle",
+    tid = "SGE_TASK_ID",
     notes = "Formerly known as 'Sun Grid Engine'"
   ))
 

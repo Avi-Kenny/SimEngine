@@ -82,7 +82,7 @@ set_config.sim_obj <- function(
   if (!missing(num_sim)) {
     handle_errors(num_sim, "is.numeric")
     sim$config[["num_sim"]] <- num_sim
-    sim$vars$num_sim_total <- nrow(sim$levels_grid)*num_sim
+    sim$vars$num_sim_total <- num_sim_total(sim)
   }
 
   if (!missing(parallel)) {
@@ -122,6 +122,12 @@ set_config.sim_obj <- function(
     sim$config[["batch_levels"]] <- batch_levels
     assign(x="batch_levels", value=batch_levels,
            envir=get(x="..batch_cache", envir=sim$vars$env))
+  }
+
+  if (!missing(num_sim) || !missing(n_cores) || !missing(batch_levels)) {
+    sim$levels_grid$batch_id <- update_batch_ids(sim)
+    sim$internals$sim_uid_grid <- update_sim_uid_grid(sim)
+    sim$vars$num_sim_total <- num_sim_total(sim)
   }
 
   set.seed(sim$config[["seed"]])

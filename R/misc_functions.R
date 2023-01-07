@@ -1,6 +1,8 @@
 # This section contains functions that are either intentionally not documented
 #   or that are not exported
 
+
+
 #' Print method for class \code{sim_obj}
 #' @noRd
 #' @export
@@ -139,17 +141,237 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
   )
 }
 
-#' Function for creating levels_grid_big
+
+
+#' Function for creating or updating sim_uid_grid
 #'
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
 #'     \code{\link{new_sim}}
-#' @importFrom rlang .data
-#' @importFrom stats runif
+#' @return sim_uid_grid dataframe
 #' @noRd
-create_levels_grid_big <- function(sim, update=F) {
+update_sim_uid_grid <- function(sim) {
 
-  # Add batch_id to levels_grid
-  if (!update && !is.na(sim$config$batch_levels[1])) {
+  # !!!!! Make sure this handles sims with no levels
+  # !!!!! Maybe take a second 'update' argument
+
+  sim_uid_grid_new <- expand.grid(list(
+    "level_id" = sim$levels_grid$level_id,
+    "rep_id" = c(1:sim$config$num_sim)
+  ))
+  sim_uid_grid_new %<>% dplyr::arrange(level_id, rep_id)
+  sim_uid_grid_new$active <- T
+
+  if (nrow(sim$internals$sim_uid_grid)==0) {
+
+    sim_uid_grid <- cbind(
+      sim_uid = c(1:nrow(sim_uid_grid_new)),
+      sim_uid_grid_new
+    )
+    sim_uid_grid$to_run <- T
+
+  } else {
+
+    # Mark removed sim_uids as active=F
+    sim_uid_grid <- sim$internals$sim_uid_grid
+    sim_uid_grid <- dplyr::left_join(
+      sim_uid_grid[,-which(names(sim_uid_grid)=="active")],
+      sim_uid_grid_new,
+      by = c("level_id", "rep_id")
+    )
+    sim_uid_grid$active[which(is.na(sim_uid_grid$active))] <- F
+
+    # Subset sim_uid_grid_new to new sim_uids
+    sim_uid_grid_new <- dplyr::anti_join(
+      sim_uid_grid_new,
+      sim_uid_grid[,c("level_id", "rep_id")],
+      by = c("level_id", "rep_id")
+    )
+    sim_uid_grid_new$to_run <- T
+
+    # Add new sim_uids to sim_uid_grid_new
+    max_uid <- max(sim_uid_grid$sim_uid)
+    sim_uid_grid_new <- cbind(
+      sim_uid = max_uid + c(1:nrow(sim_uid_grid_new)),
+      sim_uid_grid_new
+    )
+
+    # Remove old batch_id2 and core_id columns
+    sim_uid_grid$batch_id2 <- NULL
+    sim_uid_grid$core_id <- NULL
+
+    # Add sim_uid_grid_new to sim_uid_grid
+    sim_uid_grid_new %<>% dplyr::relocate(active, .after=to_run)
+    sim_uid_grid <- rbind(sim_uid_grid, sim_uid_grid_new)
+
+  }
+
+  sims_to_run <- which(sim_uid_grid$to_run)
+
+  if (sim$vars$run_state=="pre run") {
+
+    # Add batch_id2 column
+    sim_uid_grid <- dplyr::left_join(
+      sim_uid_grid,
+      sim$levels_grid[,c("level_id", "batch_id")],
+      by = "level_id"
+    )
+    sim_uid_grid %<>% dplyr::rename("batch_id2" = batch_id)
+    sim_uid_grid$batch_id2 <- as.integer(as.factor(paste0(
+      sim_uid_grid$batch_id2, "-", sim_uid_grid$rep_id
+    )))
+
+  } else {
+
+    # Create placeholder batch_id2 column (unused)
+    batch_id2 <- rep(0, nrow(sim_uid_grid))
+    batch_id2[which(sim_uid_grid$to_run)] <- c(1:sum(sim_uid_grid$to_run))
+
+  }
+
+  # Create new core_id column
+  nc <- sim$config$n_cores
+  if (is.na(nc)) { nc <- 1 }
+  sim_uid_grid$core_id <- 0
+  sim_uid_grid$core_id[sims_to_run] <-
+    ((sim_uid_grid$batch_id2[sims_to_run]-1)%%nc)+1
+
+  return(sim_uid_grid)
+
+}
+
+
+
+#' Calculate num_sim_total
+#'
+#' @param sim A simulation object of class \code{sim_obj}, usually created by
+#'     \code{\link{new_sim}}
+#' @return An integer representing how many replicates need to run
+#' @note This may be incorrect if keep_errors=F
+#' @noRd
+num_sim_total <- function(sim) {
+
+  return(sum(sim$internals$sim_uid_grid$to_run))
+
+  # if (sim$vars$run_state=="pre run") {
+  #   return(nrow(sim$levels_grid) * sim$config$num_sim)
+  # } else {
+  #   return(update_levels_grids(sim)$uids_to_run)
+  # }
+
+}
+
+
+
+#' Calculate the sim$vars$run_state variable
+#'
+#' @param sim A simulation object of class \code{sim_obj}, usually created by
+#'     \code{\link{new_sim}}
+#' @return A character string representing the "run state"
+#' @noRd
+combine_original_with_update <- function(
+  sim, results_new, results_complex_new, errors_new, warnings_new
+) {
+
+  if (!is.null(results_new)) {
+    if (!is.character(sim$results)) {
+      sim$results <- rbind(sim$results, results_new)
+    } else {
+      sim$results <- results_new
+    }
+    if (!is.na(sim$results_complex)) {
+      sim$results_complex <- c(sim$results_complex, results_complex_new)
+    } else {
+      sim$results_complex <- results_complex_new
+    }
+  }
+  if (!is.null(errors_new)) {
+    if (!is.character(sim$errors)) {
+      sim$errors <- rbind(sim$errors, errors_new)
+    } else {
+      sim$errors <- errors_new
+    }
+  }
+  if (!is.null(warnings_new)) {
+    if (!is.character(sim$warnings)) {
+      sim$warnings <- rbind(sim$warnings, warnings_new)
+    } else {
+      sim$warnings <- warnings_new
+    }
+  }
+
+  return(sim)
+
+}
+
+
+
+#' Calculate the sim$vars$run_state variable
+#'
+#' @param sim A simulation object of class \code{sim_obj}, usually created by
+#'     \code{\link{new_sim}}
+#' @return A character string representing the "run state"
+#' @noRd
+update_run_state <- function(sim) {
+
+  all_errors <- "Errors detected in 100% of simulation replicates"
+
+  if (sim$errors=="No errors") {
+    return("run, no errors")
+  } else if (sim$results==all_errors) {
+    return("run, all errors")
+  } else if (nrow(sim$results>0) && nrow(sim$errors>0)) {
+    return("run, some errors")
+  } else {
+    stop("An unknown error occurred (CODE 102)")
+  }
+
+}
+
+
+
+#' Delete results/warnings/errors corresponding to inactive sim_uids
+#'
+#' @param sim A simulation object of class \code{sim_obj}, usually created by
+#'     \code{\link{new_sim}}
+#' @return A simulation object with inactive results/warnings/errors deleted
+#' @noRd
+delete_inactive_rwe <- function(sim) {
+
+  inactive_uids <- dplyr::filter(sim$internals$sim_uid_grid, !active)$sim_uid
+
+  if (length(inactive_uids)>0) {
+    if (!is.character(sim$results)) {
+      sim$results %<>% dplyr::filter(!(sim_uid %in% inactive_uids))
+    }
+    if (!is.character(sim$errors)) {
+      sim$errors %<>% dplyr::filter(!(sim_uid %in% inactive_uids))
+    }
+    if (!is.character(sim$warnings)) {
+      sim$warnings %<>% dplyr::filter(!(sim_uid %in% inactive_uids))
+    }
+    for (sim_uid in inactive_uids) {
+      sim$results_complex[[paste0("sim_uid_",sim_uid)]] <- NULL
+    }
+  }
+
+  return(sim)
+
+}
+
+
+#' Update batch_ids
+#'
+#' @param sim A simulation object of class \code{sim_obj}, usually created by
+#'     \code{\link{new_sim}}
+#' @return A vector of batch_ids to add to sim$levels_grid
+#' @noRd
+update_batch_ids <- function(sim) {
+
+  # !!!!! Make sure this works with update=T
+
+  if (is.na(sim$config$batch_levels[1])) {
+    batch_ids <- c(1:nrow(sim$levels_grid))
+  } else {
     keys <- new.env()
     batch_ids <- rep(NA, nrow(sim$levels_grid))
     counter <- 1
@@ -165,49 +387,8 @@ create_levels_grid_big <- function(sim, update=F) {
         batch_ids[i] <- keys[[key]]
       }
     }
-    sim$levels_grid$batch_id <- batch_ids
-  } else {
-    sim$levels_grid$batch_id <- c(1:nrow(sim$levels_grid))
   }
 
-  # Create expanded levels grid, one row per replicate
-  levels_grid_big <- expand.grid(list(
-    "level_id" = sim$levels_grid$level_id,
-    "rep_id" = 1:sim$config$num_sim
-  ))
-  levels_grid_big <- dplyr::inner_join(
-    levels_grid_big,
-    sim$levels_grid,
-    by = "level_id"
-  )
-  levels_grid_big <- dplyr::arrange(levels_grid_big, .data$level_id,
-                                    .data$rep_id)
-
-  # Create sim_uid
-  names_2 <- names(levels_grid_big)
-  levels_grid_big <- cbind(1:nrow(levels_grid_big), levels_grid_big)
-  names(levels_grid_big) <- c("sim_uid", names_2)
-
-  # Update batch_id
-  levels_grid_big$batch_id <- as.integer(as.factor(paste0(
-    levels_grid_big$rep_id, "-", levels_grid_big$batch_id
-  )))
-
-  # Create core_id
-  nc <- sim$config$n_cores
-  # if (sim$config$parallel=="cluster" && is.na(nc)) {
-  #   levels_grid_big$core_id <- levels_grid_big$sim_uid
-  # } else {
-  levels_grid_big$core_id <- ((levels_grid_big$batch_id-1)%%nc)+1
-  # }
-
-  # Reorder columns
-  col_names <- names(levels_grid_big)
-  col_head <- c("sim_uid", "level_id", "rep_id", "core_id", "batch_id")
-  col_names <- col_names[!(col_names %in% col_head)]
-  col_order <- c(col_head, col_names)
-  levels_grid_big <- levels_grid_big[,col_order]
-
-  return(levels_grid_big)
+  return(batch_ids)
 
 }
