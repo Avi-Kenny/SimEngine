@@ -8,7 +8,7 @@ set_config(
   sim,
   num_sim = 1000,
   parallel = "none",
-  n_cores = parallel::detectCores() - 1,
+  n_cores = NA,
   packages = NULL,
   stop_at_error = FALSE,
   progress_bar = TRUE,

@@ -4,13 +4,13 @@
 \alias{batch}
 \title{Wrapper to run a block of code as part of a batch}
 \usage{
-batch(code, warn = T)
+batch(code)
 }
 \value{
 TO DO
 }
 \description{
-TO DO; note that you must create objects within batch(); do not change/delete existing objects
+TO DO
 }
 \examples{
 TO DO

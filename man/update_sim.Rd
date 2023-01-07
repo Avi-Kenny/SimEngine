@@ -4,7 +4,7 @@
 \alias{update_sim}
 \title{Update a simulation}
 \usage{
-update_sim(sim, keep_errors = T, keep_extra = F)
+update_sim(sim, keep_errors = T)
 }
 \arguments{
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by
@@ -14,12 +14,6 @@ function}
 \item{keep_errors}{logical (\code{TRUE} by default); if \code{TRUE}, do not
 try to re-run simulation reps that results in errors previously; if
 \code{FALSE}, attempt to run those reps again}
-
-\item{keep_extra}{logical (\code{FALSE} by default); if \code{TRUE}, keep
-previously run simulation reps even if they exceed the current
-\code{num_sim} in config or are from a level that has been dropped; if
-\code{FALSE}, drop excess reps (starting from the last rep for that
-particular simulation level)}
 }
 \value{
 The original simulation object with additional simulation replicates
@@ -41,10 +35,6 @@ This function updates a previously run simulation. After a
   potential level variables before initially running a simulation, even if
   some of them only contain a single level. This way, additional levels can
   be added later.}
-  \item {In general, if \code{num_sim} has been reduced prior to running
-  \code{update_sim}, it is best to use the default option
-  \code{keep_extra = FALSE}. Otherwise, some simulation levels will have more
-  replicates than others, which makes comparison difficult.}
 }
 }
 \examples{
