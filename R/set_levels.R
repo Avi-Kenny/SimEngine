@@ -169,7 +169,7 @@ set_levels.sim_obj <- function(sim, ..., .keep=NA) {
   }
 
   # Update batch_ids, sim_uid_grid, num_sim_total
-  sim$levels_grid$batch_id <- update_batch_ids(sim)
+  sim$internals$level_batch_map <- update_level_batch_map(sim)
   sim$internals$sim_uid_grid <- update_sim_uid_grid(sim)
   sim$vars$num_sim_total <- num_sim_total(sim)
 

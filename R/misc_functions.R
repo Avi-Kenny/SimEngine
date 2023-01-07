@@ -178,7 +178,13 @@ update_sim_uid_grid <- function(sim) {
       sim_uid_grid_new,
       by = c("level_id", "rep_id")
     )
-    sim_uid_grid$active[which(is.na(sim_uid_grid$active))] <- F
+    inds <- which(is.na(sim_uid_grid$active))
+    sim_uid_grid$active[inds] <- F
+    sim_uid_grid$to_run[inds] <- F
+
+    # Remove old batch_id and core_id columns
+    sim_uid_grid$batch_id <- NULL
+    sim_uid_grid$core_id <- NULL
 
     # Subset sim_uid_grid_new to new sim_uids
     sim_uid_grid_new <- dplyr::anti_join(
@@ -186,22 +192,23 @@ update_sim_uid_grid <- function(sim) {
       sim_uid_grid[,c("level_id", "rep_id")],
       by = c("level_id", "rep_id")
     )
-    sim_uid_grid_new$to_run <- T
 
-    # Add new sim_uids to sim_uid_grid_new
-    max_uid <- max(sim_uid_grid$sim_uid)
-    sim_uid_grid_new <- cbind(
-      sim_uid = max_uid + c(1:nrow(sim_uid_grid_new)),
-      sim_uid_grid_new
-    )
+    if (nrow(sim_uid_grid_new)>0) {
 
-    # Remove old batch_id2 and core_id columns
-    sim_uid_grid$batch_id2 <- NULL
-    sim_uid_grid$core_id <- NULL
+      sim_uid_grid_new$to_run <- T
 
-    # Add sim_uid_grid_new to sim_uid_grid
-    sim_uid_grid_new %<>% dplyr::relocate(active, .after=to_run)
-    sim_uid_grid <- rbind(sim_uid_grid, sim_uid_grid_new)
+      # Add new sim_uids to sim_uid_grid_new
+      max_uid <- max(sim_uid_grid$sim_uid)
+      sim_uid_grid_new <- cbind(
+        sim_uid = max_uid + c(1:nrow(sim_uid_grid_new)),
+        sim_uid_grid_new
+      )
+
+      # Add sim_uid_grid_new to sim_uid_grid
+      sim_uid_grid_new %<>% dplyr::relocate(active, .after=to_run)
+      sim_uid_grid <- rbind(sim_uid_grid, sim_uid_grid_new)
+
+    }
 
   }
 
@@ -209,22 +216,23 @@ update_sim_uid_grid <- function(sim) {
 
   if (sim$vars$run_state=="pre run") {
 
-    # Add batch_id2 column
+    # Add batch_id column
     sim_uid_grid <- dplyr::left_join(
       sim_uid_grid,
-      sim$levels_grid[,c("level_id", "batch_id")],
+      sim$internals$level_batch_map,
       by = "level_id"
     )
-    sim_uid_grid %<>% dplyr::rename("batch_id2" = batch_id)
-    sim_uid_grid$batch_id2 <- as.integer(as.factor(paste0(
-      sim_uid_grid$batch_id2, "-", sim_uid_grid$rep_id
+    sim_uid_grid$batch_id <- as.integer(as.factor(paste0(
+      sim_uid_grid$batch_id, "-", sim_uid_grid$rep_id
     )))
+    sim_uid_grid$batch_id_pre <- NULL
 
   } else {
 
-    # Create placeholder batch_id2 column (unused)
-    batch_id2 <- rep(0, nrow(sim_uid_grid))
-    batch_id2[which(sim_uid_grid$to_run)] <- c(1:sum(sim_uid_grid$to_run))
+    # Create placeholder/unused batch_id column
+    batch_id <- rep(0, nrow(sim_uid_grid))
+    batch_id[which(sim_uid_grid$to_run)] <- c(1:sum(sim_uid_grid$to_run))
+    sim_uid_grid$batch_id <- batch_id
 
   }
 
@@ -233,7 +241,13 @@ update_sim_uid_grid <- function(sim) {
   if (is.na(nc)) { nc <- 1 }
   sim_uid_grid$core_id <- 0
   sim_uid_grid$core_id[sims_to_run] <-
-    ((sim_uid_grid$batch_id2[sims_to_run]-1)%%nc)+1
+    ((sim_uid_grid$batch_id[sims_to_run]-1)%%nc)+1
+
+  # Make sure there are no reps with active==F and to_run==T
+  if (any(sim_uid_grid$to_run &
+          !sim_uid_grid$active)) {
+    stop("An unknown error occurred (CODE 103)")
+  }
 
   return(sim_uid_grid)
 
@@ -278,7 +292,7 @@ combine_original_with_update <- function(
     } else {
       sim$results <- results_new
     }
-    if (!is.na(sim$results_complex)) {
+    if (length(sim$results_complex)>0) {
       sim$results_complex <- c(sim$results_complex, results_complex_new)
     } else {
       sim$results_complex <- results_complex_new
@@ -313,16 +327,14 @@ combine_original_with_update <- function(
 #' @noRd
 update_run_state <- function(sim) {
 
-  all_errors <- "Errors detected in 100% of simulation replicates"
-
-  if (sim$errors=="No errors") {
+  if (is.character(sim$errors)) {
     return("run, no errors")
-  } else if (sim$results==all_errors) {
+  } else if (is.character(sim$results)) {
     return("run, all errors")
   } else if (nrow(sim$results>0) && nrow(sim$errors>0)) {
     return("run, some errors")
   } else {
-    stop("An unknown error occurred (CODE 102)")
+    stop("An unknown error occurred (CODE 105)")
   }
 
 }
@@ -359,21 +371,22 @@ delete_inactive_rwe <- function(sim) {
 }
 
 
-#' Update batch_ids
+#' Create or update level_batch_map association table
 #'
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
 #'     \code{\link{new_sim}}
-#' @return A vector of batch_ids to add to sim$levels_grid
+#' @return An association table containing columns level_id and batch_id_pre; to
+#'     add to sim$internals$level_batch_map
 #' @noRd
-update_batch_ids <- function(sim) {
+update_level_batch_map <- function(sim) {
 
   # !!!!! Make sure this works with update=T
 
   if (is.na(sim$config$batch_levels[1])) {
-    batch_ids <- c(1:nrow(sim$levels_grid))
+    batch_id_pre <- c(1:nrow(sim$levels_grid))
   } else {
     keys <- new.env()
-    batch_ids <- rep(NA, nrow(sim$levels_grid))
+    batch_id_pre <- rep(NA, nrow(sim$levels_grid))
     counter <- 1
     for (i in c(1:nrow(sim$levels_grid))) {
       key <- paste(unlist(lapply(sim$config$batch_levels, function(key) {
@@ -381,14 +394,17 @@ update_batch_ids <- function(sim) {
       })), collapse=";")
       if (is.null(keys[[key]])) {
         keys[[key]] <- counter
-        batch_ids[i] <- counter
+        batch_id_pre[i] <- counter
         counter <- counter + 1
       } else {
-        batch_ids[i] <- keys[[key]]
+        batch_id_pre[i] <- keys[[key]]
       }
     }
   }
 
-  return(batch_ids)
+  return(data.frame(
+    level_id = sim$levels_grid$level_id,
+    batch_id_pre = batch_id_pre
+  ))
 
 }

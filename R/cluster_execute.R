@@ -213,7 +213,6 @@ cluster_execute <- function(
 
       }
 
-
       # Save results/errors/warnings
       fmt <- paste0("%0", nchar(..sim$vars$num_sim_total), "d")
       if (..sim$vars$run_state %in% c("run, no errors", "run, some errors")) {
@@ -231,7 +230,7 @@ cluster_execute <- function(
                  sprintf(fmt, ..sim$internals$tid), ".rds")
         )
       } else {
-        stop("An unknown error occurred (CODE 103)")
+        stop("An unknown error occurred (CODE 104)")
       }
       if (!is.character(..sim$warnings)) {
         saveRDS(
@@ -268,20 +267,18 @@ cluster_execute <- function(
         if (substr(file,1,1)=="r") {
 
           r <- readRDS(paste0(..path_sim_res, "/", file))
-
           if (is.null(results_df)) {
             results_df <- r$results
           } else {
             results_df <- rbind(results_df, r$results)
           }
-          if (!is.na(r$results_complex[1])) {
+          if (length(r$results_complex)>0) {
             results_complex <- c(results_complex, r$results_complex)
           }
 
         } else if (substr(file,1,1)=="e") {
 
           e <- readRDS(paste0(..path_sim_res, "/", file))
-
           if (methods::is(e,"data.frame")) {
             if (is.null(errors_df)) {
               errors_df <- e
@@ -293,7 +290,6 @@ cluster_execute <- function(
         } else if (substr(file,1,1) == "w") {
 
           w <- readRDS(paste0(..path_sim_res, "/", file))
-
           if (methods::is(w,"data.frame")) {
             if (is.null(warnings_df)) {
               warnings_df <- w
@@ -301,9 +297,9 @@ cluster_execute <- function(
               warnings_df <- rbind(warnings_df, w)
             }
           }
+
         }
       }
-      if (identical(results_complex,list())) { results_complex <- NA }
 
       if (!update_switch) {
 
@@ -346,10 +342,8 @@ cluster_execute <- function(
       # Update run_state variable
       ..sim$vars$run_state <- update_run_state(..sim)
 
-      # Create updated levels_grids and uid vectors
-      # !!!!! Need to update this with new mechanisms
-      # g <- update_levels_grids(sim, keep_errors=keep_errors)
-      # ..sim$levels_grid <- g$levels_grid
+      # Reset sim_uid_grid$to_run
+      ..sim$internals$sim_uid_grid$to_run <- F
 
       # Delete individual results files and save simulation object
       # This is done before running the 'last' code so that the compiled

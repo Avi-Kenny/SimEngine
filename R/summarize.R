@@ -195,7 +195,7 @@ summarize.sim_obj <- function(sim, ...) {
   }
 
   # Parse code to display levels
-  if (is.null(sim$levels$`no_levels`)) {
+  if (is.null(sim$levels$no_levels)) {
     code_levels <- paste0("'",names_levels,"'=`",names_levels,"`[1],")
   } else {
     code_levels <- ""

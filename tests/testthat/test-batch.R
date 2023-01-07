@@ -125,9 +125,22 @@ run_and_test_cl <- function(which, cmplx=FALSE, n_cores, run_tests=T, ret=F) {
     })
 
     if (cmplx) {
+
+      uid_1 <- dplyr::filter(
+        sim$results, n==10 & mu==2 & est=="H" & rep_id==1
+      )$sim_uid
+      uid_2 <- dplyr::filter(
+        sim$results, n==10 & mu==2 & est=="E" & rep_id==1
+      )$sim_uid
+      uid_3 <- dplyr::filter(
+        sim$results, n==10 & mu==2 & est=="H" & rep_id==2
+      )$sim_uid
       test_that(paste("batch() operates correctly w complex data:", which), {
-        expect_equal(get_complex(sim,1)$mean_dat2, get_complex(sim,13)$mean_dat2)
-        expect_false(get_complex(sim,1)$mean_dat2==get_complex(sim,2)$mean_dat2)
+        expect_equal(get_complex(sim,uid_1)$mean_dat2,
+                     get_complex(sim,uid_2)$mean_dat2)
+        expect_false(
+          get_complex(sim,uid_1)$mean_dat2==get_complex(sim,uid_3)$mean_dat2
+        )
       })
     }
 
@@ -142,9 +155,9 @@ Sys.setenv(sim_run="")
 run_and_test_cl(which="09", cmplx=F, n_cores=NA)
 run_and_test_cl(which="10", cmplx=F, n_cores=1)
 run_and_test_cl(which="11", cmplx=F, n_cores=2)
-run_and_test_cl(which="09", cmplx=T, n_cores=NA)
-run_and_test_cl(which="10", cmplx=T, n_cores=1)
-run_and_test_cl(which="11", cmplx=T, n_cores=2)
+run_and_test_cl(which="12", cmplx=T, n_cores=NA)
+run_and_test_cl(which="13", cmplx=T, n_cores=1)
+run_and_test_cl(which="14", cmplx=T, n_cores=2)
 
 # Test set #3
 Sys.setenv(sim_run="first")
@@ -153,13 +166,11 @@ run_and_test_cl(which="", cmplx=F, n_cores=2, run_tests=F)
 Sys.setenv(sim_run="main")
 for (i in c(1:2)) {
   Sys.setenv(SLURM_ARRAY_TASK_ID=as.character(i))
-  suppressMessages({
-    run_and_test_cl(which="", cmplx=F, n_cores=2, run_tests=F)
-  })
+  run_and_test_cl(which="", cmplx=F, n_cores=2, run_tests=F)
 }
 Sys.setenv(sim_run="last")
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
-run_and_test_cl(which="12", cmplx=F, n_cores=2, run_tests=T)
+run_and_test_cl(which="15", cmplx=F, n_cores=2, run_tests=T)
 
 # Test set #4
 for (j in c(2,3,6)) {
@@ -169,13 +180,11 @@ for (j in c(2,3,6)) {
   Sys.setenv(sim_run="main")
   for (i in c(1:j)) {
     Sys.setenv(SLURM_ARRAY_TASK_ID=as.character(i))
-    suppressMessages({
-      run_and_test_cl(which="", cmplx=T, n_cores=2, run_tests=F)
-    })
+    run_and_test_cl(which="", cmplx=T, n_cores=2, run_tests=F)
   }
   Sys.setenv(sim_run="last")
   Sys.setenv(SLURM_ARRAY_TASK_ID="")
-  run_and_test_cl(which="13", cmplx=F, n_cores=2, run_tests=T)
+  run_and_test_cl(which="16", cmplx=F, n_cores=2, run_tests=T)
 }
 
 # Test set #5

@@ -58,8 +58,9 @@ new_sim <- function() {
     results = "Simulation has not been run yet.",
 
     # Container for complex-type simulation results; this will be a named list
-    #     if the simulation involves complex return types
-    results_complex = NA,
+    #     if the simulation involves complex return types with keys of the form
+    #     "sim_uid_123", where 123 is the sim_uid
+    results_complex = list(),
 
     # Container for simulation errors; this will be a dataframe if there is at
     #     least one error after running/updating the simulation
@@ -93,10 +94,13 @@ new_sim <- function() {
       #     - level_id: !!!!!
       #     - rep_id: !!!!!
       #     - to_run: !!!!!
-      #     - batch_id2: !!!!!
+      #     - batch_id: !!!!!
       #     - core_id: !!!!!
       #     - active: !!!!!
       sim_uid_grid = data.frame(),
+
+      # A dataframe with two columns mapping level_id to batch_id_pre
+      level_batch_map = data.frame(),
 
       # Task ID; used by cluster_execute()
       tid = NA,

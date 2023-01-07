@@ -125,7 +125,7 @@ set_config.sim_obj <- function(
   }
 
   if (!missing(num_sim) || !missing(n_cores) || !missing(batch_levels)) {
-    sim$levels_grid$batch_id <- update_batch_ids(sim)
+    sim$internals$level_batch_map <- update_level_batch_map(sim)
     sim$internals$sim_uid_grid <- update_sim_uid_grid(sim)
     sim$vars$num_sim_total <- num_sim_total(sim)
   }

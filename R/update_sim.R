@@ -71,7 +71,7 @@ update_sim.sim_obj <- function(sim, keep_errors=T) {
 
     # If on cluster, delete old results/errors/warnings
     sim$results <- NULL
-    sim$results_complex <- NA
+    sim$results_complex <- list()
     sim$errors <- NULL
     sim$warnings <- NULL
 
@@ -91,12 +91,13 @@ update_sim.sim_obj <- function(sim, keep_errors=T) {
     # Create and run a copy of the sim
     sim_copy <- sim
     sim_copy$results <- NULL
-    sim_copy$results_complex <- NA
+    sim_copy$results_complex <- list()
     sim_copy$errors <- NULL
     sim_copy$warnings <- NULL
     sim_copy %<>% run()
 
     # Combine results/errors/warnings of original run and updated run
+    # This also sets character states (e.g. sim$errors<-"No errors"), if needed
     sim <- combine_original_with_update(
       sim = sim,
       results_new = sim_copy$results,
@@ -107,16 +108,6 @@ update_sim.sim_obj <- function(sim, keep_errors=T) {
 
     # Reset sim_uid_grid$to_run
     sim$internals$sim_uid_grid$to_run <- F
-
-    # Set states
-    if (num_warn==0) { sim$warnings <- "No warnings" }
-    if (num_ok>0 && num_err==0) {
-      sim$errors <- "No errors"
-    } else if (num_err>0 && num_ok==0) {
-      sim$results <- "Errors detected in 100% of simulation replicates"
-    } else if (num_ok==0 && num_err==0) {
-      stop("An unknown error occurred (CODE 101)")
-    }
 
     # Update run_state variable
     sim$vars$run_state <- update_run_state(sim)

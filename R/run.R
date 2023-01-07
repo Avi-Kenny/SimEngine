@@ -36,6 +36,8 @@ run <- function(sim) {
 #' @export
 run.sim_obj <- function(sim) {
 
+  browser() # !!!!!
+
   sim$vars$start_time <- Sys.time()
 
   # Set up parallelization code
@@ -77,10 +79,6 @@ run.sim_obj <- function(sim) {
 
   }
 
-  if (!sim$internals$update_sim) {
-    sim$internals$num_batches <- max(sim$internals$sim_uid_grid$batch_id2)
-  }
-
   run_script <- function(core_id) {
 
     .core_id <- core_id
@@ -97,6 +95,9 @@ run.sim_obj <- function(sim) {
         sim$internals$sim_uid_grid, sim_uid==i
       )$level_id
       L <- as.list(dplyr::filter(sim$levels_grid, level_id==.level_id))
+      L$batch_id <- dplyr::filter(
+        sim$internals$sim_uid_grid, sim_uid==i
+      )$batch_id
       rm(.level_id)
       levs <- names(sim$levels)
       for (j in 1:length(levs)) {
@@ -168,12 +169,16 @@ run.sim_obj <- function(sim) {
   if (sim$config$parallel=="cluster") {
     core_ids <- sim$internals$tid
     if (core_ids>sim$config$n_cores) {
-      stop(paste0("This simulation has n_cores=", sim$config$n_cores,
-                  ", so this core will not be used."))
+      .run_error <- ""
+      warning(paste0("This simulation has n_cores=", sim$config$n_cores,
+                     ", so this core will not be used."))
     }
-    if (!sim$internals$update_sim && core_ids>sim$internals$num_batches) {
-      stop(paste0("This simulation only contains ", sim$internals$num_batches,
-                  " replicate batches, so this core will not be used."))
+    if (!sim$internals$update_sim) {
+      num_batches <- max(sim$internals$sim_uid_grid$batch_id)
+      if (core_ids>num_batches) {
+        warning(paste0("This simulation only contains ", num_batches,
+                       " replicate batches, so this core will not be used."))
+      }
     }
   } else {
     core_ids <- c(1:max(sim$internals$sim_uid_grid$core_id))
@@ -212,26 +217,7 @@ run.sim_obj <- function(sim) {
   # Generate completion message
   num_ok <- length(results_lists_ok)
   num_err <- length(results_lists_err)
-  pct_err <- round((100*num_err)/(num_err+num_ok),0)
   num_warn <- length(results_lists_warn)
-  pct_warn <- round((100*num_warn)/(num_err + num_ok),0)
-  if (pct_err==0 & pct_warn == 0) {
-    comp_msg <- "Done. No errors or warnings detected.\n"
-  } else if (pct_err > 0) {
-    comp_msg <- paste0(
-      "Done. Errors detected in ",
-      pct_err,
-      "% of simulation replicates. Warnings detected in ",
-      pct_warn,
-      "% of simulation replicates.\n"
-    )
-  } else {
-    comp_msg <- paste0(
-      "Done. No errors detected. Warnings detected in ",
-      pct_warn,
-      "% of simulation replicates.\n"
-    )
-  }
 
   # Helper function to add level variables to results/errors/warnings dataframes
   add_level_vars <- function(df) {
@@ -239,17 +225,20 @@ run.sim_obj <- function(sim) {
     # Add level_id
     df <- dplyr::inner_join(
       df,
-      sim$internals$sim_uid_grid[,c("sim_uid","level_id")],
+      sim$internals$sim_uid_grid[,c("sim_uid", "level_id", "rep_id")],
       by = "sim_uid"
     )
 
     # Add level variables
     df <- dplyr::inner_join(df, sim$levels_grid, by="level_id")
 
-    # Remove level_id, reorder columns, and return
-    df$level_id <- NULL
-    df$batch_id <- NULL
-    df %<>% dplyr::relocate(sim$internals$level_names, .after=sim_uid)
+    # Reorder columns and sort result
+    df %<>% dplyr::relocate(
+      c("level_id", "rep_id", sim$internals$level_names),
+      .after = sim_uid
+    )
+    df %<>% dplyr::arrange(level_id, rep_id)
+
     return(df)
 
   }
@@ -336,16 +325,14 @@ run.sim_obj <- function(sim) {
     stop("An unknown error occurred (CODE 101)")
   }
 
-  # Update run_state variable
+  # Update variables
   sim$vars$run_state <- update_run_state(sim)
-
-  message(comp_msg)
-
   sim$vars$end_time <- Sys.time()
   sim$vars$total_runtime <- as.numeric(
     difftime(sim$vars$end_time, sim$vars$start_time),
     units = "secs"
   )
+  sim$internals$sim_uid_grid$to_run <- F
 
   # Remove global L if it was created
   suppressWarnings( rm("L", envir=.GlobalEnv) )
@@ -354,6 +341,20 @@ run.sim_obj <- function(sim) {
   assign(x="..batch_cache", value=new.env(), envir=sim$vars$env)
   assign(x="batch_levels", value=NA,
          envir=get(x="..batch_cache", envir=sim$vars$env))
+
+  # Display completion message
+  pct_err <- round((100*num_err)/(num_err+num_ok),0)
+  pct_warn <- round((100*num_warn)/(num_err + num_ok),0)
+  if (pct_err==0 & pct_warn == 0) {
+    message("Done. No errors or warnings detected.\n")
+  } else if (pct_err > 0) {
+    message(paste0("Done. Errors detected in ", pct_err,
+                   "% of simulation replicates. Warnings detected in ",
+                   pct_warn, "% of simulation replicates.\n"))
+  } else {
+    message(paste0("Done. No errors detected. Warnings detected in ", pct_warn,
+                   "% of simulation replicates.\n"))
+  }
 
   return (sim)
 
