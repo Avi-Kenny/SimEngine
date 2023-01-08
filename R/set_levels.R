@@ -56,13 +56,12 @@ set_levels.sim_obj <- function(sim, ..., .keep=NA) {
     sim$levels <- list(...)
 
     # This flag denotes that set_levels has not previously been run
-    first_run <- is.na(sim$internals$level_names[1])
+    first_run <- as.logical(sim$internals$level_names[1]=="no_levels")
 
     if (!first_run) {
 
       # Disallow changing level variables
-      if (!identical(sort(sim$internals$level_names),
-                     sort(names(sim$levels)))) {
+      if (!identical(sort(sim$internals$level_names),sort(names(sim$levels)))) {
         stop(paste0("You cannot change the level variables after they are init",
                     "ially set"))
       }

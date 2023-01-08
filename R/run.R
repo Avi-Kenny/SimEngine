@@ -36,9 +36,12 @@ run <- function(sim) {
 #' @export
 run.sim_obj <- function(sim) {
 
-  browser() # !!!!!
-
   sim$vars$start_time <- Sys.time()
+
+  # This allows for update_on_cluster() to be run locally
+  if (sim$config$parallel=="cluster" && Sys.getenv("sim_run")=="") {
+    sim$config$parallel <- "none"
+  }
 
   # Set up parallelization code
   if (sim$config$parallel %in% c("inner", "outer")) {
@@ -81,23 +84,22 @@ run.sim_obj <- function(sim) {
 
   run_script <- function(core_id) {
 
+    # Get sim_uids corresponding to core_id
     .core_id <- core_id
-    sim_uids_to_run <- dplyr::filter(
-      sim$internals$sim_uid_grid, core_id==.core_id & to_run==T
-    )$sim_uid
+    ind0 <- which(sim$internals$sim_uid_grid$core_id==.core_id &
+                  sim$internals$sim_uid_grid$to_run==T)
+    sim_uids_to_run <- sim$internals$sim_uid_grid$sim_uid[ind0]
 
     res <- lapply(sim_uids_to_run, function(i) {
 
       ..start_time <- Sys.time()
 
       # Set up references to levels row (L)
-      .level_id <- dplyr::filter(
-        sim$internals$sim_uid_grid, sim_uid==i
-      )$level_id
-      L <- as.list(dplyr::filter(sim$levels_grid, level_id==.level_id))
-      L$batch_id <- dplyr::filter(
-        sim$internals$sim_uid_grid, sim_uid==i
-      )$batch_id
+      ind1 <- which(sim$internals$sim_uid_grid$sim_uid==i)
+      .level_id <- sim$internals$sim_uid_grid$level_id[ind1]
+      ind2 <- which(sim$levels_grid$level_id==.level_id)
+      L <- as.list(sim$levels_grid[ind2,])
+      L$batch_id <- sim$internals$sim_uid_grid$batch_id[ind1]
       rm(.level_id)
       levs <- names(sim$levels)
       for (j in 1:length(levs)) {
@@ -169,14 +171,13 @@ run.sim_obj <- function(sim) {
   if (sim$config$parallel=="cluster") {
     core_ids <- sim$internals$tid
     if (core_ids>sim$config$n_cores) {
-      .run_error <- ""
-      warning(paste0("This simulation has n_cores=", sim$config$n_cores,
+      stop(paste0("This simulation has n_cores=", sim$config$n_cores,
                      ", so this core will not be used."))
     }
     if (!sim$internals$update_sim) {
       num_batches <- max(sim$internals$sim_uid_grid$batch_id)
       if (core_ids>num_batches) {
-        warning(paste0("This simulation only contains ", num_batches,
+        stop(paste0("This simulation only contains ", num_batches,
                        " replicate batches, so this core will not be used."))
       }
     }

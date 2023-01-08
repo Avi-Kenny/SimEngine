@@ -50,7 +50,7 @@ new_sim <- function() {
     levels = list("no_levels"=TRUE),
 
     # Simulation level grid; see set_levels() docs
-    levels_grid = data.frame(level_id=1),
+    levels_grid = data.frame(level_id=1, no_levels=T),
 
     # Container for simulation results; this will be a dataframe if there is at
     #     least one successfully-run simulation replicate after running/updating
@@ -74,7 +74,7 @@ new_sim <- function() {
     internals = list(
 
       # Character vector of level names
-      level_names = NA,
+      level_names = c("no_levels"),
 
       # Boolean vector; stores whether level is a list (TRUE) or not (FALSE)
       levels_types = FALSE,
@@ -93,11 +93,12 @@ new_sim <- function() {
       #     - sim_uid: !!!!!
       #     - level_id: !!!!!
       #     - rep_id: !!!!!
+      #     - active: !!!!!
       #     - to_run: !!!!!
       #     - batch_id: !!!!!
       #     - core_id: !!!!!
-      #     - active: !!!!!
-      sim_uid_grid = data.frame(),
+      sim_uid_grid = data.frame(sim_uid=1, level_id=1, rep_id=1, active=T,
+                                to_run=T, batch_id=1, core_id=1),
 
       # A dataframe with two columns mapping level_id to batch_id_pre
       level_batch_map = data.frame(),
@@ -141,6 +142,10 @@ new_sim <- function() {
     # Simulation script; see set_script() docs
     script = NULL
   )
+
+  # Set flag denoting that sim_uid_grid is blank; this is checked by
+  #     update_sim_uid_grid
+  attr(..sim$internals$sim_uid_grid, "blank") <- T
 
   # Create batch_cache and set initial values; see batch() docs
   assign(x="..batch_cache", value=new.env(), envir=..sim$vars$env)

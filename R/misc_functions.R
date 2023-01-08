@@ -152,7 +152,6 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
 update_sim_uid_grid <- function(sim) {
 
   # !!!!! Make sure this handles sims with no levels
-  # !!!!! Maybe take a second 'update' argument
 
   sim_uid_grid_new <- expand.grid(list(
     "level_id" = sim$levels_grid$level_id,
@@ -161,7 +160,7 @@ update_sim_uid_grid <- function(sim) {
   sim_uid_grid_new %<>% dplyr::arrange(level_id, rep_id)
   sim_uid_grid_new$active <- T
 
-  if (nrow(sim$internals$sim_uid_grid)==0) {
+  if (attr(sim$internals$sim_uid_grid, "blank")) {
 
     sim_uid_grid <- cbind(
       sim_uid = c(1:nrow(sim_uid_grid_new)),
@@ -238,16 +237,22 @@ update_sim_uid_grid <- function(sim) {
 
   # Create new core_id column
   nc <- sim$config$n_cores
-  if (is.na(nc)) { nc <- 1 }
   sim_uid_grid$core_id <- 0
-  sim_uid_grid$core_id[sims_to_run] <-
-    ((sim_uid_grid$batch_id[sims_to_run]-1)%%nc)+1
+  if (is.na(nc) && Sys.getenv("sim_run")!="") {
+    sim_uid_grid$core_id[sims_to_run] <- c(1:length(sims_to_run))
+  } else {
+    if (is.na(nc)) { nc <- 1 }
+    sim_uid_grid$core_id[sims_to_run] <-
+      ((sim_uid_grid$batch_id[sims_to_run]-1)%%nc)+1
+  }
 
   # Make sure there are no reps with active==F and to_run==T
   if (any(sim_uid_grid$to_run &
           !sim_uid_grid$active)) {
     stop("An unknown error occurred (CODE 103)")
   }
+
+  attr(sim_uid_grid, "blank") <- F
 
   return(sim_uid_grid)
 

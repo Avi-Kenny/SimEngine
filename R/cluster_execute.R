@@ -33,11 +33,8 @@ cluster_execute <- function(
   if (Sys.getenv("sim_run")=="") {
 
     eval(first, envir=..env_calling)
-    # .add_objs(..env_calling, get(..sim_var, envir=..env_calling)$vars$env)
     eval(main, envir=..env_calling)
-    # .add_objs(..env_calling, get(..sim_var, envir=..env_calling)$vars$env)
     eval(last, envir=..env_calling)
-    # .add_objs(..env_calling, get(..sim_var, envir=..env_calling)$vars$env)
 
   } else {
 
@@ -210,6 +207,7 @@ cluster_execute <- function(
         for (pkg in ..sim$config$packages) { do.call("library", list(pkg)) }
         assign(..sim$internals$sim_var, ..sim, envir=..env_calling)
         eval(main, envir=..env_calling)
+        ..sim <- get(..sim$internals$sim_var, envir=..env_calling)
 
       }
 
