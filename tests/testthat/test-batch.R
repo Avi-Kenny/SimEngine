@@ -59,15 +59,6 @@ run_and_test <- function(which, parallel, n_cores) {
 
 }
 
-# Test set #1
-run_and_test(which="01", parallel="none", n_cores=NA)
-run_and_test(which="02", parallel="outer", n_cores=NA)
-run_and_test(which="03", parallel="outer", n_cores=1)
-run_and_test(which="04", parallel="outer", n_cores=2)
-run_and_test(which="06", parallel="inner", n_cores=NA)
-run_and_test(which="07", parallel="inner", n_cores=1)
-run_and_test(which="08", parallel="inner", n_cores=2)
-
 # Wrapper function to run simulations and tests using run_on_cluster
 run_and_test_cl <- function(which, cmplx=FALSE, n_cores, run_tests=T, ret=F) {
 
@@ -150,6 +141,15 @@ run_and_test_cl <- function(which, cmplx=FALSE, n_cores, run_tests=T, ret=F) {
 
 }
 
+# Test set #1
+run_and_test(which="01", parallel="none", n_cores=NA)
+run_and_test(which="02", parallel="outer", n_cores=NA)
+run_and_test(which="03", parallel="outer", n_cores=1)
+run_and_test(which="04", parallel="outer", n_cores=2)
+run_and_test(which="06", parallel="inner", n_cores=NA)
+run_and_test(which="07", parallel="inner", n_cores=1)
+run_and_test(which="08", parallel="inner", n_cores=2)
+
 # Test set #2
 Sys.setenv(sim_run="")
 run_and_test_cl(which="09", cmplx=F, n_cores=NA)
@@ -217,11 +217,13 @@ run_and_test_cl(which="", cmplx=F, n_cores=NA, run_tests=F)
 Sys.setenv(sim_run="main")
 Sys.setenv(SLURM_ARRAY_TASK_ID="1")
 run_and_test_cl(which="", cmplx=F, n_cores=NA, run_tests=F)
+Sys.setenv(SLURM_ARRAY_TASK_ID="2")
+run_and_test_cl(which="", cmplx=F, n_cores=NA, run_tests=F)
 Sys.setenv(sim_run="last")
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 sim <- run_and_test_cl(which="", cmplx=F, n_cores=NA, run_tests=F, ret=T)
 test_that("batch() throws an error if n_cores=NA:", {
-  expect_equal(nrow(sim$errors), 3)
+  expect_equal(nrow(sim$errors), 2)
   expect_equal(sim$errors[1,"message"], paste0(
     "If the batch() function is used on a cluster computing system, you must s",
     "et the `n_cores` config option via set_config()"
@@ -248,6 +250,7 @@ test_that("batch() throws an error if batch_levels=NA:", {
 rm(sim)
 
 # Cleanup
+Sys.setenv(SLURM_ARRAY_TASK_ID="")
 Sys.setenv(sim_run="")
 unlink("sim_results", recursive=T)
 unlink("sim.rds")

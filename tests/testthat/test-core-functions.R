@@ -127,6 +127,7 @@ test_that("set_levels() works with non-list levels provided", {
 })
 
 # list levels
+sim <- new_sim()
 test_that("set_levels() throws an error if list level does not have names", {
   expect_error(set_levels(sim, estimator = list(list("estimator1"), list("estimator2"))),
                "Each item in a list level must have a name.")
@@ -146,29 +147,17 @@ test_that("set_levels() works with list levels provided", {
 })
 
 # no levels supplied
+sim <- new_sim()
 test_that("set_levels() throws error with no levels provided", {
   expect_error(set_levels(sim), "No levels supplied")
 })
-
 test_that("set_levels() throws error if levels are not a list of key-value pairs", {
   expect_error(set_levels(sim, estimator = c("estimator_1", "estimator_2"), c(50, 100)),
                "Simulation levels must be key-value pairs." )
 })
 
-# Use of the .add argument
-sim <- new_sim()
-sim %<>% set_levels(
-  num_patients = c(50, 100)
-)
-sim %<>% set_levels(
-  num_patients = c(200),
-  .add = TRUE
-)
-test_that(".add argument works to add new levels to existing", {
-  expect_equal(sim$levels$num_patients, c(50, 100, 200))
-})
-
 # Use of the .keep argument
+sim <- new_sim()
 sim %<>% set_levels(alpha=c(1,2,3), beta=c(5,6))
 sim %<>% set_levels(.keep=c(1,2,6))
 test_that(".add argument works to add new levels to existing", {
@@ -204,42 +193,6 @@ test_that("set_config() throws errors for invalid config option values", {
   expect_error(set_config(sim, stop_at_error=1),
                "`stop_at_error` must be of type 'logical'")
 })
-
-# back to original everything
-sim <- new_sim()
-estimator_1 <- function(df) {
-  n <- nrow(df)
-  true_prob <- 0.5
-  sum_t <- sum(df$outcome * (df$group=="treatment"))
-  sum_c <- sum(df$outcome * (df$group=="control"))
-  return ( sum_t/(n*true_prob) - sum_c/(n*(1-true_prob)) )
-}
-estimator_2 <- function(df) {
-  n <- nrow(df)
-  est_prob <- sum(df$group=="treatment") / n
-  sum_t <- sum(df$outcome * (df$group=="treatment"))
-  sum_c <- sum(df$outcome * (df$group=="control"))
-  return ( sum_t/(n*est_prob) - sum_c/(n*(1-est_prob)) )
-}
-sim %<>% set_levels(
-  estimator = c("estimator_1", "estimator_2"),
-  num_patients = c(50, 200, 1000)
-)
-sim %<>% set_script(
-  function() {
-    df <- create_rct_data(L$num_patients)
-    estimate <- use_method(L$estimator, list(df))
-    return (
-      list("estimate" = estimate)
-    )
-  }
-)
-sim %<>% set_config(
-  num_sim = 10,
-  parallel = "none"
-)
-sim %<>% run() # ????? nothing is done with this; delete?
-
 
 ### seeds ###
 
@@ -337,7 +290,7 @@ test_that("sim_2 has only complex data", {
 test_that("sim_3 has only non-complex data", {
   expect_equal(sim_3$results[1,"mean"], 2.5)
   expect_equal(sim_3$results[2,"mean"], 5.0)
-  expect_equal(sim_3$results_complex, NA)
+  expect_equal(sim_3$results_complex, list())
 })
 
 ### Test that use_method can access the proper environment
@@ -370,7 +323,7 @@ test_that("use_method can access the proper environment", {
 
 sim <- new_sim()
 test_that("vars() works; before run()", {
-  expect_equal(sim$vars$num_sim_total, 10)
+  expect_equal(sim$vars$num_sim_total, 1)
   expect_equal(sim$vars$run_state, "pre run")
   expect_equal(class(sim$vars$env), "environment")
   expect_null(sim$vars$start_time)

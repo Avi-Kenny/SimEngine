@@ -205,6 +205,6 @@ sim %<>% set_script(function() {
 sim %<>% run()
 test_that("Correct handling of updated levels", {
   expect_error(sim %<>% set_levels(n=c(10,1000), est=c("M","V"), hey=2),
-               paste0("Updating a simulation cannot include new level variable",
-                      "s, only new levels."))
+               paste0("You cannot change the level variables after they are in",
+                      "itially set"))
 })
