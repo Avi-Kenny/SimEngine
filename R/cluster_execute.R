@@ -181,7 +181,7 @@ cluster_execute <- function(
                      "supported job schedulers, run js_support()"))
         }
 
-        tid_var <- dplyr::filter(js_support(), js_code==..cfg$js)$tid
+        tid_var <- js_support()[which(js_support()$js_code==..cfg$js),"tid"]
 
       }
 
@@ -220,15 +220,14 @@ cluster_execute <- function(
           paste0(..path_sim_res, "/r_",
                  sprintf(fmt, ..sim$internals$tid), ".rds")
         )
-      } else if (..sim$vars$run_state %in% c("run, all errors",
+      }
+      if (..sim$vars$run_state %in% c("run, all errors",
                                              "run, some errors")) {
         saveRDS(
           ..sim$errors,
           paste0(..path_sim_res, "/e_",
                  sprintf(fmt, ..sim$internals$tid), ".rds")
         )
-      } else {
-        stop("An unknown error occurred (CODE 104)")
       }
       if (!is.character(..sim$warnings)) {
         saveRDS(
