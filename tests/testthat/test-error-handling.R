@@ -24,7 +24,7 @@ test_that("run() behaves correctly; no errors", {
   expect_equal(sim$errors, "No errors")
   expect_equal(sim$warnings, "No warnings")
   expect_type(sim$results, "list")
-  expect_equal(length(sim$results), 5)
+  expect_equal(length(sim$results), 6)
   expect_equal(nrow(sim$results), 100)
   expect_equal(sim$results$sim_uid[1:5], c(1:5))
   expect_equal(sim$results$level_id[1:5], rep(1,5))
@@ -59,8 +59,8 @@ test_that("run() behaves correctly; no errors and some warnings", {
   expect_equal(sim$errors, "No errors")
   expect_type(sim$results, "list")
   expect_type(sim$warnings, "list")
-  expect_equal(length(sim$results), 5)
-  expect_equal(length(sim$warnings), 5)
+  expect_equal(length(sim$results), 6)
+  expect_equal(length(sim$warnings), 6)
   expect_equal(nrow(sim$results), 100)
   expect_equal(nrow(sim$warnings), 100)
   expect_equal(sim$results$sim_uid[1:5], c(1:5))
@@ -155,25 +155,17 @@ sim %<>% set_config(
   stop_at_error = TRUE
 )
 
+# Can't run a sim twice
+sim <- new_sim()
+sim %<>% set_script(function() { return(list(x=1)) })
+sim %<>% run()
+test_that("Can't run a simulation twice", {
+  expect_error(run(sim), paste0("This simulation has already been run; use upd",
+                                "ate_sim\\(\\) to add or remove replicates"))
+})
+
 # !!!!! For some reason, this test works when run manually but doesn't work
 #       when run with SHFT+CTRL+T
 # test_that("stop_at_error config option works", {
 #   expect_error(run(sim), "Stop_at_error test triggered.")
 # })
-
-
-# # too many cores requested
-#
-# sim <- new_sim()
-#
-# sim %<>% set_script(
-#   function() {
-#     return (list("x"=1))
-#   }
-# )
-#
-# sim %<>% set_config(
-#   num_sim = 100,
-#   parallel = "inner",
-#   n_cores = 1000
-# )

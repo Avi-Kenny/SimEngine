@@ -1,13 +1,24 @@
 ---
 layout: page
 title: run_on_cluster 
-nav_order: 5 
+nav_order: 6 
 permalink: /function-reference/run_on_cluster/
 parent: Function reference
 ---
 
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
 
-<table width="100%" summary="page for run_on_cluster {SimEngine}"><tr><td>run_on_cluster {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table style="width: 100%;"><tr><td>run_on_cluster {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Framework for running simulations on a cluster computing system</h2>
 
@@ -28,15 +39,14 @@ for an overview of how cluster parallelization works in <span class="pkg">SimEng
 
 <h3>Usage</h3>
 
-```R
-run_on_cluster(first, main, last, cluster_config)
-```
+```R<code class='language-R'>run_on_cluster(first, main, last, cluster_config)
+</span>```
 
 
 <h3>Arguments</h3>
 
-<table summary="R argblock">
-<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>first</span></td>
+<table>
+<tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>first</span></td>
 <td>
 <p>Code to run at the start of a simulation. This should be a block
 of code enclosed by curly braces  that that creates a simulation
@@ -44,7 +54,7 @@ object. Put everything you need in the simulation object, since global
 variables declared in this block will not be available when the 'main'
 and 'last' code blocks run.</p>
 </td></tr>
-<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>main</span></td>
+<tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>main</span></td>
 <td>
 <p>Code that will run for every simulation replicate. This should be
 a block of code enclosed by curly braces  that includes a call to
@@ -52,14 +62,14 @@ a block of code enclosed by curly braces  that includes a call to
 object you created in the 'first' code block, but any changes made here
 to the simulation object will not be saved.</p>
 </td></tr>
-<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>last</span></td>
+<tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>last</span></td>
 <td>
 <p>Code that will run after all simulation replicates have been run.
 This should be a block of code enclosed by curly braces  that takes
 your simulation object (which at this point will contain your results)
 and do something with it, such as display your results on a graph.</p>
 </td></tr>
-<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>cluster_config</span></td>
+<tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>cluster_config</span></td>
 <td>
 <p>A list of configuration options. You must specify
 either <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>js</span> (the job scheduler you are using) or <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>tid_var</span> (the
@@ -77,8 +87,7 @@ code).</p>
 
 <h3>Examples</h3>
 
-```R
-## Not run: 
+```R<code class='language-R'>## Not run: 
 # The following is a toy simulation that could be run on a cluster computing
 # environment. It runs 10 replicates of 2 simulation levels as 20 separate
 # cluster jobs, and then summarizes the results. This function is designed to
@@ -123,6 +132,7 @@ run_on_cluster(
 # qsub -v sim_run='last' -hold_jid 102 run_sim.sh
 
 ## End(Not run)
-```
+</span>```
 
 <hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.1.0 ]</div>
+</div>

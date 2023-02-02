@@ -98,7 +98,10 @@ sim <- readRDS("sim.rds")
 
 test_that("run_on_cluster() 'last' section works", {
   expect_equal(dir.exists("sim_results"), FALSE)
-  expect_equal(sim$results$sum, c(6,6))
+  expect_equal(sim$results$sum[1],
+               sim$results$alpha[1] + sim$results$beta[1])
+  expect_equal(sim$results$sum[2],
+               sim$results$alpha[2] + sim$results$beta[2])
   expect_equal(sim$errors, "No errors")
   expect_equal(sim$config$num_sim, 2)
   # expect_equal(grepl("level_id alpha", output, fixed=TRUE), TRUE)
@@ -142,7 +145,7 @@ test_that("Correct behavior if 'first' fails", {
     "shell commands are correct and properly sequenced."
   ))
 })
-unlink("sim_results", recursive = TRUE)
+unlink("sim_results", recursive=T)
 Sys.setenv(sim_run="")
 
 # Simulate running locally and on cluster with complex return data
@@ -173,7 +176,10 @@ run_c(cmplx=TRUE)
 sim <- readRDS("sim.rds")
 test_that("run_on_cluster() works with complex data", {
   expect_equal(dir.exists("sim_results"), FALSE)
-  expect_equal(sim$results$sum, c(6,6))
+  expect_equal(sim$results$sum[1],
+               sim$results$alpha[1] + sim$results$beta[1])
+  expect_equal(sim$results$sum[2],
+               sim$results$alpha[2] + sim$results$beta[2])
   expect_equal(sim$errors, "No errors")
   expect_equal(sim$config$num_sim, 2)
   expect_equal(length(sim$results_complex), 2)
@@ -233,19 +239,16 @@ run_c()
 sim <- readRDS("sim.rds")
 
 test_that("run_on_cluster() 'last' section works", {
-  expect_equal(sim$results$sum, c(6,6))
+  expect_equal(sim$results$sum[1],
+               sim$results$alpha[1] + sim$results$beta[1])
+  expect_equal(sim$results$sum[2],
+               sim$results$alpha[2] + sim$results$beta[2])
   expect_equal(sim$warnings$message, rep("This is a test warning.", 2))
   expect_equal(sim$errors, "No errors")
 })
 Sys.setenv(sim_run="")
 unlink("sim.rds")
 rm(sim)
-
-
-
-
-
-
 
 
 
@@ -411,6 +414,10 @@ test_that("Simulation ran and all objects were accessible (cluster 1)", {
   expect_equal(sim3$results[1,"y"], 2)
   expect_equal(sim3$results[1,"z"], 4)
 })
+
+# Cleanup
+Sys.sleep(0.3)
+Sys.setenv(SLURM_ARRAY_TASK_ID="")
 Sys.setenv(sim_run="")
 rm(sim3)
 unlink("sim.rds")

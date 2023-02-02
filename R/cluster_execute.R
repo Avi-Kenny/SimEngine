@@ -2,106 +2,39 @@
 #'
 #' @noRd
 cluster_execute <- function(
-  first, main, last, cluster_config, keep_errors=T, keep_extra=F,
-  update_switch=F
+  first, main, last, cluster_config, keep_errors=T, update_switch=F
 ) {
 
   # Capture current working directory and reset it on function exit
   ..oldwd <- getwd()
   on.exit(setwd(..oldwd))
 
-  # error handle invalid options
+  # Error handling
   handle_errors(keep_errors, "is.boolean")
-  handle_errors(keep_extra, "is.boolean")
-  handle_errors(update_switch, "is.boolean")
 
-  # Rename arguments to avoid potential naming conflicts with contents of
-  #   first/main/last blocks
-  ..first <- first
-  ..main <- main
-  ..last <- last
+  # Alias cluster_configvariable
   ..cfg <- cluster_config
-  rm(first)
-  rm(main)
-  rm(last)
   rm(cluster_config)
 
-  # Create a new environment to evaluate code blocks within and get a reference
-  # to the calling environment
-  ..env_cl <- new.env()
+  # Helper function to add objects in calling envir to the sim_obj envir
+  .add_objs <- function(..env_calling, env_sim) {
+    for (obj_name in ls(..env_calling, all.names=T)) {
+      obj <- get(x=obj_name, envir=..env_calling)
+      if (!methods::is(obj,"sim_obj") && obj_name!="L") {
+        assign(x=obj_name, value=obj, envir=env_sim)
+      }
+    }
+  }
+
+  # Get a reference to the calling environment
   ..env_calling <- parent.frame(n=2)
 
   # Run all code locally if simulation is not being run on cluster
-  # !!!!! TO-DO make sure this works for update_switch = TRUE
   if (Sys.getenv("sim_run")=="") {
 
-    # Run code (`first` block)
-    eval(..first, envir=..env_cl)
-
-    # Extract the simulation object variable name
-    ..count <- 0
-    ..sim_var <- NA
-    for (obj_name in ls(..env_cl)) {
-      if (methods::is(get(x=obj_name, envir=..env_cl), "sim_obj")) {
-        ..sim_var <- obj_name
-        ..count <- ..count + 1
-      }
-    }
-    if (is.na(..sim_var)) {
-      stop("A simulation object must be created in the `first` block")
-    }
-    if (..count>1) {
-      stop(paste("Multiple simulation objects were detected; only one may be",
-                 "created in the `first` block"))
-    }
-    rm(..count)
-
-    # Add objects in the calling environment to the simulation object
-    # !!!!! Functionize this later
-    for (obj_name in ls(..env_calling)) {
-      obj <- get(x=obj_name, envir=..env_calling)
-      if (!methods::is(obj,"sim_obj") && obj_name!="L") {
-        assign(x=obj_name, value=obj,
-               envir=get(..sim_var, envir=..env_cl)$vars$env)
-      }
-    }
-
-    # Save a copy of simulation object to the parent environment
-    assign(x = ..sim_var,
-           value = get(..sim_var, envir=..env_cl),
-           envir = ..env_calling)
-
-    # Run code locally (`main` and `last` blocks)
-    eval(..main, envir=..env_cl)
-
-    # Add objects in the calling environment to the simulation object
-    # !!!!! Functionize this later
-    for (obj_name in ls(..env_calling)) {
-      obj <- get(x=obj_name, envir=..env_calling)
-      if (!methods::is(obj,"sim_obj") && obj_name!="L") {
-        assign(x=obj_name, value=obj,
-               envir=get(..sim_var, envir=..env_cl)$vars$env)
-      }
-    }
-
-    assign(x = ..sim_var,
-           value = get(..sim_var, envir=..env_cl),
-           envir = ..env_calling)
-    eval(..last, envir=..env_cl)
-
-    # Add objects in the calling environment to the simulation object
-    # !!!!! Functionize this later
-    for (obj_name in ls(..env_calling)) {
-      obj <- get(x=obj_name, envir=..env_calling)
-      if (!methods::is(obj,"sim_obj") && obj_name!="L") {
-        assign(x=obj_name, value=obj,
-               envir=get(..sim_var, envir=..env_cl)$vars$env)
-      }
-    }
-
-    assign(x = ..sim_var,
-           value = get(..sim_var, envir=..env_cl),
-           envir = ..env_calling)
+    eval(first, envir=..env_calling)
+    eval(main, envir=..env_calling)
+    eval(last, envir=..env_calling)
 
   } else {
 
@@ -120,12 +53,12 @@ cluster_execute <- function(
   # FIRST: Run 'first' code or return existing simulation object
   if (Sys.getenv("sim_run")=="first") {
 
-    # Check that cfg$dir is a valid directory
+    # Test whether cfg$dir is a valid directory
     if (!is.null(..cfg$dir) && !dir.exists(..cfg$dir)) {
       stop(paste("Directory", ..cfg$dir, "does not exist."))
     }
 
-    # Error handling: test to see that we can write to cfg$dir
+    # Test whether we can write to cfg$dir
     ..test_file <- paste0(..path_sim_obj, '.test')
     tryCatch(
       expr = { saveRDS(list(a=123,b=456), file=..test_file) },
@@ -134,7 +67,7 @@ cluster_execute <- function(
       }
     )
 
-    # Error handling: test to see that we can read from cfg$dir
+    # Test whether we can read from cfg$dir
     tryCatch(
       expr = { x <- readRDS(file=..test_file) },
       error = function(e) {
@@ -142,7 +75,7 @@ cluster_execute <- function(
       }
     )
 
-    # Error handling: test to see that we can delete from cfg$dir
+    # Test whether we can delete from cfg$dir
     tryCatch(
       expr = { unlink(..test_file) },
       error = function(e) {
@@ -159,22 +92,22 @@ cluster_execute <- function(
     # Create directory to store simulation results
     dir.create(..path_sim_res)
 
-    # Run 'first' code
+    # Run code (`first` block)
     ..start_time <- Sys.time()
-    eval(..first, envir=..env_cl)
+    eval(first, envir=..env_calling)
 
     # Extract the simulation object variable name
     ..count <- 0
     ..sim_var <- NA
-    for (obj_name in ls(..env_cl)) {
-      if (methods::is(get(x=obj_name, envir=..env_cl),"sim_obj")) {
+    for (obj_name in ls(..env_calling, all.names=T)) {
+      if (methods::is(get(x=obj_name, envir=..env_calling), "sim_obj")) {
         ..sim_var <- obj_name
         ..count <- ..count + 1
       }
     }
     if (is.na(..sim_var)) {
       if (update_switch) {
-        stop("A simulation object must be read in the `first` block")
+        stop("A simulation object must be loaded in the `first` block")
       } else {
         stop("A simulation object must be created in the `first` block")
       }
@@ -187,16 +120,8 @@ cluster_execute <- function(
     rm(..count)
 
     # Get reference to simulation object
-    ..sim <- get(..sim_var, envir=..env_cl)
-
-    # Add objects in the calling environment to the simulation object
-    # !!!!! Functionize this later
-    for (obj_name in ls(..env_calling)) {
-      obj <- get(x=obj_name, envir=..env_calling)
-      if (!methods::is(obj,"sim_obj") && obj_name!="L") {
-        assign(x=obj_name, value=obj, envir=..sim$vars$env)
-      }
-    }
+    ..sim <- get(..sim_var, envir=..env_calling)
+    .add_objs(..env_calling, ..sim$vars$env)
 
     # Save simulation object
     ..sim$internals$sim_var <- ..sim_var
@@ -221,7 +146,7 @@ cluster_execute <- function(
 
     handle_errors(..sim, "is.sim_obj")
 
-    # Create hidden variable reference to simulation environment
+    # Create hidden variable references
     ..e <- .GlobalEnv
     assign(x="..env", value=..sim$vars$env, envir=..e)
 
@@ -230,10 +155,10 @@ cluster_execute <- function(
   # MAIN: run simulation replicate and save results/errors
   if (Sys.getenv("sim_run")=="main") {
 
-    # if there are error files in the results directory and stop_at_error==TRUE,
-    # skip this rep
-    err_reps <- list.files(path = ..path_sim_res, pattern = "e_*")
-    if (!(length(err_reps) > 0 & ..sim$config$stop_at_error)) {
+    # If there are error files in the results directory and stop_at_error==T,
+    #     skip this rep
+    err_reps <- list.files(path=..path_sim_res, pattern="e_*")
+    if (!(length(err_reps)>0 && ..sim$config$stop_at_error)) {
 
       # Error handling: tid_var and js
       if (is.null(..cfg$tid_var) && is.null(..cfg$js)) {
@@ -256,12 +181,8 @@ cluster_execute <- function(
                      "supported job schedulers, run js_support()"))
         }
 
-        tid_var <- dplyr::case_when(
-          # !!!!! Create an internal R object that stores this info and also
-          # stores the dataframe that js_support() currently manually parses
-          ..cfg$js=="slurm" ~ "SLURM_ARRAY_TASK_ID",
-          ..cfg$js=="ge" ~ "SGE_TASK_ID"
-        )
+        tid_var <- js_support()[which(js_support()$js_code==..cfg$js),"tid"]
+
       }
 
       tid <- as.numeric(Sys.getenv(tid_var))
@@ -272,49 +193,36 @@ cluster_execute <- function(
       if (!is.na(add_to_tid)) { tid <- tid + add_to_tid }
 
       if (tid<1 || tid>..sim$vars$num_sim_total) {
+
         stop(paste(
           "Task ID is invalid; must be an integer between 1 and",
           ..sim$vars$num_sim_total
         ))
+
       } else {
-        # For updating, need to add number of previously run sims
-        #     (num_sim_cuml)
-        if (update_switch) { tid <- tid + ..sim$internals$num_sim_cuml }
 
+        # Assign tid, load packages, and run 'main' code
         ..sim$internals$tid <- tid
-        rm(tid)
-        rm(add_to_tid)
+        rm(tid, add_to_tid)
         for (pkg in ..sim$config$packages) { do.call("library", list(pkg)) }
-        assign(..sim$internals$sim_var, ..sim, envir=..env_cl)
-
-        # Run 'main' code
-        eval(..main, envir=..env_cl)
-        ..sim <- get(..sim$internals$sim_var, envir=..env_cl)
-
-        # Add objects in the calling environment to the simulation object
-        # !!!!! Functionize this later
-        for (obj_name in ls(..env_calling)) {
-          obj <- get(x=obj_name, envir=..env_calling)
-          if (!methods::is(obj,"sim_obj") && obj_name!="L") {
-            assign(x=obj_name, value=obj, envir=..sim$vars$env)
-          }
-        }
+        assign(..sim$internals$sim_var, ..sim, envir=..env_calling)
+        eval(main, envir=..env_calling)
+        ..sim <- get(..sim$internals$sim_var, envir=..env_calling)
 
       }
 
-      # Parse results filename and save
+      # Save results/errors/warnings
       fmt <- paste0("%0", nchar(..sim$vars$num_sim_total), "d")
-
-      if (..sim$vars$run_state=="run, no errors") {
+      if (..sim$vars$run_state %in% c("run, no errors", "run, some errors")) {
         saveRDS(
-          list(
-            "results" = ..sim$results,
-            "results_complex" = ..sim$results_complex
-          ),
+          list("results" = ..sim$results,
+               "results_complex" = ..sim$results_complex),
           paste0(..path_sim_res, "/r_",
                  sprintf(fmt, ..sim$internals$tid), ".rds")
         )
-      } else if (..sim$vars$run_state=="run, all errors") {
+      }
+      if (..sim$vars$run_state %in% c("run, all errors",
+                                             "run, some errors")) {
         saveRDS(
           ..sim$errors,
           paste0(..path_sim_res, "/e_",
@@ -328,173 +236,116 @@ cluster_execute <- function(
                  sprintf(fmt, ..sim$internals$tid), ".rds")
         )
       }
+
     }
   }
 
   # LAST: merge results/errors into simulation object, run 'last' code, and save
   if (Sys.getenv("sim_run")=="last") {
 
-    # if there are error files in the results directory and stop_at_error==TRUE
-    # skip this rep
-    err_reps <- list.files(path = ..path_sim_res, pattern = "e_*")
-    if (length(err_reps) > 0 & ..sim$config$stop_at_error) {
+    # If there are error files in the results directory and stop_at_error==TRUE,
+    #     skip this rep
+    err_reps <- list.files(path=..path_sim_res, pattern="e_*")
+    if (length(err_reps)>0 & ..sim$config$stop_at_error) {
+
       unlink(paste0(..path_sim_res, "/r_*"))
+
     } else {
+
       # Process result/error files
       files <- dir(paste0(..path_sim_res))
       results_df <- NULL
       results_complex <- list()
       errors_df <- NULL
       warnings_df <- NULL
-      num_new <- 0
+
       for (file in files) {
 
         if (substr(file,1,1)=="r") {
 
           r <- readRDS(paste0(..path_sim_res, "/", file))
-
           if (is.null(results_df)) {
             results_df <- r$results
           } else {
-            results_df[nrow(results_df)+1,] <- r$results
+            results_df <- rbind(results_df, r$results)
           }
-
-          if (!is.na(r$results_complex)) {
-            results_complex[[length(results_complex)+1]] <-
-              r$results_complex[[1]]
+          if (length(r$results_complex)>0) {
+            results_complex <- c(results_complex, r$results_complex)
           }
-
-          num_new <- num_new + 1
 
         } else if (substr(file,1,1)=="e") {
 
           e <- readRDS(paste0(..path_sim_res, "/", file))
-
           if (methods::is(e,"data.frame")) {
             if (is.null(errors_df)) {
               errors_df <- e
             } else {
-              errors_df[nrow(errors_df)+1,] <- e
+              errors_df <- rbind(errors_df, e)
             }
           }
 
-          num_new <- num_new + 1
-
         } else if (substr(file,1,1) == "w") {
-          w <- readRDS(paste0(..path_sim_res, "/", file))
 
+          w <- readRDS(paste0(..path_sim_res, "/", file))
           if (methods::is(w,"data.frame")) {
             if (is.null(warnings_df)) {
               warnings_df <- w
             } else {
-              warnings_df[nrow(warnings_df)+1,] <- w
+              warnings_df <- rbind(warnings_df, w)
             }
           }
+
         }
       }
 
-      if (identical(results_complex,list())) { results_complex <- NA }
+      if (!update_switch) {
 
-      if (update_switch) {
-        # combine results and errors with existing results and errors
-        if (!is.character(..sim$results)) {
-          results_df <- rbind(..sim$results, results_df)
-          results_df <- results_df[order(results_df$sim_uid),]
-        }
-        if (!is.na(results_complex)) {
-          results_complex <- c(..sim$results_complex, results_complex)
-        }
-        if (!is.character(..sim$errors)) {
-          errors_df <- rbind(..sim$errors, errors_df)
-          errors_df <- errors_df[order(errors_df$sim_uid),]
-        }
-        if (!is.character(..sim$warnings)) {
-          warnings_df <- rbind(..sim$warnings, warnings_df)
-          warnings_df <- warnings_df[order(warnings_df$sim_uid),]
-        }
-      }
-
-      # Add results/errors to simulation object
-      # Note: this code is somewhat redundant with the end of SimEngine::run
-      if (!is.null(warnings_df)) {
-        ..sim$warnings <- warnings_df
-      } else {
-        ..sim$warnings <- "No warnings"
-      }
-      if (!is.null(results_df) && !is.null(errors_df)) {
-        ..sim$results <- results_df
         ..sim$results_complex <- results_complex
-        ..sim$errors <- errors_df
-        ..sim$vars$run_state <- "run, some errors"
-      } else if (!is.null(results_df)) {
-        ..sim$results <- results_df
-        ..sim$results_complex <- results_complex
-        ..sim$errors <- "No errors"
-        ..sim$vars$run_state <- "run, no errors"
-      } else if (!is.null(errors_df)) {
-        ..sim$results <- "Errors detected in 100% of simulation replicates"
-        ..sim$errors <- errors_df
-        ..sim$vars$run_state <- "run, all errors"
+
+        if (!is.null(results_df)) {
+          ..sim$results <- results_df
+        } else {
+          ..sim$results <- "Errors detected in 100% of simulation replicates"
+        }
+
+        if (!is.null(errors_df)) {
+          ..sim$errors <- errors_df
+        } else {
+          ..sim$errors <- "No errors"
+        }
+
+        if (!is.null(warnings_df)) {
+          ..sim$warnings <- warnings_df
+        } else {
+          ..sim$warnings <- "No warnings"
+        }
+
       } else {
-        stop("An unknown error occurred (CODE 102)")
-      }
 
-      levels_grid_big <- create_levels_grid_big(..sim)
+        # Remove inactive results/errors/warnings
+        ..sim <- delete_inactive_rwe(..sim)
 
-      if (update_switch) {
-        prev_levels_grid_big <- ..sim$internals$levels_grid_big
-
-        # Get levels / sim_uids that were previously run but are no longer
-        # needed
-        extra_run <- dplyr::anti_join(
-          prev_levels_grid_big[,-which(names(prev_levels_grid_big) %in%
-                                         c("sim_uid", "level_id")),drop=F],
-          levels_grid_big[,-which(names(levels_grid_big) %in%
-                                    c("sim_uid", "level_id")),drop=F],
-          by=names(prev_levels_grid_big[,-which(names(prev_levels_grid_big) %in%
-                                                  c("sim_uid", "level_id")),
-                                        drop=F])
+        # Combine results/errors/warnings of original run and updated run
+        ..sim <- combine_original_with_update(
+          sim = ..sim,
+          results_new = results_df,
+          results_complex_new = results_complex,
+          errors_new = errors_df,
+          warnings_new = warnings_df
         )
 
-        # If keep_extra = FALSE, remove excess runs (from results, errors, and
-        # warnings)
-        if (!keep_extra & nrow(extra_run) > 0) {
-
-          if (!is.character(..sim$results)) {
-            ..sim$results <- dplyr::anti_join(..sim$results,
-                                              extra_run,
-                                              by = names(extra_run))
-          }
-          if (!is.character(..sim$errors)) {
-            ..sim$errors <- dplyr::anti_join(..sim$errors,
-                                             extra_run,
-                                             by = names(extra_run))
-          }
-          if (!is.character(..sim$warnings)) {
-            ..sim$warnings <- dplyr::anti_join(..sim$warnings,
-                                               extra_run,
-                                               by = names(extra_run))
-          }
-        }
       }
 
-      # record levels and num_sim that were run
-      ..sim$internals$levels_prev <- ..sim$internals$levels_shallow
-      ..sim$internals$num_sim_prev <- ..sim$config$num_sim
-      ..sim$internals$levels_grid_big <- levels_grid_big
+      # Update run_state variable
+      ..sim$vars$run_state <- update_run_state(..sim)
 
-      if (update_switch) {
-        ..sim$internals$update_sim <- TRUE
-        ..sim$internals$num_sim_cuml <- ..sim$internals$num_sim_cuml + num_new
-      } else {
-        ..sim$internals$num_sim_cuml <- ..sim$internals$num_sim_cuml +
-          ..sim$vars$num_sim_total
-      }
+      # Reset sim_uid_grid$to_run
+      ..sim$internals$sim_uid_grid$to_run <- F
 
       # Delete individual results files and save simulation object
       # This is done before running the 'last' code so that the compiled
-      #   simulation object is saved even if there's an error with the 'last'
-      #   code
+      #     simulation object is saved even if there's an error with the 'last'
+      #     code
       # Note: the for-loop helps get around a bug related to file-locking
       for (i in 1:5) {
         x <- unlink(..path_sim_res, recursive=TRUE)
@@ -504,21 +355,14 @@ cluster_execute <- function(
       saveRDS(..sim, file=..path_sim_obj)
 
       # Run 'last' code
+      assign(..sim$internals$sim_var, ..sim, envir=..env_calling)
       for (pkg in ..sim$config$packages) { do.call("library", list(pkg)) }
-      assign(..sim$internals$sim_var, ..sim, envir=..env_cl)
-      eval(..last, envir=..env_cl)
-      ..sim <- get(..sim$internals$sim_var, envir=..env_cl)
+      eval(last, envir=..env_calling)
+      ..sim <- get(..sim$internals$sim_var, envir=..env_calling)
+      .add_objs(..env_calling, ..sim$vars$env)
 
-      # Add objects in the calling environment to the simulation object
-      # !!!!! Functionize this later
-      for (obj_name in ls(..env_calling)) {
-        obj <- get(x=obj_name, envir=..env_calling)
-        if (!methods::is(obj,"sim_obj") && obj_name!="L") {
-          assign(x=obj_name, value=obj, envir=..sim$vars$env)
-        }
-      }
-
-      # Save final simulation object (a second time, if 'last' code had no errors)
+      # Save final simulation object (a second time, if 'last' code had no
+      #     errors)
       ..sim$vars$end_time <- Sys.time()
       ..sim$vars$total_runtime <- as.numeric(
         difftime(..sim$vars$end_time, ..sim$vars$start_time),

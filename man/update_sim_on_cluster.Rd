@@ -4,14 +4,7 @@
 \alias{update_sim_on_cluster}
 \title{Framework for updating simulations on a cluster computing system}
 \usage{
-update_sim_on_cluster(
-  first,
-  main,
-  last,
-  cluster_config,
-  keep_errors = T,
-  keep_extra = F
-)
+update_sim_on_cluster(first, main, last, cluster_config, keep_errors = T)
 }
 \arguments{
 \item{first}{Code to run before executing additional simulation replicates. For example,
@@ -45,12 +38,6 @@ code).}
 \item{keep_errors}{logical (\code{TRUE} by default); if \code{TRUE}, do not
 try to re-run simulation reps that results in errors previously; if
 \code{FALSE}, attempt to run those reps again}
-
-\item{keep_extra}{logical (\code{FALSE} by default); if \code{TRUE}, keep
-previously run simulation reps even if they exceed the current
-\code{num_sim} in config or are from a level that has been dropped; if
-\code{FALSE}, drop excess reps (starting from the last rep for that
-particular simulation level)}
 }
 \description{
 This function serves a scaffold for updating a previously-run in

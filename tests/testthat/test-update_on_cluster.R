@@ -57,7 +57,7 @@ update_c2 <- function(ret=FALSE) {
 
 }
 
-# run everything
+# Run everything
 Sys.setenv(sim_run="first")
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 run_c()
@@ -94,7 +94,6 @@ update_c()
 sim <- readRDS("sim.rds")
 test_that("update_sim_on_cluster() 'first' section works", {
   expect_equal(class(sim), "sim_obj")
-  #expect_equal(sim$results, "Simulation has not been run yet.")
   expect_equal(sim$config$num_sim, 2)
   expect_equal(sim$levels$alpha, c(2,3))
   expect_equal(sim$levels$beta, c(4,5))
@@ -121,13 +120,13 @@ Sys.setenv(SLURM_ARRAY_TASK_ID="6")
 update_c()
 
 test_that("run_on_cluster() 'main' section works", {
+  expect_equal(file.exists("sim_results/r_1.rds"), TRUE)
+  expect_equal(file.exists("sim_results/r_2.rds"), TRUE)
   expect_equal(file.exists("sim_results/r_3.rds"), TRUE)
   expect_equal(file.exists("sim_results/r_4.rds"), TRUE)
   expect_equal(file.exists("sim_results/r_5.rds"), TRUE)
   expect_equal(file.exists("sim_results/r_6.rds"), TRUE)
-  expect_equal(file.exists("sim_results/r_7.rds"), TRUE)
-  expect_equal(file.exists("sim_results/r_8.rds"), TRUE)
-  expect_equal(file.exists("sim_results/r_2.rds"), FALSE)
+  expect_equal(file.exists("sim_results/r_7.rds"), FALSE)
 })
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 
@@ -142,17 +141,9 @@ test_that("update_sim_on_cluster() 'last' section works", {
   expect_equal(sim$results$sum, c(6,7,6,7,7,7,8,8))
   expect_equal(sim$errors, "No errors")
   expect_equal(sim$config$num_sim, 2)
-  expect_equal(sim$internals$num_sim_cuml, 8)
-  expect_true(sim$internals$update_sim)
-  expect_equal(sim$internals$levels_prev$beta, c(4,5))
-  # expect_equal(grepl("level_id alpha", output, fixed=TRUE), TRUE)
 })
 Sys.setenv(sim_run="")
 rm(sim)
-# rm(output)
-
-
-
 
 
 
@@ -176,9 +167,9 @@ Sys.setenv(SLURM_ARRAY_TASK_ID="2")
 update_c2()
 
 test_that("run_on_cluster() 'main' section works", {
-  expect_equal(file.exists("sim_results/r_9.rds"), TRUE)
-  expect_equal(file.exists("sim_results/r_10.rds"), TRUE)
-  expect_equal(file.exists("sim_results/r_2.rds"), FALSE)
+  expect_equal(file.exists("sim_results/r_1.rds"), TRUE)
+  expect_equal(file.exists("sim_results/r_2.rds"), TRUE)
+  expect_equal(file.exists("sim_results/r_3.rds"), FALSE)
 })
 Sys.setenv(SLURM_ARRAY_TASK_ID="")
 
@@ -194,10 +185,6 @@ test_that("update_sim_on_cluster() 'last' section works", {
   expect_equal(sim$results$alpha, c(2,3,2,3,4,4))
   expect_equal(sim$errors, "No errors")
   expect_equal(sim$config$num_sim, 1)
-  expect_equal(sim$internals$num_sim_cuml, 10)
-  expect_true(sim$internals$update_sim)
-  expect_equal(sim$internals$levels_prev$alpha, c(2,3,4))
-  # expect_equal(grepl("level_id alpha", output, fixed=TRUE), TRUE)
 })
 Sys.setenv(sim_run="")
 rm(sim)
@@ -218,30 +205,10 @@ test_that("Correct behavior if 'first' fails", {
   expect_error(update_c3(), "Error in 'first'")
   expect_equal(file.exists("sim.rds"), TRUE)
 })
-# !!!!! what to do if error in first block?
 
-# Sys.setenv(sim_run="main")
-# Sys.setenv(SLURM_ARRAY_TASK_ID="1")
-# test_that("Correct behavior if 'first' fails", {
-#   expect_equal(file.exists("sim.rds"), TRUE)
-#   expect_error(update_c3(), paste(
-#     "Simulation object was not found. Make sure your 'first' function is not",
-#     "producing errors and returns a valid simulation object, and that your",
-#     "shell commands are properly sequenced."
-#   ))
-# })
-# Sys.setenv(sim_run="last")
-# Sys.setenv(SLURM_ARRAY_TASK_ID="")
-# test_that("Correct behavior if 'first' fails", {
-#   expect_equal(file.exists("sim.rds"), TRUE)
-#   expect_error(update_c3(), paste(
-#     "Simulation object was not found. Make sure your 'first' function is not",
-#     "producing errors and returns a valid simulation object, and that your",
-#     "shell commands are properly sequenced."
-#   ))
-# })
-Sys.sleep(1)
-x <- unlink("sim_results", recursive = TRUE)
-print(x)
+# Cleanup
+Sys.sleep(0.3)
+Sys.setenv(SLURM_ARRAY_TASK_ID="")
 Sys.setenv(sim_run="")
+unlink("sim_results", recursive=T)
 unlink("sim.rds")

@@ -1,13 +1,24 @@
 ---
 layout: page
 title: run 
-nav_order: 4 
+nav_order: 5 
 permalink: /function-reference/run/
 parent: Function reference
 ---
 
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
 
-<table width="100%" summary="page for run {SimEngine}"><tr><td>run {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table style="width: 100%;"><tr><td>run {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Run the simulation</h2>
 
@@ -22,25 +33,17 @@ called.
 
 <h3>Usage</h3>
 
-```R
-run(sim, sim_uids = NA)
-```
+```R<code class='language-R'>run(sim)
+</span>```
 
 
 <h3>Arguments</h3>
 
-<table summary="R argblock">
-<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span></td>
+<table>
+<tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span></td>
 <td>
 <p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span>, usually created by
 <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>new_sim</span></p>
-</td></tr>
-<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_uids</span></td>
-<td>
-<p>Advanced; a vector of <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_uid</span> values, each of which
-uniquely identifies a simulation replicate. This will normally be
-omitted. If this is specified, only the simulation replicates with a
-matching <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_uid</span> will be run.</p>
 </td></tr>
 </table>
 
@@ -56,8 +59,7 @@ errors are stored in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,C
 
 <h3>Examples</h3>
 
-```R
-# The following is a toy example of a simulation, illustrating the use of
+```R<code class='language-R'># The following is a toy example of a simulation, illustrating the use of
 # the run function.
 sim <- new_sim()
 create_data <- function(n) { rpois(n, lambda=5) }
@@ -74,6 +76,7 @@ sim %<>% set_script(function() {
 })
 sim %<>% run()
 sim$results %>% print()
-```
+</span>```
 
 <hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.1.0 ]</div>
+</div>

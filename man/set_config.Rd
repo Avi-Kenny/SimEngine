@@ -8,11 +8,13 @@ set_config(
   sim,
   num_sim = 1000,
   parallel = "none",
-  n_cores = parallel::detectCores() - 1,
+  n_cores = NA,
   packages = NULL,
-  stop_at_error = F,
-  progress_bar = T,
-  seed = NA
+  stop_at_error = FALSE,
+  progress_bar = TRUE,
+  seed = as.integer(1e+09 * runif(1)),
+  batch_levels = NA,
+  return_batch_id = FALSE
 )
 }
 \arguments{
@@ -32,17 +34,16 @@ overview of how parallelization works in \pkg{SimEngine}. This option
 will be ignored (and automatically set to "cluster") if the simulation is
 being run on a cluster computing system.}
 
-\item{n_cores}{An integer; determines the number of CPUs on which the simulation
-will run if using parallelization. Defaults to one fewer than the number of
-available CPUs on the current host.}
+\item{n_cores}{An integer; determines the number of cores on which the
+simulation will run if using parallelization. Defaults to one fewer than
+the number of available cores.}
 
 \item{packages}{A character vector of packages to load and attach}
 
-\item{stop_at_error}{A Boolean. If set to TRUE, the simulation will
-stop if it encounters an error in any single replicate Useful for
-debugging.}
+\item{stop_at_error}{Boolean. If set to TRUE, the simulation will stop if it
+encounters an error in any single replicate Useful for debugging.}
 
-\item{progress_bar}{A Boolean. If set to FALSE, the progress bar that is
+\item{progress_bar}{Boolean. If set to FALSE, the progress bar that is
 normally displayed while the simulation is running is suppressed.}
 
 \item{seed}{An integer; seeds allow for reproducible simulation results. If a
@@ -51,6 +52,16 @@ same seed will lead to identical results (under normal circumstances). If
 a seed was not set in advance by the user, \pkg{SimEngine} will set a
 random seed, which can later be retrieved using the \code{\link{vars}}
 function. See details for further info.}
+
+\item{batch_levels}{Either NULL or a character vector. If the
+\code{\link{batch}} function is being used within the simulation script,
+this should contain the names of the simulation levels that are used
+within the \code{\link{batch}} function code block. If no simulation
+levels are used within the \code{\link{batch}} function code block,
+specify NULL. See the documentation for the \code{\link{batch}} function.}
+
+\item{return_batch_id}{Boolean. If set to TRUE, the batch_id will be included
+as part of the simulation results}
 }
 \value{
 The original simulation object with a modified configuration
@@ -74,7 +85,7 @@ This function sets configuration options for the simulation. If
   \code{\link{run}} is called.}
   \item{Even if seeds are used, not all code will be reproducible. For
   example, a simulation that involves getting the current date/time with
-  \code{Sys.time()} or dynamically retrieving external data may produce
+  \code{Sys.time} or dynamically retrieving external data may produce
   different results on different runs.}
 }
 }

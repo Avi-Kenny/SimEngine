@@ -5,7 +5,7 @@
 #'     manually.
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
 #'     \code{\link{new_sim}}
-#' @param var If this argument is omitted, \code{vars()} will return a list
+#' @param var If this argument is omitted, \code{vars} will return a list
 #'     containing all available internal variables. If this argument is
 #'     provided, it should equal one of the following character strings:
 #'     \itemize{
