@@ -50,7 +50,7 @@ update_sim <- function(sim, keep_errors=T) {
 update_sim.sim_obj <- function(sim, keep_errors=T) {
 
   # Error handling
-  if (sim$vars$run_state == "pre run") {
+  if (sim$vars$run_state=="pre run") {
     stop("Simulation has not been run yet.")
   }
   handle_errors(keep_errors, "is.boolean")
@@ -82,11 +82,10 @@ update_sim.sim_obj <- function(sim, keep_errors=T) {
 
   }
 
-  # Set update flags
-  sim$internals$update_sim <- TRUE
-  assign(x="..flag_batch_update", value=T, envir=sim$vars$env)
-
   if (sum(sim$internals$sim_uid_grid$to_run)>0) {
+
+    # Set flag that disallows adding replicates if batch() is used
+    assign(x="..flag_batch_update", value=T, envir=sim$vars$env)
 
     # Create and run a copy of the sim
     sim_copy <- sim
@@ -94,6 +93,7 @@ update_sim.sim_obj <- function(sim, keep_errors=T) {
     sim_copy$results_complex <- list()
     sim_copy$errors <- NULL
     sim_copy$warnings <- NULL
+    sim_copy$internals$update_sim <- T
     sim_copy %<>% run()
 
     # Combine results/errors/warnings of original run and updated run

@@ -128,7 +128,7 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
     },
 
     "is.na" = {
-      if (is.na(obj)) {
+      if (!is.null(obj) && is.na(obj)) {
         if (is.na(msg)) {
           msg <- paste0("`",name,"` must not be NA")
         }
@@ -150,8 +150,6 @@ handle_errors <- function(obj, err, name=NA, other=NA, msg=NA) {
 #' @return sim_uid_grid dataframe
 #' @noRd
 update_sim_uid_grid <- function(sim) {
-
-  # !!!!! Make sure this handles sims with no levels
 
   sim_uid_grid_new <- expand.grid(list(
     "level_id" = sim$levels_grid$level_id,
@@ -354,17 +352,25 @@ update_run_state <- function(sim) {
 #' @noRd
 delete_inactive_rwe <- function(sim) {
 
-  inactive_uids <- dplyr::filter(sim$internals$sim_uid_grid, !active)$sim_uid
+  inactive_uids <- sim$internals$sim_uid_grid$sim_uid[
+    which(!sim$internals$sim_uid_grid$active)
+  ]
 
   if (length(inactive_uids)>0) {
     if (!is.character(sim$results)) {
-      sim$results %<>% dplyr::filter(!(sim_uid %in% inactive_uids))
+      sim$results <- sim$results[
+        which(!(sim$results$sim_uid %in% inactive_uids)),
+      ]
     }
     if (!is.character(sim$errors)) {
-      sim$errors %<>% dplyr::filter(!(sim_uid %in% inactive_uids))
+      sim$errors <- sim$errors[
+        which(!(sim$errors$sim_uid %in% inactive_uids)),
+      ]
     }
     if (!is.character(sim$warnings)) {
-      sim$warnings %<>% dplyr::filter(!(sim_uid %in% inactive_uids))
+      sim$warnings <- sim$warnings[
+        which(!(sim$warnings$sim_uid %in% inactive_uids)),
+      ]
     }
     for (sim_uid in inactive_uids) {
       sim$results_complex[[paste0("sim_uid_",sim_uid)]] <- NULL
@@ -376,6 +382,7 @@ delete_inactive_rwe <- function(sim) {
 }
 
 
+
 #' Create or update level_batch_map association table
 #'
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
@@ -385,10 +392,10 @@ delete_inactive_rwe <- function(sim) {
 #' @noRd
 update_level_batch_map <- function(sim) {
 
-  # !!!!! Make sure this works with update=T
-
-  if (is.na(sim$config$batch_levels[1])) {
+  if (!is.null(sim$config$batch_levels) && is.na(sim$config$batch_levels[1])) {
     batch_id_pre <- c(1:nrow(sim$levels_grid))
+  } else if (is.null(sim$config$batch_levels)) {
+    batch_id_pre <- rep(1,nrow(sim$levels_grid))
   } else {
     keys <- new.env()
     batch_id_pre <- rep(NA, nrow(sim$levels_grid))

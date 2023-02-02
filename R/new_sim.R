@@ -43,7 +43,8 @@ new_sim <- function() {
       stop_at_error = FALSE,
       seed = ..seed,
       progress_bar = TRUE,
-      batch_levels = NA
+      batch_levels = NA,
+      return_batch_id = F
     ),
 
     # Simulation levels; see set_levels() docs
@@ -88,17 +89,18 @@ new_sim <- function() {
       levels_grid_historical = data.frame(level_id=1),
 
       # A dataframe created and updated by the update_sim_uid_grid() function,
-      #     in which the row represents the sim_uid; this contains all variables
-      #     that must be mapped to sim_uid, including:
-      #     - sim_uid: !!!!!
-      #     - level_id: !!!!!
-      #     - rep_id: !!!!!
-      #     - active: !!!!!
-      #     - to_run: !!!!!
-      #     - batch_id: !!!!!
-      #     - core_id: !!!!!
-      sim_uid_grid = data.frame(sim_uid=1, level_id=1, rep_id=1, active=T,
-                                to_run=T, batch_id=1, core_id=1),
+      #     which stores information about individual simulation replicates
+      sim_uid_grid = data.frame(
+        sim_uid = 1,  # Unique identifier for a single simulation replicate
+        level_id = 1, # The corresponding level_id (maps to sim$levels_grid)
+        rep_id = 1,   # Replicate identifier (within a level)
+        active = T,   # If F, this replicate has been removed, via set_levels()
+                      #     or set_config()
+        to_run = T,   # If T, this replicate has not yet been run
+        batch_id = 1, # Identifier for a replicate batch; see batch()
+        core_id = 1   # Replicates with to_run==T and a common core_id will be
+                      #     run on a single core
+      ),
 
       # A dataframe with two columns mapping level_id to batch_id_pre
       level_batch_map = data.frame(),
@@ -110,8 +112,9 @@ new_sim <- function() {
       #     by cluster_execute()
       sim_var = "",
 
-      # A flag set by update_sim() and checked by run() that denotes whether the
-      #     simulation is currently being updated
+      # A flag temporarily set by update_sim() and checked by run() that denotes
+      #     whether the simulation is currently being updated; this reverts back
+      #     to FALSE when the update is done
       update_sim = FALSE,
 
       # Stores a reference to the environment in which new_sim() is called
@@ -135,7 +138,11 @@ new_sim <- function() {
       num_sim_total = 1,
 
       # A character string representing the "run state" of the simulation
-      run_state = "pre run"
+      run_state = "pre run",
+
+      # Results of a call to sessionInfo(); this is updated by set_config()
+      #     after packages are loaded
+      session_info = sessionInfo()
 
     ),
 

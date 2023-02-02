@@ -45,13 +45,7 @@ get_complex.sim_obj <- function(sim, sim_uid) {
     stop("100% of simulations had errors.")
   }
   handle_errors(sim_uid, "is.numeric")
-  # handle_errors(sim_uid, "is.in", other=sim$results$sim_uid, # !!!!! add error handling for sim_uid
-  #               msg="sim_uid not found in results")
 
-  if (length(sim_uid==1)) {
-    return (sim$results_complex[[paste0("sim_uid_",sim_uid)]])
-  } else {
-    # !!!!! TO DO: options for sim_uid=NA or sim_uid=c(1,2) ?????
-  }
+  return (sim$results_complex[[paste0("sim_uid_",sim_uid)]])
 
 }

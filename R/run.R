@@ -36,6 +36,11 @@ run <- function(sim) {
 #' @export
 run.sim_obj <- function(sim) {
 
+  if (sim$vars$run_state!="pre run" && !sim$internals$update_sim) {
+    stop(paste0("This simulation has already been run; use update_sim() to add",
+                " or remove replicates"))
+  }
+
   sim$vars$start_time <- Sys.time()
 
   # This allows for update_on_cluster() to be run locally
@@ -221,12 +226,14 @@ run.sim_obj <- function(sim) {
   num_warn <- length(results_lists_warn)
 
   # Helper function to add level variables to results/errors/warnings dataframes
-  add_level_vars <- function(df) {
+  add_level_vars <- function(df, return_batch_id) {
 
-    # Add level_id
+    # Add level_id (and possibly batch_id)
+    sim_uid_grid_vars <- c("sim_uid", "level_id", "rep_id")
+    if (return_batch_id) { sim_uid_grid_vars[4] <- "batch_id" }
     df <- dplyr::inner_join(
       df,
-      sim$internals$sim_uid_grid[,c("sim_uid", "level_id", "rep_id")],
+      sim$internals$sim_uid_grid[,sim_uid_grid_vars],
       by = "sim_uid"
     )
 
@@ -235,7 +242,8 @@ run.sim_obj <- function(sim) {
 
     # Reorder columns and sort result
     df %<>% dplyr::relocate(
-      c("level_id", "rep_id", sim$internals$level_names),
+      c(sim_uid_grid_vars[sim_uid_grid_vars!="sim_uid"],
+        sim$internals$level_names),
       .after = sim_uid
     )
     df %<>% dplyr::arrange(level_id, rep_id)
@@ -277,7 +285,7 @@ run.sim_obj <- function(sim) {
     }
 
     # Add levels variables and attach to sim
-    results_df <- add_level_vars(results_df)
+    results_df <- add_level_vars(results_df, sim$config$return_batch_id)
     sim$results <- as.data.frame(results_df)
 
   }
@@ -295,7 +303,7 @@ run.sim_obj <- function(sim) {
     errors_df <- data.table::rbindlist(results_lists_err)
 
     # Add levels variables and attach to sim
-    errors_df <- add_level_vars(errors_df)
+    errors_df <- add_level_vars(errors_df, sim$config$return_batch_id)
     sim$errors <- as.data.frame(errors_df)
 
   }
@@ -311,7 +319,7 @@ run.sim_obj <- function(sim) {
     warnings_df <- data.table::rbindlist(results_lists_warn)
 
     # Add levels variables and attach to sim
-    warnings_df <- add_level_vars(warnings_df)
+    warnings_df <- add_level_vars(warnings_df, sim$config$return_batch_id)
     sim$warnings <- as.data.frame(warnings_df)
 
   }
@@ -340,7 +348,7 @@ run.sim_obj <- function(sim) {
 
   # Clear the batch_cache
   assign(x="..batch_cache", value=new.env(), envir=sim$vars$env)
-  assign(x="batch_levels", value=NA,
+  assign(x="batch_levels", value=sim$config$batch_levels,
          envir=get(x="..batch_cache", envir=sim$vars$env))
 
   # Display completion message
