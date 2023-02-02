@@ -6,7 +6,7 @@
 #'     that have been included as simulation levels. This function is a wrapper
 #'     around do.call and is used in a similar manner. See examples.
 #' @param method A character string naming a function that has been declared or
-#'     loaded via \code{source()}.
+#'     loaded via \code{source}.
 #' @param args A list of arguments to be passed onto \code{method}
 #' @return The result of the call to \code{method}
 #' @examples
