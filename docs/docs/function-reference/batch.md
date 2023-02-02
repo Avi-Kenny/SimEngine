@@ -1,8 +1,8 @@
 ---
 layout: page
-title: js_support 
-nav_order: 3 
-permalink: /function-reference/js_support/
+title: batch 
+nav_order: 1 
+permalink: /function-reference/batch/
 parent: Function reference
 ---
 
@@ -18,27 +18,31 @@ function processMathHTML() {
 <link rel="stylesheet" type="text/css" href="R.css" />
 </head><body><div class="container">
 
-<table style="width: 100%;"><tr><td>js_support {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table style="width: 100%;"><tr><td>batch {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
-<h2>Display information about currently-supported job schedulers</h2>
+<h2>Wrapper to run a block of code as part of a batch</h2>
 
 <h3>Description</h3>
 
-<p>Run this function to display information about job schedulers
-that are currently supported for running <span class="pkg">SimEngine</span> simulations on a
-cluster computing system (CCS).
+<p>TO DO
 </p>
 
 
 <h3>Usage</h3>
 
-```R<code class='language-R'>js_support()
+```R<code class='language-R'>batch(code)
 </span>```
+
+
+<h3>Value</h3>
+
+<p>TO DO
+</p>
 
 
 <h3>Examples</h3>
 
-```R<code class='language-R'>js_support()
+```R<code class='language-R'>TO DO
 </span>```
 
 <hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.1.0 ]</div>

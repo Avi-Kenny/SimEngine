@@ -1,13 +1,24 @@
 ---
 layout: page
 title: new_sim 
-nav_order: 3 
+nav_order: 4 
 permalink: /function-reference/new_sim/
 parent: Function reference
 ---
 
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
 
-<table width="100%" summary="page for new_sim {SimEngine}"><tr><td>new_sim {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table style="width: 100%;"><tr><td>new_sim {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Create a new simulation object</h2>
 
@@ -22,9 +33,8 @@ argument.
 
 <h3>Usage</h3>
 
-```R
-new_sim()
-```
+```R<code class='language-R'>new_sim()
+</span>```
 
 
 <h3>Value</h3>
@@ -42,9 +52,9 @@ use the <span class="pkg">SimEngine</span> simulation framework.
 
 <h3>Examples</h3>
 
-```R
-sim <- new_sim()
+```R<code class='language-R'>sim <- new_sim()
 sim
-```
+</span>```
 
 <hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.1.0 ]</div>
+</div>
