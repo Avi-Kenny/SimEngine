@@ -1,6 +1,7 @@
 #' Wrapper to run a block of code as part of a batch
 #'
 #' @description TO DO
+#'
 #' @return TO DO
 #' @examples
 #' TO DO
@@ -20,8 +21,8 @@ batch <- function(code) {
                 ", you must set the `n_cores` config option via set_config()"))
   }
   if (get(x="..flag_batch_update", envir=..env)) {
-    stop(paste0("The batch() function cannot be used with update_sim() or upda",
-                "te_sim_on_cluster()"))
+    stop(paste0("You cannot add replicates to a simulation that uses the batch",
+                "() function"))
   }
 
   batch_id <- get("L", envir=parent.frame())$batch_id
