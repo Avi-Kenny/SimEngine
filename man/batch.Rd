@@ -2,16 +2,41 @@
 % Please edit documentation in R/batch.R
 \name{batch}
 \alias{batch}
-\title{Wrapper to run a block of code as part of a batch}
+\title{Run a block of code as part of a batch}
 \usage{
 batch(code)
 }
-\value{
-TO DO
-}
 \description{
-TO DO
+This function is designed to be used within a simulation script
+    to leverage "replicate batches". This is useful if you want to share data
+    or objects between simulation replicates. Essentially, it allows you to
+    take your simulation replicates and divide them into "batches"; all
+    replicates in a given batch will then share a single set of objects. The
+    most common use case for this is if you have a simulation that involves
+    generating one dataset, analyzing it using multiple methods, and then
+    repeating this a number of times. See
+    \url{https://avi-kenny.github.io/SimEngine/advanced-usage/#using-the-batch-function}
+    for a thorough overview of how this function is used.
 }
 \examples{
-TO DO
+sim <- new_sim()
+create_data <- function(n, mu) { rnorm(n=n, mean=mu) }
+est_mean <- function(dat, type) {
+  if (type=="est_mean") { return(mean(dat)) }
+  if (type=="est_median") { return(median(dat)) }
+}
+sim \%<>\% set_levels(n=c(10,100), mu=c(3,5), est=c("est_mean","est_median"))
+sim \%<>\% set_config(num_sim=2, batch_levels=c("n", "mu"), return_batch_id=T)
+sim \%<>\% set_script(function() {
+  batch({
+    dat <- create_data(n=L$n, mu=L$mu)
+  })
+  mu_hat <- est_mean(dat=dat, type=L$est)
+  return(list(
+    "mu_hat" = round(mu_hat,2),
+    "dat_1" = round(dat[1],2)
+  ))
+})
+sim \%<>\% run()
+sim$results[order(sim$results$batch_id),]
 }
