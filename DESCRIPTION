@@ -17,7 +17,10 @@ Imports:
     pbapply,
     data.table,
     rlang,
-    methods
+    tools,
+    methods,
+    stats,
+    utils
 Suggests: 
     covr,
     knitr,
