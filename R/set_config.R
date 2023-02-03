@@ -102,7 +102,7 @@ set_config.sim_obj <- function(
     handle_errors(packages, "is.character.vec")
     sim$config[["packages"]] <- packages
     for (pkg in packages) { do.call("library", list(pkg)) }
-    sim$vars$session_info = sessionInfo()
+    sim$vars$session_info = utils::sessionInfo()
   }
 
   if (!missing(stop_at_error)) {

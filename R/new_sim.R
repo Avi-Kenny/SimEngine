@@ -15,8 +15,7 @@
 new_sim <- function() {
 
   # Check if dependencies are installed
-  for (pkg in c("magrittr", "dplyr", "parallel", "pbapply", "data.table",
-                "rlang", "methods")) {
+  for (pkg in tools::package_dependencies(packages="SimEngine")$SimEngine) {
     if (!requireNamespace(pkg, quietly=TRUE)) {
       stop(paste0(
         "You need to install the package '", pkg, "' for SimEngine to work."
@@ -142,7 +141,7 @@ new_sim <- function() {
 
       # Results of a call to sessionInfo(); this is updated by set_config()
       #     after packages are loaded
-      session_info = sessionInfo()
+      session_info = utils::sessionInfo()
 
     ),
 
