@@ -244,9 +244,9 @@ run.sim_obj <- function(sim) {
     df %<>% dplyr::relocate(
       c(sim_uid_grid_vars[sim_uid_grid_vars!="sim_uid"],
         sim$internals$level_names),
-      .after = sim_uid
+      .after = .data$sim_uid
     )
-    df %<>% dplyr::arrange(level_id, rep_id)
+    df %<>% dplyr::arrange(.data$level_id, .data$rep_id)
 
     return(df)
 

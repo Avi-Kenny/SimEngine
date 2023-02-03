@@ -10,6 +10,7 @@
 #'     repeating this a number of times. See
 #'     \url{https://avi-kenny.github.io/SimEngine/advanced-usage/#using-the-batch-function}
 #'     for a thorough overview of how this function is used.
+#' @param code A block of code enclosed by curly braces {}; see examples.
 #' @examples
 #' sim <- new_sim()
 #' create_data <- function(n, mu) { rnorm(n=n, mean=mu) }
@@ -18,7 +19,11 @@
 #'   if (type=="est_median") { return(median(dat)) }
 #' }
 #' sim %<>% set_levels(n=c(10,100), mu=c(3,5), est=c("est_mean","est_median"))
-#' sim %<>% set_config(num_sim=2, batch_levels=c("n", "mu"), return_batch_id=T)
+#' sim %<>% set_config(
+#'   num_sim = 2,
+#'   batch_levels = c("n","mu"),
+#'   return_batch_id = TRUE
+#' )
 #' sim %<>% set_script(function() {
 #'   batch({
 #'     dat <- create_data(n=L$n, mu=L$mu)

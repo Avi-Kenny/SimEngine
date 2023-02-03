@@ -155,7 +155,7 @@ update_sim_uid_grid <- function(sim) {
     "level_id" = sim$levels_grid$level_id,
     "rep_id" = c(1:sim$config$num_sim)
   ))
-  sim_uid_grid_new %<>% dplyr::arrange(level_id, rep_id)
+  sim_uid_grid_new %<>% dplyr::arrange(.data$level_id, .data$rep_id)
   sim_uid_grid_new$active <- T
 
   if (attr(sim$internals$sim_uid_grid, "blank")) {
@@ -202,7 +202,7 @@ update_sim_uid_grid <- function(sim) {
       )
 
       # Add sim_uid_grid_new to sim_uid_grid
-      sim_uid_grid_new %<>% dplyr::relocate(active, .after=to_run)
+      sim_uid_grid_new %<>% dplyr::relocate(.data$active, .after=.data$to_run)
       sim_uid_grid <- rbind(sim_uid_grid, sim_uid_grid_new)
 
     }

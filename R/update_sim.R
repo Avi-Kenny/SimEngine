@@ -40,7 +40,6 @@
 #' sim %<>% set_levels(n=c(10,100,1000), est=c("M","V"))
 #' sim %<>% set_config(num_sim=5)
 #' sim %<>% update_sim()
-#' @importFrom magrittr %>%
 #' @export
 update_sim <- function(sim, keep_errors=T) {
   UseMethod("update_sim")
