@@ -21,6 +21,7 @@
 #' sim$levels
 #'
 #' # More complex levels can be set using lists:
+#' sim <- new_sim()
 #' sim %<>% set_levels(
 #'   "n" = c(10, 100, 1000),
 #'   "theta" = c(2, 3),
@@ -36,6 +37,7 @@
 #' # sim$levels_grid dataframe to examine the level combinations and the
 #' # associated level_id values. Third, call set_levels again with the .keep
 #' # option to specify which levels to keep (via a vector of level_id values).
+#' sim <- new_sim()
 #' sim %<>% set_levels(alpha=c(1,2,3), beta=c(5,6))
 #' sim$levels_grid
 #' sim %<>% set_levels(.keep=c(1,2,6))
