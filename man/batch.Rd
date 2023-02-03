@@ -6,6 +6,9 @@
 \usage{
 batch(code)
 }
+\arguments{
+\item{code}{A block of code enclosed by curly braces {}; see examples.}
+}
 \description{
 This function is designed to be used within a simulation script
     to leverage "replicate batches". This is useful if you want to share data
@@ -26,7 +29,11 @@ est_mean <- function(dat, type) {
   if (type=="est_median") { return(median(dat)) }
 }
 sim \%<>\% set_levels(n=c(10,100), mu=c(3,5), est=c("est_mean","est_median"))
-sim \%<>\% set_config(num_sim=2, batch_levels=c("n", "mu"), return_batch_id=T)
+sim \%<>\% set_config(
+  num_sim = 2,
+  batch_levels = c("n","mu"),
+  return_batch_id = TRUE
+)
 sim \%<>\% set_script(function() {
   batch({
     dat <- create_data(n=L$n, mu=L$mu)
