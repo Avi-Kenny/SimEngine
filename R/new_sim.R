@@ -14,16 +14,6 @@
 #' @export
 new_sim <- function() {
 
-  # Check if dependencies are installed
-  for (pkg in tools::package_dependencies(packages="SimEngine")$SimEngine) {
-    if (!requireNamespace(pkg, quietly=TRUE)) {
-      stop(paste0(
-        "You need to install the package '", pkg, "' for SimEngine to work."
-      ))
-    }
-  }
-  rm(pkg)
-
   # Simulation initial seed
   ..seed <- as.integer(1e9*runif(1))
 
