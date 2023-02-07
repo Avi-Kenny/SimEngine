@@ -253,7 +253,7 @@ cluster_execute <- function(
     } else {
 
       # Process result/error files
-      files <- dir(paste0(..path_sim_res))
+      files <- dir(..path_sim_res)
       results_df <- NULL
       results_complex <- list()
       errors_df <- NULL
