@@ -1,4 +1,4 @@
-<!-- badges: start
+<!-- badges: start -->
   ![GitHub R package version](https://img.shields.io/github/r-package/v/Avi-Kenny/SimEngine)
   [![CRAN status](https://www.r-pkg.org/badges/version/SimEngine)](https://CRAN.R-project.org/package=SimEngine)
   ![GitHub](https://img.shields.io/github/license/Avi-Kenny/SimEngine)
