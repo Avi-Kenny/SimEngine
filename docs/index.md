@@ -19,7 +19,7 @@ A modular framework for statistical simulations in R
 
 ## Overview
 
-**SimEngine** is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on thorough documentation and scalability.
+**SimEngine** is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on scalability, parallelization, and thorough documentation.
 
 ## Installation
 
