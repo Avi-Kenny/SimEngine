@@ -8,10 +8,10 @@ run_on_cluster(first, main, last, cluster_config)
 }
 \arguments{
 \item{first}{Code to run at the start of a simulation. This should be a block
-of code enclosed by curly braces {} that that creates a simulation
-object. Put everything you need in the simulation object, since global
-variables declared in this block will not be available when the 'main'
-and 'last' code blocks run.}
+of code enclosed by curly braces {} that creates a simulation object. Put
+everything you need in the simulation object, since global variables
+declared in this block will not be available when the 'main' and 'last'
+code blocks run.}
 
 \item{main}{Code that will run for every simulation replicate. This should be
 a block of code enclosed by curly braces {} that includes a call to

@@ -1,13 +1,24 @@
 ---
 layout: page
 title: vars 
-nav_order: 13 
+nav_order: 14 
 permalink: /function-reference/vars/
 parent: Function reference
 ---
 
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
 
-<table width="100%" summary="page for vars {SimEngine}"><tr><td>vars {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table style="width: 100%;"><tr><td>vars {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Access internal simulation variables</h2>
 
@@ -21,22 +32,21 @@ manually.
 
 <h3>Usage</h3>
 
-```R
-vars(sim, var)
-```
+```R<code class='language-R'>vars(sim, var)
+</span>```
 
 
 <h3>Arguments</h3>
 
-<table summary="R argblock">
-<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span></td>
+<table>
+<tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim</span></td>
 <td>
 <p>A simulation object of class <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>sim_obj</span>, usually created by
 <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>new_sim</span></p>
 </td></tr>
-<tr valign="top"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>var</span></td>
+<tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>var</span></td>
 <td>
-<p>If this argument is omitted, <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>vars()</span> will return a list
+<p>If this argument is omitted, <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>vars</span> will return a list
 containing all available internal variables. If this argument is
 provided, it should equal one of the following character strings:
 </p>
@@ -87,8 +97,7 @@ errors).
 
 <h3>Examples</h3>
 
-```R
-sim <- new_sim()
+```R<code class='language-R'>sim <- new_sim()
 sim %<>% set_levels(
   "n" = c(10, 100, 1000)
 )
@@ -96,6 +105,7 @@ sim %<>% set_config(num_sim=10)
 vars(sim, "num_sim_total") %>% print()
 sim$vars$num_sim_total %>% print()
 vars(sim) %>% print()
-```
+</span>```
 
 <hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.1.0 ]</div>
+</div>

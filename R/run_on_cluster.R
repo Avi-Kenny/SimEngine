@@ -11,10 +11,10 @@
 #'     nodes. See \url{https://avi-kenny.github.io/SimEngine/parallelization/}
 #'     for an overview of how cluster parallelization works in \pkg{SimEngine}.
 #' @param first Code to run at the start of a simulation. This should be a block
-#'     of code enclosed by curly braces {} that that creates a simulation
-#'     object. Put everything you need in the simulation object, since global
-#'     variables declared in this block will not be available when the 'main'
-#'     and 'last' code blocks run.
+#'     of code enclosed by curly braces {} that creates a simulation object. Put
+#'     everything you need in the simulation object, since global variables
+#'     declared in this block will not be available when the 'main' and 'last'
+#'     code blocks run.
 #' @param main Code that will run for every simulation replicate. This should be
 #'     a block of code enclosed by curly braces {} that includes a call to
 #'     \code{\link{run}}. This code block will have access to the simulation
@@ -80,13 +80,13 @@
 #' # qsub -v sim_run='last' -hold_jid 102 run_sim.sh
 #' }
 #' @export
-run_on_cluster <- function(first,
-                           main,
-                           last,
-                           cluster_config) {
+run_on_cluster <- function(first, main, last, cluster_config) {
 
-  cluster_execute(substitute(first),
-                  substitute(main),
-                  substitute(last),
-                  cluster_config)
+  cluster_execute(
+    substitute(first),
+    substitute(main),
+    substitute(last),
+    cluster_config
+  )
+
 }

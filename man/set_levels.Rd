@@ -4,7 +4,7 @@
 \alias{set_levels}
 \title{Set simulation levels}
 \usage{
-set_levels(sim, ..., .add = FALSE, .keep = NA)
+set_levels(sim, ..., .keep = NA)
 }
 \arguments{
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by
@@ -13,11 +13,6 @@ set_levels(sim, ..., .add = FALSE, .keep = NA)
 \item{...}{One or more key-value pairs representing simulation levels. Each
 value can either be a vector (for simple levels) or a list of lists (for
 more complex levels). See examples.}
-
-\item{.add}{Only relevant if \code{\link{set_levels}} is called twice or
-more. On the second call, if add=FALSE (default) the old set of levels
-will be replaced by the new set, whereas if add=TRUE the new set of
-levels will be merged with the old set. See examples.}
 
 \item{.keep}{An integer vector specifying which level combinations to keep;
 see examples.}
@@ -40,6 +35,7 @@ sim \%<>\% set_levels(
 sim$levels
 
 # More complex levels can be set using lists:
+sim <- new_sim()
 sim \%<>\% set_levels(
   "n" = c(10, 100, 1000),
   "theta" = c(2, 3),
@@ -50,21 +46,12 @@ sim \%<>\% set_levels(
 )
 sim$levels
 
-# By default, set_levels will overwrite old levels if it is called twice:
-sim \%<>\% set_levels(alpha=c(1,2), beta=c(5,6))
-sim \%<>\% set_levels(alpha=c(3,4), gamma=c(7,8))
-sim$levels
-
-# To merge the old levels with the new levels instead, specify .add=TRUE:
-sim \%<>\% set_levels(alpha=c(1,2), beta=c(5,6))
-sim \%<>\% set_levels(alpha=c(3,4), gamma=c(7,8), .add=TRUE)
-sim$levels
-
 # If you don't want to run simulations for all level combinations, use the
 # .keep option. First, set the levels normally. Second, view the
 # sim$levels_grid dataframe to examine the level combinations and the
 # associated level_id values. Third, call set_levels again with the .keep
 # option to specify which levels to keep (via a vector of level_id values).
+sim <- new_sim()
 sim \%<>\% set_levels(alpha=c(1,2,3), beta=c(5,6))
 sim$levels_grid
 sim \%<>\% set_levels(.keep=c(1,2,6))

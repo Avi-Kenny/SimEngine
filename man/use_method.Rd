@@ -8,7 +8,7 @@ use_method(method, args = list())
 }
 \arguments{
 \item{method}{A character string naming a function that has been declared or
-loaded via \code{source()}.}
+loaded via \code{source}.}
 
 \item{args}{A list of arguments to be passed onto \code{method}}
 }

@@ -51,12 +51,13 @@
 #' sim %<>% run()
 #'
 #' @export
-set_script <- function(sim, fn) UseMethod("set_script")
+set_script <- function(sim, fn) {
+  UseMethod("set_script")
+}
 
 #' @export
 set_script.sim_obj <- function(sim, fn) {
 
-  handle_errors(sim, "is.sim_obj")
   handle_errors(fn, "is.function")
 
   if (substr(sim$vars$run_state, 1, 3) == "run") {
@@ -67,7 +68,7 @@ set_script.sim_obj <- function(sim, fn) {
   # Add "global" objects to simulation object run environment (excluding
   #     simulation object); these are not necessarily in the global environment,
   #     but are in the environment the new_sim() call is executed within.
-  for (obj_name in ls(sim$internals$env_calling)) {
+  for (obj_name in ls(sim$internals$env_calling, all.names=T)) {
     obj <- get(x=obj_name, envir=sim$internals$env_calling)
     if (!methods::is(obj,"sim_obj") && obj_name!="L") {
       assign(x=obj_name, value=obj, envir=sim$vars$env)

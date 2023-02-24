@@ -1,5 +1,5 @@
-<!-- badges: start
-  ![GitHub R package version](https://img.shields.io/github/r-package/v/Avi-Kenny/SimEngine) -->
+<!-- badges: start -->
+  ![GitHub R package version](https://img.shields.io/github/r-package/v/Avi-Kenny/SimEngine)
   [![CRAN status](https://www.r-pkg.org/badges/version/SimEngine)](https://CRAN.R-project.org/package=SimEngine)
   ![GitHub](https://img.shields.io/github/license/Avi-Kenny/SimEngine)
   [![R-CMD-check](https://github.com/Avi-Kenny/SimEngine/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/Avi-Kenny/SimEngine/actions/workflows/R-CMD-check.yml)
@@ -14,7 +14,7 @@ A modular framework for statistical simulations in R
 
 ## Overview
 
-**SimEngine** is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on thorough documentation and scalability.
+**SimEngine** is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on scalability, parallelization, and thorough documentation.
 
 ## Installation
 

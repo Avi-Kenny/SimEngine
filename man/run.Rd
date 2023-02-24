@@ -4,16 +4,11 @@
 \alias{run}
 \title{Run the simulation}
 \usage{
-run(sim, sim_uids = NA)
+run(sim)
 }
 \arguments{
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by
 \code{\link{new_sim}}}
-
-\item{sim_uids}{Advanced; a vector of \code{sim_uid} values, each of which
-uniquely identifies a simulation replicate. This will normally be
-omitted. If this is specified, only the simulation replicates with a
-matching \code{sim_uid} will be run.}
 }
 \value{
 The original simulation object but with the results attached (along

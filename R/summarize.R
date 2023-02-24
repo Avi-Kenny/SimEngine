@@ -127,13 +127,14 @@
 #'   mse = list(name="lambda_mse", estimate="lambda_hat", truth=5)
 #' )
 #' @export
-summarize <- function(sim, ...) UseMethod("summarize")
+summarize <- function(sim, ...) {
+  UseMethod("summarize")
+}
 
 #' @export
 summarize.sim_obj <- function(sim, ...) {
 
   # Error handling
-  handle_errors(sim, "is.sim_obj")
   if (sim$vars$run_state == "pre run") {
     stop("Simulation has not been run yet.")
   }
@@ -202,12 +203,21 @@ summarize.sim_obj <- function(sim, ...) {
   code_coverage <- ""
   code_correlation <- ""
   code_covariance <- ""
+  
+  
+  # Parse code to display levels
+  if (is.null(sim$levels$no_levels)) {
+    code_levels <- paste0("'",names_levels,"'=`",names_levels,"`[1],")
+  } else {
+    code_levels <- ""
+  }
 
   for (arg in o_args){
 
     if (!(methods::is(arg, "list"))){
       stop(paste0("Each desired summary metric must be specified as a list."))
     }
+
 
     # get stat name provided by user, make sure it's valid (and it exists)
     stat_name <- arg$stat
@@ -217,7 +227,6 @@ summarize.sim_obj <- function(sim, ...) {
     if (!(stat_name %in% metrics)){
       stop(paste0(stat_name, " is an invalid summary metric."))
     }
-
 
     # parse mean code
     if (stat_name == "mean"){

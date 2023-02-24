@@ -38,11 +38,6 @@
 #' @param keep_errors logical (\code{TRUE} by default); if \code{TRUE}, do not
 #'     try to re-run simulation reps that results in errors previously; if
 #'     \code{FALSE}, attempt to run those reps again
-#' @param keep_extra logical (\code{FALSE} by default); if \code{TRUE}, keep
-#'     previously run simulation reps even if they exceed the current
-#'     \code{num_sim} in config or are from a level that has been dropped; if
-#'     \code{FALSE}, drop excess reps (starting from the last rep for that
-#'     particular simulation level)
 #' @examples
 #' \dontrun{
 #' # The following code creates, runs, and subsequently updates a toy simulation
@@ -120,19 +115,17 @@
 #' # qsub -v sim_run='last' -hold_jid 105 update_sim.sh
 #' }
 #' @export
-update_sim_on_cluster <- function(first,
-                              main,
-                              last,
-                              cluster_config,
-                              keep_errors = TRUE,
-                              keep_extra = FALSE) {
+update_sim_on_cluster <- function(
+  first, main, last, cluster_config, keep_errors=T
+) {
 
-  cluster_execute(substitute(first),
-                  substitute(main),
-                  substitute(last),
-                  cluster_config,
-                  keep_errors = keep_errors,
-                  keep_extra = keep_extra,
-                  update_switch = TRUE)
+  cluster_execute(
+    substitute(first),
+    substitute(main),
+    substitute(last),
+    cluster_config,
+    keep_errors = keep_errors,
+    update_switch = T
+  )
 
 }

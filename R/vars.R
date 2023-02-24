@@ -5,7 +5,7 @@
 #'     manually.
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
 #'     \code{\link{new_sim}}
-#' @param var If this argument is omitted, \code{vars()} will return a list
+#' @param var If this argument is omitted, \code{vars} will return a list
 #'     containing all available internal variables. If this argument is
 #'     provided, it should equal one of the following character strings:
 #'     \itemize{
@@ -44,13 +44,14 @@
 #' sim$vars$num_sim_total %>% print()
 #' vars(sim) %>% print()
 #' @export
-vars <- function(sim, var) UseMethod("vars")
+vars <- function(sim, var) {
+  UseMethod("vars")
+}
 
 #' @export
-vars <- function(sim, var) {
+vars.sim_obj <- function(sim, var) {
 
   # Error handling
-  handle_errors(sim, "is.sim_obj")
   if (!missing(var)) {
     valid_vars <- c("seed", "env", "num_sim_total", "run_state")
     handle_errors(var, "is.in", other=valid_vars)
