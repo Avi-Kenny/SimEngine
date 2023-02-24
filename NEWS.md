@@ -2,13 +2,21 @@
 
 ### Major changes
 
-- Overhauled the interface of the `summarize()` function; see the function reference
-- TO DO
+- Added the `batch()` function, which allows for sharing of data or objects between simulation replicates. Essentially, it allows you to take your simulation replicates and divide them into "batches"; all replicates in a given batch will then share a single set of objects. The most common use case for this is if you have a simulation that involves generating one dataset, analyzing it using multiple methods, and then repeating this a number of times. See the documentation for more info.
+- Overhauled and simplified the interface of the `summarize()` function; see the documentation for more info.
+- Users can now run multiple simulation replicates per core when running code on a CCS using `run_on_cluster()`.
 
 ### Minor changes
 
-- TO DO
-- TO DO
+- Added results of a call to `sessionInfo()` to `vars()`.
+- Changed `sim_id` to `rep_id` to avoid confusion with `sim_uid`.
+- Removed the option for a user to specify a subset of `sim_uids`.
+- Removed the `keep_extra` option from `update_sim()` and `update_sim_on_cluster()`.
+- Removed the `.add` option from `set_levels()`.
+- Added a constraint to `set_levels()` to prevent changing of level variables once they are initially set.
+- Fixed a bug associated with functions that have a NULL environment (e.g. as.integer).
+- Fixed bugs that previously prevented users from running a simulation with no levels.
+- Various minor bug fixes.
 
 # SimEngine 1.1.0
 
