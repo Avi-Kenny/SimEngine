@@ -1,3 +1,15 @@
+# SimEngine 1.2.0
+
+### Major changes
+
+- Overhauled the interface of the `summarize()` function; see the function reference
+- TO DO
+
+### Minor changes
+
+- TO DO
+- TO DO
+
 # SimEngine 1.1.0
 
 ### Major changes
