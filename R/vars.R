@@ -53,7 +53,9 @@ vars.sim_obj <- function(sim, var) {
 
   # Error handling
   if (!missing(var)) {
-    valid_vars <- c("seed", "env", "num_sim_total", "run_state")
+
+    valid_vars <- c("seed", "env", "num_sim_total", "run_state", "session_info",
+                    "start_time", "end_time", "total_runtime")
     handle_errors(var, "is.in", other=valid_vars)
   }
 
