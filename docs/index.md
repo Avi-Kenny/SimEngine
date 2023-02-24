@@ -184,6 +184,8 @@ head(sim$results)
 #> 6       6        1      6     est_1           50 0.010968924  13.232685
 ```
 
+Above, the `sim_uid` uniquely identifies a single simulation replicate, the `level_id` uniquely identifies a level combination. The rep_id is unique within a given level combination and identifies the replicate.
+
 ---
 
 ## About this project
