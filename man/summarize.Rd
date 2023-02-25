@@ -59,6 +59,16 @@ summarize(sim, ...)
     on which to calculate the quantile, \code{prob} is a number in [0,1] denoting the desired quantile,
     and \code{na.rm} indicates whether to exclude \code{NA} values when performing the calculation.}
 
+    \item{\code{correlation}: Each \code{correlation} summary is a named list of four arguments. \code{name} gives
+    a name for the summary, \code{x} and \code{y} give the names of the variables in \code{sim$results}
+    on which to calculate the (Pearson's) correlation, and \code{na.rm} indicates whether to exclude \code{NA}
+    values when performing the calculation (if either member of a pair is \code{NA}, the pair is removed).}
+
+    \item{\code{covariance}: Each \code{covariance} summary is a named list of four arguments. \code{name} gives
+    a name for the summary, \code{x} and \code{y} give the names of the variables in \code{sim$results}
+    on which to calculate the covariance, and \code{na.rm} indicates whether to exclude \code{NA}
+    values when performing the calculation (if either member of a pair is \code{NA}, the pair is removed).}
+
     \item{\code{bias}: Each \code{bias} summary is a named list of four arguments. \code{name} gives
     a name for the summary, \code{estimate} gives the name of the variable in \code{sim$results}
     containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}), and
@@ -88,11 +98,16 @@ summarize(sim, ...)
     variable in \code{sim$results} containing the confidence interval upper bound, \code{truth} is the
     estimand of interest, and \code{na.rm} indicates whether to exclude \code{NA} values when performing the
     calculation. See \emph{Details}.}
+
+    \item{\code{is_na}: Each \code{is_na} summary is a named list of two arguments. \code{name} gives
+    a name for the summary and \code{x} gives the name of the variable in \code{sim$results}
+    on which to calculate the number of \code{NA}s.}
    }}
 }
 \value{
 A data frame containing the result of each specified summary function as a column, for each of
-    the simulation levels.
+    the simulation levels. The column \code{n_reps} returns the number of successful simulation replicates
+    within each level.
 }
 \description{
 This function calculates summary statistics for simulation results.
@@ -138,7 +153,7 @@ sim \%<>\% set_script(function() {
 })
 sim \%<>\% run()
 sim \%>\% summarize(
-  mean = list(name="mean_lambda_hat", x="lambda_hat"),
-  mse = list(name="lambda_mse", estimate="lambda_hat", truth=5)
+  list(stat = "mean", name="mean_lambda_hat", x="lambda_hat"),
+  list(stat = "mse", name="lambda_mse", estimate="lambda_hat", truth=5)
 )
 }
