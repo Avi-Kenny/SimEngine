@@ -104,7 +104,8 @@
 #'     replicates for a given level in which \code{truth} lies within the interval.}
 #' }
 #' @return A data frame containing the result of each specified summary function as a column, for each of
-#'     the simulation levels.
+#'     the simulation levels. The column \code{n_reps} returns the number of successful simulation replicates
+#'     within each level.
 #' @examples
 #' # The following is a toy example of a simulation, illustrating the use of
 #' # the summarize function.
@@ -169,7 +170,8 @@ summarize.sim_obj <- function(sim, ...) {
                "mae",
                "coverage",
                "correlation",
-               "covariance")
+               "covariance",
+               "is_na")
 
   code_mean <- ""
   code_median <- ""
@@ -187,6 +189,7 @@ summarize.sim_obj <- function(sim, ...) {
   code_coverage <- ""
   code_correlation <- ""
   code_covariance <- ""
+  code_is_na <- ""
 
 
   # Parse code to display levels
@@ -650,6 +653,20 @@ summarize.sim_obj <- function(sim, ...) {
       code_covariance <- c(code_covariance, paste0(
         pre, arg$name, " = cov(", arg$x, ",", arg$y, na_1
       ))
+    } else if (stat_name == "is_na"){
+      # if name missing, create a name
+      if (is.null(arg$name)) { arg$name <- paste0("is_na_", arg$x) }
+
+      # Handle errors
+      handle_errors(arg$x, "is.null", msg="`x` argument is required")
+      handle_errors(arg$name, "is.character", name="name")
+      handle_errors(arg$x, "is.in", other=names(R),
+                    msg=paste0("`",arg$x,"` is not a variable in results"))
+      handle_errors(R[[arg$x]], "is.numeric.vec", name=arg$x)
+
+      code_is_na <- c(code_is_na, paste0(
+        pre, arg$name, " = sum(is.na(", arg$x, ")),"
+      ))
     }
   }
 
@@ -675,7 +692,8 @@ summarize.sim_obj <- function(sim, ...) {
     code_mae,
     code_coverage,
     code_correlation,
-    code_covariance)
+    code_covariance,
+    code_is_na)
   summarize_code <- c(summarize_code, "))")
   summary <- eval(parse(text=summarize_code))
   names(summary) <- gsub(pre, "", names(summary))

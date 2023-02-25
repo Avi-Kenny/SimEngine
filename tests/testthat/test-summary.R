@@ -432,6 +432,20 @@ test_that("correlation summary with na.rm returns covariance", {
   expect_equal(summ$my_summary, cor(c(1,2,3,4,5), c(6,7,8,9,10)))
 })
 
+### proper functioning of is_na summary ###
+
+summ <- sim %>% summarize(
+  list(stat = "is_na", name="my_summary", x="x"),
+  list(stat = "is_na", name="na_y", x="y")
+)
+
+test_that("is_nasummary returns number of NAs", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 4))
+  expect_equal(summ$my_summary, 1)
+  expect_equal(summ$na_y, 0)
+})
+
 
 ### proper functioning of mad summary ###
 
