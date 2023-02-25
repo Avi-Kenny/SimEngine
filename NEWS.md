@@ -3,7 +3,7 @@
 ### Major changes
 
 - Added the `batch()` function, which allows for sharing of data or objects between simulation replicates. Essentially, it allows you to take your simulation replicates and divide them into "batches"; all replicates in a given batch will then share a single set of objects. The most common use case for this is if you have a simulation that involves generating one dataset, analyzing it using multiple methods, and then repeating this a number of times. See the documentation for more info.
-- Overhauled and simplified the interface of the `summarize()` function; see the documentation for more info.
+- Overhauled and simplified the interface of the `summarize()` function and added several summary metrics (correlation, covariance, n_reps); see the documentation for more info.
 - Users can now run multiple simulation replicates per core when running code on a CCS using `run_on_cluster()`.
 
 ### Minor changes
