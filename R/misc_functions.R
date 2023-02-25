@@ -202,7 +202,7 @@ update_sim_uid_grid <- function(sim) {
       )
 
       # Add sim_uid_grid_new to sim_uid_grid
-      sim_uid_grid_new %<>% dplyr::relocate(.data$active, .after=.data$to_run)
+      sim_uid_grid_new %<>% dplyr::relocate("active", .after="to_run")
       sim_uid_grid <- rbind(sim_uid_grid, sim_uid_grid_new)
 
     }
