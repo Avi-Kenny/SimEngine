@@ -104,14 +104,12 @@ Now we can summarize the results using `summarize`. There are two main quantitie
 
 ```R
 summarized_results <- sim %>% SimEngine::summarize(
-  mean = list(
-    list(name="mean_se_beta0", x="beta0_se_est"),
-    list(name="mean_se_beta1", x="beta1_se_est")
-  ),
-  coverage = list(
-    list(name="cov_beta0", estimate="beta0_est", se="beta0_se_est", truth=-1),
-    list(name="cov_beta1", estimate="beta1_est", se="beta1_se_est", truth=10)
-  )
+  list(stat="mean", name="mean_se_beta0", x="beta0_se_est"),
+  list(stat="mean", name="mean_se_beta1", x="beta1_se_est"),
+  list(stat="coverage", name="cov_beta0", estimate="beta0_est", 
+       se="beta0_se_est", truth=-1),
+  list(stat="coverage", name="cov_beta1", estimate="beta1_est",
+       se="beta1_se_est", truth=10)
 )
 
 print(summarized_results)
@@ -241,14 +239,12 @@ Now that we have the bootstrap results included in our simulation object, we can
 
 ```R
 summarized_results <- sim %>% SimEngine::summarize(
-  mean = list(
-    list(name="mean_se_beta0", x="beta0_se_est"),
-    list(name="mean_se_beta1", x="beta1_se_est")
-  ),
-  coverage = list(
-    list(name="cov_beta0", estimate="beta0_est", se="beta0_se_est", truth=-1),
-    list(name="cov_beta1", estimate="beta1_est", se="beta1_se_est", truth=10)
-  )
+  list(stat="mean", name="mean_se_beta0", x="beta0_se_est"),
+  list(stat="mean", name="mean_se_beta1", x="beta1_se_est"),
+  list(stat="coverage", name="cov_beta0", estimate="beta0_est",
+       se="beta0_se_est", truth=-1),
+  list(stat="coverage", name="cov_beta1", estimate="beta1_est",
+       se="beta1_se_est", truth=10)
 )
 
 plot_results("width")

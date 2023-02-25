@@ -75,7 +75,7 @@ We are now ready to run the simulation. After obtaining results, we calculate po
 sim %<>% run()
 
 power_sim <- sim %>% summarize(
-  mean = list(name="power", x="reject")
+  list(stat="mean", name="power", x="reject")
 )
 print(power_sim)
 #>   level_id  n power
