@@ -10,97 +10,67 @@ summarize(sim, ...)
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by
 \code{\link{new_sim}}}
 
-\item{...}{Name-value pairs of summary statistic functions. The possible
-    functions (names) are listed below. The value for each summary
-    function is a list of summaries to perform.
+\item{...}{One or more named lists, separated by commas, specifying desired summaries of the \code{sim}
+    simulation object. Each list must have a \code{stat} item, which specifies the summary statistic to
+    be calculated. For all \code{stat} options besides \code{"coverage"}, the \code{name} item is optional;
+    if it is not provided, a name will be formed from the type of summary and the column on which the summary
+    is performed. The \code{na.rm} item indicates whether to exclude \code{NA} values when performing the calculation (with
+    default being \code{FALSE}). Additional required items are detailed below for each \code{stat} type.
     \itemize{
-    \item{\code{mean}: Each \code{mean} summary is a named list of three arguments. \code{name} gives
-    a name for the summary, \code{x} gives the name of the variable in \code{sim$results}
-    on which to calculate the mean, and \code{na.rm} indicates whether to exclude \code{NA}
-    values when performing the calculation.}
+    \item{\code{stat = "mean"}: \code{x} gives the name of the variable in \code{sim$results}
+    on which to calculate the mean.}
 
-    \item{\code{median}: Each \code{median} summary is a named list of three arguments. \code{name} gives
-    a name for the summary, \code{x} gives the name of the variable in \code{sim$results}
-    on which to calculate the median, and \code{na.rm} indicates whether to exclude \code{NA}
-    values when performing the calculation.}
+    \item{\code{stat = "median"}: \code{x} gives the name of the variable in \code{sim$results}
+    on which to calculate the median.}
 
-    \item{\code{var}: Each \code{var} (variance) summary is a named list of three arguments. \code{name} gives
-    a name for the summary, \code{x} gives the name of the variable in \code{sim$results}
-    on which to calculate the variance, and \code{na.rm} indicates whether to exclude \code{NA}
-    values when performing the calculation.}
+    \item{\code{stat = "var"} (variance): \code{x} gives the name of the variable in \code{sim$results}
+    on which to calculate the variance.}
 
-    \item{\code{sd}: Each \code{sd} (standard deviation) summary is a named list of three arguments. \code{name} gives
-    a name for the summary, \code{x} gives the name of the variable in \code{sim$results}
-    on which to calculate the standard deviation, and \code{na.rm} indicates whether to exclude \code{NA}
-    values when performing the calculation.}
+    \item{\code{stat = "sd"} (standard deviation): \code{x} gives the name of the variable in \code{sim$results}
+    on which to calculate the standard deviation.}
 
-    \item{\code{mad}: Each \code{mad} (mean absolute deviation) summary is a named list of three arguments. \code{name} gives
-    a name for the summary, \code{x} gives the name of the variable in \code{sim$results}
-    on which to calculate the MAD, and \code{na.rm} indicates whether to exclude \code{NA}
-    values when performing the calculation.}
+    \item{\code{stat = "mad"} (mean absolute deviation): \code{x} gives the name of the variable in \code{sim$results}
+    on which to calculate the MAD.}
 
-    \item{\code{iqr}: Each \code{iqr} (interquartile range) summary is a named list of three arguments. \code{name} gives
-    a name for the summary, \code{x} gives the name of the variable in \code{sim$results}
-    on which to calculate the IQR, and \code{na.rm} indicates whether to exclude \code{NA}
-    values when performing the calculation.}
+    \item{\code{stat = "iqr"} (interquartile range): \code{x} gives the name of the variable in \code{sim$results}
+    on which to calculate the IQR.}
 
-    \item{\code{min}: Each \code{min} (minimum) summary is a named list of three arguments. \code{name} gives
-    a name for the summary, \code{x} gives the name of the variable in \code{sim$results}
-    on which to calculate the minimum, and \code{na.rm} indicates whether to exclude \code{NA}
-    values when performing the calculation.}
+    \item{\code{stat = "min"} (minimum): \code{x} gives the name of the variable in \code{sim$results}
+    on which to calculate the minimum.}
 
-    \item{\code{max}: Each \code{max} (maximum) summary is a named list of three arguments. \code{name} gives
-    a name for the summary, \code{x} gives the name of the variable in \code{sim$results}
-    on which to calculate the maximum, and \code{na.rm} indicates whether to exclude \code{NA}
-    values when performing the calculation.}
+    \item{\code{stat = "max"} (maximum): \code{x} gives the name of the variable in \code{sim$results}
+    on which to calculate the maximum.}
 
-    \item{\code{quantile}: Each \code{quantile} summary is a named list of four arguments. \code{name} gives
-    a name for the summary, \code{x} gives the name of the variable in \code{sim$results}
-    on which to calculate the quantile, \code{prob} is a number in [0,1] denoting the desired quantile,
-    and \code{na.rm} indicates whether to exclude \code{NA} values when performing the calculation.}
+    \item{\code{stat = "quantile"}: \code{x} gives the name of the variable in \code{sim$results}
+    on which to calculate the quantile, \code{prob} is a number in [0,1] denoting the desired quantile.}
 
-    \item{\code{correlation}: Each \code{correlation} summary is a named list of four arguments. \code{name} gives
-    a name for the summary, \code{x} and \code{y} give the names of the variables in \code{sim$results}
-    on which to calculate the (Pearson's) correlation, and \code{na.rm} indicates whether to exclude \code{NA}
-    values when performing the calculation (if either member of a pair is \code{NA}, the pair is removed).}
+    \item{\code{stat = "correlation"}: \code{x} and \code{y} give the names of the variables in \code{sim$results}
+    on which to calculate the (Pearson's) correlation.}
 
-    \item{\code{covariance}: Each \code{covariance} summary is a named list of four arguments. \code{name} gives
-    a name for the summary, \code{x} and \code{y} give the names of the variables in \code{sim$results}
-    on which to calculate the covariance, and \code{na.rm} indicates whether to exclude \code{NA}
-    values when performing the calculation (if either member of a pair is \code{NA}, the pair is removed).}
+    \item{\code{stat = "covariance"}: \code{x} and \code{y} give the names of the variables in \code{sim$results}
+    on which to calculate the covariance.}
 
-    \item{\code{bias}: Each \code{bias} summary is a named list of four arguments. \code{name} gives
-    a name for the summary, \code{estimate} gives the name of the variable in \code{sim$results}
-    containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}), and
-    \code{na.rm} indicates whether to exclude \code{NA} values when performing the calculation.}
+    \item{\code{stat = "bias"}: \code{estimate} gives the name of the variable in \code{sim$results}
+    containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}).}
 
-    \item{\code{bias_pct}: Each \code{bias_pct} summary is a named list of four arguments. \code{name} gives
-    a name for the summary, \code{estimate} gives the name of the variable in \code{sim$results}
-    containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}), and
-    \code{na.rm} indicates whether to exclude \code{NA} values when performing the calculation.}
+    \item{\code{stat = "bias_pct"} (percent bias): \code{estimate} gives the name of the variable in \code{sim$results}
+    containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}).}
 
-    \item{\code{mse}: Each \code{mse} (mean squared error) summary is a named list of four arguments. \code{name} gives
-    a name for the summary, \code{estimate} gives the name of the variable in \code{sim$results}
-    containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}), and
-    \code{na.rm} indicates whether to exclude \code{NA} values when performing the calculation.}
+    \item{\code{stat = "mse"} (mean squared error): \code{estimate} gives the name of the variable in \code{sim$results}
+    containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}).}
 
-    \item{\code{mae}: Each \code{mae} (mean absolute error) summary is a named list of four arguments. \code{name} gives
-    a name for the summary, \code{estimate} gives the name of the variable in \code{sim$results}
-    containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}), and
-    \code{na.rm} indicates whether to exclude \code{NA} values when performing the calculation.}
+    \item{\code{stat = "mae"} (mean absolute error): \code{estimate} gives the name of the variable in \code{sim$results}
+    containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}).}
 
-    \item{\code{coverage}: Each \code{coverage} (confidence interval coverage) summary is a named list of five arguments. Either
-    (\code{estimate}, \code{se}) or (\code{lower}, \code{upper}) must be provided.  \code{name} gives a name for the
-    summary, \code{estimate} gives the name of the variable in \code{sim$results}
+    \item{\code{stat = "coverage"} (confidence interval coverage). Either
+    (\code{estimate}, \code{se}) or (\code{lower}, \code{upper}) must be provided. \code{estimate} gives the name of the variable in \code{sim$results}
     containing the estimator of interest, \code{se} gives the name of the variable in \code{sim$results}
     containing the standard error of the estimator of interest, \code{lower} gives the name of the variable in
     \code{sim$results} containing the confidence interval lower bound, \code{upper} gives the name of the
     variable in \code{sim$results} containing the confidence interval upper bound, \code{truth} is the
-    estimand of interest, and \code{na.rm} indicates whether to exclude \code{NA} values when performing the
-    calculation. See \emph{Details}.}
+    estimand of interest. See \emph{Details}.}
 
-    \item{\code{is_na}: Each \code{is_na} summary is a named list of two arguments. \code{name} gives
-    a name for the summary and \code{x} gives the name of the variable in \code{sim$results}
+    \item{\code{stat = "is_na"}: \code{x} gives the name of the variable in \code{sim$results}
     on which to calculate the number of \code{NA}s.}
    }}
 }
@@ -118,8 +88,6 @@ This function calculates summary statistics for simulation results.
 }
 \details{
 \itemize{
-    \item{For all summaries besides \code{coverage}, the \code{name} argument is optional. If \code{name} is not provided,
-    a name will be formed from the type of summary and the column on which the summary is performed.}
 
     \item{For all inferential summaries there are three ways to specify \code{truth}: (1) a single number,
     meaning the estimand is the same across all simulation replicates and levels, (2) a numeric vector of the
