@@ -653,10 +653,13 @@ summarize.sim_obj <- function(sim, ...) {
     }
   }
 
+  code_nrep <- "n_reps = dplyr::n(),"
+
   ### Put code strings together
   summarize_code <- c(
     "as.data.frame(dplyr::summarize(dplyr::group_by(R, level_id),",
     code_levels,
+    code_nrep,
     code_mean,
     code_median,
     code_var,
