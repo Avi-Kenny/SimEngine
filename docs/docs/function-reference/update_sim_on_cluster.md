@@ -1,7 +1,7 @@
 ---
 layout: page
 title: update_sim_on_cluster 
-nav_order: 12 
+nav_order: 13 
 permalink: /function-reference/update_sim_on_cluster/
 parent: Function reference
 ---
@@ -172,5 +172,5 @@ update_sim_on_cluster(
 ## End(Not run)
 </span>```
 
-<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.1.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.2.0 ]</div>
 </div>

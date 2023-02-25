@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-An open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on scalability, parallelization, and thorough documentation. See full documentation at \url{https://avi-kenny.github.io/SimEngine/}.
+An open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments.See full documentation at \url{https://avi-kenny.github.io/SimEngine/}.
 }
 \author{
 \strong{Maintainer}: Avi Kenny \email{avi.kenny@gmail.com}

@@ -43,6 +43,16 @@ for a thorough overview of how this function is used.
 </span>```
 
 
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>code</span></td>
+<td>
+<p>A block of code enclosed by curly braces ; see examples.</p>
+</td></tr>
+</table>
+
+
 <h3>Examples</h3>
 
 ```R<code class='language-R'>sim <- new_sim()
@@ -52,7 +62,11 @@ est_mean <- function(dat, type) {
   if (type=="est_median") { return(median(dat)) }
 }
 sim %<>% set_levels(n=c(10,100), mu=c(3,5), est=c("est_mean","est_median"))
-sim %<>% set_config(num_sim=2, batch_levels=c("n", "mu"), return_batch_id=T)
+sim %<>% set_config(
+  num_sim = 2,
+  batch_levels = c("n","mu"),
+  return_batch_id = TRUE
+)
 sim %<>% set_script(function() {
   batch({
     dat <- create_data(n=L$n, mu=L$mu)
@@ -67,5 +81,5 @@ sim %<>% run()
 sim$results[order(sim$results$batch_id),]
 </span>```
 
-<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.1.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.2.0 ]</div>
 </div>

@@ -19,7 +19,7 @@ A modular framework for statistical simulations in R
 
 ## Overview
 
-**SimEngine** is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on scalability, parallelization, and thorough documentation.
+**SimEngine** is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments.
 
 ## Installation
 
@@ -38,7 +38,7 @@ To briefly illustrate how these phases are implemented using **SimEngine**, we w
 
 ### 1) Load the package and create a "simulation object"
 
-The simulation object (an R object of class *SimEngine*) will contain all data, functions, and results related to your simulation.
+The simulation object (an R object of class *sim_obj*) will contain all data, functions, and results related to your simulation.
 
 ```R
 library(SimEngine)
@@ -61,7 +61,7 @@ create_rct_data <- function (num_patients) {
   for (i in 1:num_patients) {
     group <- ifelse(sample(c(0,1), size=1)==1, "treatment", "control")
     treatment_effect <- ifelse(group=="treatment", -7, 0)
-    outcome <- rnorm(n=1, mean=130, sd=5) + treatment_effect
+    outcome <- rnorm(n=1, mean=130, sd=2) + treatment_effect
     df[i,] <- list(i, group, outcome)
   }
   return (df)
@@ -97,7 +97,7 @@ est_tx_effect <- function(df, type) {
 }
 
 # Test out the estimators
-df <- create_rct_data(10000)
+df <- create_rct_data(1000)
 est_tx_effect(df, "est1")
 #> [1] -7.291477
 est_tx_effect(df, "est2")
@@ -123,19 +123,23 @@ The simulation script is a function that runs a single simulation replicate and 
 sim %<>% set_script(function() {
   df <- create_rct_data(L$num_patients)
   est <- est_tx_effect(df, L$estimator)
-  return (list("est"=est))
+  return (list(
+    "est" = est,
+    "mean_t" = mean(df$outcome[df$group=="treatment"]),
+    "mean_c" = mean(df$outcome[df$group=="control"])
+  ))
 })
 ```
 
-Your script should always return a named list, although your list can be complex and contain dataframes, multiple levels of nesting, etc. Note that you can also code your estimators as separate functions and call them from within the script using <a href="/function-reference/use_method">`use_method`</a>.
+Your script should always return a list containing key-value pairs, where the keys are character strings and the values are simple data types (numbers, character strings, or boolean values). If you need to return more complex data types (e.g. lists or dataframes), see the <a href="/advanced-usage">Advanced usage</a> documentation page. Note that in this example, you could have alternatively coded your estimators as separate functions and called them from within the script using the <a href="/function-reference/use_method">`use_method`</a> function.
 
 ### 6) Set the simulation configuration
 
-This controls options related to your entire simulation, such as the number of simulation replicates to run for each level combination and how to <a href="/parallelization">parallelize</a> your code. This is also where you should specify any packages your simulation needs (instead of using `library` or `require`). This is discussed in detail on the <a href="/function-reference/set_config">`set_config`</a> page. We set `num_sim` to 10, and so **SimEngine** will run a total of 60 simulation replicates (10 for each level combination).
+This controls options related to your entire simulation, such as the number of simulation replicates to run for each level combination and how to <a href="/parallelization">parallelize</a> your code. This is also where you should specify any packages your simulation needs (instead of using `library` or `require`). See the <a href="/function-reference/set_config">`set_config`</a> docs for more info. We set `num_sim` to 100, and so **SimEngine** will run a total of 600 simulation replicates (100 for each of the six level combinations).
 
 ```R
 sim %<>% set_config(
-  num_sim = 10,
+  num_sim = 100,
   parallel = "outer",
   n_cores = 2,
   packages = c("ggplot2", "stringr")
@@ -148,6 +152,7 @@ All 600 replicates are run at once and results are stored in the simulation obje
 
 ```R
 sim %<>% run()
+#>   |########################################| 100%
 #> "Done. No errors detected."
 ```
 
@@ -157,8 +162,8 @@ Once the simulations have finished, use the `summarize` function to calculate co
 
 ```R
 sim %>% summarize(
-  bias = list(truth=-7, estimate="est"),
-  mse = list(truth=-7, estimate="est")
+  list(stat="bias", truth=-7, estimate="est"),
+  list(stat="mse", truth=-7, estimate="est")
 )
 #>   level_id estimator num_patients    bias_est      MSE_est
 #> 1        1     est_1           50  2.91313267 1221.3380496
@@ -169,22 +174,20 @@ sim %>% summarize(
 #> 6        6     est_2          200  0.20431877    0.5332393
 ```
 
-In this example, we see that the MSE of estimator 1 is much higher than that of estimator 2 and that MSE decreases with increasing sample size for both estimators, as expected.
-
-You can also directly access the results for individual simulation replicates.
+In this example, we see that the MSE of estimator 1 is much higher than that of estimator 2 and that MSE decreases with increasing sample size for both estimators, as expected. You can also directly access the results for individual simulation replicates.
 
 ```R
 head(sim$results)
-#>   sim_uid level_id rep_id estimator num_patients     runtime        est
-#> 1       1        1      1     est_1           50 0.007977009 -47.961709
-#> 2       2        1      2     est_1           50 0.010969162  23.805217
-#> 3       3        1      3     est_1           50 0.006983995  -8.066438
-#> 4       4        1      4     est_1           50 0.004987001 -15.221781
-#> 5       5        1      5     est_1           50 0.003988981   2.726603
-#> 6       6        1      6     est_1           50 0.010968924  13.232685
+#>   sim_uid level_id rep_id estimator num_patients     runtime        est   mean_t   mean_c
+#> 1       1        1      1      est1           50 0.021017075  12.901867 122.6590 129.9673
+#> 2       7        1      2      est1           50 0.006411076  13.394434 123.5251 130.4486
+#> 3       8        1      3      est1           50 0.017305851  -7.615009 122.5089 130.1239
+#> 4       9        1      4      est1           50 0.006474018 -17.350040 122.7393 129.9805
+#> 5      10        1      5      est1           50 0.005895138 -77.855496 122.6878 129.8365
+#> 6      11        1      6      est1           50 0.006982088 -17.025573 123.1571 130.0542
 ```
 
-Above, the `sim_uid` uniquely identifies a single simulation replicate, the `level_id` uniquely identifies a level combination. The rep_id is unique within a given level combination and identifies the replicate.
+Above, the `sim_uid` uniquely identifies a single simulation replicate and the `level_id` uniquely identifies a level combination. The rep_id is unique within a given level combination and identifies the replicate.
 
 ---
 

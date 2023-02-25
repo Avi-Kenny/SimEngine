@@ -1,7 +1,7 @@
 ---
 layout: page
 title: update_sim 
-nav_order: 11 
+nav_order: 12 
 permalink: /function-reference/update_sim/
 parent: Function reference
 ---
@@ -100,5 +100,5 @@ sim %<>% set_config(num_sim=5)
 sim %<>% update_sim()
 </span>```
 
-<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.1.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.2.0 ]</div>
 </div>

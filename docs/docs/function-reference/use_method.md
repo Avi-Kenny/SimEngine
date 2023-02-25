@@ -1,7 +1,7 @@
 ---
 layout: page
 title: use_method 
-nav_order: 13 
+nav_order: 14 
 permalink: /function-reference/use_method/
 parent: Function reference
 ---
@@ -81,5 +81,5 @@ sim %<>% run()
 sim$results
 </span>```
 
-<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.1.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.2.0 ]</div>
 </div>

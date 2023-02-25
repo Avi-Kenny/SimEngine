@@ -4,7 +4,7 @@ Title: A Modular Framework for Statistical Simulations in R
 Version: 1.2.0
 Authors@R: c(person("Avi", "Kenny", email = "avi.kenny@gmail.com", role = c("aut", "cre")),
              person("Charles", "Wolock", email = "cwolock@uw.edu", role = "aut"))
-Description: An open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments. Emphasis is placed on scalability, parallelization, and thorough documentation. See full documentation at <https://avi-kenny.github.io/SimEngine/>.
+Description: An open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments.See full documentation at <https://avi-kenny.github.io/SimEngine/>.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

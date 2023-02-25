@@ -78,5 +78,5 @@ sim %<>% run()
 sim$results %>% print()
 </span>```
 
-<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.1.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.2.0 ]</div>
 </div>

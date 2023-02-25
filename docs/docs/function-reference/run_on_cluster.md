@@ -24,16 +24,17 @@ function processMathHTML() {
 
 <h3>Description</h3>
 
-<p>This function serves a scaffold for running simulations in
-parallel on a cluster computing system. It acts as a wrapper for the code
-in your simulation script, organizing the code into three sections,
-labeled &quot;first&quot; (code that is run once at the start of the simulation,
-e.g. setting simulation levels), &quot;main&quot; (the simulation script, which is
-run repeatedly), and &quot;last&quot; (code to combine and summarize simulation
-results). This function interacts with cluster job scheduler software
-(e.g. Slurm or Oracle Grid Engine) to divide parallel tasks over cluster
-nodes. See <a href="https://avi-kenny.github.io/SimEngine/parallelization/">https://avi-kenny.github.io/SimEngine/parallelization/</a>
-for an overview of how cluster parallelization works in <span class="pkg">SimEngine</span>.
+<p>This function allows for simulations to be run in parallel on a
+cluster computing system (CCS). It acts as a wrapper for the code in your
+simulation script, organizing the code into three sections, labeled
+&quot;first&quot; (code that is run once at the start of the simulation, e.g.
+setting simulation levels), &quot;main&quot; (running the simulation script via
+<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>run</span>)), and &quot;last&quot; (usually code to process or summarize
+simulation results). This function interacts with cluster job scheduler
+software (e.g. Slurm or Oracle Grid Engine) to divide parallel tasks over
+cluster nodes. See
+<a href="https://avi-kenny.github.io/SimEngine/parallelization/">https://avi-kenny.github.io/SimEngine/parallelization/</a> for a
+detailed overview of how CCS parallelization works in <span class="pkg">SimEngine</span>.
 </p>
 
 
@@ -49,18 +50,19 @@ for an overview of how cluster parallelization works in <span class="pkg">SimEng
 <tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>first</span></td>
 <td>
 <p>Code to run at the start of a simulation. This should be a block
-of code enclosed by curly braces  that that creates a simulation
-object. Put everything you need in the simulation object, since global
-variables declared in this block will not be available when the 'main'
-and 'last' code blocks run.</p>
+of code enclosed by curly braces  that creates a simulation object. Put
+everything you need in the simulation object, since global variables
+declared in this block will not be available when the 'main' and 'last'
+code blocks run.</p>
 </td></tr>
 <tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>main</span></td>
 <td>
 <p>Code that will run for every simulation replicate. This should be
-a block of code enclosed by curly braces  that includes a call to
-<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>run</span>. This code block will have access to the simulation
-object you created in the 'first' code block, but any changes made here
-to the simulation object will not be saved.</p>
+a block of code enclosed by curly braces , and will almost always
+contain only a single call to the <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>run</span>) function. This code
+block will have access to the simulation object you created in the
+'first' code block, but any changes made here to the simulation object
+will not be saved.</p>
 </td></tr>
 <tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>last</span></td>
 <td>
@@ -134,5 +136,5 @@ run_on_cluster(
 ## End(Not run)
 </span>```
 
-<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.1.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.2.0 ]</div>
 </div>

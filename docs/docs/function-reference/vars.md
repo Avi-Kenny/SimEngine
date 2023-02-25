@@ -1,7 +1,7 @@
 ---
 layout: page
 title: vars 
-nav_order: 14 
+nav_order: 15 
 permalink: /function-reference/vars/
 parent: Function reference
 ---
@@ -107,5 +107,5 @@ sim$vars$num_sim_total %>% print()
 vars(sim) %>% print()
 </span>```
 
-<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.1.0 ]</div>
+<hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.2.0 ]</div>
 </div>
