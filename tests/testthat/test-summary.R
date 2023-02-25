@@ -388,6 +388,51 @@ test_that("var summary of two variables returns both vars", {
   expect_equal(names(summ), c("level_id",  "my_summary", "var_y"))
 })
 
+### proper functioning of covariance summary ###
+
+summ <- sim %>% summarize(
+  list(stat = "covariance", name="my_summary", x="x", y="y")
+)
+
+test_that("covariance summary without na.rm returns NA", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_true(is.na(summ$my_summary))
+})
+
+summ <- sim %>% summarize(
+  list(stat = "covariance", name="my_summary", x="x", y="y", na.rm=TRUE)
+)
+
+test_that("covariance summary with na.rm returns covariance", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, cov(c(1,2,3,4,5), c(6,7,8,9,10)))
+})
+
+### proper functioning of correlation summary ###
+
+summ <- sim %>% summarize(
+  list(stat = "correlation", name="my_summary", x="x", y="y")
+)
+
+test_that("correlation summary without na.rm returns NA", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_true(is.na(summ$my_summary))
+})
+
+summ <- sim %>% summarize(
+  list(stat = "correlation", name="my_summary", x="x", y="y", na.rm=TRUE)
+)
+
+test_that("correlation summary with na.rm returns covariance", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 2))
+  expect_equal(summ$my_summary, cor(c(1,2,3,4,5), c(6,7,8,9,10)))
+})
+
+
 ### proper functioning of mad summary ###
 
 summ <- sim %>% summarize(

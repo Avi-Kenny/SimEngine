@@ -153,22 +153,6 @@ summarize.sim_obj <- function(sim, ...) {
   # String to temporarily append to column names
   pre <- "o___o_"
 
-  # If no additional arguments provided to summarize, display means by default
-  # fix this to go with new structure
-  # if (identical(o_args,list())) {
-  #
-  #   names_means <- names_results[!(names_results %in% c(
-  #     names_levels, "sim_uid", "rep_id", "level_id"
-  #   ))]
-  #
-  #   o_args <- list()
-  #   for (i in 1:length(names_means)) {
-  #     o_args[[i]] <- list(name=paste0("mean_",names_means[i]), x=names_means[i])
-  #   }
-  #   o_args <- list(mean=o_args)
-  #
-  # }
-
   # If there is only one list, wrap it in a list
   metrics <- c("mean",
                "median",
@@ -203,8 +187,8 @@ summarize.sim_obj <- function(sim, ...) {
   code_coverage <- ""
   code_correlation <- ""
   code_covariance <- ""
-  
-  
+
+
   # Parse code to display levels
   if (is.null(sim$levels$no_levels)) {
     code_levels <- paste0("'",names_levels,"'=`",names_levels,"`[1],")
@@ -618,33 +602,55 @@ summarize.sim_obj <- function(sim, ...) {
         "/sum(!is.na(.ci_l_", arg$name, ") & !is.na(.ci_h_", arg$name,
         ") & !is.na(", arg$truth, ")", "),"))
 
-      # } else if (stat_name == "correlation"){
-      #
-      # } else if (stat_name == "covariance"){
-      #
-      # }
+    } else if (stat_name == "correlation"){
+      # if name missing, create a name
+      if (is.null(arg$name)) { arg$name <- paste0("correlation_", arg$x) }
+
+      # Handle errors
+      handle_errors(arg$x, "is.null", msg="`x` argument is required")
+      handle_errors(arg$y, "is.null", msg="`y` argument is required")
+      handle_errors(arg$name, "is.character", name="name")
+      handle_errors(arg$x, "is.in", other=names(R),
+                    msg=paste0("`",arg$x,"` is not a variable in results"))
+      handle_errors(arg$y, "is.in", other=names(R),
+                    msg=paste0("`",arg$y,"` is not a variable in results"))
+      handle_errors(R[[arg$x]], "is.numeric.vec", name=arg$x)
+      handle_errors(R[[arg$y]], "is.numeric.vec", name=arg$y)
+
+      if (!is.null(arg$na.rm) && arg$na.rm==TRUE) {
+        na_1 <- ", use='complete.obs'),"
+      } else {
+        na_1 <- "),"
+      }
+
+      code_correlation <- c(code_correlation, paste0(
+        pre, arg$name, " = cor(", arg$x, ",", arg$y, na_1
+      ))
+    } else if (stat_name == "covariance"){
+      # if name missing, create a name
+      if (is.null(arg$name)) { arg$name <- paste0("covariance_", arg$x) }
+
+      # Handle errors
+      handle_errors(arg$x, "is.null", msg="`x` argument is required")
+      handle_errors(arg$y, "is.null", msg="`y` argument is required")
+      handle_errors(arg$name, "is.character", name="name")
+      handle_errors(arg$x, "is.in", other=names(R),
+                    msg=paste0("`",arg$x,"` is not a variable in results"))
+      handle_errors(arg$y, "is.in", other=names(R),
+                    msg=paste0("`",arg$y,"` is not a variable in results"))
+      handle_errors(R[[arg$x]], "is.numeric.vec", name=arg$x)
+      handle_errors(R[[arg$y]], "is.numeric.vec", name=arg$y)
+
+      if (!is.null(arg$na.rm) && arg$na.rm==TRUE) {
+        na_1 <- ", use='complete.obs'),"
+      } else {
+        na_1 <- "),"
+      }
+
+      code_covariance <- c(code_covariance, paste0(
+        pre, arg$name, " = cov(", arg$x, ",", arg$y, na_1
+      ))
     }
-  }
-  #
-  #
-  #   }
-  #
-  #   # for (arg_name in names(o_args)) {
-  #   #   if (!(arg_name %in% metrics)) {
-  #   #     stop(paste0(arg_name, " is an invalid summary metric."))
-  #   #   }
-  #   # }
-  #   # for (metric in metrics) {
-  #   #   if (!is.null(o_args[[metric]]) && !methods::is(o_args[[metric]][[1]],"list")) {
-  #   #     o_args[[metric]] <- list(o_args[[metric]])
-  #   #   }
-  #   # }
-  #
-  # Parse code to display levels
-  if (is.null(sim$levels$`no levels`)) {
-    code_levels <- paste0("'",names_levels,"'=`",names_levels,"`[1],")
-  } else {
-    code_levels <- ""
   }
 
   ### Put code strings together
