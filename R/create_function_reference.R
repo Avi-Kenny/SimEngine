@@ -61,19 +61,19 @@ if (F) {
 
       line <- lines[j]
 
-      # Skip first four lines
-      if (j>=5) {
+      # Skip first 16 lines
+      if (j>=17) {
 
         # Make replacements
-        line %<>% sub("<pre>", "```R", ., fixed=T)
-        line %<>% sub("</pre>", "```", ., fixed=T)
+        line %<>% sub("<pre><code class='language-R'>", "```R\n", ., fixed=T)
+        line %<>% sub("</code></pre>", "```", ., fixed=T)
         line %<>% gsub("&lt;", "<", ., fixed=T)
         line %<>% gsub("&gt;", ">", ., fixed=T)
         line %<>% gsub("<code>", "<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>", ., fixed=T)
         line %<>% gsub("</code>", "</span>", ., fixed=T)
 
         # Write lines
-        if (line != "</body></html>") {
+        if (!(line %in% c("</div>", "</body></html>"))) {
           cat(line)
           cat("\n")
         }
