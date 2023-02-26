@@ -1,74 +1,94 @@
 #' Summarize simulation results
 #'
-#' @description This function calculates summary statistics for simulation results.
-#'     Options for summary statistics include descriptive statistics (e.g. measures of
+#' @description This function calculates summary statistics for simulation results,
+#'     including descriptive statistics (e.g. measures of
 #'     center or spread) and inferential statistics (e.g. bias or confidence interval
 #'     coverage). All summary statistics are calculated over simulation replicates
 #'     within a single simulation level.
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
 #'     \code{\link{new_sim}}
-#' @param ... One or more named lists, separated by commas, specifying desired summaries of the \code{sim}
-#'     simulation object. Each list must have a \code{stat} item, which specifies the summary statistic to
+#' @param ... One or more lists, separated by commas, specifying desired summaries of the \code{sim}
+#'     simulation object. See examples. Each list must have a \code{stat} item, which specifies the type of summary statistic to
 #'     be calculated. For all \code{stat} options besides \code{"coverage"}, the \code{name} item is optional;
 #'     if it is not provided, a name will be formed from the type of summary and the column on which the summary
 #'     is performed. The \code{na.rm} item indicates whether to exclude \code{NA} values when performing the calculation (with
 #'     default being \code{FALSE}). Additional required items are detailed below for each \code{stat} type.
 #'     \itemize{
-#'     \item{\code{stat = "mean"}: \code{x} gives the name of the variable in \code{sim$results}
-#'     on which to calculate the mean.}
 #'
-#'     \item{\code{stat = "median"}: \code{x} gives the name of the variable in \code{sim$results}
-#'     on which to calculate the median.}
+#'     \item{\code{list(stat="mean", x="col_1", name="mean_col")} computes the
+#'     mean of column \code{sim$results$col_1} for each level combination and
+#'     creates a summary column named \code{"mean_col"}. Other single-column
+#'     summary statistics (see the next few items) work analogously. \code{name}
+#'     is optional.}
 #'
-#'     \item{\code{stat = "var"} (variance): \code{x} gives the name of the variable in \code{sim$results}
-#'     on which to calculate the variance.}
+#'     \item{\code{list(stat="median", ...)} computes the median.}
 #'
-#'     \item{\code{stat = "sd"} (standard deviation): \code{x} gives the name of the variable in \code{sim$results}
-#'     on which to calculate the standard deviation.}
+#'     \item{\code{list(stat="var", ...)} computes the variance.}
 #'
-#'     \item{\code{stat = "mad"} (mean absolute deviation): \code{x} gives the name of the variable in \code{sim$results}
-#'     on which to calculate the MAD.}
+#'     \item{\code{list(stat="sd", ...)} computes the standard deviation.}
 #'
-#'     \item{\code{stat = "iqr"} (interquartile range): \code{x} gives the name of the variable in \code{sim$results}
-#'     on which to calculate the IQR.}
+#'     \item{\code{list(stat="mad", ...)} computes the mean absolute deviation.}
 #'
-#'     \item{\code{stat = "min"} (minimum): \code{x} gives the name of the variable in \code{sim$results}
-#'     on which to calculate the minimum.}
+#'     \item{\code{list(stat="iqr", ...)} computes the interquartile range.}
 #'
-#'     \item{\code{stat = "max"} (maximum): \code{x} gives the name of the variable in \code{sim$results}
-#'     on which to calculate the maximum.}
+#'     \item{\code{list(stat="min", ...)} computes the minimum.}
 #'
-#'     \item{\code{stat = "quantile"}: \code{x} gives the name of the variable in \code{sim$results}
-#'     on which to calculate the quantile, \code{prob} is a number in [0,1] denoting the desired quantile.}
+#'     \item{\code{list(stat="max", ...)} computes the maximum.}
 #'
-#'     \item{\code{stat = "correlation"}: \code{x} and \code{y} give the names of the variables in \code{sim$results}
-#'     on which to calculate the (Pearson's) correlation.}
+#'     \item{\code{list(stat="is_na", ...)} computes the number of NA values.}
 #'
-#'     \item{\code{stat = "covariance"}: \code{x} and \code{y} give the names of the variables in \code{sim$results}
-#'     on which to calculate the covariance.}
+#'     \item{\code{list(stat="correlation", x="col_1", y="col_2",
+#'     name="cor_12")} computes the (Pearson's) correlation coefficient between
+#'     \code{sim$results$col_1} and \code{sim$results$col_2} for each level
+#'     combination and creates a summary column named \code{"cor_12"}.}
 #'
-#'     \item{\code{stat = "bias"}: \code{estimate} gives the name of the variable in \code{sim$results}
-#'     containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}).}
+#'     \item{\code{list(stat="covariance", x="col_1", y="col_2",
+#'     name="cov_12")} computes the covariance between \code{sim$results$col_1}
+#'     and \code{sim$results$col_2} for each level combination and creates a
+#'     summary column named \code{"cov_12"}.}
 #'
-#'     \item{\code{stat = "bias_pct"} (percent bias): \code{estimate} gives the name of the variable in \code{sim$results}
-#'     containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}).}
+#'     \item{\code{list(stat="quantile", x="col_1", prob=0.8, name="q_col_1")}
+#'     computes the 0.8 quantile of column \code{sim$results$col_1} and creates
+#'     a summary column named \code{"q_col_1"}. \code{prob} can be any number in
+#'     [0,1].}
 #'
-#'     \item{\code{stat = "mse"} (mean squared error): \code{estimate} gives the name of the variable in \code{sim$results}
-#'     containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}).}
+#'     \item{\code{list(stat="bias", estimate="est", truth=5,
+#'     name="bias_est")} computes the absolute bias of the estimator
+#'     corresponding to column \code{"sim$results$est"}, relative to the true
+#'     value given in \code{truth}, and creates a summary column named
+#'     \code{"bias_est"}. \code{name} is optional. See \emph{Details}.}
 #'
-#'     \item{\code{stat = "mae"} (mean absolute error): \code{estimate} gives the name of the variable in \code{sim$results}
-#'     containing the estimator of interest, \code{truth} is the estimand of interest (see \emph{Details}).}
+#'     \item{\code{list(stat="bias_pct", estimate="est", truth=5,
+#'     name="bias_est")} computes the percent bias of the estimator
+#'     corresponding to column \code{"sim$results$est"}, relative to the true
+#'     value given in \code{truth}, and creates a summary column named
+#'     \code{"bias_pct_est"}. \code{name} is optional. See \emph{Details}.}
 #'
-#'     \item{\code{stat = "coverage"} (confidence interval coverage). Either
-#'     (\code{estimate}, \code{se}) or (\code{lower}, \code{upper}) must be provided. \code{estimate} gives the name of the variable in \code{sim$results}
-#'     containing the estimator of interest, \code{se} gives the name of the variable in \code{sim$results}
-#'     containing the standard error of the estimator of interest, \code{lower} gives the name of the variable in
-#'     \code{sim$results} containing the confidence interval lower bound, \code{upper} gives the name of the
-#'     variable in \code{sim$results} containing the confidence interval upper bound, \code{truth} is the
-#'     estimand of interest. See \emph{Details}.}
+#'     \item{\code{list(stat="mse", estimate="est", truth=5,
+#'     name="mse_est")} computes the mean squared error of the estimator
+#'     corresponding to column \code{"sim$results$est"}, relative to the true
+#'     value given in \code{truth}, and creates a summary column named
+#'     \code{"mse_est"}. \code{name} is optional. See \emph{Details}.}
 #'
-#'     \item{\code{stat = "is_na"}: \code{x} gives the name of the variable in \code{sim$results}
-#'     on which to calculate the number of \code{NA}s.}
+#'     \item{\code{list(stat="mae", estimate="est", truth=5,
+#'     name="mae_est")} computes the mean absolute error of the estimator
+#'     corresponding to column \code{"sim$results$est"}, relative to the true
+#'     value given in \code{truth}, and creates a summary column named
+#'     \code{"mae_est"}. \code{name} is optional. See \emph{Details}.}
+#'
+#'     \item{\code{list(stat="coverage", estimate="est", se="se_est",
+#'     truth=5, name="cov_est")} or
+#'     \code{list(stat="coverage", lower="est_l", upper="est_u",
+#'     truth=5, name="cov_est")} computes confidence interval coverage. With the
+#'     first form, \code{estimate} gives the name of the variable in
+#'     \code{sim$results} corresponding to the estimator of interest and
+#'     \code{se} gives the name of the variable containing the standard error of
+#'     the estimator of interest. With the second form, \code{lower} gives the
+#'     name of the variable containing the confidence interval lower bound and
+#'     \code{upper} gives the name of the confidence interval upper bound. In
+#'     both cases, \code{truth} is the true value (see \emph{Details}), and a
+#'     summary column named \code{"cov_est"} is created.}
+#'
 #'    }
 #' @details \itemize{
 #'
@@ -80,10 +100,10 @@
 #'     \item{There are two ways to specify the confidence interval bounds for \code{coverage}. The first is to provide
 #'     an \code{estimate} and its associated \code{se} (standard error). These should both be variables in
 #'     \code{sim$results}. The function constructs a 95\% Wald-type confidence interval of the form
-#'     (\code{estimate} - 1.96 \code{se}, \code{estimate} + 1.96 \code{se}).  The alternative is to provide
+#'     \code{(estimate-1.96*se, estimate+1.96*se)}. The alternative is to provide
 #'     \code{lower} and \code{upper} bounds, which should also be variables in \code{sim$results}. In this case,
-#'     the confidence interval is (\code{lower}, \code{upper}). The coverage is simply the proportion of simulation
-#'     replicates for a given level in which \code{truth} lies within the interval.}
+#'     the confidence interval is (\code{lower}, \code{upper}). The coverage is the proportion of simulation
+#'     replicates for a given level combination in which \code{truth} lies within the interval.}
 #' }
 #' @return A data frame containing the result of each specified summary function as a column, for each of
 #'     the simulation levels. The column \code{n_reps} returns the number of successful simulation replicates
