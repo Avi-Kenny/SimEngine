@@ -6,18 +6,6 @@ permalink: /function-reference/use_method/
 parent: Function reference
 ---
 
-<script type="text/javascript">
-const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
-function processMathHTML() {
-    var l = document.getElementsByClassName('reqn');
-    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
-    return;
-}</script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
-    onload="processMathHTML();"></script>
-<link rel="stylesheet" type="text/css" href="R.css" />
-</head><body><div class="container">
-
 <table style="width: 100%;"><tr><td>use_method {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Use a method</h2>
@@ -34,8 +22,9 @@ around do.call and is used in a similar manner. See examples.
 
 <h3>Usage</h3>
 
-```R<code class='language-R'>use_method(method, args = list())
-</span>```
+```R
+use_method(method, args = list())
+```
 
 
 <h3>Arguments</h3>
@@ -61,7 +50,8 @@ loaded via <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Mo
 
 <h3>Examples</h3>
 
-```R<code class='language-R'># The following is a toy example of a simulation, illustrating the use of
+```R
+# The following is a toy example of a simulation, illustrating the use of
 # the use_method function.
 sim <- new_sim()
 create_data <- function(n) { rpois(n, lambda=5) }
@@ -79,7 +69,6 @@ sim %<>% set_script(function() {
 })
 sim %<>% run()
 sim$results
-</span>```
+```
 
 <hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.2.0 ]</div>
-</div>

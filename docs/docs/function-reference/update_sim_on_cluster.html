@@ -1,10 +1,18 @@
----
-layout: page
-title: update_sim_on_cluster 
-nav_order: 13 
-permalink: /function-reference/update_sim_on_cluster/
-parent: Function reference
----
+<!DOCTYPE html><html><head><title>R: Framework for updating simulations on a cluster computing...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
 
 <table style="width: 100%;"><tr><td>update_sim_on_cluster {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
@@ -14,7 +22,7 @@ parent: Function reference
 
 <p>This function serves a scaffold for updating a previously-run in
 parallel on a cluster computing system. Like
-<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>run_on_cluster</span>, it acts as a wrapper for the code in your
+<code>run_on_cluster</code>, it acts as a wrapper for the code in your
 simulation script, organizing the code into three sections, labeled
 &quot;first&quot; (code that is run once at the start of the simulation, e.g.
 setting simulation levels), &quot;main&quot; (the simulation script, which is run
@@ -28,63 +36,61 @@ for an overview of how cluster parallelization works in <span class="pkg">SimEng
 
 <h3>Usage</h3>
 
-```R
-update_sim_on_cluster(first, main, last, cluster_config, keep_errors = T)
-```
+<pre><code class='language-R'>update_sim_on_cluster(first, main, last, cluster_config, keep_errors = T)
+</code></pre>
 
 
 <h3>Arguments</h3>
 
 <table>
-<tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>first</span></td>
+<tr style="vertical-align: top;"><td><code>first</code></td>
 <td>
 <p>Code to run before executing additional simulation replicates. For example,
-this could include altering the simulation levels or changing <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>nsim</span>. This block of code,
+this could include altering the simulation levels or changing <code>nsim</code>. This block of code,
 enclosed by curly braces , must first read in an existing simulation object
 and then make alterations to it. Global variables declared in this block will not be available when the 'main'
 and 'last' code blocks run.</p>
 </td></tr>
-<tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>main</span></td>
+<tr style="vertical-align: top;"><td><code>main</code></td>
 <td>
 <p>Code that will run for every simulation replicate. This should be
 a block of code enclosed by curly braces  that includes a call to
-<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>update_sim</span>. This code block will have access to the
+<code>update_sim</code>. This code block will have access to the
 simulation object you read in the 'first' code block, but any changes
 made here to the simulation object will not be saved.</p>
 </td></tr>
-<tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>last</span></td>
+<tr style="vertical-align: top;"><td><code>last</code></td>
 <td>
 <p>Code that will run after all additional simulation replicates have been run.
 This should be a block of code enclosed by curly braces  that takes
 your simulation object (which at this point will contain both your old and new results)
 and do something with it, such as display your results on a graph.</p>
 </td></tr>
-<tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>cluster_config</span></td>
+<tr style="vertical-align: top;"><td><code>cluster_config</code></td>
 <td>
 <p>A list of configuration options. You must specify
-either <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>js</span> (the job scheduler you are using) or <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>tid_var</span> (the
+either <code>js</code> (the job scheduler you are using) or <code>tid_var</code> (the
 name of the environment variable that your task ID is stored in). Run
-<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>js_support()</span> to see a list of job schedulers that are currently
-supported. You can optionally also specify <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>dir</span>, which is a
+<code>js_support()</code> to see a list of job schedulers that are currently
+supported. You can optionally also specify <code>dir</code>, which is a
 character string representing a path to a directory; this directory will
 serve as your working directory and hold your simulation object,
 temporary <span class="pkg">SimEngine</span> objects, and simulation results (this defaults
 to the working directory of the R script that contains your simulation
 code).</p>
 </td></tr>
-<tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>keep_errors</span></td>
+<tr style="vertical-align: top;"><td><code>keep_errors</code></td>
 <td>
-<p>logical (<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>TRUE</span> by default); if <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>TRUE</span>, do not
+<p>logical (<code>TRUE</code> by default); if <code>TRUE</code>, do not
 try to re-run simulation reps that results in errors previously; if
-<span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>FALSE</span>, attempt to run those reps again</p>
+<code>FALSE</code>, attempt to run those reps again</p>
 </td></tr>
 </table>
 
 
 <h3>Examples</h3>
 
-```R
-## Not run: 
+<pre><code class='language-R'>## Not run: 
 # The following code creates, runs, and subsequently updates a toy simulation
 # on a cluster computing environment. We include both the R code as well as
 # sample BASH code for running the simulation using Oracle Grid Engine.
@@ -94,22 +100,22 @@ library(SimEngine)
 run_on_cluster(
 
   first = {
-    sim <- new_sim()
-    create_data <- function(n) { rnorm(n) }
-    sim %<>% set_script(function() {
-      data <- create_data(L$n)
+    sim &lt;- new_sim()
+    create_data &lt;- function(n) { rnorm(n) }
+    sim %&lt;&gt;% set_script(function() {
+      data &lt;- create_data(L$n)
       return(list("x"=mean(data)))
     })
-    sim %<>% set_levels(n=c(100,1000))
-    sim %<>% set_config(num_sim=10)
+    sim %&lt;&gt;% set_levels(n=c(100,1000))
+    sim %&lt;&gt;% set_config(num_sim=10)
   },
 
   main = {
-    sim %<>% run()
+    sim %&lt;&gt;% run()
   },
 
   last = {
-    sim %>% summarize()
+    sim %&gt;% summarize()
   },
 
   cluster_config = list(js="ge")
@@ -132,16 +138,16 @@ library(SimEngine)
 update_sim_on_cluster(
 
   first = {
-    sim <- readRDS("sim.rds")
-    sim %<>% set_levels(n = c(100,500,1000))
+    sim &lt;- readRDS("sim.rds")
+    sim %&lt;&gt;% set_levels(n = c(100,500,1000))
   },
 
   main = {
-    sim %<>% update_sim()
+    sim %&lt;&gt;% update_sim()
   },
 
   last = {
-    sim %>% summarize()
+    sim %&gt;% summarize()
   },
 
   cluster_config = list(js="ge")
@@ -160,6 +166,8 @@ update_sim_on_cluster(
 # qsub -v sim_run='last' -hold_jid 105 update_sim.sh
 
 ## End(Not run)
-```
+</code></pre>
 
 <hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.2.0 ]</div>
+</div>
+</body></html>

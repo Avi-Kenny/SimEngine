@@ -6,18 +6,6 @@ permalink: /function-reference/set_config/
 parent: Function reference
 ---
 
-<script type="text/javascript">
-const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
-function processMathHTML() {
-    var l = document.getElementsByClassName('reqn');
-    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
-    return;
-}</script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
-    onload="processMathHTML();"></script>
-<link rel="stylesheet" type="text/css" href="R.css" />
-</head><body><div class="container">
-
 <table style="width: 100%;"><tr><td>set_config {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Modify the simulation configuration</h2>
@@ -36,7 +24,8 @@ your simulation object.
 
 <h3>Usage</h3>
 
-```R<code class='language-R'>set_config(
+```R
+set_config(
   sim,
   num_sim = 1000,
   parallel = "none",
@@ -48,7 +37,7 @@ your simulation object.
   batch_levels = NA,
   return_batch_id = FALSE
 )
-</span>```
+```
 
 
 <h3>Arguments</h3>
@@ -151,13 +140,13 @@ different results on different runs.
 
 <h3>Examples</h3>
 
-```R<code class='language-R'>sim <- new_sim()
+```R
+sim <- new_sim()
 sim %<>% set_config(
   num_sim = 10,
   seed = 2112
 )
 sim
-</span>```
+```
 
 <hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.2.0 ]</div>
-</div>

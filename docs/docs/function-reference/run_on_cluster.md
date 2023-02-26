@@ -6,18 +6,6 @@ permalink: /function-reference/run_on_cluster/
 parent: Function reference
 ---
 
-<script type="text/javascript">
-const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
-function processMathHTML() {
-    var l = document.getElementsByClassName('reqn');
-    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
-    return;
-}</script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
-    onload="processMathHTML();"></script>
-<link rel="stylesheet" type="text/css" href="R.css" />
-</head><body><div class="container">
-
 <table style="width: 100%;"><tr><td>run_on_cluster {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Framework for running simulations on a cluster computing system</h2>
@@ -40,8 +28,9 @@ detailed overview of how CCS parallelization works in <span class="pkg">SimEngin
 
 <h3>Usage</h3>
 
-```R<code class='language-R'>run_on_cluster(first, main, last, cluster_config)
-</span>```
+```R
+run_on_cluster(first, main, last, cluster_config)
+```
 
 
 <h3>Arguments</h3>
@@ -89,7 +78,8 @@ code).</p>
 
 <h3>Examples</h3>
 
-```R<code class='language-R'>## Not run: 
+```R
+## Not run: 
 # The following is a toy simulation that could be run on a cluster computing
 # environment. It runs 10 replicates of 2 simulation levels as 20 separate
 # cluster jobs, and then summarizes the results. This function is designed to
@@ -134,7 +124,6 @@ run_on_cluster(
 # qsub -v sim_run='last' -hold_jid 102 run_sim.sh
 
 ## End(Not run)
-</span>```
+```
 
 <hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.2.0 ]</div>
-</div>

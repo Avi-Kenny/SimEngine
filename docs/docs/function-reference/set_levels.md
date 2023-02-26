@@ -6,18 +6,6 @@ permalink: /function-reference/set_levels/
 parent: Function reference
 ---
 
-<script type="text/javascript">
-const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
-function processMathHTML() {
-    var l = document.getElementsByClassName('reqn');
-    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
-    return;
-}</script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
-    onload="processMathHTML();"></script>
-<link rel="stylesheet" type="text/css" href="R.css" />
-</head><body><div class="container">
-
 <table style="width: 100%;"><tr><td>set_levels {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Set simulation levels</h2>
@@ -31,8 +19,9 @@ between simulation replicates.
 
 <h3>Usage</h3>
 
-```R<code class='language-R'>set_levels(sim, ..., .keep = NA)
-</span>```
+```R
+set_levels(sim, ..., .keep = NA)
+```
 
 
 <h3>Arguments</h3>
@@ -66,7 +55,8 @@ with the new set
 
 <h3>Examples</h3>
 
-```R<code class='language-R'># Basic usage is as follows:
+```R
+# Basic usage is as follows:
 sim <- new_sim()
 sim %<>% set_levels(
   "n" = c(10, 100, 1000),
@@ -96,7 +86,6 @@ sim %<>% set_levels(alpha=c(1,2,3), beta=c(5,6))
 sim$levels_grid
 sim %<>% set_levels(.keep=c(1,2,6))
 sim$levels_grid
-</span>```
+```
 
 <hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.2.0 ]</div>
-</div>

@@ -6,18 +6,6 @@ permalink: /function-reference/SimEngine-package/
 parent: Function reference
 ---
 
-<script type="text/javascript">
-const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
-function processMathHTML() {
-    var l = document.getElementsByClassName('reqn');
-    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
-    return;
-}</script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
-    onload="processMathHTML();"></script>
-<link rel="stylesheet" type="text/css" href="R.css" />
-</head><body><div class="container">
-
 <table style="width: 100%;"><tr><td>SimEngine-package {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>SimEngine: A Modular Framework for Statistical Simulations in R</h2>
@@ -44,4 +32,3 @@ function processMathHTML() {
 
 
 <hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.2.0 ]</div>
-</div>

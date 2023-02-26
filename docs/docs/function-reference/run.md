@@ -6,18 +6,6 @@ permalink: /function-reference/run/
 parent: Function reference
 ---
 
-<script type="text/javascript">
-const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
-function processMathHTML() {
-    var l = document.getElementsByClassName('reqn');
-    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
-    return;
-}</script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
-    onload="processMathHTML();"></script>
-<link rel="stylesheet" type="text/css" href="R.css" />
-</head><body><div class="container">
-
 <table style="width: 100%;"><tr><td>run {SimEngine}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
 <h2>Run the simulation</h2>
@@ -33,8 +21,9 @@ called.
 
 <h3>Usage</h3>
 
-```R<code class='language-R'>run(sim)
-</span>```
+```R
+run(sim)
+```
 
 
 <h3>Arguments</h3>
@@ -59,7 +48,8 @@ errors are stored in <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,C
 
 <h3>Examples</h3>
 
-```R<code class='language-R'># The following is a toy example of a simulation, illustrating the use of
+```R
+# The following is a toy example of a simulation, illustrating the use of
 # the run function.
 sim <- new_sim()
 create_data <- function(n) { rpois(n, lambda=5) }
@@ -76,7 +66,6 @@ sim %<>% set_script(function() {
 })
 sim %<>% run()
 sim$results %>% print()
-</span>```
+```
 
 <hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.2.0 ]</div>
-</div>
