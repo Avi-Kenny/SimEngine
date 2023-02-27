@@ -4,7 +4,7 @@
 # !!!!! Run this file manually for now (eventually automate it via devtools);
 # !!!!! it should be run after building the docs (SHFT+CTRL+D)
 
-if (T) {
+if (F) {
 
   library(tools)
   library(magrittr)
