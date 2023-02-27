@@ -1,14 +1,8 @@
--## Resubmission
-This is a resubmission. The following changes were made:
-
-**Found the following (possibly) invalid URLs...**
-We apologize for the incorrect URL. We have fixed this.
-
 ## Test environments
-* local Windows 10  install, R 4.1.0
-* Windows 10, R 4.1.1 (GitHub actions)
-* macOS X, R 4.1.1 (GitHub actions)
-* ubuntu 20.04, R 4.1.1 (GitHub actions)
+* local Windows 10  install, R 4.2.2
+* Windows 10, R 4.2.2 (GitHub actions)
+* macOS X, R 4.2.2 (GitHub actions)
+* ubuntu 20.04, R 4.2.2 (GitHub actions)
 
 ## R CMD check results
 There were no ERRORs, no WARNINGs, and no NOTEs.
