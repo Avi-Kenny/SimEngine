@@ -4,12 +4,12 @@
 # !!!!! Run this file manually for now (eventually automate it via devtools);
 # !!!!! it should be run after building the docs (SHFT+CTRL+D)
 
-if (F) {
+if (T) {
 
   library(tools)
   library(magrittr)
 
-  fns <- dir("man")[!(dir("man") %in% c("figures", "SimEngine.Rd"))]
+  fns <- dir("man")[!(dir("man") %in% c("figures", "SimEngine-package.Rd"))]
   fns <- substring(fns, 1, nchar(fns)-3)
   fn_ref_path <- "docs/docs/function-reference/"
 
