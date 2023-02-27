@@ -228,6 +228,42 @@ test_that("Invalid or missing arguments to mae throw errors", {
                "`TRUE` is neither a number nor a variable in results") # truth is neither a variable name nor a number
 })
 
+### correlation errors ###
+test_that("Invalid or missing arguments to correlation throw errors", {
+  expect_error(summarize(sim, list(stat = "correlation", x = "x", y = "y")),
+               "`name` argument is required") # no name
+  expect_error(summarize(sim, list(stat = "correlation", name = "my_summary", x = "x", y = "x2")),
+               "`x2` is not a variable in results") # y is not in results
+  expect_error(summarize(sim, list(stat = "correlation", name = "my_summary", x = "x", y = "y")),
+               "`y` must be numeric") # y is not numeric
+  expect_error(summarize(sim, list(stat = "correlation", name = "my_summary", y = "x", x = "x2")),
+               "`x2` is not a variable in results") # x is not in results
+  expect_error(summarize(sim, list(stat = "correlation", name = "my_summary", y = "x", x = "y")),
+               "`y` must be numeric") # x is not numeric
+  expect_error(summarize(sim, list(stat = "correlation", name = "my_summary", x = "x")),
+               "`y` argument is required") # y is not given
+  expect_error(summarize(sim, list(stat = "correlation", name = "my_summary", y = "x")),
+               "`x` argument is required") # y is not given
+})
+
+### covariance errors ###
+test_that("Invalid or missing arguments to covariance throw errors", {
+  expect_error(summarize(sim, list(stat = "covariance", x = "x", y = "y")),
+               "`name` argument is required") # no name
+  expect_error(summarize(sim, list(stat = "covariance", name = "my_summary", x = "x", y = "x2")),
+               "`x2` is not a variable in results") # y is not in results
+  expect_error(summarize(sim, list(stat = "covariance", name = "my_summary", x = "x", y = "y")),
+               "`y` must be numeric") # y is not numeric
+  expect_error(summarize(sim, list(stat = "covariance", name = "my_summary", y = "x", x = "x2")),
+               "`x2` is not a variable in results") # x is not in results
+  expect_error(summarize(sim, list(stat = "covariance", name = "my_summary", y = "x", x = "y")),
+               "`y` must be numeric") # x is not numeric
+  expect_error(summarize(sim, list(stat = "covariance", name = "my_summary", x = "x")),
+               "`y` argument is required") # y is not given
+  expect_error(summarize(sim, list(stat = "covariance", name = "my_summary", y = "x")),
+               "`x` argument is required") # y is not given
+})
+
 ### cov errors ###
 test_that("Invalid or missing arguments to cov throw errors", {
   expect_error(summarize(sim, list(stat = "coverage", estimate = "x", se = "x", truth = 7)),

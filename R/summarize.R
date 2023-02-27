@@ -9,10 +9,10 @@
 #'     \code{\link{new_sim}}
 #' @param ... One or more lists, separated by commas, specifying desired summaries of the \code{sim}
 #'     simulation object. See examples. Each list must have a \code{stat} item, which specifies the type of summary statistic to
-#'     be calculated. For all \code{stat} options besides \code{"coverage"}, the \code{name} item is optional;
+#'     be calculated. The \code{na.rm} item indicates whether to exclude \code{NA} values when performing the calculation (with
+#'     default being \code{FALSE}). For \code{stat} options where the \code{name} item is optional,
 #'     if it is not provided, a name will be formed from the type of summary and the column on which the summary
-#'     is performed. The \code{na.rm} item indicates whether to exclude \code{NA} values when performing the calculation (with
-#'     default being \code{FALSE}). Additional required items are detailed below for each \code{stat} type.
+#'     is performed. Additional required items are detailed below for each \code{stat} type.
 #'     \itemize{
 #'
 #'     \item{\code{list(stat="mean", x="col_1", name="mean_col")} computes the
@@ -609,7 +609,7 @@ summarize.sim_obj <- function(sim, ...) {
 
     } else if (stat_name == "correlation"){
       # if name missing, create a name
-      if (is.null(arg$name)) { arg$name <- paste0("correlation_", arg$x) }
+      handle_errors(arg$name, "is.null", msg="`name` argument is required")
 
       # Handle errors
       handle_errors(arg$x, "is.null", msg="`x` argument is required")
@@ -632,8 +632,7 @@ summarize.sim_obj <- function(sim, ...) {
         pre, arg$name, " = cor(", arg$x, ",", arg$y, na_1
       ))
     } else if (stat_name == "covariance"){
-      # if name missing, create a name
-      if (is.null(arg$name)) { arg$name <- paste0("covariance_", arg$x) }
+      handle_errors(arg$name, "is.null", msg="`name` argument is required")
 
       # Handle errors
       handle_errors(arg$x, "is.null", msg="`x` argument is required")
