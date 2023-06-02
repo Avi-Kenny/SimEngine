@@ -64,13 +64,13 @@ run.sim_obj <- function(sim) {
     }
 
     # Create cluster and export everything in env
-    cl <- parallel::makeCluster(sim$config$n_cores)
-    parallel::clusterExport(cl, ls(sim$vars$env, all.names=T), sim$vars$env)
+    ..cl <- parallel::makeCluster(sim$config$n_cores)
+    parallel::clusterExport(..cl, ls(sim$vars$env, all.names=T), sim$vars$env)
     ..packages <- c(sim$config$packages, "magrittr")
-    parallel::clusterExport(cl, c("sim","..packages"), environment())
-    parallel::clusterExport(cl, c("..env"), .GlobalEnv)
-    parallel::clusterCall(cl, function(x) {.libPaths(x)}, .libPaths())
-    parallel::clusterEvalQ(cl, sapply(..packages, function(p) {
+    parallel::clusterExport(..cl, c("sim","..packages"), environment())
+    parallel::clusterExport(..cl, c("..env"), .GlobalEnv)
+    parallel::clusterCall(..cl, function(x) {.libPaths(x)}, .libPaths())
+    parallel::clusterEvalQ(..cl, sapply(..packages, function(p) {
       do.call("library", list(p))
     }))
 
@@ -95,7 +95,7 @@ run.sim_obj <- function(sim) {
                   sim$internals$sim_uid_grid$to_run==T)
     sim_uids_to_run <- sim$internals$sim_uid_grid$sim_uid[ind0]
 
-    res <- lapply(sim_uids_to_run, function(i) {
+    run_sim_uids <- function(i) {
 
       ..start_time <- Sys.time()
 
@@ -159,7 +159,9 @@ run.sim_obj <- function(sim) {
         "warnings" = .gotWarnings
       ))
 
-    })
+    }
+
+    res <- pbapply::pblapply(sim_uids_to_run, run_sim_uids)
 
     return(res)
 
@@ -193,17 +195,17 @@ run.sim_obj <- function(sim) {
   # Run simulations
   if (sim$config$parallel=="outer") {
     # Run in parallel
-    results_lists <- pbapply::pblapply(core_ids, run_script, cl=cl)
+    results_lists <- parallel::parLapply(cl=..cl, core_ids, run_script)
   } else {
     # Run serially
-    results_lists <- pbapply::pblapply(core_ids, run_script)
+    results_lists <- lapply(core_ids, run_script)
   }
 
   # Combine lists
   results_lists <- unlist(results_lists, recursive=F)
 
   # Stop cluster
-  if (exists("cl")) { parallel::stopCluster(cl) }
+  if (exists("..cl")) { parallel::stopCluster(..cl) }
 
   # Separate errors from results
   results_lists_ok <- list()
