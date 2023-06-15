@@ -10,22 +10,22 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
 Depends: 
-    magrittr
+    magrittr (>= 2.0.3)
 Imports: 
-    dplyr,
-    parallel,
-    pbapply,
-    data.table,
-    rlang,
-    methods,
-    stats,
-    utils
+    dplyr (>= 1.0.10),
+    parallel (>= 4.2.2),
+    pbapply (>= 1.6.0),
+    data.table (>= 1.14.6),
+    rlang (>= 1.0.6),
+    methods (>= 4.2.2),
+    stats (>= 4.2.2),
+    utils (>= 4.2.2)
 Suggests: 
-    covr,
-    knitr,
-    rmarkdown,
-    testthat (>= 2.1.0),
-    tidyr,
-    ggplot2,
-    sandwich
+    covr (>= 3.6.1),
+    knitr (>= 1.41),
+    rmarkdown (>= 2.19),
+    testthat (>= 3.1.6),
+    tidyr (>= 1.2.1),
+    ggplot2 (>= 3.4.0),
+    sandwich (>= 3.0.2)
 VignetteBuilder: knitr
