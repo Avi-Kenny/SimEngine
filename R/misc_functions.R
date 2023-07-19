@@ -239,7 +239,7 @@ update_sim_uid_grid <- function(sim) {
   if (is.na(nc) && Sys.getenv("sim_run")!="") {
     sim_uid_grid$core_id[sims_to_run] <- c(1:length(sims_to_run))
   } else {
-    if (is.na(nc)) { nc <- 1 }
+    if (is.na(nc) || sim$config$parallel=="none") { nc <- 1 }
     sim_uid_grid$core_id[sims_to_run] <-
       ((sim_uid_grid$batch_id[sims_to_run]-1)%%nc)+1
   }
