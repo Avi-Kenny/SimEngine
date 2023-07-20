@@ -158,7 +158,6 @@ run_and_test(which="07", parallel="inner", n_cores=1)
 run_and_test(which="08", parallel="inner", n_cores=2)
 
 # Test set #2
-Sys.setenv(sim_run="")
 run_and_test_cl(which="09", cmplx=F, n_cores=NA)
 run_and_test_cl(which="10", cmplx=F, n_cores=1)
 run_and_test_cl(which="11", cmplx=F, n_cores=2)
