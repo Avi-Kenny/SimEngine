@@ -54,6 +54,13 @@ sim$levels
 sim <- new_sim()
 sim \%<>\% set_levels(alpha=c(1,2,3), beta=c(5,6))
 sim$levels_grid
+#>   level_id alpha beta
+#> 1        1     1    5
+#> 2        2     2    5
+#> 3        3     3    5
+#> 4        4     1    6
+#> 5        5     2    6
+#> 6        6     3    6
 sim \%<>\% set_levels(.keep=c(1,2,6))
 sim$levels_grid
 }
