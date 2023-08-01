@@ -93,6 +93,10 @@ sim$levels_grid
 #> 6        6     3    6
 sim %<>% set_levels(.keep=c(1,2,6))
 sim$levels_grid
+#>   level_id alpha beta
+#> 1        1     1    5
+#> 2        2     2    5
+#> 6        6     3    6
 ```
 
 <hr /><div style="text-align: center;">[Package <em>SimEngine</em> version 1.2.0 ]</div>

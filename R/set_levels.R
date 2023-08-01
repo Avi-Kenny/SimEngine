@@ -49,6 +49,10 @@
 #' #> 6        6     3    6
 #' sim %<>% set_levels(.keep=c(1,2,6))
 #' sim$levels_grid
+#' #>   level_id alpha beta
+#' #> 1        1     1    5
+#' #> 2        2     2    5
+#' #> 6        6     3    6
 #' @export
 set_levels <- function(sim, ..., .keep=NA) {
   UseMethod("set_levels")
