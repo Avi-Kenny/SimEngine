@@ -10,10 +10,7 @@ sim %<>% set_script(
   }
 )
 
-sim %<>% set_config(
-  num_sim = 100,
-  parallel = "none"
-)
+sim %<>% set_config(num_sim=100, parallel=FALSE)
 
 msg <- capture_messages(
   sim %<>% run()
@@ -45,10 +42,7 @@ sim %<>% set_script(
   }
 )
 
-sim %<>% set_config(
-  num_sim = 100,
-  parallel = "none"
-)
+sim %<>% set_config(num_sim=100, parallel=FALSE)
 
 msg <- capture_messages(
   sim %<>% run()
@@ -88,10 +82,7 @@ sim %<>% set_script(
   }
 )
 
-sim %<>% set_config(
-  num_sim = 100,
-  parallel = "none"
-)
+sim %<>% set_config(num_sim=100, parallel=FALSE)
 
 msg <- capture_messages(
   sim %<>% run()
@@ -121,10 +112,7 @@ sim %<>% set_script(
   }
 )
 
-sim %<>% set_config(
-  num_sim = 100,
-  parallel = "none"
-)
+sim %<>% set_config(num_sim=100, parallel=FALSE)
 
 msg <- capture_messages(
   sim %<>% run()
@@ -149,11 +137,7 @@ sim %<>% set_script(
   }
 )
 
-sim %<>% set_config(
-  num_sim = 100,
-  parallel = "none",
-  stop_at_error = TRUE
-)
+sim %<>% set_config(num_sim=100, parallel=FALSE, stop_at_error=TRUE)
 
 # Can't run a sim twice
 sim <- new_sim()

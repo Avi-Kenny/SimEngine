@@ -26,7 +26,7 @@ new_sim <- function() {
     # Simulation configuration; see set_config() docs
     config = list(
       num_sim = 1,
-      parallel = "none",
+      parallel = FALSE,
       n_cores = NA,
       packages = NULL,
       stop_at_error = FALSE,

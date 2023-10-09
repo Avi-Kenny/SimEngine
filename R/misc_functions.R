@@ -236,11 +236,11 @@ update_sim_uid_grid <- function(sim) {
   # Create new core_id column
   nc <- sim$config$n_cores
   sim_uid_grid$core_id <- 0
-  if (is.na(nc) && Sys.getenv("sim_run")!="") {
+  if (is.na(nc) && running_on_ccs()) {
     sim_uid_grid$core_id[sims_to_run] <- c(1:length(sims_to_run))
   } else {
     if (is.na(nc) ||
-        (sim$config$parallel=="none" && Sys.getenv("sim_run")=="")) {
+        (!sim$config$parallel && !running_on_ccs())) {
       nc <- 1
     }
     if (is.na(nc)) { nc <- 1 }
@@ -345,6 +345,12 @@ update_run_state <- function(sim) {
   }
 
 }
+
+#' Simple function that returns TRUE if the simulation is running on a CCS
+#'
+#' @return A Boolean
+#' @noRd
+running_on_ccs <- function() { as.logical(Sys.getenv("sim_run")!="") }
 
 
 

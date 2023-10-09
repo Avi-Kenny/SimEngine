@@ -11,22 +11,19 @@
 #'     \code{\link{new_sim}}
 #' @param num_sim An integer; the number of simulations to conduct for each
 #'     level combination
-#' @param parallel A string; one of c("outer", "inner", "none"). Controls which
-#'     sections of the code are parallelized. Setting to "outer" will run one
-#'     simulation per core. Setting to "inner" will allow for parallelization
-#'     within a single simulation replicate. Setting to "none" will not
-#'     parallelize any code. See
+#' @param parallel Boolean; if set to TRUE, \pkg{SimEngine} will run one
+#'     simulation per core. if set to FALSE, code will not be parallelized. See
 #'     \url{https://avi-kenny.github.io/SimEngine/parallelization/} for an
 #'     overview of how parallelization works in \pkg{SimEngine}. This option
-#'     will be ignored (and automatically set to "cluster") if the simulation is
-#'     being run on a cluster computing system.
+#'     will be automatically set to TRUE if the simulation is being run on a
+#'     cluster computing system.
 #' @param n_cores An integer; determines the number of cores on which the
 #'     simulation will run if using parallelization. Defaults to one fewer than
 #'     the number of available cores.
 #' @param packages A character vector of packages to load and attach
-#' @param stop_at_error Boolean. If set to TRUE, the simulation will stop if it
+#' @param stop_at_error Boolean; if set to TRUE, the simulation will stop if it
 #'     encounters an error in any single replicate Useful for debugging.
-#' @param progress_bar Boolean. If set to FALSE, the progress bar that is
+#' @param progress_bar Boolean; if set to FALSE, the progress bar that is
 #'     normally displayed while the simulation is running is suppressed.
 #' @param seed An integer; seeds allow for reproducible simulation results. If a
 #'     seed is specified, then consecutive runs of the same simulation with the
@@ -64,7 +61,7 @@
 #' sim
 #' @export
 set_config <- function(
-  sim, num_sim=1000, parallel="none", n_cores=NA, packages=NULL,
+  sim, num_sim=1000, parallel=FALSE, n_cores=NA, packages=NULL,
   stop_at_error=FALSE, progress_bar=TRUE, seed=as.integer(1e9*runif(1)),
   batch_levels=NA, return_batch_id=FALSE
 ) {
@@ -73,7 +70,7 @@ set_config <- function(
 
 #' @export
 set_config.sim_obj <- function(
-  sim, num_sim=1000, parallel="none", n_cores=NA, packages=NULL,
+  sim, num_sim=1000, parallel=FALSE, n_cores=NA, packages=NULL,
   stop_at_error=FALSE, progress_bar=TRUE, seed=as.integer(1e9*runif(1)),
   batch_levels=NA, return_batch_id=FALSE
 ) {
@@ -89,7 +86,16 @@ set_config.sim_obj <- function(
   }
 
   if (!missing(parallel)) {
-    handle_errors(parallel, "is.in", other=c("outer","inner","none"))
+    if (parallel=="outer") {
+      warning(paste0("parallel='outer' is deprecated; please use parallel=TRUE",
+                     " instead."))
+      parallel <- TRUE
+    } else if (parallel=="none") {
+      warning(paste0("parallel='none' is deprecated; please use parallel=FALSE",
+                     " instead."))
+      parallel <- FALSE
+    }
+    handle_errors(parallel, "is.boolean")
     sim$config[["parallel"]] <- parallel
   }
 

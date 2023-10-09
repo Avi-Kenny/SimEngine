@@ -7,7 +7,7 @@
 set_config(
   sim,
   num_sim = 1000,
-  parallel = "none",
+  parallel = FALSE,
   n_cores = NA,
   packages = NULL,
   stop_at_error = FALSE,
@@ -24,15 +24,12 @@ set_config(
 \item{num_sim}{An integer; the number of simulations to conduct for each
 level combination}
 
-\item{parallel}{A string; one of c("outer", "inner", "none"). Controls which
-sections of the code are parallelized. Setting to "outer" will run one
-simulation per core. Setting to "inner" will allow for parallelization
-within a single simulation replicate. Setting to "none" will not
-parallelize any code. See
+\item{parallel}{Boolean; if set to TRUE, \pkg{SimEngine} will run one
+simulation per core. if set to FALSE, code will not be parallelized. See
 \url{https://avi-kenny.github.io/SimEngine/parallelization/} for an
 overview of how parallelization works in \pkg{SimEngine}. This option
-will be ignored (and automatically set to "cluster") if the simulation is
-being run on a cluster computing system.}
+will be automatically set to TRUE if the simulation is being run on a
+cluster computing system.}
 
 \item{n_cores}{An integer; determines the number of cores on which the
 simulation will run if using parallelization. Defaults to one fewer than
@@ -40,10 +37,10 @@ the number of available cores.}
 
 \item{packages}{A character vector of packages to load and attach}
 
-\item{stop_at_error}{Boolean. If set to TRUE, the simulation will stop if it
+\item{stop_at_error}{Boolean; if set to TRUE, the simulation will stop if it
 encounters an error in any single replicate Useful for debugging.}
 
-\item{progress_bar}{Boolean. If set to FALSE, the progress bar that is
+\item{progress_bar}{Boolean; if set to FALSE, the progress bar that is
 normally displayed while the simulation is running is suppressed.}
 
 \item{seed}{An integer; seeds allow for reproducible simulation results. If a

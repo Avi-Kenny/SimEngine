@@ -28,7 +28,7 @@ your simulation object.
 set_config(
   sim,
   num_sim = 1000,
-  parallel = "none",
+  parallel = FALSE,
   n_cores = NA,
   packages = NULL,
   stop_at_error = FALSE,
@@ -55,15 +55,12 @@ level combination</p>
 </td></tr>
 <tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>parallel</span></td>
 <td>
-<p>A string; one of c(&quot;outer&quot;, &quot;inner&quot;, &quot;none&quot;). Controls which
-sections of the code are parallelized. Setting to &quot;outer&quot; will run one
-simulation per core. Setting to &quot;inner&quot; will allow for parallelization
-within a single simulation replicate. Setting to &quot;none&quot; will not
-parallelize any code. See
+<p>Boolean; if set to TRUE, <span class="pkg">SimEngine</span> will run one
+simulation per core. if set to FALSE, code will not be parallelized. See
 <a href="https://avi-kenny.github.io/SimEngine/parallelization/">https://avi-kenny.github.io/SimEngine/parallelization/</a> for an
 overview of how parallelization works in <span class="pkg">SimEngine</span>. This option
-will be ignored (and automatically set to &quot;cluster&quot;) if the simulation is
-being run on a cluster computing system.</p>
+will be automatically set to TRUE if the simulation is being run on a
+cluster computing system.</p>
 </td></tr>
 <tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>n_cores</span></td>
 <td>
@@ -77,12 +74,12 @@ the number of available cores.</p>
 </td></tr>
 <tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>stop_at_error</span></td>
 <td>
-<p>Boolean. If set to TRUE, the simulation will stop if it
+<p>Boolean; if set to TRUE, the simulation will stop if it
 encounters an error in any single replicate Useful for debugging.</p>
 </td></tr>
 <tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>progress_bar</span></td>
 <td>
-<p>Boolean. If set to FALSE, the progress bar that is
+<p>Boolean; if set to FALSE, the progress bar that is
 normally displayed while the simulation is running is suppressed.</p>
 </td></tr>
 <tr style="vertical-align: top;"><td><span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>seed</span></td>

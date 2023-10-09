@@ -30,7 +30,7 @@ cluster_execute <- function(
   ..env_calling <- parent.frame(n=2)
 
   # Run all code locally if simulation is not being run on cluster
-  if (Sys.getenv("sim_run")=="") {
+  if (!running_on_ccs()) {
 
     eval(first, envir=..env_calling)
     eval(main, envir=..env_calling)
@@ -126,7 +126,7 @@ cluster_execute <- function(
     # Save simulation object
     ..sim$internals$sim_var <- ..sim_var
     ..sim$vars$start_time <- ..start_time
-    ..sim$config$parallel <- "cluster"
+    ..sim$config$parallel <- TRUE
     saveRDS(..sim, file=..path_sim_obj)
 
   } else if (Sys.getenv("sim_run") %in% c("main","last")) {

@@ -66,7 +66,7 @@ update_sim.sim_obj <- function(sim, keep_errors=T) {
 
   # if (!keep_errors) { sim$errors <- "No errors" }
 
-  if (Sys.getenv("sim_run")!="") {
+  if (running_on_ccs()) {
 
     # If on cluster, delete old results/errors/warnings
     sim$results <- NULL

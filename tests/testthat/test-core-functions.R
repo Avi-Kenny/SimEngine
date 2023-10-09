@@ -34,7 +34,7 @@ sim <- new_sim()
 
 test_that("new_sim() creates correctly-specified object", {
   expect_equal(sim$config$num_sim, 1)
-  expect_equal(sim$config$parallel, "none")
+  expect_equal(sim$config$parallel, FALSE)
   expect_equal(sim$levels, list("no_levels"=TRUE))
   expect_equal(sim$results, "Simulation has not been run yet.")
   expect_equal(sim$errors, "Simulation has not been run yet.")
@@ -186,7 +186,7 @@ test_that("set_config() throws errors for invalid config option values", {
   expect_error(set_config(sim, num_sim="hey"), "`num_sim` must be numeric")
   # expect_error(set_config(sim, datasets="hey"),
   #              "'hey' is not a valid option for `datasets`")
-  expect_error(set_config(sim, parallel=c("inner","outer")),
+  expect_error(set_config(sim, parallel=c(FALSE,TRUE)),
                "`parallel` cannot be a vector")
   expect_error(set_config(sim, packages=min),
                "`packages` must be a character vector")
@@ -209,7 +209,7 @@ sim %<>% set_config(seed=2)
 res4 <- round(run(sim)$results$x, 4)
 res5 <- round(run(sim)$results$x, 4)
 
-test_that("setting seeds leads to reproducible results (parallel='none')", {
+test_that("setting seeds leads to reproducible results (parallel=FALSE)", {
   expect_equal(res1, res2)
   expect_equal(isTRUE(all.equal(res1, res4)), FALSE)
   expect_equal(res4, res5)
@@ -219,7 +219,7 @@ sim <- new_sim()
 sim %<>% set_script(function() {
   return(list(x=rnorm(1)))
 })
-sim %<>% set_config(num_sim=3, parallel="outer", n_cores=2)
+sim %<>% set_config(num_sim=3, parallel=TRUE, n_cores=2)
 res6 <- round(run(sim)$results$x, 4)
 res7 <- round(run(sim)$results$x, 4)
 sim %<>% set_config(seed=1)
@@ -228,7 +228,7 @@ sim %<>% set_config(seed=2)
 res9 <- round(run(sim)$results$x, 4)
 res10 <- round(run(sim)$results$x, 4)
 
-test_that("setting seeds leads to reproducible results (parallel='outer')", {
+test_that("setting seeds leads to reproducible results (parallel=TRUE)", {
   expect_equal(res6, res7)
   expect_equal(isTRUE(all.equal(res6, res9)), FALSE)
   expect_equal(res9, res10)
@@ -386,8 +386,8 @@ test_that("vars() handles incorrect variables properly", {
     return(sim)
   }
 
-  sim1 <- run_sim(parallel="none")
-  sim2 <- run_sim(parallel="outer")
+  sim1 <- run_sim(parallel=FALSE)
+  sim2 <- run_sim(parallel=TRUE)
 
   test_that("Simulation ran and all objects were accessible (serial)", {
     expect_equal(sim1$results[1,"w"], 1)
@@ -415,7 +415,7 @@ sim %<>% set_script(function() {
   val <- use_method(L$f, list())
   return(list(val=val))
 })
-sim %<>% set_config(num_sim=1, parallel="outer", n_cores=2)
+sim %<>% set_config(num_sim=1, parallel=TRUE, n_cores=2)
 sim %<>% run()
 test_that("Simulation ran and all objects were accessible (serial)", {
   expect_equal(sim$results[1,"val"], 11)

@@ -43,13 +43,20 @@ run.sim_obj <- function(sim) {
 
   sim$vars$start_time <- Sys.time()
 
-  # This allows for update_on_cluster() to be run locally
-  if (sim$config$parallel=="cluster" && Sys.getenv("sim_run")=="") {
-    sim$config$parallel <- "none"
-  }
+  # # This allows for update_on_cluster() to be run locally
+  # if (sim$config$parallel=="cluster" && !running_on_ccs()) {
+  #   sim$config$parallel <- "none"
+  # }
 
   # Set up parallelization code
-  if (sim$config$parallel %in% c("inner", "outer")) {
+  if (running_on_ccs()) {
+
+    if (is.na(sim$config$n_cores)) {
+      sim$config$n_cores <- sim$vars$num_sim_total
+      assign(x="..flag_batch_n_cores", value=T, envir=sim$vars$env)
+    }
+
+  } else if (sim$config$parallel) {
 
     n_available_cores <- parallel::detectCores()
     if (is.na(sim$config$n_cores)) {
@@ -74,16 +81,9 @@ run.sim_obj <- function(sim) {
       do.call("library", list(p))
     }))
 
-  } else if (sim$config$parallel=="none") {
+  } else {
 
     sim$config$n_cores <- 1
-
-  } else if (sim$config$parallel=="cluster") {
-
-    if (is.na(sim$config$n_cores)) {
-      sim$config$n_cores <- sim$vars$num_sim_total
-      assign(x="..flag_batch_n_cores", value=T, envir=sim$vars$env)
-    }
 
   }
 
@@ -130,7 +130,7 @@ run.sim_obj <- function(sim) {
       # Use withCallingHandlers to catch warnings and tryCatch to catch errors
       .gotWarnings <- character(0) # holds the warnings
       .catch_errors_and_warnings <- as.logical(
-        sim$config$stop_at_error==FALSE || Sys.getenv("sim_run")!=""
+        sim$config$stop_at_error==FALSE || running_on_ccs()
       )
       if (.catch_errors_and_warnings) {
         withCallingHandlers(
@@ -175,7 +175,7 @@ run.sim_obj <- function(sim) {
   }
 
   # Set core_ids based on whether sims are running on cluster
-  if (sim$config$parallel=="cluster") {
+  if (running_on_ccs()) {
     core_ids <- sim$internals$tid
     if (core_ids>sim$config$n_cores) {
       stop(paste0("This simulation has n_cores=", sim$config$n_cores,
@@ -193,7 +193,7 @@ run.sim_obj <- function(sim) {
   }
 
   # Run simulations
-  if (sim$config$parallel=="outer") {
+  if (sim$config$parallel && !running_on_ccs()) {
     # Run in parallel
     results_lists <- parallel::parLapply(cl=..cl, core_ids, run_script)
   } else {

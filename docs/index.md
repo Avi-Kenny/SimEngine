@@ -140,7 +140,7 @@ This controls options related to your entire simulation, such as the number of s
 ```R
 sim %<>% set_config(
   num_sim = 100,
-  parallel = "outer",
+  parallel = TRUE,
   n_cores = 2,
   packages = c("ggplot2", "stringr")
 )

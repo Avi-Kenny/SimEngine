@@ -123,7 +123,7 @@ sim %<>% set_script(function() {
 
 sim %<>% set_levels(index=1:10)
 
-sim %<>% set_config(num_sim=2, parallel="none")
+sim %<>% set_config(num_sim=2, parallel=FALSE)
 
 sim %<>% run()
 prev_ncol <- c(length(sim$errors), length(sim$warnings))
@@ -151,7 +151,7 @@ sim %<>% set_levels(index=1:10)
 
 # reduce number of reps
 
-sim %<>% set_config(num_sim=1, parallel="none")
+sim %<>% set_config(num_sim=1, parallel=FALSE)
 
 ### update_sim properly removes extra errors and warnings
 suppressWarnings({ sim %<>% update_sim() })
@@ -175,14 +175,14 @@ sim %<>% set_script(function() {
   return (list("x"=x))
 })
 
-sim %<>% set_config(num_sim=100, parallel="none")
+sim %<>% set_config(num_sim=100, parallel=FALSE)
 
 sim %<>% run()
 prev_ncol <- length(sim$results)
 prev_nrow <- nrow(sim$results)
 prev_row1 <- sim$results[1,]
 
-sim %<>% set_config(num_sim=200, parallel="none")
+sim %<>% set_config(num_sim=200, parallel=FALSE)
 
 ### update_sim doesn't break with no levels
 sim %<>% update_sim()

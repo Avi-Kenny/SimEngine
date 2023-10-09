@@ -202,7 +202,7 @@ plot_results("coverage")
 
 Looking at these plots, we can see that the sandwich method results in a wider interval, on average, for $$\beta_1$$. In terms of coverage, the sandwich estimator achieves near nominal coverage for both parameters, while there is moderate undercoverage for $$\beta_1$$ using the model-based estimator. 
 
-The bootstrap is another popular approach to estimating standard errors. We can add a bootstrap method and use `update_sim` to run the new simulation replicates without re-running any of our previous work. All we need to do is include the new estimator in our simulation levels. Since the bootstrap can be computationally intensive, we will use parallelization to speed things up. This requires us to specify the option `parallel = "outer"` in `set_config`. (Even with parallelization, `update_sim` will likely take a few minutes to run.)
+The bootstrap is another popular approach to estimating standard errors. We can add a bootstrap method and use `update_sim` to run the new simulation replicates without re-running any of our previous work. All we need to do is include the new estimator in our simulation levels. Since the bootstrap can be computationally intensive, we will use parallelization to speed things up. This requires us to specify the option `parallel = TRUE` in `set_config`. (Even with parallelization, `update_sim` will likely take a few minutes to run.)
 
 ```R
 bootstrap_vcov <- function(data) {
@@ -227,7 +227,7 @@ sim %<>% set_levels(
 sim %<>% set_config(
   num_sim = 500,
   seed = 24,
-  parallel = "outer",
+  parallel = TRUE,
   n_cores = 2,
   packages = c("sandwich")
 )
