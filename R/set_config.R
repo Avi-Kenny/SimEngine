@@ -86,11 +86,11 @@ set_config.sim_obj <- function(
   }
 
   if (!missing(parallel)) {
-    if (parallel=="outer") {
+    if (length(parallel)==1 && parallel=="outer") {
       warning(paste0("parallel='outer' is deprecated; please use parallel=TRUE",
                      " instead."))
       parallel <- TRUE
-    } else if (parallel=="none") {
+    } else if (length(parallel)==1 && parallel=="none") {
       warning(paste0("parallel='none' is deprecated; please use parallel=FALSE",
                      " instead."))
       parallel <- FALSE
