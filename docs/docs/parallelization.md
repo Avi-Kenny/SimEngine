@@ -28,26 +28,18 @@ The terminology associated with parallel computing can be confusing - what is th
 
 ## Parallelization in **SimEngine**
 
-There are three methods of parallelizing code using **SimEngine**:
+There are two modes of parallelizing code using **SimEngine**, which we refer to as "local parallelization" and "cluster parallelization". Local parallelization is the most straightforward way to parallelize your code. Most statistical simulations involve running multiple replicates of the same simulation, perhaps with certain things changing between replicates. With local parallelization, a single simulation replicate is assigned to a single task. Cluster parallelization is similar to local parallelization, but occurs on a cluster computing system (CCS). Each simulation replicate is assigned to a single task, and tasks are submitted as a job array to the cluster computing system. **SimEngine** is designed to automate as much of the parallelization process as possible. We give an overview of each parallelization mode below. Afterwards, we provide tips and tricks that apply to both modes.
 
-1) **Outer parallelization**. This is the most straightforward way to parallelize your code. Most statistical simulations involve running multiple replicates of the same simulation, perhaps with certain things changing between replicates. With outer parallelization, a single simulation replicate is assigned to a single task.
+## Local parallelization
 
-2) **Inner parallelization**. With inner parallelization, one or more pieces within a single simulation replicate are parallelized. Inner parallelization is useful when your entire simulation only has a small handful of replicates (i.e. fewer replicates than available cores); otherwise, we recommend outer parallelization.
-
-3) **Cluster parallelization**. Cluster parallelization is like outer parallelization but on a cluster computing system (CCS). Each simulation replicate is assigned to a single task, and tasks are submitted as a job array to the cluster computing system. This is the most complex method of parallelizing your code, but also the most powerful in terms of potential speed gains.
-
-**SimEngine** is designed to automate as much of the parallelization process as possible. We give an overview of each parallelization method below. Afterwards, we provide tips and tricks that apply to all methods.
-
-## Outer parallelization
-
-To use outer parallelization, all you have to do is specify `parallel="outer"` using `set_config`. It's as simple as that.
+With this mode, all you have to do is specify `parallel=TRUE` using `set_config`. **SimEngine** handles everything else.
 
 ```R
 sim <- new_sim()
-sim %<>% set_config(parallel = "outer")
+sim %<>% set_config(parallel = TRUE)
 ```
 
-Note that if a single simulation replicate runs in a very short amount of time (e.g. less than one second), using outer parallelization can actually result in a *decrease* in total speed. This is because there is a certain amount of computational overhead involved in setting up the parallelization engine inside **SimEngine**. If you want to do a quick speed comparison, try running your code twice, once with `set_config(parallel = "outer")` and once with `set_config(parallel = "none")`, and run `sim %>% vars("total_runtime")` each time to see the difference in total runtime. The exact overhead involved with outer parallelization will differ between machines.
+Note that if a single simulation replicate runs in a very short amount of time (e.g. less than one second), using local parallelization can actually result in a *decrease* in total speed. This is because there is a certain amount of computational overhead involved in setting up the parallelization engine inside **SimEngine**. If you want to do a quick speed comparison, try running your code twice, once with `set_config(parallel = TRUE)` and once with `set_config(parallel = FALSE)`, and run `sim %>% vars("total_runtime")` each time to see the difference in total runtime. The exact overhead involved with local parallelization will differ between machines.
 
 If a machine has n cores available, **SimEngine** will n-1 cores by default. If you want to manually specify the number of cores to use, use the `n_cores` option of the `set_config` function:
 
@@ -55,42 +47,9 @@ If a machine has n cores available, **SimEngine** will n-1 cores by default. If 
 sim %<>% set_config(n_cores = 2)
 ```
 
-## Inner parallelization
-
-With inner parallelization, one or more pieces within a single simulation replicate are parallelized. This method of parallelization requires you to specify pieces of your code to run in parallel using functions from the **parallel** package. See the <a href="https://www.rdocumentation.org/packages/parallel">documentation</a> for the **parallel** package if you have never used this package before. **SimEngine** will create and manage the cluster object; simply reference the special `CL` object in your code (note: the term "cluster object" refers to an R object of class `cluster`; this is distinct from the use use of the word "cluster" in "cluster parallelization").
-
-In the example below, inner parallelization is used within the `create_data` function through `parLapply`. However, you can also use parallel functions within your simulation script itself or within methods.
-
-```R
-
-sim <- new_sim()
-sim %<>% set_config(parallel = "inner")
-
-create_data <- function(sample_size) {
-  data <- parLapply(CL, c(1:sample_size), function(x) {
-    x <- rnorm(n=1, mean=10, sd=1)
-    y <- 3*x + 9
-    z <- x / y
-    return(list(x,y,z))
-  })
-  df <- as.data.frame(matrix(unlist(data), ncol=3))
-  names(df) <- c("x","y","z")
-  return(df)
-}
-
-sim %<>% set_script(function() {
-  df <- create_data(100)
-  estimate <- mean(df$z)
-  return (list("estimate" = estimate))
-})
-
-sim %<>% run()
-
-```
-
 ## Cluster parallelization
 
-Although the situation becomes more complicated when using a cluster computing system (CCS), **SimEngine** is built to streamline this process as much as possible. Before diving in, it is important to understand the basic workflow with a CCS. A CCS is a supercomputer that consists of a number of nodes, each of which may have multiple cores. A user will typically log into the CCS via SSH or an SSH client (such as PuTTY), and then send files containing computer programs to the CCS, either using Linux commands or using an FTP Client (such as FileZilla). Next, the user will run these programs by submitting "jobs" to the CCS using a special program called a job scheduler (JS). The JS manages the process of taking your jobs and running it in parallel across multiple nodes and/or multiple cores. If this process is totally unfamiliar to you, ask the manager of your CCS or your IT team for a basic tutorial.
+Parallelizing code using a cluster computing system (CCS) is more copmlicated, but **SimEngine** is built to streamline this process as much as possible. Before diving in, it is important to understand the basic workflow with a CCS. A CCS is a supercomputer that consists of a number of nodes, each of which may have multiple cores. A user will typically log into the CCS via SSH or an SSH client (such as PuTTY), and then send files containing computer programs to the CCS, either using Linux commands or using an FTP Client (such as FileZilla). Next, the user will run these programs by submitting "jobs" to the CCS using a special program called a job scheduler (JS). The JS manages the process of taking your jobs and running it in parallel across multiple nodes and/or multiple cores. If this process is totally unfamiliar to you, ask the manager of your CCS or your IT team for a basic tutorial.
 
 Although there are multiple ways to run code in parallel on a CCS, we choose to make use of job arrays. The main **SimEngine** function that will be used is `run_on_cluster`. Throughout this example, we use Slurm as our JS, but an analogous workflow will apply to other JS software. Suppose we have written the following simulation and want to run it on a CCS:
 
