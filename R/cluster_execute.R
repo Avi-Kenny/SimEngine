@@ -16,15 +16,16 @@ cluster_execute <- function(
   ..cfg <- cluster_config
   rm(cluster_config)
 
-  # Helper function to add objects in calling envir to the sim_obj envir
-  .add_objs <- function(..env_calling, env_sim) {
-    for (obj_name in ls(..env_calling, all.names=T)) {
-      obj <- get(x=obj_name, envir=..env_calling)
-      if (!methods::is(obj,"sim_obj") && obj_name!="L") {
-        assign(x=obj_name, value=obj, envir=env_sim)
-      }
-    }
-  }
+  # # Helper function to add objects in calling envir to the sim_obj envir
+  # Phasing out with SimEngine 1.2.1
+  # .add_objs <- function(..env_calling, env_sim) {
+  #   for (obj_name in ls(..env_calling, all.names=T)) {
+  #     obj <- get(x=obj_name, envir=..env_calling)
+  #     if (!methods::is(obj,"sim_obj") && obj_name!="L") {
+  #       assign(x=obj_name, value=obj, envir=env_sim)
+  #     }
+  #   }
+  # }
 
   # Get a reference to the calling environment
   ..env_calling <- parent.frame(n=2)
@@ -121,7 +122,7 @@ cluster_execute <- function(
 
     # Get reference to simulation object
     ..sim <- get(..sim_var, envir=..env_calling)
-    .add_objs(..env_calling, ..sim$vars$env)
+    # .add_objs(..env_calling, ..sim$vars$env) # Phasing out with SimEngine 1.2.1
 
     # Save simulation object
     ..sim$internals$sim_var <- ..sim_var
@@ -205,7 +206,14 @@ cluster_execute <- function(
         ..sim$internals$tid <- tid
         rm(tid, add_to_tid)
         for (pkg in ..sim$config$packages) { do.call("library", list(pkg)) }
-        assign(..sim$internals$sim_var, ..sim, envir=..env_calling)
+        assign(x=..sim$internals$sim_var, value=..sim, envir=..env_calling)
+
+        # !!!!! New code to fix issue #92
+        for (obj_name in ls(..sim$vars$env, all.names=T)) {
+          obj <- get(x=obj_name, envir=..sim$vars$env)
+          assign(x=obj_name, value=obj, envir=..env_calling)
+        }
+
         eval(main, envir=..env_calling)
         ..sim <- get(..sim$internals$sim_var, envir=..env_calling)
 
@@ -355,11 +363,18 @@ cluster_execute <- function(
       saveRDS(..sim, file=..path_sim_obj)
 
       # Run 'last' code
-      assign(..sim$internals$sim_var, ..sim, envir=..env_calling)
+      assign(x=..sim$internals$sim_var, value=..sim, envir=..env_calling)
       for (pkg in ..sim$config$packages) { do.call("library", list(pkg)) }
+
+      # !!!!! New code to fix issue #92
+      for (obj_name in ls(..sim$vars$env, all.names=T)) {
+        obj <- get(x=obj_name, envir=..sim$vars$env)
+        assign(x=obj_name, value=obj, envir=..env_calling)
+      }
+
       eval(last, envir=..env_calling)
       ..sim <- get(..sim$internals$sim_var, envir=..env_calling)
-      .add_objs(..env_calling, ..sim$vars$env)
+      # .add_objs(..env_calling, ..sim$vars$env) # Phasing out with SimEngine 1.2.1
 
       # Save final simulation object (a second time, if 'last' code had no
       #     errors)

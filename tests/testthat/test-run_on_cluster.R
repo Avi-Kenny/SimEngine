@@ -362,6 +362,7 @@ for (sr in c("first", "main", "last")) {
     last = {},
     cluster_config = list(js="slurm")
   )
+  rm(access_glb,access_level,create_data,fn_inner,fn_outer,return_one) # !!!!! Added this line; this tests a bug that two users experienced
 }
 sim3 <- readRDS("sim.rds")
 test_that("Simulation ran and all objects were accessible (cluster 1)", {

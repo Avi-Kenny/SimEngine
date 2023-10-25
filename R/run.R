@@ -75,7 +75,7 @@ run.sim_obj <- function(sim) {
     parallel::clusterExport(..cl, ls(sim$vars$env, all.names=T), sim$vars$env)
     ..packages <- c(sim$config$packages, "magrittr")
     parallel::clusterExport(..cl, c("sim","..packages"), environment())
-    parallel::clusterExport(..cl, c("..env"), .GlobalEnv)
+    parallel::clusterExport(..cl, "..env", .GlobalEnv)
     parallel::clusterCall(..cl, function(x) {.libPaths(x)}, .libPaths())
     parallel::clusterEvalQ(..cl, sapply(..packages, function(p) {
       do.call("library", list(p))
