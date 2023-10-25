@@ -42,7 +42,8 @@ categorized as simple (a number, a character string, etc.) or complex
 called &quot;.complex&quot; and the associated value must be a list (see examples).
 The function body can contain references to the special object <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>L</span>
 that stores the current set of simulation levels (see examples).
-The keys must be valid R names (see ?make.names).</p>
+The keys must be valid R names (see ?make.names). Any functions used
+within the script must be declared before <span style='font-family:&quot;SFMono-Regular&quot;,Menlo,Consolas,Monospace; font-size:0.85em'>set_script</span> is called.</p>
 </td></tr>
 </table>
 

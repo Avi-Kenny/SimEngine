@@ -17,7 +17,8 @@ categorized as simple (a number, a character string, etc.) or complex
 called ".complex" and the associated value must be a list (see examples).
 The function body can contain references to the special object \code{L}
 that stores the current set of simulation levels (see examples).
-The keys must be valid R names (see ?make.names).}
+The keys must be valid R names (see ?make.names). Any functions used
+within the script must be declared before \code{set_script} is called.}
 }
 \value{
 The original simulation object with the new "simulation script"
