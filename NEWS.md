@@ -1,11 +1,12 @@
-# SimEngine 1.2.1
+# SimEngine 1.3.0
+
+### Major changes
+
+- Added an option for the `summarize()` function to calculate Monte Carlo standard errors and confidence intervals for all inferential summary statistics. For summary statistics meant to estimate a population quantity (e.g., the bias of an estimator), the Monte Carlo standard error quantifies variability due to running a finite number of simulation replicates.
 
 ### Minor changes
 
 - Fixed a bug associated with function scoping; see [https://github.com/Avi-Kenny/SimEngine/issues/92](https://github.com/Avi-Kenny/SimEngine/issues/92).
-- Added an option for the `summarize()` function to calculate Monte Carlo standard errors and confidence intervals for all inferential summary statistics. For summary statistics meant to estimate a population
-quantity (e.g., the bias of an estimator), the Monte Carlo standard error quantifies variability due to running
-a finite number of simulation replicates. 
 
 # SimEngine 1.2.0
 
