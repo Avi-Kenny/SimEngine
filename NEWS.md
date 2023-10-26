@@ -1,3 +1,9 @@
+# SimEngine 1.2.1
+
+### Minor changes
+
+- Fixed a bug associated with function scoping; see [https://github.com/Avi-Kenny/SimEngine/issues/92](https://github.com/Avi-Kenny/SimEngine/issues/92).
+
 # SimEngine 1.2.0
 
 ### Major changes
@@ -22,7 +28,7 @@
 
 ### Major changes
 
-- Removed the add_* functions, as we ultimately deemed these unnecessary to the workflow: `add_creator()`, `add_method()`, `add_constants()`. Instead, functions declared in the parent frame of the `new_sim()` call are automatically added to the simulation object. It is now recommended that simulation constants are stored and referenced in the same way as levels; see "Advanced Usage" on the SimEngine website (https://avi-kenny.github.io/SimEngine).
+- Removed the add_* functions, as we ultimately deemed these unnecessary to the workflow: `add_creator()`, `add_method()`, `add_constants()`. Instead, functions declared in the parent frame of the `new_sim()` call are automatically added to the simulation object. It is now recommended that simulation constants are stored and referenced in the same way as levels; see "Advanced Usage" on the SimEngine website ([https://avi-kenny.github.io/SimEngine/](https://avi-kenny.github.io/SimEngine/)).
 
 ### Minor changes
 
