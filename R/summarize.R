@@ -7,6 +7,9 @@
 #'     within a single simulation level.
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
 #'     \code{\link{new_sim}}
+#' @param mc_se A logical argument indicating whether to compute Monte Carlo standard error and associated confidence interval
+#'     for inferential summary statistics.  This applies only to the \code{bias}, \code{bias_pct}, \code{mse}, \code{mae},
+#'     and \code{coverage} summary statistics.
 #' @param ... One or more lists, separated by commas, specifying desired summaries of the \code{sim}
 #'     simulation object. See examples. Each list must have a \code{stat} item, which specifies the type of summary statistic to
 #'     be calculated. The \code{na.rm} item indicates whether to exclude \code{NA} values when performing the calculation (with
@@ -130,13 +133,12 @@
 #'   list(stat = "mse", name="lambda_mse", estimate="lambda_hat", truth=5)
 #' )
 #' @export
-summarize <- function(sim, ...) {
+summarize <- function(sim, ..., mc_se = FALSE) {
   UseMethod("summarize")
 }
 
 #' @export
-summarize.sim_obj <- function(sim, ...) {
-
+summarize.sim_obj <- function(sim, ..., mc_se = FALSE) {
   # Error handling
   if (sim$vars$run_state == "pre run") {
     stop("Simulation has not been run yet.")
@@ -185,10 +187,25 @@ summarize.sim_obj <- function(sim, ...) {
   code_min <- ""
   code_max <- ""
   code_bias <- ""
+  code_bias_mc_se <- ""
+  code_bias_mc_cil <- ""
+  code_bias_mc_ciu <- ""
   code_bias_pct <- ""
+  code_bias_pct_mc_se <- ""
+  code_bias_pct_mc_cil <- ""
+  code_bias_pct_mc_ciu <- ""
   code_mse <- ""
+  code_mse_mc_se <- ""
+  code_mse_mc_cil <- ""
+  code_mse_mc_ciu <- ""
   code_mae <- ""
+  code_mae_mc_se <- ""
+  code_mae_mc_cil <- ""
+  code_mae_mc_ciu <- ""
   code_coverage <- ""
+  code_coverage_mc_se <- ""
+  code_coverage_mc_cil <- ""
+  code_coverage_mc_ciu <- ""
   code_correlation <- ""
   code_covariance <- ""
   code_is_na <- ""
@@ -461,6 +478,23 @@ summarize.sim_obj <- function(sim, ...) {
         pre, arg$name, " = mean(", arg$estimate, "-", arg$truth, na_1
       ))
 
+      if (mc_se){
+        if (!is.null(arg$na.rm) && arg$na.rm==TRUE) {
+          na_1 <- ", na.rm=TRUE)"
+        } else {
+          na_1 <- ")"
+        }
+        code_bias_mc_se <- c(code_bias_mc_se, paste0(
+          pre, arg$name, "_mc_se = sqrt((1/(sum(!is.na(", arg$estimate,"))-1))*mean((",
+          arg$estimate, "-", arg$truth, "-", pre, arg$name, ")^2", na_1, "),"
+        ))
+        code_bias_mc_cil <- c(code_bias_mc_cil, paste0(
+          pre, arg$name, "_mc_ci_l = ", pre, arg$name, "- 1.96*", pre, arg$name, "_mc_se,"
+        ))
+        code_bias_mc_ciu <- c(code_bias_mc_ciu, paste0(
+          pre, arg$name, "_mc_ci_u = ", pre, arg$name, "+ 1.96*", pre, arg$name, "_mc_se,"
+        ))
+      }
 
       # parse bias pct code
     } else if (stat_name == "bias_pct"){
@@ -492,6 +526,25 @@ summarize.sim_obj <- function(sim, ...) {
         "/abs(", arg$truth, "[1]),"
       ))
 
+      if (mc_se){
+        if (!is.null(arg$na.rm) && arg$na.rm==TRUE) {
+          na_1 <- ", na.rm=TRUE)"
+        } else {
+          na_1 <- ")"
+        }
+        code_bias_pct_mc_se <- c(code_bias_mc_se, paste0(
+          pre, arg$name, "_mc_se = (1/abs(", arg$truth,
+          "[1]))*sqrt((1/(sum(!is.na(", arg$estimate,"))-1))*mean((",
+          arg$estimate, "-", arg$truth, "-", pre, arg$name, ")^2", na_1, "),"
+        ))
+        code_bias_pct_mc_cil <- c(code_bias_pct_mc_cil, paste0(
+          pre, arg$name, "_mc_ci_l = ", pre, arg$name, "- 1.96*", pre, arg$name, "_mc_se,"
+        ))
+        code_bias_pct_mc_ciu <- c(code_bias_pct_mc_ciu, paste0(
+          pre, arg$name, "_mc_ci_u = ", pre, arg$name, "+ 1.96*", pre, arg$name, "_mc_se,"
+        ))
+      }
+
       # parse MSE code
     } else if (stat_name == "mse"){
 
@@ -521,6 +574,24 @@ summarize.sim_obj <- function(sim, ...) {
         pre, arg$name, " = mean((", arg$estimate, "-", arg$truth, ")^2", na_1
       ))
 
+      if (mc_se){
+        if (!is.null(arg$na.rm) && arg$na.rm==TRUE) {
+          na_1 <- ", na.rm=TRUE)"
+        } else {
+          na_1 <- ")"
+        }
+        code_mse_mc_se <- c(code_mse_mc_se, paste0(
+          pre, arg$name, "_mc_se = sqrt((1/(sum(!is.na(", arg$estimate,"))-1))*mean(((",
+          arg$estimate, "-", arg$truth, ")^2 -", pre, arg$name, ")^2", na_1, "),"
+        ))
+        code_mse_mc_cil <- c(code_mse_mc_cil, paste0(
+          pre, arg$name, "_mc_ci_l = ", pre, arg$name, "- 1.96*", pre, arg$name, "_mc_se,"
+        ))
+        code_mse_mc_ciu <- c(code_mse_mc_ciu, paste0(
+          pre, arg$name, "_mc_ci_u = ", pre, arg$name, "+ 1.96*", pre, arg$name, "_mc_se,"
+        ))
+      }
+
       # parse MAE code
     } else if (stat_name == "mae"){
 
@@ -549,6 +620,24 @@ summarize.sim_obj <- function(sim, ...) {
       code_mae <- c(code_mae, paste0(
         pre, arg$name, " = mean(abs(", arg$estimate, "-", arg$truth, ")", na_1
       ))
+
+      if (mc_se){
+        if (!is.null(arg$na.rm) && arg$na.rm==TRUE) {
+          na_1 <- ", na.rm=TRUE)"
+        } else {
+          na_1 <- ")"
+        }
+        code_mae_mc_se <- c(code_mae_mc_se, paste0(
+          pre, arg$name, "_mc_se = sqrt((1/(sum(!is.na(", arg$estimate,"))-1))*mean((abs(",
+          arg$estimate, "-", arg$truth, ") -", pre, arg$name, ")^2", na_1, "),"
+        ))
+        code_mae_mc_cil <- c(code_mae_mc_cil, paste0(
+          pre, arg$name, "_mc_ci_l = ", pre, arg$name, "- 1.96*", pre, arg$name, "_mc_se,"
+        ))
+        code_mae_mc_ciu <- c(code_mae_mc_ciu, paste0(
+          pre, arg$name, "_mc_ci_u = ", pre, arg$name, "+ 1.96*", pre, arg$name, "_mc_se,"
+        ))
+      }
 
       ### Calculate CIs and parse coverage summary code
       # !!!!! Add a column to specify how many rows were omitted with na.rm (for other summary stats as well)
@@ -606,6 +695,28 @@ summarize.sim_obj <- function(sim, ...) {
         " & ", arg$truth, " <= .ci_h_", arg$name, na_1,
         "/sum(!is.na(.ci_l_", arg$name, ") & !is.na(.ci_h_", arg$name,
         ") & !is.na(", arg$truth, ")", "),"))
+
+      if (mc_se){
+        if (!is.null(arg$na.rm) && arg$na.rm==TRUE) {
+          na_1 <- ", na.rm=TRUE)"
+        } else {
+          na_1 <- ")"
+        }
+
+        na_code <- paste0("sum(!is.na(.ci_l_", arg$name, ") & !is.na(.ci_h_", arg$name,
+        ") & !is.na(", arg$truth, ")", ")")
+        code_coverage_mc_se <- c(code_coverage_mc_se, paste0(
+          pre, arg$name, "_mc_se = sqrt((1/", na_code, ")*", pre, arg$name, "* (1 - ",
+          pre, arg$name, ")),"
+        ))
+        code_coverage_mc_cil <- c(code_coverage_mc_cil, paste0(
+          pre, arg$name, "_mc_ci_l = max(", pre, arg$name, "- 1.96*", pre, arg$name, "_mc_se, 0),"
+
+        ))
+        code_coverage_mc_ciu <- c(code_coverage_mc_ciu, paste0(
+          pre, arg$name, "_mc_ci_u = min(", pre, arg$name, "+ 1.96*", pre, arg$name, "_mc_se, 1),"
+        ))
+      }
 
     } else if (stat_name == "correlation"){
       # if name missing, create a name
@@ -688,10 +799,25 @@ summarize.sim_obj <- function(sim, ...) {
     code_max,
     code_quantile,
     code_bias,
+    code_bias_mc_se,
+    code_bias_mc_cil,
+    code_bias_mc_ciu,
     code_bias_pct,
+    code_bias_pct_mc_se,
+    code_bias_pct_mc_cil,
+    code_bias_pct_mc_ciu,
     code_mse,
+    code_mse_mc_se,
+    code_mse_mc_cil,
+    code_mse_mc_ciu,
     code_mae,
+    code_mae_mc_se,
+    code_mae_mc_cil,
+    code_mae_mc_ciu,
     code_coverage,
+    code_coverage_mc_se,
+    code_coverage_mc_cil,
+    code_coverage_mc_ciu,
     code_correlation,
     code_covariance,
     code_is_na)

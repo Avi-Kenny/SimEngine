@@ -894,3 +894,106 @@ test_that("cov summary of two variables, constant truth, returns both covs", {
   expect_equal(summ$my_summary, 0.6)
   expect_equal(summ$my_summary2, 0.4)
 })
+
+
+### proper functioning of Monte Carlo SE and CIs
+sim <- new_sim()
+
+sim %<>% set_script(
+  function() {
+    return (list("x"=c(1,2,3,4,5, NA),
+                 "y" = c(6, 7, 8, 9, 10, 11)))
+  }
+)
+
+sim %<>% set_config(
+  num_sim = 1
+)
+
+sim %<>% run()
+
+# bias
+summ <- sim %>% summarize(mc_se = TRUE,
+  list(stat = "bias", name="my_summary", estimate="x", truth = 7, na.rm=TRUE),
+  list(stat = "bias", estimate="y", truth = 10)
+)
+
+test_that("bias summary of two variables with MC SE and CIs", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 10))
+  expect_equal(summ$my_summary_mc_se, sqrt((1/4)*mean((c(1,2,3,4,5)-mean(c(1,2,3,4,5)))^2)))
+  expect_equal(summ$bias_y_mc_se, sqrt((1/5)*mean((c(6,7,8,9,10,11)-mean(c(6,7,8,9,10,11)))^2)))
+  expect_equal(names(summ), c("level_id", "n_reps", "my_summary", "bias_y",
+                              "my_summary_mc_se", "bias_y_mc_se",
+                              "my_summary_mc_ci_l", "bias_y_mc_ci_l",
+                              "my_summary_mc_ci_u", "bias_y_mc_ci_u"))
+})
+
+# mse
+summ <- sim %>% summarize(mc_se = TRUE,
+  list(stat = "mse", name="my_summary", estimate="x", truth = 7, na.rm=TRUE),
+  list(stat = "mse", estimate="y", truth = 10)
+)
+
+test_that("mse summary with MC SE and CI", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 10))
+  expect_equal(summ$my_summary_mc_se, sqrt((1/4)*mean(((c(1,2,3,4,5)-7)^2 -
+                                                        mean((c(1,2,3,4,5)-7)^2))^2)))
+  expect_equal(summ$MSE_y_mc_se,  sqrt((1/5)*mean(((c(6,7,8,9,10,11)-10)^2 -
+                                                     mean((c(6,7,8,9,10,11)-7)^2))^2)))
+  expect_equal(names(summ), c("level_id", "n_reps", "my_summary", "MSE_y",
+                              "my_summary_mc_se", "MSE_y_mc_se",
+                              "my_summary_mc_ci_l", "MSE_y_mc_ci_l",
+                              "my_summary_mc_ci_u", "MSE_y_mc_ci_u"))
+})
+
+# mae
+summ <- sim %>% summarize(mc_se = TRUE,
+                          list(stat = "mae", name="my_summary", estimate="x", truth = 7, na.rm=TRUE),
+                          list(stat = "mae", estimate="y", truth = 10)
+)
+
+test_that("mae summary with MC SE and CI", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 10))
+  expect_equal(summ$my_summary_mc_se, sqrt((1/4)*mean((abs(c(1,2,3,4,5)-7) -
+                                                         mean(abs(c(1,2,3,4,5)-7)))^2)))
+  expect_equal(summ$MAE_y_mc_se,  sqrt((1/5)*mean((abs(c(6,7,8,9,10,11)-10) -
+                                                     mean(abs(c(6,7,8,9,10,11)-7)))^2)))
+  expect_equal(names(summ), c("level_id", "n_reps", "my_summary", "MAE_y",
+                              "my_summary_mc_se", "MAE_y_mc_se",
+                              "my_summary_mc_ci_l", "MAE_y_mc_ci_l",
+                              "my_summary_mc_ci_u", "MAE_y_mc_ci_u"))
+})
+
+
+# coverage
+sim <- new_sim()
+
+sim %<>% set_script(
+  function() {
+    dat <- rnorm(100)
+    lower <- mean(dat) - 1.96*sd(dat)/10
+    upper <- mean(dat) + 1.96*sd(dat)/10
+    return (list("lower" = lower, "upper" = upper))
+  }
+)
+
+sim %<>% set_config(num_sim = 100)
+
+sim %<>% run()
+
+summ <- sim %>% summarize(mc_se = TRUE,
+  list(stat = "coverage", name="my_summary", lower="lower", upper = "upper", truth = 0, na.rm=TRUE)
+)
+
+test_that("cov summary with MC SE and CI", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 6))
+  expect_equal(names(summ), c("level_id", "n_reps", "my_summary",
+                              "my_summary_mc_se",
+                              "my_summary_mc_ci_l",
+                              "my_summary_mc_ci_u"))
+  expect_equal(summ$my_summary_mc_se, sqrt((1/nrow(sim$results))*summ$my_summary*(1 - summ$my_summary)))
+})
