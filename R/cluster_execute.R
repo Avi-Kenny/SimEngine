@@ -127,7 +127,7 @@ cluster_execute <- function(
     # Save simulation object
     ..sim$internals$sim_var <- ..sim_var
     ..sim$vars$start_time <- ..start_time
-    ..sim$config$parallel <- TRUE
+    # ..sim$config$parallel <- TRUE # Phasing out with SimEngine 1.2.1
     saveRDS(..sim, file=..path_sim_obj)
 
   } else if (Sys.getenv("sim_run") %in% c("main","last")) {
