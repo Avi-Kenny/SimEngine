@@ -4,7 +4,7 @@
 \alias{summarize}
 \title{Summarize simulation results}
 \usage{
-summarize(sim, ...)
+summarize(sim, ..., mc_se = FALSE)
 }
 \arguments{
 \item{sim}{A simulation object of class \code{sim_obj}, usually created by
@@ -93,6 +93,10 @@ summarize(sim, ...)
     summary column named \code{"cov_est"} is created.}
 
    }}
+
+\item{mc_se}{A logical argument indicating whether to compute Monte Carlo standard error and associated confidence interval
+for inferential summary statistics.  This applies only to the \code{bias}, \code{bias_pct}, \code{mse}, \code{mae},
+and \code{coverage} summary statistics.}
 }
 \value{
 A data frame containing the result of each specified summary function as a column, for each of
