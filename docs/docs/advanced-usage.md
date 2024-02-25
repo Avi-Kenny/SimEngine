@@ -300,7 +300,7 @@ create_data <- function() {
 
 ## Handling errors and warnings
 
-As with any type of programming, debugging is a necessary part of the coding workflow. With simulations, sometimes errors occur that will affect all simulation replicates and sometimes errors occur that only affecet some replicates. By default, when a simulation is run, **SimEngine** will not stop if an error occurs; instead, errors are logged and stored in a dataframe along with information about the simulation replicates that resulted in those errors. Examining this dataframe by typing `print(sim$errors)` can sometimes help to quickly pinpoint the issue. This is demonstrated below:
+As with any type of programming, debugging is a necessary part of the coding workflow. With simulations, sometimes errors occur that will affect all simulation replicates and sometimes errors occur that only affect some replicates. By default, when a simulation is run, **SimEngine** will not stop if an error occurs; instead, errors are logged and stored in a dataframe along with information about the simulation replicates that resulted in those errors. Examining this dataframe by typing `print(sim$errors)` can sometimes help to quickly pinpoint the issue. This is demonstrated below:
 
 ```R
 sim <- new_sim()
