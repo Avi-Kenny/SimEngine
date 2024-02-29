@@ -1,0 +1,13 @@
+url: https://avi-kenny.github.io/SimEngine/
+template:
+  bootstrap: 5
+  bootswatch: sandstone
+  bslib:
+    primary: "#393939"
+    navbar-light-hover-color: "#EA8D00"
+    nav-link-font-size: 30
+  theme: gruvbox-dark
+navbar:
+  type: light
+
+# Full list of bslib variables: https://rstudio.github.io/bslib/articles/bs5-variables/index.html

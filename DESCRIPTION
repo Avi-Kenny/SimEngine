@@ -8,7 +8,8 @@ Description: An open-source R package for structuring, maintaining, running, and
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
+VignetteBuilder: knitr
 Depends: 
     magrittr (>= 2.0.3)
 Imports: 
@@ -28,4 +29,5 @@ Suggests:
     tidyr (>= 1.2.1),
     ggplot2 (>= 3.4.0),
     sandwich (>= 3.0.2)
-VignetteBuilder: knitr
+URL: https://avi-kenny.github.io/SimEngine/
+BugReports: https://github.com/Avi-Kenny/SimEngine/issues
