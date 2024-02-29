@@ -12,12 +12,6 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-```
-
-This vignette is adapted from <a href="https://avi-kenny.github.io/SimEngine/examples/2">Example 2</a> on the SimEngine website. 
-
-```{r setup, message = FALSE}
-library(tidyr)
 library(SimEngine)
 ```
 
@@ -123,6 +117,7 @@ print(summarized_results)
 To visualize our results, we set up a plotting function.
 
 ```{r}
+library(tidyr)
 plot_results <- function(which_graph, n_est) {
   if (n_est == 3) {
     values <- c("#999999", "#E69F00", "#56B4E9")

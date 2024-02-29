@@ -14,8 +14,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette is adapted from the <a href="https://avi-kenny.github.io/SimEngine/">homepage</a> of the SimEngine website. 
-
 ## Overview
 
 **SimEngine** is an open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments.
