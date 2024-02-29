@@ -10,6 +10,14 @@
 
 An open-source R package for structuring, maintaining, running, and debugging statistical simulations on both local and cluster-based computing environments.See full documentation at \url{https://avi-kenny.github.io/SimEngine/}.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://avi-kenny.github.io/SimEngine/}
+  \item Report bugs at \url{https://github.com/Avi-Kenny/SimEngine/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Avi Kenny \email{avi.kenny@gmail.com}
 

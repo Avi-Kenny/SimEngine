@@ -7,7 +7,7 @@
 batch(code)
 }
 \arguments{
-\item{code}{A block of code enclosed by curly braces {}; see examples.}
+\item{code}{A block of code enclosed by curly braces \{\}; see examples.}
 }
 \description{
 This function is designed to be used within a simulation script

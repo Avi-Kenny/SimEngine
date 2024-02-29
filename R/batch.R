@@ -10,7 +10,7 @@
 #'     repeating this a number of times. See
 #'     \url{https://avi-kenny.github.io/SimEngine/advanced-usage/#using-the-batch-function}
 #'     for a thorough overview of how this function is used.
-#' @param code A block of code enclosed by curly braces {}; see examples.
+#' @param code A block of code enclosed by curly braces \{\}; see examples.
 #' @examples
 #' sim <- new_sim()
 #' create_data <- function(n, mu) { rnorm(n=n, mean=mu) }
