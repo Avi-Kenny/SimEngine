@@ -190,8 +190,8 @@ cluster_execute <- function(
 
       if (is.na(tid)) { stop("Task ID is missing.") }
 
-      add_to_tid <- as.numeric(Sys.getenv("sim_add_to_tid"))
-      if (!is.na(add_to_tid)) { tid <- tid + add_to_tid }
+      # add_to_tid <- as.numeric(Sys.getenv("sim_add_to_tid")) # Deprecated 2024-03-08
+      # if (!is.na(add_to_tid)) { tid <- tid + add_to_tid } # Deprecated 2024-03-08
 
       if (tid<1 || tid>..sim$vars$num_sim_total) {
 
@@ -204,7 +204,7 @@ cluster_execute <- function(
 
         # Assign tid, load packages, and run 'main' code
         ..sim$internals$tid <- tid
-        rm(tid, add_to_tid)
+        rm(tid) # rm(tid, add_to_tid) # Deprecated 2024-03-08
         for (pkg in ..sim$config$packages) { do.call("library", list(pkg)) }
         assign(x=..sim$internals$sim_var, value=..sim, envir=..env_calling)
 

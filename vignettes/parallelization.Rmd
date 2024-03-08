@@ -145,23 +145,6 @@ sbatch --export=sim_run='main' --array=1-5 --depend=afterok:101 run_sim.sh
 
 The `run_on_cluster` function is programmed such that it can also be run locally. What this means is that if you run the entire `run_on_cluster` function on your computer (rather than on a CCS), the code within the `first`, `main`, and `last` blocks will be executed. Objects created within these three blocks will not be saved, but a copy of your simulation object will be exported to the environment from which `run_on_cluster` was called (typically the global environment) so that you can examine the results, pass it to functions like `summarize`, and so on. This can be useful for testing simulations locally before sending them to a CCS.
 
-### Dealing with Job Scheduler submission limits
-
-Sometimes, Job Schedulers will impose limits in terms of the number of job array tasks that can be submitted. This may result in a situation where you cannot submit a job array with task ID greater than a certain number (for example 10,000). In these situations, the special environment variable `sim_add_to_tid` may be used to submit the job array in multiple chunks. If your Scheduler's limit is 10,000 and you want to submit a job array of 15,000 simulation replicates, you can do so as follows (note: you may have to wait for the first batch to finish before submitting the second batch so that the second batch is not rejected by the Scheduler):
-
-```bash
-sbatch --export=sim_run='first' run_sim.sh
-#> Submitted batch job 101
-sbatch --export=sim_run='main' --array=1-9000 --depend=afterok:101 run_sim.sh
-#> Submitted batch job 102
-sbatch --export=sim_run='main',sim_add_to_tid=9000 --array=1-6000 --depend=afterok:102 run_sim.sh
-#> Submitted batch job 103
-sbatch --export=sim_run='last' --depend=afterok:103 run_sim.sh
-#> Submitted batch job 104
-```
-
-When the first batch is submitted, the task IDs 1 through 9,000 will be passed directly to **SimEngine** and the simulation replicates with `sim_uid` values 1 through 9,000 will be run, as usual. However, when the second batch is submitted, each of the task IDs 1 through 6,000 will have the number 9,000 (corresponding to the value set for `sim_add_to_tid`) added to them after they are passed to **SimEngine**, and so the simulation replicates with `sim_uid` values 9,001 through 15,000 will be run.
-
 ### Using "unsupported" job schedulers
 
 It may be the case that you are using a Job Scheduler that **SimEngine** does not natively support. If this is the case, you can still use **SimEngine**; the key will be to identify the environment variable that your JS uses to uniquely identify tasks within a job array. For example, Slurm uses the variable `"SLURM_ARRAY_TASK_ID"` and Grid Engine uses the variable `"SGE_TASK_ID"`. Once you have identified this variable, specify it in your `cluster_config` block, as follows:
