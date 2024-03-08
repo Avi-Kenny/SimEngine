@@ -7,77 +7,58 @@
 ## Required packages for replication
 library("SimEngine")
 library("ggplot2")
+library("MASS")
+library("dplyr")
+library("tidyr")
 
-## Set seed for reproducibility
-set.seed(72724)
 
-## Section 2: Introduction
+
+###################################.
+##### Section 2: Introduction #####
+###################################.
 
 # Chunk 2.0.1
 # run only if not installed
-# install.packages("SimEngine")
+if (F) {
+  install.packages("SimEngine")
+}
 
 # Chunk 2.1.1
+set.seed(1)
 library(SimEngine)
 sim <- new_sim()
 
 # Chunk 2.2.1
-create_rct_data <- function (num_patients) {
-  df <- data.frame(
-    "patient_id" = integer(),
-    "group" = character(),
-    "outcome" = double(),
-    stringsAsFactors = FALSE
-  )
-  for (i in 1:num_patients) {
-    group <- ifelse(sample(c(0,1), size=1)==1, "treatment", "control")
-    treatment_effect <- ifelse(group=="treatment", -7, 0)
-    outcome <- rnorm(n=1, mean=130, sd=2) + treatment_effect
-    df[i,] <- list(i, group, outcome)
-  }
-  return (df)
+create_data <- function(n) {
+  return(rpois(n=n, lambda=50))
 }
-create_rct_data(5)
+create_data(n=10)
 
 # Chunk 2.3.1
-est_tx_effect <- function(df, type) {
-  n <- nrow(df)
-  sum_t <- sum(df$outcome * (df$group=="treatment"))
-  sum_c <- sum(df$outcome * (df$group=="control"))
-  if (type=="est1") {
-    true_prob <- 0.5
-    return ( sum_t/(n*true_prob) - sum_c/(n*(1-true_prob)) )
-  } else if (type=="est2") {
-    est_prob <- sum(df$group=="treatment") / n
-    return ( sum_t/(n*est_prob) - sum_c/(n*(1-est_prob)) )
-  }
+est_lambda <- function(dat, type) {
+  if (type=="M") { return(mean(dat)) }
+  if (type=="V") { return(var(dat)) }
 }
-df <- create_rct_data(1000)
-est_tx_effect(df, "est1")
-est_tx_effect(df, "est2")
+dat <- create_data(n=1000)
+est_lambda(dat=dat, type="M")
+est_lambda(dat=dat, type="V")
 
 # Chunk 2.4.1
 sim %<>% set_levels(
-  estimator = c("est1", "est2"),
-  num_patients = c(50, 200, 1000)
+  estimator = c("M", "V"),
+  n = c(10, 100, 1000)
 )
 
 # Chunk 2.5.1
 sim %<>% set_script(function() {
-  df <- create_rct_data(L$num_patients)
-  est <- est_tx_effect(df, L$estimator)
-  return (list(
-    "est" = est,
-    "mean_t" = mean(df$outcome[df$group=="treatment"]),
-    "mean_c" = mean(df$outcome[df$group=="control"])
-  ))
+  dat <- create_data(n=L$n)
+  lambda_hat <- est_lambda(dat=dat, type=L$estimator)
+  return (list("lambda_hat"=lambda_hat))
 })
 
 # Chunk 2.6.1
 sim %<>% set_config(
   num_sim = 100,
-  parallel = "outer",
-  n_cores = 2,
   packages = c("ggplot2", "stringr")
 )
 
@@ -86,8 +67,8 @@ sim %<>% run()
 
 # Chunk 2.8.1
 sim %>% summarize(
-  list(stat="bias", truth=-7, estimate="est"),
-  list(stat="mse", truth=-7, estimate="est")
+  list(stat="bias", name="bias_lambda", estimate="lambda_hat", truth=20),
+  list(stat="mse", name="mse_lambda", estimate="lambda_hat", truth=20)
 )
 
 # Chunk 2.8.2
@@ -96,8 +77,8 @@ head(sim$results)
 # Chunk 2.9.1
 sim %<>% set_config(num_sim = 200)
 sim %<>% set_levels(
-  estimator = c("est1", "est2"),
-  num_patients = c(20, 50, 200, 1000)
+  estimator = c("M", "V"),
+  n = c(10, 100, 1000, 10000)
 )
 
 # Chunk 2.9.2
@@ -105,16 +86,267 @@ sim %<>% update_sim()
 
 # Chunk 2.9.3
 sim %>% summarize(
-  list(stat="bias", truth=-7, estimate="est"),
-  list(stat="mse", truth=-7, estimate="est")
+  list(stat="bias", name="bias_lambda", estimate="lambda_hat", truth=20),
+  list(stat="mse", name="mse_lambda", estimate="lambda_hat", truth=20)
 )
 
-## Section 3: Parallelization
-## The code in this section does not produce any results.
 
-## Section 4: Advanced functionality
 
-# Chunk 4.7.1
+######################################.
+##### Section 3: Parallelization #####
+######################################.
+
+# Results are not displayed for this code
+if (F) {
+
+  # Chunk 3.1.1
+  sim <- new_sim()
+  sim %<>% set_config(parallel = TRUE)
+
+  # Chunk 3.2.1
+  sim <- new_sim()
+  create_data <- function(n) { return(rpois(n=n, lambda=50)) }
+  est_lambda <- function(dat, type) {
+    if (type=="M") { return(mean(dat)) }
+    if (type=="V") { return(var(dat)) }
+  }
+  sim %<>% set_levels(estimator = c("M","V"), n = c(10,100,1000))
+  sim %<>% set_script(function() {
+    dat <- create_data(L$n)
+    lambda_hat <- est_lambda(dat=dat, type=L$estimator)
+    return(list("lambda_hat"=lambda_hat))
+  })
+  sim %<>% set_config(num_sim=100)
+  sim %<>% run()
+  sim %>% summarize()
+
+  # Chunk 3.2.2
+  run_on_cluster(
+    first = {
+      sim <- new_sim()
+      create_data <- function(n) { return(rpois(n=n, lambda=50)) }
+      est_lambda <- function(dat, type) {
+        if (type=="M") { return(mean(dat)) }
+        if (type=="V") { return(var(dat)) }
+      }
+      sim %<>% set_levels(estimator = c("M","V"), n = c(10,100,1000))
+      sim %<>% set_script(function() {
+        dat <- create_data(L$n)
+        lambda_hat <- est_lambda(dat=dat, type=L$estimator)
+        return(list("lambda_hat"=lambda_hat))
+      })
+      sim %<>% set_config(num_sim=100)
+    },
+    main = {
+      sim %<>% run()
+    },
+    last = {
+      sim %>% summarize()
+    },
+    cluster_config = list(js="slurm")
+  )
+
+  # Chunk 3.2.3
+  #> #!/bin/bash
+  #> Rscript my_simulation.R
+
+  # Chunk 3.2.4
+  #> sbatch --export=sim_run='first' run_sim.sh
+  #> sbatch --export=sim_run='main' --array=1-20 --depend=afterok:101 run_sim.sh
+  #> sbatch --export=sim_run='last' --depend=afterok:102 run_sim.sh
+
+  # Chunk 3.2.5
+  #> sbatch --export=sim_run='main' --array=1-5 --depend=afterok:101 run_sim.sh
+
+  # Chunk 3.3.1
+  run_on_cluster(
+    first = {...},
+    main = {...},
+    last = {...},
+    cluster_config = list(tid_var="SLURM_ARRAY_TASK_ID")
+  )
+
+  # Chunk 3.3.2
+  update_sim_on_cluster(
+    first = {
+      sim <- readRDS("sim.rds")
+      sim %<>% set_levels(n=c(100,500,1000))
+    },
+    main = {
+      sim %<>% update_sim()
+    },
+    last = {
+      sim %>% summarize()
+    },
+    cluster_config = list(js="slurm")
+  )
+
+}
+
+
+
+#############################################.
+##### Section 4: Advanced functionality #####
+#############################################.
+
+# Chunk 4.1.1
+sim <- new_sim()
+create_data <- function(n) { rnorm(n=n, mean=3) }
+est_mean <- function(dat, type) {
+  if (type=="est_mean") { return(mean(dat)) }
+  if (type=="est_median") { return(median(dat)) }
+}
+sim %<>% set_levels(est=c("est_mean","est_median"))
+sim %<>% set_config(num_sim=3)
+sim %<>% set_script(function() {
+  dat <- create_data(n=100)
+  mu_hat <- est_mean(dat=dat, type=L$est)
+  return(list(
+    "mu_hat" = round(mu_hat,2),
+    "dat_1" = round(dat[1],2)
+  ))
+})
+sim %<>% run()
+
+# Chunk 4.1.2
+sim$results[order(sim$results$rep_id),]
+
+# Chunk 4.1.3
+sim <- new_sim()
+create_data <- function(n) { rnorm(n=n, mean=3) }
+est_mean <- function(dat, type) {
+  if (type=="est_mean") { return(mean(dat)) }
+  if (type=="est_median") { return(median(dat)) }
+}
+sim %<>% set_levels(est=c("est_mean","est_median"))
+sim %<>% set_config(num_sim=3, batch_levels=NULL)
+sim %<>% set_script(function() {
+  batch({
+    dat <- create_data(n=100)
+  })
+  mu_hat <- est_mean(dat=dat, type=L$est)
+  return(list(
+    "mu_hat" = round(mu_hat,2),
+    "dat_1" = round(dat[1],2)
+  ))
+})
+sim %<>% run()
+
+# Chunk 4.1.4
+sim$results[order(sim$results$rep_id),]
+
+# Chunk 4.1.5
+sim <- new_sim()
+create_data <- function(n, mu) { rnorm(n=n, mean=mu) }
+est_mean <- function(dat, type) {
+  if (type=="est_mean") { return(mean(dat)) }
+  if (type=="est_median") { return(median(dat)) }
+}
+sim %<>% set_levels(n=c(10,100), mu=c(3,5), est=c("est_mean","est_median"))
+sim %<>% set_config(num_sim=2, batch_levels=c("n", "mu"), return_batch_id=T)
+sim %<>% set_script(function() {
+  batch({
+    dat <- create_data(n=L$n, mu=L$mu)
+  })
+  mu_hat <- est_mean(dat=dat, type=L$est)
+  return(list(
+    "mu_hat" = round(mu_hat,2),
+    "dat_1" = round(dat[1],2)
+  ))
+})
+sim %<>% run()
+sim$results[order(sim$results$batch_id),]
+
+# Chunk 4.2.1
+sim <- new_sim()
+sim %<>% set_levels(n = c(200,400,800))
+
+# Chunk 4.2.2
+sim <- new_sim()
+sim %<>% set_levels(
+  n = c(10,100),
+  distribution = list(
+    "Beta 1" = list(type="Beta", params=c(0.3, 0.7)),
+    "Beta 2" = list(type="Beta", params=c(1.5, 0.4)),
+    "Normal" = list(type="Normal", params=c(3.0, 0.2))
+  )
+)
+create_data <- function(n, type, params) {
+  if (type=="Beta") {
+    return(rbeta(n, shape1=params[1], shape2=params[2]))
+  } else if (type=="Normal") {
+    return(rnorm(n, mean=params[1], sd=params[2]))
+  }
+}
+sim %<>% set_script(function() {
+  x <- create_data(L$n, L$distribution$type, L$distribution$params)
+  return(list("y"=mean(x)))
+})
+sim %<>% run()
+
+# Chunk 4.2.3
+sim %>% summarize()
+
+# Chunk 4.3.1
+sim <- new_sim()
+sim %<>% set_levels(n=c(10, 100, 1000))
+create_data <- function(n) {
+  x <- runif(n)
+  y <- 3 + 2*x + rnorm(n)
+  return(data.frame("x"=x, "y"=y))
+}
+sim %<>% set_config(num_sim=2)
+sim %<>% set_script(function() {
+  dat <- create_data(L$n)
+  model <- lm(y~x, data=dat)
+  return(list(
+    "beta0_hat" = model$coefficients[[1]],
+    "beta1_hat" = model$coefficients[[2]],
+    ".complex" = list(
+      "model" = model,
+      "cov_mtx" = vcov(model)
+    )
+  ))
+})
+sim %<>% run()
+
+# Chunk 4.3.2
+print(sim$results)
+
+# Chunk 4.3.3
+c5 <- get_complex(sim, sim_uid=5)
+print(summary(c5$model))
+print(c5$cov_mtx)
+
+# Chunk 4.4.1
+sim %<>% set_config(seed=123)
+
+# Chunk 4.4.2
+sim <- new_sim()
+print(vars(sim, "seed"))
+
+# Chunk 4.5.1
+sim <- new_sim()
+sim %<>% set_config(num_sim=2)
+sim %<>% set_levels(
+  Sigma = list(
+    s1 = list(mtx=matrix(c(3,1,1,2), nrow=2)),
+    s3 = list(mtx=matrix(c(4,3,3,9), nrow=2)),
+    s2 = list(mtx=matrix(c(1,2,2,1), nrow=2)),
+    s4 = list(mtx=matrix(c(8,2,2,6), nrow=2))
+  )
+)
+sim %<>% set_script(function() {
+  x <- MASS::mvrnorm(n=1, mu=c(0,0), Sigma=L$Sigma$mtx)
+  return(list(x1=x[1], x2=x[2]))
+})
+sim %<>% run()
+print(sim$errors)
+
+# Chunk 4.5.2
+sim %<>% set_config(stop_at_error=TRUE)
+
+# chunk 4.6.1
 sim <- new_sim()
 create_data <- function(n) { rpois(n, lambda=5) }
 est_mean <- function(dat) {
@@ -129,21 +361,24 @@ sim %<>% set_script(function() {
 })
 sim %<>% run()
 sim %>% summarize(
-  list(stat = "mse", name="lambda_mse", estimate="lambda_hat", truth=5),
-  mc_se = TRUE)
+  list(stat="mse", name="lambda_mse", estimate="lambda_hat", truth=5),
+  mc_se = TRUE
+)
 
-## Appendix A: Simulation-based power calculation
+
+
+##########################################################.
+##### Appendix A: Simulation-based power calculation #####
+##########################################################.
 
 # Chunk A.1
 sim <- new_sim()
-
 create_rct_data <- function(n, mu_0, mu_1, sigma_0, sigma_1) {
   group <- sample(rep(c(0,1),n))
   outcome <- (1-group) * rnorm(n=n, mean=mu_0, sd=sigma_0) +
     group * rnorm(n=n, mean=mu_1, sd=sigma_1)
   return(data.frame("group"=group, "outcome"=outcome))
 }
-
 create_rct_data(n=3, mu_0=3, mu_1=4, sigma_0=0.1, sigma_1=0.1)
 
 # Chunk A.2 (no output)
@@ -163,18 +398,16 @@ sim %<>% set_config(num_sim=1000)
 
 # Chunk A.4
 sim %<>% run()
-
 power_sim <- sim %>% summarize(
   list(stat="mean", name="power", x="reject")
 )
-
 print(power_sim)
 
 # Chunk A.5
 power_formula <- sapply(c(20,40,60,80), function(n) {
   pnorm(sqrt((n*(17-18)^2)/(2^2+2^2)) - qnorm(0.025, lower.tail=F))
 })
-
+library(ggplot2)
 ggplot(data.frame(
   n = rep(c(20,40,60,80), 2),
   power = c(power_sim$power, power_formula),
@@ -185,11 +418,12 @@ ggplot(data.frame(
 
 
 
-## Appendix B: Comparing two standard error estimators
+###############################################################.
+##### Appendix B: Comparing two standard error estimators #####
+###############################################################.
 
 # Chunk B.1
 sim <- new_sim()
-
 create_regression_data <- function(n) {
   beta <- c(-1, 10)
   x <- rnorm(n)
@@ -202,7 +436,7 @@ create_regression_data <- function(n) {
 dat <- create_regression_data(n=500)
 linear_model <- lm(y~x, data=dat)
 dat$residuals <- linear_model$residuals
-
+library(ggplot2)
 ggplot(dat, aes(x=x, y=residuals)) +
   geom_point() +
   theme_bw() +
@@ -213,7 +447,6 @@ model_vcov <- function(data) {
   mod <- lm(y~x, data=data)
   return(list("coef"=mod$coefficients, "vcov"=diag(vcov(mod))))
 }
-
 sandwich_vcov <- function(data) {
   mod <- lm(y~x, data=data)
   return(list("coef"=mod$coefficients, "vcov"=diag(vcovHC(mod))))
@@ -230,18 +463,15 @@ sim %<>% set_script(function() {
     "beta1_se_est" = sqrt(estimates$vcov[2])
   ))
 })
-
 sim %<>% set_levels(
   estimator = c("model_vcov", "sandwich_vcov"),
   n = c(50, 100, 500, 1000)
 )
-
 sim %<>% set_config(
   num_sim = 500,
   seed = 24,
   packages = c("sandwich")
 )
-
 sim %<>% run()
 
 # Chunk B.5
@@ -253,11 +483,12 @@ summarized_results <- sim %>% summarize(
   list(stat="coverage", name="cov_beta1", estimate="beta1_est",
        se="beta1_se_est", truth=10)
 )
-
 print(summarized_results)
 
 # Chunk B.6
-plot_results <- function(which_graph, n_est) {
+library(dplyr)
+library(tidyr)
+plot_results <- function(summarized_results, which_graph, n_est) {
   if (n_est == 3) {
     values <- c("#999999", "#E69F00", "#56B4E9")
     breaks <- c("model_vcov", "sandwich_vcov", "bootstrap_vcov")
@@ -274,7 +505,7 @@ plot_results <- function(which_graph, n_est) {
         names_to = "parameter",
         names_prefix = "mean_se_"
       ) %>%
-      dplyr::mutate(value_j = jitter(value, amount = 0.01)) %>%
+      mutate(value_j = jitter(value, amount = 0.01)) %>%
       ggplot(aes(x=n, y=1.96*value_j, color=estimator)) +
       geom_line(aes(linetype=parameter)) +
       geom_point() +
@@ -298,7 +529,7 @@ plot_results <- function(which_graph, n_est) {
         names_to = "parameter",
         names_prefix = "cov_"
       ) %>%
-      dplyr::mutate(value_j = jitter(value, amount = 0.01)) %>%
+      mutate(value_j = jitter(value, amount = 0.01)) %>%
       ggplot(aes(x=n, y=value, color=estimator)) +
       geom_line(aes(linetype = parameter)) +
       geom_point() +
@@ -319,9 +550,11 @@ plot_results <- function(which_graph, n_est) {
   }
 }
 
-# Chunk B.7
-plot_results("width", 2)
-plot_results("coverage", 2)
+# Chunk B.7.1
+plot_results(summarized_results, "width", 2)
+
+# Chunk B.7.2
+plot_results(summarized_results, "coverage", 2)
 
 # Chunk B.8
 bootstrap_vcov <- function(data) {
@@ -350,7 +583,7 @@ sim %<>% set_config(
 )
 sim %<>% update_sim()
 
-# Chunk B.9
+# Chunk B.9.1
 summarized_results <- sim %>% summarize(
   list(stat="mean", name="mean_se_beta0", x="beta0_se_est"),
   list(stat="mean", name="mean_se_beta1", x="beta1_se_est"),
@@ -359,9 +592,15 @@ summarized_results <- sim %>% summarize(
   list(stat="coverage", name="cov_beta1", estimate="beta1_est",
        se="beta1_se_est", truth=10)
 )
+plot_results(summarized_results, "width", 3)
 
-plot_results("width", 3)
-plot_results("coverage", 3)
+# Chunk B.9.2
+plot_results(summarized_results, "coverage", 3)
 
+
+
+##############################.
+##### sessionInfo() call #####
+##############################.
 
 sessionInfo()
