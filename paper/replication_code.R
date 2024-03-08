@@ -30,7 +30,7 @@ sim <- new_sim()
 
 # Chunk 2.2.1
 create_data <- function(n) {
-  return(rpois(n=n, lambda=50))
+  return(rpois(n=n, lambda=20))
 }
 create_data(n=10)
 
@@ -105,7 +105,7 @@ if (F) {
 
   # Chunk 3.2.1
   sim <- new_sim()
-  create_data <- function(n) { return(rpois(n=n, lambda=50)) }
+  create_data <- function(n) { return(rpois(n=n, lambda=20)) }
   est_lambda <- function(dat, type) {
     if (type=="M") { return(mean(dat)) }
     if (type=="V") { return(var(dat)) }
@@ -124,7 +124,7 @@ if (F) {
   run_on_cluster(
     first = {
       sim <- new_sim()
-      create_data <- function(n) { return(rpois(n=n, lambda=50)) }
+      create_data <- function(n) { return(rpois(n=n, lambda=20)) }
       est_lambda <- function(dat, type) {
         if (type=="M") { return(mean(dat)) }
         if (type=="V") { return(var(dat)) }
@@ -211,7 +211,7 @@ sim %<>% set_script(function() {
 sim %<>% run()
 
 # Chunk 4.1.2
-sim$results[order(sim$results$rep_id),]
+sim$results[order(sim$results$rep_id),c(1:7)!=5]
 
 # Chunk 4.1.3
 sim <- new_sim()
@@ -235,7 +235,7 @@ sim %<>% set_script(function() {
 sim %<>% run()
 
 # Chunk 4.1.4
-sim$results[order(sim$results$rep_id),]
+sim$results[order(sim$results$rep_id),c(1:7)!=5]
 
 # Chunk 4.1.5
 sim <- new_sim()
@@ -257,7 +257,7 @@ sim %<>% set_script(function() {
   ))
 })
 sim %<>% run()
-sim$results[order(sim$results$batch_id),]
+sim$results[order(sim$results$batch_id),c(1:10)!=8]
 
 set.seed(1)
 
@@ -289,7 +289,7 @@ sim %<>% set_script(function() {
 sim %<>% run()
 
 # Chunk 4.2.3
-sim %>% summarize()
+sim %>% summarize(list(stat="mean", x="y"))
 
 set.seed(1)
 
@@ -317,7 +317,7 @@ sim %<>% set_script(function() {
 sim %<>% run()
 
 # Chunk 4.3.2
-print(sim$results)
+head(sim$results)
 
 # Chunk 4.3.3
 c5 <- get_complex(sim, sim_uid=5)
