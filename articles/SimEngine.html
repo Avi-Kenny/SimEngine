@@ -156,11 +156,11 @@ generating their outcome according to a simple model.</p>
 <span><span class="co"># Test the function</span></span>
 <span><span class="fu">create_rct_data</span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   patient_id     group  outcome</span></span>
-<span><span class="co">#&gt; 1          1 treatment 126.7997</span></span>
-<span><span class="co">#&gt; 2          2 treatment 123.3045</span></span>
-<span><span class="co">#&gt; 3          3 treatment 124.6935</span></span>
-<span><span class="co">#&gt; 4          4 treatment 126.2102</span></span>
-<span><span class="co">#&gt; 5          5   control 128.4514</span></span></code></pre></div>
+<span><span class="co">#&gt; 1          1   control 129.2658</span></span>
+<span><span class="co">#&gt; 2          2 treatment 125.4984</span></span>
+<span><span class="co">#&gt; 3          3   control 131.1446</span></span>
+<span><span class="co">#&gt; 4          4   control 129.0810</span></span>
+<span><span class="co">#&gt; 5          5 treatment 120.7136</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="code-your-methods-or-other-functions">3) Code your methods (or other functions)<a class="anchor" aria-label="anchor" href="#code-your-methods-or-other-functions"></a>
@@ -196,9 +196,9 @@ treatment effect, which in this case is <em>-7</em>.</p>
 <span><span class="co"># Test out the estimators</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">create_rct_data</span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span></span>
 <span><span class="fu">est_tx_effect</span><span class="op">(</span><span class="va">df</span>, <span class="st">"est1"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] -7.517866</span></span>
+<span><span class="co">#&gt; [1] -14.60618</span></span>
 <span><span class="fu">est_tx_effect</span><span class="op">(</span><span class="va">df</span>, <span class="st">"est2"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] -7.0121</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] -7.015284</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="set-the-simulation-levels">4) Set the simulation levels<a class="anchor" aria-label="anchor" href="#set-the-simulation-levels"></a>
@@ -304,12 +304,12 @@ MSE, and coverage.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>stat<span class="op">=</span><span class="st">"mse"</span>, truth<span class="op">=</span><span class="op">-</span><span class="fl">7</span>, estimate<span class="op">=</span><span class="st">"est"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;   level_id estimator num_patients n_reps      bias_est      MSE_est</span></span>
-<span><span class="co">#&gt; 1        1      est1           50    100  4.4860289136 1.306009e+03</span></span>
-<span><span class="co">#&gt; 2        2      est2           50    100 -0.0791168183 3.442715e-01</span></span>
-<span><span class="co">#&gt; 3        3      est1          200    100 -0.5143664983 3.266588e+02</span></span>
-<span><span class="co">#&gt; 4        4      est2          200    100  0.0009444138 6.286974e-02</span></span>
-<span><span class="co">#&gt; 5        5      est1         1000    100  0.3806525836 6.336515e+01</span></span>
-<span><span class="co">#&gt; 6        6      est2         1000    100 -0.0046460236 1.592315e-02</span></span></code></pre></div>
+<span><span class="co">#&gt; 1        1      est1           50    100 -5.1290036845 1.385652e+03</span></span>
+<span><span class="co">#&gt; 2        2      est2           50    100 -0.0713539466 2.991849e-01</span></span>
+<span><span class="co">#&gt; 3        3      est1          200    100  2.2481496039 3.186796e+02</span></span>
+<span><span class="co">#&gt; 4        4      est2          200    100 -0.0231637281 7.648987e-02</span></span>
+<span><span class="co">#&gt; 5        5      est1         1000    100 -0.1441529155 6.029278e+01</span></span>
+<span><span class="co">#&gt; 6        6      est2         1000    100 -0.0009256064 1.939188e-02</span></span></code></pre></div>
 <p>In this example, we see that the MSE of estimator 1 is much higher
 than that of estimator 2 and that MSE decreases with increasing sample
 size for both estimators, as expected. You can also directly access the
@@ -317,19 +317,19 @@ results for individual simulation replicates.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id estimator num_patients     runtime       est   mean_t</span></span>
-<span><span class="co">#&gt; 1       1        1      1      est1           50 0.005410910  33.67652 123.1950</span></span>
-<span><span class="co">#&gt; 2       7        1      2      est1           50 0.003492832  23.62029 123.1912</span></span>
-<span><span class="co">#&gt; 3       8        1      3      est1           50 0.005292654 -16.85982 123.3505</span></span>
-<span><span class="co">#&gt; 4       9        1      4      est1           50 0.003271103  64.38465 123.1887</span></span>
-<span><span class="co">#&gt; 5      10        1      5      est1           50 0.003563881  24.07422 123.2654</span></span>
-<span><span class="co">#&gt; 6      11        1      6      est1           50 0.006877184  23.62819 123.3729</span></span>
+<span><span class="co">#&gt; 1       1        1      1      est1           50 0.005408287 -57.40095 123.0274</span></span>
+<span><span class="co">#&gt; 2       7        1      2      est1           50 0.003580570 -87.82808 122.7374</span></span>
+<span><span class="co">#&gt; 3       8        1      3      est1           50 0.005321503 -37.78234 123.1347</span></span>
+<span><span class="co">#&gt; 4       9        1      4      est1           50 0.003423929 -25.83735 123.9274</span></span>
+<span><span class="co">#&gt; 5      10        1      5      est1           50 0.003793955 -87.13902 123.3878</span></span>
+<span><span class="co">#&gt; 6      11        1      6      est1           50 0.007737637  12.00939 122.4323</span></span>
 <span><span class="co">#&gt;     mean_c</span></span>
-<span><span class="co">#&gt; 1 130.0353</span></span>
-<span><span class="co">#&gt; 2 129.9476</span></span>
-<span><span class="co">#&gt; 3 130.0733</span></span>
-<span><span class="co">#&gt; 4 129.5790</span></span>
-<span><span class="co">#&gt; 5 129.5262</span></span>
-<span><span class="co">#&gt; 6 130.1699</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 129.8524</span></span>
+<span><span class="co">#&gt; 2 129.7648</span></span>
+<span><span class="co">#&gt; 3 130.4829</span></span>
+<span><span class="co">#&gt; 4 129.4912</span></span>
+<span><span class="co">#&gt; 5 129.5778</span></span>
+<span><span class="co">#&gt; 6 130.6712</span></span></code></pre></div>
 <p>Above, the <code>sim_uid</code> uniquely identifies a single
 simulation replicate and the <code>level_id</code> uniquely identifies a
 level combination. The rep_id is unique within a given level combination
