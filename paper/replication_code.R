@@ -16,6 +16,8 @@ library("SimEngine")
 ##### Section 2: Introduction #####
 ###################################.
 
+set.seed(1)
+
 # Chunk 2.0.1
 # run only if not installed
 if (F) {
@@ -23,7 +25,6 @@ if (F) {
 }
 
 # Chunk 2.1.1
-set.seed(1)
 library(SimEngine)
 sim <- new_sim()
 
@@ -188,6 +189,8 @@ if (F) {
 ##### Section 4: Advanced functionality #####
 #############################################.
 
+set.seed(1)
+
 # Chunk 4.1.1
 sim <- new_sim()
 create_data <- function(n) { rnorm(n=n, mean=3) }
@@ -256,6 +259,8 @@ sim %<>% set_script(function() {
 sim %<>% run()
 sim$results[order(sim$results$batch_id),]
 
+set.seed(1)
+
 # Chunk 4.2.1
 sim <- new_sim()
 sim %<>% set_levels(n = c(200,400,800))
@@ -285,6 +290,8 @@ sim %<>% run()
 
 # Chunk 4.2.3
 sim %>% summarize()
+
+set.seed(1)
 
 # Chunk 4.3.1
 sim <- new_sim()
@@ -317,12 +324,16 @@ c5 <- get_complex(sim, sim_uid=5)
 print(summary(c5$model))
 print(c5$cov_mtx)
 
+set.seed(1)
+
 # Chunk 4.4.1
 sim %<>% set_config(seed=123)
 
 # Chunk 4.4.2
 sim <- new_sim()
 print(vars(sim, "seed"))
+
+set.seed(1)
 
 # Chunk 4.5.1
 sim <- new_sim()
@@ -344,6 +355,8 @@ print(sim$errors)
 
 # Chunk 4.5.2
 sim %<>% set_config(stop_at_error=TRUE)
+
+set.seed(1)
 
 # chunk 4.6.1
 sim <- new_sim()
@@ -369,6 +382,8 @@ sim %>% summarize(
 ##########################################################.
 ##### Appendix A: Simulation-based power calculation #####
 ##########################################################.
+
+set.seed(1)
 
 # Chunk A.1
 sim <- new_sim()
@@ -420,6 +435,8 @@ ggplot(data.frame(
 ###############################################################.
 ##### Appendix B: Comparing two standard error estimators #####
 ###############################################################.
+
+set.seed(1)
 
 # Chunk B.1
 sim <- new_sim()
