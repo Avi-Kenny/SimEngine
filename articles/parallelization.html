@@ -356,36 +356,6 @@ like <code>summarize</code>, and so on. This can be useful for testing
 simulations locally before sending them to a CCS.</p>
 </div>
 <div class="section level3">
-<h3 id="dealing-with-job-scheduler-submission-limits">Dealing with Job Scheduler submission limits<a class="anchor" aria-label="anchor" href="#dealing-with-job-scheduler-submission-limits"></a>
-</h3>
-<p>Sometimes, Job Schedulers will impose limits in terms of the number
-of job array tasks that can be submitted. This may result in a situation
-where you cannot submit a job array with task ID greater than a certain
-number (for example 10,000). In these situations, the special
-environment variable <code>sim_add_to_tid</code> may be used to submit
-the job array in multiple chunks. If your Scheduler’s limit is 10,000
-and you want to submit a job array of 15,000 simulation replicates, you
-can do so as follows (note: you may have to wait for the first batch to
-finish before submitting the second batch so that the second batch is
-not rejected by the Scheduler):</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">--export</span><span class="op">=</span>sim_run=<span class="st">'first'</span> run_sim.sh</span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; Submitted batch job 101</span></span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">--export</span><span class="op">=</span>sim_run=<span class="st">'main'</span> <span class="at">--array</span><span class="op">=</span>1-9000 <span class="at">--depend</span><span class="op">=</span>afterok:101 run_sim.sh</span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; Submitted batch job 102</span></span>
-<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">--export</span><span class="op">=</span>sim_run=<span class="st">'main'</span>,sim_add_to_tid=9000 <span class="at">--array</span><span class="op">=</span>1-6000 <span class="at">--depend</span><span class="op">=</span>afterok:102 run_sim.sh</span>
-<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt; Submitted batch job 103</span></span>
-<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">--export</span><span class="op">=</span>sim_run=<span class="st">'last'</span> <span class="at">--depend</span><span class="op">=</span>afterok:103 run_sim.sh</span>
-<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt; Submitted batch job 104</span></span></code></pre></div>
-<p>When the first batch is submitted, the task IDs 1 through 9,000 will
-be passed directly to <strong>SimEngine</strong> and the simulation
-replicates with <code>sim_uid</code> values 1 through 9,000 will be run,
-as usual. However, when the second batch is submitted, each of the task
-IDs 1 through 6,000 will have the number 9,000 (corresponding to the
-value set for <code>sim_add_to_tid</code>) added to them after they are
-passed to <strong>SimEngine</strong>, and so the simulation replicates
-with <code>sim_uid</code> values 9,001 through 15,000 will be run.</p>
-</div>
-<div class="section level3">
 <h3 id="using-unsupported-job-schedulers">Using “unsupported” job schedulers<a class="anchor" aria-label="anchor" href="#using-unsupported-job-schedulers"></a>
 </h3>
 <p>It may be the case that you are using a Job Scheduler that
@@ -396,7 +366,7 @@ tasks within a job array. For example, Slurm uses the variable
 <code>"SLURM_ARRAY_TASK_ID"</code> and Grid Engine uses the variable
 <code>"SGE_TASK_ID"</code>. Once you have identified this variable,
 specify it in your <code>cluster_config</code> block, as follows:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/run_on_cluster.html">run_on_cluster</a></span><span class="op">(</span></span>
 <span></span>
 <span>  first <span class="op">=</span> <span class="op">{</span><span class="va">...</span><span class="op">}</span>,</span>
