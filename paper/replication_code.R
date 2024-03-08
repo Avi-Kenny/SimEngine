@@ -5,12 +5,11 @@
 ## The code follows the organization of the paper, divided by section.
 
 ## Required packages for replication
-library("SimEngine")
 library("ggplot2")
 library("MASS")
 library("dplyr")
 library("tidyr")
-
+library("SimEngine")
 
 
 ###################################.
@@ -414,8 +413,8 @@ ggplot(data.frame(
   which = rep(c("Simulation","Formula"), each=4)
 ), aes(x=n, y=power, color=factor(which))) +
   geom_line() +
+  theme_bw() +
   labs(color="Method", y="Power", x="Sample size (per group)")
-
 
 
 ###############################################################.
@@ -511,6 +510,7 @@ plot_results <- function(summarized_results, which_graph, n_est) {
       geom_point() +
       theme_bw() +
       ylab("Average CI width") +
+      xlab("Sample size") +
       scale_color_manual(
         values = values,
         breaks = breaks,
@@ -535,6 +535,7 @@ plot_results <- function(summarized_results, which_graph, n_est) {
       geom_point() +
       theme_bw() +
       ylab("Coverage") +
+      xlab("Sample size") +
       scale_color_manual(
         values = values,
         breaks = breaks,
