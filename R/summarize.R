@@ -1,28 +1,32 @@
 #' Summarize simulation results
 #'
-#' @description This function calculates summary statistics for simulation results,
-#'     including descriptive statistics (e.g. measures of
-#'     center or spread) and inferential statistics (e.g. bias or confidence interval
-#'     coverage). All summary statistics are calculated over simulation replicates
-#'     within a single simulation level.
+#' @description This function calculates summary statistics for simulation
+#'     results, including descriptive statistics (e.g. measures of center or
+#'     spread) and inferential statistics (e.g. bias or confidence interval
+#'     coverage). All summary statistics are calculated over simulation
+#'     replicates within a single simulation level.
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
 #'     \code{\link{new_sim}}
-#' @param mc_se A logical argument indicating whether to compute Monte Carlo standard error and associated confidence interval
-#'     for inferential summary statistics.  This applies only to the \code{bias}, \code{bias_pct}, \code{mse}, \code{mae},
-#'     and \code{coverage} summary statistics.
-#' @param ... One or more lists, separated by commas, specifying desired summaries of the \code{sim}
-#'     simulation object. See examples. Each list must have a \code{stat} item, which specifies the type of summary statistic to
-#'     be calculated. The \code{na.rm} item indicates whether to exclude \code{NA} values when performing the calculation (with
-#'     default being \code{FALSE}). For \code{stat} options where the \code{name} item is optional,
-#'     if it is not provided, a name will be formed from the type of summary and the column on which the summary
-#'     is performed. Additional required items are detailed below for each \code{stat} type.
+#' @param mc_se A logical argument indicating whether to compute Monte Carlo
+#'     standard error and associated confidence interval for inferential summary
+#'     statistics.  This applies only to the \code{bias}, \code{bias_pct},
+#'     \code{mse}, \code{mae}, and \code{coverage} summary statistics.
+#' @param ... One or more lists, separated by commas, specifying desired
+#'     summaries of the \code{sim} simulation object. See examples. Each list
+#'     must have a \code{stat} item, which specifies the type of summary
+#'     statistic to be calculated. The \code{na.rm} item indicates whether to
+#'     exclude \code{NA} values when performing the calculation (with default
+#'     being \code{FALSE}). For \code{stat} options where the \code{name} item
+#'     is optional, if it is not provided, a name will be formed from the type
+#'     of summary and the column on which the summary is performed. Additional
+#'     required items are detailed below for each \code{stat} type.
 #'     \itemize{
 #'
-#'     \item{\code{list(stat="mean", x="col_1", name="mean_col")} computes the
-#'     mean of column \code{sim$results$col_1} for each level combination and
-#'     creates a summary column named \code{"mean_col"}. Other single-column
-#'     summary statistics (see the next few items) work analogously. \code{name}
-#'     is optional.}
+#'     \item{\code{list(stat="mean", x="col_1", name="mean_col", na.rm=F)}
+#'     computes the mean of column \code{sim$results$col_1} for each level
+#'     combination and creates a summary column named \code{"mean_col"}. Other
+#'     single-column summary statistics (see the next few items) work
+#'     analogously. \code{name} is optional.}
 #'
 #'     \item{\code{list(stat="median", ...)} computes the median.}
 #'
@@ -95,22 +99,26 @@
 #'    }
 #' @details \itemize{
 #'
-#'     \item{For all inferential summaries there are three ways to specify \code{truth}: (1) a single number,
-#'     meaning the estimand is the same across all simulation replicates and levels, (2) a numeric vector of the
-#'     same length as the number of rows in \code{sim$results}, or (3) the name of a variable in \code{sim$results}
-#'     containing the estimand of interest.}
+#'     \item{For all inferential summaries there are three ways to specify
+#'     \code{truth}: (1) a single number, meaning the estimand is the same
+#'     across all simulation replicates and levels, (2) a numeric vector of the
+#'     same length as the number of rows in \code{sim$results}, or (3) the name
+#'     of a variable in \code{sim$results} containing the estimand of interest.}
 #'
-#'     \item{There are two ways to specify the confidence interval bounds for \code{coverage}. The first is to provide
-#'     an \code{estimate} and its associated \code{se} (standard error). These should both be variables in
-#'     \code{sim$results}. The function constructs a 95\% Wald-type confidence interval of the form
-#'     \code{(estimate-1.96*se, estimate+1.96*se)}. The alternative is to provide
-#'     \code{lower} and \code{upper} bounds, which should also be variables in \code{sim$results}. In this case,
-#'     the confidence interval is (\code{lower}, \code{upper}). The coverage is the proportion of simulation
-#'     replicates for a given level combination in which \code{truth} lies within the interval.}
+#'     \item{There are two ways to specify the confidence interval bounds for
+#'     \code{coverage}. The first is to provide an \code{estimate} and its
+#'     associated \code{se} (standard error). These should both be variables in
+#'     \code{sim$results}. The function constructs a 95\% Wald-type confidence
+#'     interval of the form \code{(estimate-1.96*se, estimate+1.96*se)}. The
+#'     alternative is to provide \code{lower} and \code{upper} bounds, which
+#'     should also be variables in \code{sim$results}. In this case, the
+#'     confidence interval is (\code{lower}, \code{upper}). The coverage is the
+#'     proportion of simulation replicates for a given level combination in
+#'     which \code{truth} lies within the interval.}
 #' }
-#' @return A data frame containing the result of each specified summary function as a column, for each of
-#'     the simulation levels. The column \code{n_reps} returns the number of successful simulation replicates
-#'     within each level.
+#' @return A data frame containing the result of each specified summary function
+#'     as a column, for each of the simulation levels. The column \code{n_reps}
+#'     returns the number of successful simulation replicates within each level.
 #' @examples
 #' # The following is a toy example of a simulation, illustrating the use of
 #' # the summarize function.
