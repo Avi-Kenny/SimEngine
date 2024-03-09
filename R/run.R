@@ -204,6 +204,14 @@ run.sim_obj <- function(sim) {
   # Combine lists
   results_lists <- unlist(results_lists, recursive=F)
 
+  # Error handling
+  r_names <- names(results_lists[[1]]$results)
+  if (any(r_names %in% disallowed_names())) {
+    index <- min(which(r_names %in% disallowed_names()))
+    stop(paste0("Your simulation script cannot return a key-value pair with th",
+                "e key `", r_names[index], "`."))
+  }
+
   # Stop cluster
   if (exists("..cl")) { parallel::stopCluster(..cl) }
 

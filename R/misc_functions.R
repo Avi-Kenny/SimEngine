@@ -430,3 +430,15 @@ update_level_batch_map <- function(sim) {
   ))
 
 }
+
+
+
+#' Return list of disallowed names (for levels or return values)
+#'
+#' @return A character vector of disallowed names
+#' @noRd
+disallowed_names <- function() {
+
+  c("sim_uid","level_id","rep_id","runtime","batch_id")
+
+}

@@ -84,10 +84,18 @@ set_levels.sim_obj <- function(sim, ..., .keep=NA) {
     # Set level_names vector (this defines the order of the levels)
     sim$internals$level_names <- names(sim$levels)
 
+    # Error handling
     if (!(is.list(sim$levels)) ||
         !(length(names(sim$levels[which(names(sim$levels) != "")])) ==
           length(sim$levels))) {
       stop("Simulation levels must be key-value pairs.")
+    }
+
+    # Error handling
+    if (any(sim$internals$level_names %in% disallowed_names())) {
+      index <- min(which(sim$internals$level_names %in% disallowed_names()))
+      stop(paste0("You cannot have a level named `",
+                  sim$internals$level_names[index], "`."))
     }
 
     # Create additional levels objects
