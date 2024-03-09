@@ -153,3 +153,40 @@ test_that("Can't run a simulation twice", {
 # test_that("stop_at_error config option works", {
 #   expect_error(run(sim), "Stop_at_error test triggered.")
 # })
+
+# Disallowed names (levels)
+sim <- new_sim()
+test_that("Disalllowed names (levels)", {
+  expect_error(
+    set_levels(sim, a=c(1,2), level_id=c(3,4)),
+    "You cannot have a level named `level_id`."
+  )
+  expect_error(
+    set_levels(sim, batch_id=c(1,2), level_id=c(3,4)),
+    "You cannot have a level named `batch_id`."
+  )
+  expect_error(
+    set_levels(sim, level_id=c(1,2), batch_id=c(3,4)),
+    "You cannot have a level named `level_id`."
+  )
+})
+
+# Disallowed names (return values)
+sim <- new_sim()
+sim %<>% set_levels(a=c(1,2), b=c(3,4))
+test_that("Disalllowed names (return values)", {
+  expect_error(
+    { sim %<>% set_script(function(){return(list(runtime=1))}); run(sim); },
+    paste0("Your simulation script cannot return a key-value pair with the key",
+           " `runtime`.")
+  )
+  expect_error(
+    {
+      sim %<>% set_script(function(){return(list(x=1, level_id=1, y=2))})
+      run(sim)
+    },
+    paste0("Your simulation script cannot return a key-value pair with the key",
+           " `level_id`.")
+  )
+})
+
