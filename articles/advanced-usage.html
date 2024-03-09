@@ -135,12 +135,12 @@ the <code>sim$results</code> dataframe.</p>
 <span><span class="co">#&gt; Done. No errors or warnings detected.</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="va">results</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id   n distribution      runtime         y</span></span>
-<span><span class="co">#&gt; 1       1        1      1  10       Beta 1 0.0006222725 0.4640477</span></span>
-<span><span class="co">#&gt; 2       2        2      1 100       Beta 1 0.0042171478 0.3099253</span></span>
-<span><span class="co">#&gt; 3       3        3      1  10       Beta 2 0.0003292561 0.8952040</span></span>
-<span><span class="co">#&gt; 4       4        4      1 100       Beta 2 0.0003077984 0.7604940</span></span>
-<span><span class="co">#&gt; 5       5        5      1  10       Normal 0.0002970695 2.9305390</span></span>
-<span><span class="co">#&gt; 6       6        6      1 100       Normal 0.0002832413 3.0267691</span></span></code></pre></div>
+<span><span class="co">#&gt; 1       1        1      1  10       Beta 1 0.0007205009 0.4023045</span></span>
+<span><span class="co">#&gt; 2       2        2      1 100       Beta 1 0.0042247772 0.3278219</span></span>
+<span><span class="co">#&gt; 3       3        3      1  10       Beta 2 0.0003337860 0.7269913</span></span>
+<span><span class="co">#&gt; 4       4        4      1 100       Beta 2 0.0003042221 0.8021276</span></span>
+<span><span class="co">#&gt; 5       5        5      1  10       Normal 0.0002956390 3.0143173</span></span>
+<span><span class="co">#&gt; 6       6        6      1 100       Normal 0.0002839565 3.0185205</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="complex-return-data">Complex return data<a class="anchor" aria-label="anchor" href="#complex-return-data"></a>
@@ -181,12 +181,12 @@ directly by accessing <code>sim$results</code> or using the
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">results</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id    n     runtime beta0_hat beta1_hat</span></span>
-<span><span class="co">#&gt; 1       1        1      1   10 0.003440619  4.005657 0.9928960</span></span>
-<span><span class="co">#&gt; 2       4        1      2   10 0.001048088  3.274084 0.9121189</span></span>
-<span><span class="co">#&gt; 3       2        2      1  100 0.004151583  2.699724 2.2527421</span></span>
-<span><span class="co">#&gt; 4       5        2      2  100 0.001062632  3.110649 1.7027681</span></span>
-<span><span class="co">#&gt; 5       3        3      1 1000 0.001385212  3.008398 2.0042034</span></span>
-<span><span class="co">#&gt; 6       6        3      2 1000 0.001258850  3.047131 1.9459980</span></span></code></pre></div>
+<span><span class="co">#&gt; 1       1        1      1   10 0.003581285  3.921553 0.2882536</span></span>
+<span><span class="co">#&gt; 2       4        1      2   10 0.001084089  3.020516 2.9252349</span></span>
+<span><span class="co">#&gt; 3       2        2      1  100 0.004177809  3.046730 1.7472417</span></span>
+<span><span class="co">#&gt; 4       5        2      2  100 0.001058578  3.195638 1.6732540</span></span>
+<span><span class="co">#&gt; 5       3        3      1 1000 0.001397371  2.979008 1.9998622</span></span>
+<span><span class="co">#&gt; 6       6        3      2 1000 0.001241207  2.988982 2.0412561</span></span></code></pre></div>
 <p>However, we may also want to look at the complex return data. To do
 so, we use the special function <code>get_complex</code>, as illustrated
 below:</p>
@@ -199,22 +199,22 @@ below:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Residuals:</span></span>
 <span><span class="co">#&gt;     Min      1Q  Median      3Q     Max </span></span>
-<span><span class="co">#&gt; -2.6986 -0.6307 -0.0729  0.6439  3.5476 </span></span>
+<span><span class="co">#&gt; -2.3958 -0.6824 -0.1134  0.7840  1.8194 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
-<span><span class="co">#&gt; (Intercept)   3.1106     0.2104  14.788  &lt; 2e-16 ***</span></span>
-<span><span class="co">#&gt; x             1.7028     0.3702   4.599 1.27e-05 ***</span></span>
+<span><span class="co">#&gt; (Intercept)   3.1956     0.1891  16.898  &lt; 2e-16 ***</span></span>
+<span><span class="co">#&gt; x             1.6733     0.3185   5.254 8.68e-07 ***</span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Residual standard error: 1.102 on 98 degrees of freedom</span></span>
-<span><span class="co">#&gt; Multiple R-squared:  0.1775, Adjusted R-squared:  0.1691 </span></span>
-<span><span class="co">#&gt; F-statistic: 21.15 on 1 and 98 DF,  p-value: 1.269e-05</span></span>
+<span><span class="co">#&gt; Residual standard error: 1.02 on 98 degrees of freedom</span></span>
+<span><span class="co">#&gt; Multiple R-squared:  0.2198, Adjusted R-squared:  0.2118 </span></span>
+<span><span class="co">#&gt; F-statistic: 27.61 on 1 and 98 DF,  p-value: 8.676e-07</span></span>
 <span><span class="va">c5</span><span class="op">$</span><span class="va">cov_mtx</span></span>
 <span><span class="co">#&gt;             (Intercept)           x</span></span>
-<span><span class="co">#&gt; (Intercept)  0.04424899 -0.06632814</span></span>
-<span><span class="co">#&gt; x           -0.06632814  0.13707617</span></span></code></pre></div>
+<span><span class="co">#&gt; (Intercept)  0.03576567 -0.05071009</span></span>
+<span><span class="co">#&gt; x           -0.05071009  0.10141526</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="using-the-batch-function">Using the <code>batch</code> function<a class="anchor" aria-label="anchor" href="#using-the-batch-function"></a>
@@ -254,12 +254,12 @@ replicate:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">rep_id</span><span class="op">)</span>,<span class="op">]</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id        est      runtime mu_hat dat_1</span></span>
-<span><span class="co">#&gt; 1       1        1      1   est_mean 0.0003499985   3.01  3.11</span></span>
-<span><span class="co">#&gt; 4       2        2      1 est_median 0.0040245056   2.92  4.77</span></span>
-<span><span class="co">#&gt; 2       3        1      2   est_mean 0.0003483295   3.04  5.05</span></span>
-<span><span class="co">#&gt; 5       5        2      2 est_median 0.0003461838   3.13  1.69</span></span>
-<span><span class="co">#&gt; 3       4        1      3   est_mean 0.0003120899   3.11  2.05</span></span>
-<span><span class="co">#&gt; 6       6        2      3 est_median 0.0003371239   2.84  3.96</span></span></code></pre></div>
+<span><span class="co">#&gt; 1       1        1      1   est_mean 0.0003657341   3.08  4.49</span></span>
+<span><span class="co">#&gt; 4       2        2      1 est_median 0.0040476322   3.10  4.25</span></span>
+<span><span class="co">#&gt; 2       3        1      2   est_mean 0.0003488064   2.91  3.51</span></span>
+<span><span class="co">#&gt; 5       5        2      2 est_median 0.0003473759   2.88  3.35</span></span>
+<span><span class="co">#&gt; 3       4        1      3   est_mean 0.0003185272   2.97  1.84</span></span>
+<span><span class="co">#&gt; 6       6        2      3 est_median 0.0003337860   3.15  5.74</span></span></code></pre></div>
 <p>Suppose that instead, we want to run a simulation where we generate
 one dataset, analyzing it using multiple methods (in this case
 corresponding to “est_mean” and “est_median”), and then repeating this
@@ -298,12 +298,12 @@ and 2:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">rep_id</span><span class="op">)</span>,<span class="op">]</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id        est      runtime mu_hat dat_1</span></span>
-<span><span class="co">#&gt; 1       1        1      1   est_mean 0.0006024837   2.84  0.68</span></span>
-<span><span class="co">#&gt; 4       2        2      1 est_median 0.0059819221   2.83  0.68</span></span>
-<span><span class="co">#&gt; 2       3        1      2   est_mean 0.0013165474   3.19  3.86</span></span>
-<span><span class="co">#&gt; 5       5        2      2 est_median 0.0004265308   3.25  3.86</span></span>
-<span><span class="co">#&gt; 3       4        1      3   est_mean 0.0004413128   2.99  4.34</span></span>
-<span><span class="co">#&gt; 6       6        2      3 est_median 0.0004477501   3.02  4.34</span></span></code></pre></div>
+<span><span class="co">#&gt; 1       1        1      1   est_mean 0.0006241798   2.82  2.81</span></span>
+<span><span class="co">#&gt; 4       2        2      1 est_median 0.0062849522   2.91  2.81</span></span>
+<span><span class="co">#&gt; 2       3        1      2   est_mean 0.0013184547   2.95  2.24</span></span>
+<span><span class="co">#&gt; 5       5        2      2 est_median 0.0004265308   2.91  2.24</span></span>
+<span><span class="co">#&gt; 3       4        1      3   est_mean 0.0004475117   3.08  1.82</span></span>
+<span><span class="co">#&gt; 6       6        2      3 est_median 0.0004236698   3.10  1.82</span></span></code></pre></div>
 <p>However, the situation is often more complicated. What if we have a
 simulation with multiple level variables, some that correspond to
 creating data and some that correspond to analyzing the data? This is
@@ -334,22 +334,22 @@ to use; simply specify the names of the level variables that are used
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">batch_id</span><span class="op">)</span>,<span class="op">]</span></span>
 <span><span class="co">#&gt;    sim_uid level_id rep_id batch_id   n mu        est      runtime mu_hat dat_1</span></span>
-<span><span class="co">#&gt; 1        1        1      1        1  10  3   est_mean 0.0004904270   3.64  3.36</span></span>
-<span><span class="co">#&gt; 9        5        5      1        1  10  3 est_median 0.0004951954   3.44  3.36</span></span>
-<span><span class="co">#&gt; 2        9        1      2        2  10  3   est_mean 0.0004131794   2.83  1.88</span></span>
-<span><span class="co">#&gt; 10      13        5      2        2  10  3 est_median 0.0032985210   2.52  1.88</span></span>
-<span><span class="co">#&gt; 3        2        2      1        3 100  3   est_mean 0.0041213036   3.01  1.75</span></span>
-<span><span class="co">#&gt; 11       6        6      1        3 100  3 est_median 0.0004267693   3.14  1.75</span></span>
-<span><span class="co">#&gt; 4       10        2      2        4 100  3   est_mean 0.0004343987   3.04  2.92</span></span>
-<span><span class="co">#&gt; 12      14        6      2        4 100  3 est_median 0.0004577637   3.10  2.92</span></span>
-<span><span class="co">#&gt; 5        3        3      1        5  10  5   est_mean 0.0004563332   5.35  6.44</span></span>
-<span><span class="co">#&gt; 13       7        7      1        5  10  5 est_median 0.0004189014   5.47  6.44</span></span>
-<span><span class="co">#&gt; 6       11        3      2        6  10  5   est_mean 0.0004038811   5.08  4.86</span></span>
-<span><span class="co">#&gt; 14      15        7      2        6  10  5 est_median 0.0004284382   4.98  4.86</span></span>
-<span><span class="co">#&gt; 7        4        4      1        7 100  5   est_mean 0.0004262924   4.81  4.16</span></span>
-<span><span class="co">#&gt; 15       8        8      1        7 100  5 est_median 0.0004055500   4.85  4.16</span></span>
-<span><span class="co">#&gt; 8       12        4      2        8 100  5   est_mean 0.0004122257   5.10  3.82</span></span>
-<span><span class="co">#&gt; 16      16        8      2        8 100  5 est_median 0.0004346371   5.21  3.82</span></span></code></pre></div>
+<span><span class="co">#&gt; 1        1        1      1        1  10  3   est_mean 0.0005402565   3.40  4.85</span></span>
+<span><span class="co">#&gt; 9        5        5      1        1  10  3 est_median 0.0004427433   3.37  4.85</span></span>
+<span><span class="co">#&gt; 2        9        1      2        2  10  3   est_mean 0.0004169941   3.04  2.13</span></span>
+<span><span class="co">#&gt; 10      13        5      2        2  10  3 est_median 0.0034101009   2.89  2.13</span></span>
+<span><span class="co">#&gt; 3        2        2      1        3 100  3   est_mean 0.0041105747   2.91  3.69</span></span>
+<span><span class="co">#&gt; 11       6        6      1        3 100  3 est_median 0.0004205704   2.84  3.69</span></span>
+<span><span class="co">#&gt; 4       10        2      2        4 100  3   est_mean 0.0004200935   2.86  2.66</span></span>
+<span><span class="co">#&gt; 12      14        6      2        4 100  3 est_median 0.0004482269   2.81  2.66</span></span>
+<span><span class="co">#&gt; 5        3        3      1        5  10  5   est_mean 0.0004637241   4.89  3.94</span></span>
+<span><span class="co">#&gt; 13       7        7      1        5  10  5 est_median 0.0004172325   5.11  3.94</span></span>
+<span><span class="co">#&gt; 6       11        3      2        6  10  5   est_mean 0.0004267693   5.34  5.67</span></span>
+<span><span class="co">#&gt; 14      15        7      2        6  10  5 est_median 0.0004112720   5.39  5.67</span></span>
+<span><span class="co">#&gt; 7        4        4      1        7 100  5   est_mean 0.0004315376   5.12  5.29</span></span>
+<span><span class="co">#&gt; 15       8        8      1        7 100  5 est_median 0.0004093647   5.02  5.29</span></span>
+<span><span class="co">#&gt; 8       12        4      2        8 100  5   est_mean 0.0004134178   5.09  6.68</span></span>
+<span><span class="co">#&gt; 16      16        8      2        8 100  5 est_median 0.0004084110   5.00  6.68</span></span></code></pre></div>
 <p>We see that we have achieved what we wanted - the batches were
 created such that each batch contained two replicates, one for each
 estimator. We also specified the <code>return_batch_id=T</code> option
@@ -444,8 +444,8 @@ quickly pinpoint the issue. This is demonstrated below:</p>
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="va">errors</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id Sigma      runtime                          message</span></span>
-<span><span class="co">#&gt; 1       5        3      1    s2 0.0003888607 'Sigma' is not positive definite</span></span>
-<span><span class="co">#&gt; 2       6        3      2    s2 0.0033104420 'Sigma' is not positive definite</span></span>
+<span><span class="co">#&gt; 1       5        3      1    s2 0.0003933907 'Sigma' is not positive definite</span></span>
+<span><span class="co">#&gt; 2       6        3      2    s2 0.0037193298 'Sigma' is not positive definite</span></span>
 <span><span class="co">#&gt;                                                      call</span></span>
 <span><span class="co">#&gt; 1 MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma$mtx)</span></span>
 <span><span class="co">#&gt; 2 MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma$mtx)</span></span></code></pre></div>
