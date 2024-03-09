@@ -385,7 +385,9 @@ summarize.sim_obj <- function(sim, ..., mc_se = FALSE) {
     } else if (stat_name == "quantile"){
 
       # if name missing, create a name
-      if (is.null(arg$name)) { arg$name <- paste0("quantile_", arg$prob, "_", arg$x) }
+      if (is.null(arg$name)) {
+        arg$name <- paste0("quantile_", arg$prob, "_", arg$x)
+      }
 
       # Handle errors
       handle_errors(arg$x, "is.null", msg="`x` argument is required")
@@ -407,8 +409,8 @@ summarize.sim_obj <- function(sim, ..., mc_se = FALSE) {
 
       code_quantile <- c(code_quantile, paste0(
         #arg$name, " = quantile(", arg$x, ", probs=", arg$prob, ",", na_1
-        pre, arg$name, " = tryCatch(quantile(", arg$x, ", probs=", arg$prob, ",",
-        na_1, " error = function(e) {return(NA)}),"
+        pre, arg$name, " = tryCatch(quantile(", arg$x, ", probs=", arg$prob,
+        ",", na_1, " error = function(e) {return(NA)}),"
       ))
 
       # parse min summary code
@@ -464,16 +466,19 @@ summarize.sim_obj <- function(sim, ..., mc_se = FALSE) {
       if (is.null(arg$name)) { arg$name <- paste0("bias_", arg$estimate) }
 
       # Handle errors
-      handle_errors(arg$estimate, "is.null", msg="`estimate` argument is required")
+      handle_errors(arg$estimate, "is.null",
+                    msg="`estimate` argument is required")
       handle_errors(arg$truth, "is.null", msg="`truth` argument is required")
       handle_errors(arg$name, "is.character", name="name")
       handle_errors(arg$estimate, "is.in", other=names(R),
-                    msg=paste0("`",arg$estimate,"` is not a variable in results"))
+                    msg=paste0("`",arg$estimate,
+                               "` is not a variable in results"))
       handle_errors(R[[arg$estimate]], "is.numeric.vec", name=arg$estimate)
       if (length(arg$truth)>1 ||
           (!is.numeric(arg$truth) && !(arg$truth %in% names(R))) ||
           (arg$truth %in% names(R) && !is.numeric(R[[arg$truth]]))) {
-        stop(paste0("`", arg$truth, "` is neither a number nor a variable in results"))
+        stop(paste0("`", arg$truth,
+                    "` is neither a number nor a variable in results"))
       }
 
       if (!is.null(arg$na.rm) && arg$na.rm==TRUE) {
@@ -493,14 +498,17 @@ summarize.sim_obj <- function(sim, ..., mc_se = FALSE) {
           na_1 <- ")"
         }
         code_bias_mc_se <- c(code_bias_mc_se, paste0(
-          pre, arg$name, "_mc_se = sqrt((1/(sum(!is.na(", arg$estimate,"))-1))*mean((",
+          pre, arg$name, "_mc_se = sqrt((1/(sum(!is.na(", arg$estimate,
+          "))-1))*mean((",
           arg$estimate, "-", arg$truth, "-", pre, arg$name, ")^2", na_1, "),"
         ))
         code_bias_mc_cil <- c(code_bias_mc_cil, paste0(
-          pre, arg$name, "_mc_ci_l = ", pre, arg$name, "- 1.96*", pre, arg$name, "_mc_se,"
+          pre, arg$name, "_mc_ci_l = ", pre, arg$name, "- 1.96*", pre, arg$name,
+          "_mc_se,"
         ))
         code_bias_mc_ciu <- c(code_bias_mc_ciu, paste0(
-          pre, arg$name, "_mc_ci_u = ", pre, arg$name, "+ 1.96*", pre, arg$name, "_mc_se,"
+          pre, arg$name, "_mc_ci_u = ", pre, arg$name, "+ 1.96*", pre, arg$name,
+          "_mc_se,"
         ))
       }
 
@@ -511,16 +519,19 @@ summarize.sim_obj <- function(sim, ..., mc_se = FALSE) {
       if (is.null(arg$name)) { arg$name <- paste0("bias_pct_", arg$estimate) }
 
       # Handle errors
-      handle_errors(arg$estimate, "is.null",msg="`estimate` argument is required")
+      handle_errors(arg$estimate, "is.null",
+                    msg="`estimate` argument is required")
       handle_errors(arg$truth, "is.null", msg="`truth` argument is required")
       handle_errors(arg$name, "is.character", name="name")
       handle_errors(arg$estimate, "is.in", other=names(R),
-                    msg=paste0("`",arg$estimate,"` is not a variable in results"))
+                    msg=paste0("`",arg$estimate,
+                               "` is not a variable in results"))
       handle_errors(R[[arg$estimate]], "is.numeric.vec", name=arg$estimate)
       if (length(arg$truth)>1 ||
           (!is.numeric(arg$truth) && !(arg$truth %in% names(R))) ||
           (arg$truth %in% names(R) && !is.numeric(R[[arg$truth]]))) {
-        stop(paste0("`", arg$truth, "` is neither a number nor a variable in results"))
+        stop(paste0("`", arg$truth,
+                    "` is neither a number nor a variable in results"))
       }
 
       if (!is.null(arg$na.rm) && arg$na.rm==TRUE) {
@@ -546,10 +557,12 @@ summarize.sim_obj <- function(sim, ..., mc_se = FALSE) {
           arg$estimate, "-", arg$truth, "-", pre, arg$name, ")^2", na_1, "),"
         ))
         code_bias_pct_mc_cil <- c(code_bias_pct_mc_cil, paste0(
-          pre, arg$name, "_mc_ci_l = ", pre, arg$name, "- 1.96*", pre, arg$name, "_mc_se,"
+          pre, arg$name, "_mc_ci_l = ", pre, arg$name, "- 1.96*", pre, arg$name,
+          "_mc_se,"
         ))
         code_bias_pct_mc_ciu <- c(code_bias_pct_mc_ciu, paste0(
-          pre, arg$name, "_mc_ci_u = ", pre, arg$name, "+ 1.96*", pre, arg$name, "_mc_se,"
+          pre, arg$name, "_mc_ci_u = ", pre, arg$name, "+ 1.96*", pre, arg$name,
+          "_mc_se,"
         ))
       }
 
@@ -560,16 +573,19 @@ summarize.sim_obj <- function(sim, ..., mc_se = FALSE) {
       if (is.null(arg$name)) { arg$name <- paste0("MSE_", arg$estimate) }
 
       # Handle errors
-      handle_errors(arg$estimate, "is.null", msg="`estimate` argument is required")
+      handle_errors(arg$estimate, "is.null",
+                    msg="`estimate` argument is required")
       handle_errors(arg$truth, "is.null", msg="`truth` argument is required")
       handle_errors(arg$name, "is.character", name="name")
       handle_errors(arg$estimate, "is.in", other=names(R),
-                    msg=paste0("`",arg$estimate,"` is not a variable in results"))
+                    msg=paste0("`",arg$estimate,
+                               "` is not a variable in results"))
       handle_errors(R[[arg$estimate]], "is.numeric.vec", name=arg$estimate)
       if (length(arg$truth)>1 ||
           (!is.numeric(arg$truth) && !(arg$truth %in% names(R))) ||
           (arg$truth %in% names(R) && !is.numeric(R[[arg$truth]]))) {
-        stop(paste0("`", arg$truth, "` is neither a number nor a variable in results"))
+        stop(paste0("`", arg$truth,
+                    "` is neither a number nor a variable in results"))
       }
 
       if (!is.null(arg$na.rm) && arg$na.rm==TRUE) {
@@ -589,14 +605,18 @@ summarize.sim_obj <- function(sim, ..., mc_se = FALSE) {
           na_1 <- ")"
         }
         code_mse_mc_se <- c(code_mse_mc_se, paste0(
-          pre, arg$name, "_mc_se = sqrt((1/(sum(!is.na(", arg$estimate,"))-1))*mean(((",
-          arg$estimate, "-", arg$truth, ")^2 -", pre, arg$name, ")^2", na_1, "),"
+          pre, arg$name, "_mc_se = sqrt((1/(sum(!is.na(", arg$estimate,
+          "))-1))*mean(((",
+          arg$estimate, "-", arg$truth, ")^2 -", pre, arg$name, ")^2", na_1,
+          "),"
         ))
         code_mse_mc_cil <- c(code_mse_mc_cil, paste0(
-          pre, arg$name, "_mc_ci_l = ", pre, arg$name, "- 1.96*", pre, arg$name, "_mc_se,"
+          pre, arg$name, "_mc_ci_l = ", pre, arg$name, "- 1.96*", pre, arg$name,
+          "_mc_se,"
         ))
         code_mse_mc_ciu <- c(code_mse_mc_ciu, paste0(
-          pre, arg$name, "_mc_ci_u = ", pre, arg$name, "+ 1.96*", pre, arg$name, "_mc_se,"
+          pre, arg$name, "_mc_ci_u = ", pre, arg$name, "+ 1.96*", pre, arg$name,
+          "_mc_se,"
         ))
       }
 
@@ -607,16 +627,19 @@ summarize.sim_obj <- function(sim, ..., mc_se = FALSE) {
       if (is.null(arg$name)) { arg$name <- paste0("MAE_", arg$estimate) }
 
       # Handle errors
-      handle_errors(arg$estimate, "is.null", msg="`estimate` argument is required")
+      handle_errors(arg$estimate, "is.null",
+                    msg="`estimate` argument is required")
       handle_errors(arg$truth, "is.null", msg="`truth` argument is required")
       handle_errors(arg$name, "is.character", name="name")
       handle_errors(arg$estimate, "is.in", other=names(R),
-                    msg=paste0("`",arg$estimate,"` is not a variable in results"))
+                    msg=paste0("`",arg$estimate,
+                               "` is not a variable in results"))
       handle_errors(R[[arg$estimate]], "is.numeric.vec", name=arg$estimate)
       if (length(arg$truth)>1 ||
           (!is.numeric(arg$truth) && !(arg$truth %in% names(R))) ||
           (arg$truth %in% names(R) && !is.numeric(R[[arg$truth]]))) {
-        stop(paste0("`", arg$truth, "` is neither a number nor a variable in results"))
+        stop(paste0("`", arg$truth,
+                    "` is neither a number nor a variable in results"))
       }
 
       if (!is.null(arg$na.rm) && arg$na.rm==TRUE) {
@@ -636,14 +659,17 @@ summarize.sim_obj <- function(sim, ..., mc_se = FALSE) {
           na_1 <- ")"
         }
         code_mae_mc_se <- c(code_mae_mc_se, paste0(
-          pre, arg$name, "_mc_se = sqrt((1/(sum(!is.na(", arg$estimate,"))-1))*mean((abs(",
-          arg$estimate, "-", arg$truth, ") -", pre, arg$name, ")^2", na_1, "),"
+          pre, arg$name, "_mc_se = sqrt((1/(sum(!is.na(", arg$estimate,
+          "))-1))*mean((abs(", arg$estimate, "-", arg$truth, ") -", pre,
+          arg$name, ")^2", na_1, "),"
         ))
         code_mae_mc_cil <- c(code_mae_mc_cil, paste0(
-          pre, arg$name, "_mc_ci_l = ", pre, arg$name, "- 1.96*", pre, arg$name, "_mc_se,"
+          pre, arg$name, "_mc_ci_l = ", pre, arg$name, "- 1.96*", pre, arg$name,
+          "_mc_se,"
         ))
         code_mae_mc_ciu <- c(code_mae_mc_ciu, paste0(
-          pre, arg$name, "_mc_ci_u = ", pre, arg$name, "+ 1.96*", pre, arg$name, "_mc_se,"
+          pre, arg$name, "_mc_ci_u = ", pre, arg$name, "+ 1.96*", pre, arg$name,
+          "_mc_se,"
         ))
       }
 
@@ -658,17 +684,20 @@ summarize.sim_obj <- function(sim, ..., mc_se = FALSE) {
       if (length(arg$truth)>1 ||
           (!is.numeric(arg$truth) && !(arg$truth %in% names(R))) ||
           (arg$truth %in% names(R) && !is.numeric(R[[arg$truth]]))) {
-        stop(paste0("`", arg$truth, "` is neither a number nor a variable in results"))
+        stop(paste0("`", arg$truth,
+                    "` is neither a number nor a variable in results"))
       }
       if (!((!is.null(arg$est) && !is.null(arg$se)) ||
             (!is.null(arg$lower) && !is.null(arg$upper)))) {
-        stop("Either `estimate` and `se` OR `lower` and `upper` must be provided")
+        stop(paste0("Either `estimate` and `se` OR `lower` and `upper` must be",
+                    " provided"))
       }
 
       # Handle case where user provides estimate+se
       if (!is.null(arg$se) && !is.null(arg$estimate)) {
         handle_errors(arg$estimate, "is.in", other=names(R),
-                      msg=paste0("`",arg$estimate,"` is not a variable in results"))
+                      msg=paste0("`",arg$estimate,
+                                 "` is not a variable in results"))
         handle_errors(arg$se, "is.in", other=names(R),
                       msg=paste0("`",arg$se,"` is not a variable in results"))
         handle_errors(R[[arg$estimate]], "is.numeric.vec", name=arg$estimate)
@@ -680,9 +709,11 @@ summarize.sim_obj <- function(sim, ..., mc_se = FALSE) {
       # Handle case where user provides lower+upper
       if (!is.null(arg$lower) && !is.null(arg$upper)) {
         handle_errors(arg$lower, "is.in", other=names(R),
-                      msg=paste0("`",arg$lower,"` is not a variable in results"))
+                      msg=paste0("`",arg$lower,
+                                 "` is not a variable in results"))
         handle_errors(arg$upper, "is.in", other=names(R),
-                      msg=paste0("`",arg$upper,"` is not a variable in results"))
+                      msg=paste0("`",arg$upper,
+                                 "` is not a variable in results"))
         handle_errors(R[[arg$lower]], "is.numeric.vec", name=arg$lower)
         handle_errors(R[[arg$upper]], "is.numeric.vec", name=arg$upper)
         ci_l <- R[[arg$lower]]
@@ -711,18 +742,19 @@ summarize.sim_obj <- function(sim, ..., mc_se = FALSE) {
           na_1 <- ")"
         }
 
-        na_code <- paste0("sum(!is.na(.ci_l_", arg$name, ") & !is.na(.ci_h_", arg$name,
-        ") & !is.na(", arg$truth, ")", ")")
+        na_code <- paste0("sum(!is.na(.ci_l_", arg$name, ") & !is.na(.ci_h_",
+                          arg$name, ") & !is.na(", arg$truth, ")", ")")
         code_coverage_mc_se <- c(code_coverage_mc_se, paste0(
-          pre, arg$name, "_mc_se = sqrt((1/", na_code, ")*", pre, arg$name, "* (1 - ",
-          pre, arg$name, ")),"
+          pre, arg$name, "_mc_se = sqrt((1/", na_code, ")*", pre, arg$name,
+          "* (1 - ", pre, arg$name, ")),"
         ))
         code_coverage_mc_cil <- c(code_coverage_mc_cil, paste0(
-          pre, arg$name, "_mc_ci_l = max(", pre, arg$name, "- 1.96*", pre, arg$name, "_mc_se, 0),"
-
+          pre, arg$name, "_mc_ci_l = max(", pre, arg$name, "- 1.96*", pre,
+          arg$name, "_mc_se, 0),"
         ))
         code_coverage_mc_ciu <- c(code_coverage_mc_ciu, paste0(
-          pre, arg$name, "_mc_ci_u = min(", pre, arg$name, "+ 1.96*", pre, arg$name, "_mc_se, 1),"
+          pre, arg$name, "_mc_ci_u = min(", pre, arg$name, "+ 1.96*", pre,
+          arg$name, "_mc_se, 1),"
         ))
       }
 
