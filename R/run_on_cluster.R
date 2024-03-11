@@ -9,8 +9,9 @@
 #'     simulation results). This function interacts with cluster job scheduler
 #'     software (e.g. Slurm or Oracle Grid Engine) to divide parallel tasks over
 #'     cluster nodes. See
-#'     \url{https://avi-kenny.github.io/SimEngine/parallelization/} for a
-#'     detailed overview of how CCS parallelization works in \pkg{SimEngine}.
+#'     \url{https://avi-kenny.github.io/SimEngine/articles/parallelization.html}
+#'     for a detailed overview of how CCS parallelization works in
+#'     \pkg{SimEngine}.
 #' @param first Code to run at the start of a simulation. This should be a block
 #'     of code enclosed by curly braces {} that creates a simulation object. Put
 #'     everything you need in the simulation object, since global variables
@@ -43,7 +44,7 @@
 #' # cluster jobs, and then summarizes the results. This function is designed to
 #' # be used in conjunction with cluster job scheduler software (e.g. Slurm or
 #' # Oracle Grid Engine). We include both the R code as well as sample BASH code
-#' # for running the simulation using Oracle Grid Engine.
+#' # for running the simulation using Slurm.
 #'
 #' # This code is saved in a file called my_simulation.R
 #' library(SimEngine)
@@ -77,9 +78,9 @@
 #' # Rscript my_simulation.R
 #'
 #' # The following lines of code are run on the cluster head node.
-#' # qsub -v sim_run='first' run_sim.sh
-#' # qsub -v sim_run='main' -t 1-20 -hold_jid 101 run_sim.sh
-#' # qsub -v sim_run='last' -hold_jid 102 run_sim.sh
+#' # sbatch --export=sim_run='first' run_sim.sh
+#' # sbatch --export=sim_run='main' --array=1-20 --depend=afterok:101 run_sim.sh
+#' # sbatch --export=sim_run='last' --depend=afterok:102 run_sim.sh
 #' }
 #' @export
 run_on_cluster <- function(first, main, last, cluster_config) {
