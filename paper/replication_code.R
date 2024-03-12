@@ -103,6 +103,9 @@ if (F) {
   sim <- new_sim()
   sim %<>% set_config(parallel = TRUE)
 
+  # Chunk 3.1.2
+  sim %<>% set_config(n_cores = 2)
+
   # Chunk 3.2.1
   sim <- new_sim()
   create_data <- function(n) { return(rpois(n=n, lambda=20)) }
@@ -135,7 +138,7 @@ if (F) {
         lambda_hat <- est_lambda(dat=dat, type=L$estimator)
         return(list("lambda_hat"=lambda_hat))
       })
-      sim %<>% set_config(num_sim=100)
+      sim %<>% set_config(num_sim=100, n_cores=20)
     },
     main = {
       sim %<>% run()
