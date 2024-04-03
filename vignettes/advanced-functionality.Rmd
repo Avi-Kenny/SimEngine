@@ -1,8 +1,8 @@
 ---
-title: "Advanced usage"
+title: "Advanced functionality"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Advanced usage}
+  %\VignetteIndexEntry{Advanced functionality}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
