@@ -104,20 +104,33 @@ on both local and cluster-based computing environments.</p>
 <div class="section level2">
 <h2 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
-<p>The goal of many statistical simulations is to test how a new
-statistical method performs against existing methods. Most statistical
-simulations include three basic phases: (1) generate some data, (2) run
-one or more methods using the generated data, and (3) compare the
-performance of the methods.</p>
-<p>To briefly illustrate how these phases are implemented using
-<strong>SimEngine</strong>, we will use the example of estimating the
-average treatment effect of a drug in the context of a randomized
-controlled trial (RCT).</p>
+<p>The goal of many statistical simulations is to compare the behavior
+of two or more statistical methods; we use this framework to demonstrate
+the <strong>SimEngine</strong> workflow. Most statistical simulations of
+this type include three basic phases: (1) generate data, (2) run one or
+more methods using the generated data, and (3) compare the performance
+of the methods.</p>
+<p>To briefly illustrate how these phases are implemented using , we use
+a simple example of estimating the rate parameter <span class="math inline">\(\lambda\)</span> of a <span class="math inline">\(\text{Poisson}(\lambda)\)</span> distribution. To
+anchor the simulation in a real-world situation, one can imagine that a
+sample of size <span class="math inline">\(n\)</span> from this Poisson
+distribution models the number of patients admitted daily to a hospital
+over the course of <span class="math inline">\(n\)</span> consecutive
+days. Suppose that the data consist of <span class="math inline">\(n\)</span> independent and identically distributed
+observations <span class="math inline">\(X_1, X_2, \ldots, X_n\)</span>
+drawn from a Poisson(<span class="math inline">\(\lambda\)</span>)
+distribution. Since the <span class="math inline">\(\lambda\)</span>
+parameter of the Poisson distribution is equal to both the mean and the
+variance, one may ask whether the sample mean (denoted <span class="math inline">\(\hat{\lambda}_{M,n}\)</span>) or the sample
+variance (denoted <span class="math inline">\(\hat{\lambda}_{V,n}\)</span>) is a better
+estimator of <span class="math inline">\(\lambda\)</span>.</p>
 <div class="section level3">
-<h3 id="load-the-package-and-create-a-simulation-object">1) Load the package and create a “simulation object”<a class="anchor" aria-label="anchor" href="#load-the-package-and-create-a-simulation-object"></a>
+<h3 id="load-the-package-and-create-a-simulation-object">1) Load the package and create a simulation object<a class="anchor" aria-label="anchor" href="#load-the-package-and-create-a-simulation-object"></a>
 </h3>
-<p>The simulation object (an R object of class <em>sim_obj</em>) will
-contain all data, functions, and results related to your simulation.</p>
+<p>After loading the package, the first step is to create a simulation
+object (an R object of class <em>sim_obj</em>) using the
+<code><a href="../reference/new_sim.html">new_sim()</a></code> function. The simulation object contains all
+data, functions, and results related to the simulation.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://avi-kenny.github.io/SimEngine/">SimEngine</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required package: magrittr</span></span>
@@ -126,155 +139,115 @@ contain all data, functions, and results related to your simulation.</p>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="code-a-function-to-generate-some-data">2) Code a function to generate some data<a class="anchor" aria-label="anchor" href="#code-a-function-to-generate-some-data"></a>
+<h3 id="code-a-function-to-generate-data">2) Code a function to generate data<a class="anchor" aria-label="anchor" href="#code-a-function-to-generate-data"></a>
 </h3>
-<p>Most simulations will involve one or more functions that create a
-dataset designed to mimic some real-world data structure. Here, we write
-a function that simulates data from an RCT in which we compare a
-continuous outcome (e.g. blood pressure) between a treatment group and a
-control group. We generate the data by looping through a set of
-patients, assigning them randomly to one of the two groups, and
-generating their outcome according to a simple model.</p>
+<p>Many simulations involve a function that creates a dataset designed
+to mimic a real-world data-generating mechanism. Here, we write and test
+a simple function to generate a sample of <code>n</code> observations
+from a Poisson distribution with <span class="math inline">\(\lambda =
+20\)</span>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Code up the dataset-generating function</span></span>
-<span><span class="va">create_rct_data</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">num_patients</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    <span class="st">"patient_id"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    <span class="st">"group"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    <span class="st">"outcome"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span>  <span class="op">)</span></span>
-<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">num_patients</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, size<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">==</span><span class="fl">1</span>, <span class="st">"treatment"</span>, <span class="st">"control"</span><span class="op">)</span></span>
-<span>    <span class="va">treatment_effect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">group</span><span class="op">==</span><span class="st">"treatment"</span>, <span class="op">-</span><span class="fl">7</span>, <span class="fl">0</span><span class="op">)</span></span>
-<span>    <span class="va">outcome</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">1</span>, mean<span class="op">=</span><span class="fl">130</span>, sd<span class="op">=</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> <span class="va">treatment_effect</span></span>
-<span>    <span class="va">df</span><span class="op">[</span><span class="va">i</span>,<span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">i</span>, <span class="va">group</span>, <span class="va">outcome</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span> <span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">create_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span>n<span class="op">=</span><span class="va">n</span>, lambda<span class="op">=</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># Test the function</span></span>
-<span><span class="fu">create_rct_data</span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   patient_id     group  outcome</span></span>
-<span><span class="co">#&gt; 1          1 treatment 122.0080</span></span>
-<span><span class="co">#&gt; 2          2   control 129.2598</span></span>
-<span><span class="co">#&gt; 3          3   control 128.8155</span></span>
-<span><span class="co">#&gt; 4          4   control 130.3544</span></span>
-<span><span class="co">#&gt; 5          5 treatment 122.6786</span></span></code></pre></div>
+<span><span class="fu">create_data</span><span class="op">(</span>n<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [1] 16 18 21 28 13 17 18 14 21 10</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="code-your-methods-or-other-functions">3) Code your methods (or other functions)<a class="anchor" aria-label="anchor" href="#code-your-methods-or-other-functions"></a>
+<h3 id="code-the-methods-or-other-functions">3) Code the methods (or other functions)<a class="anchor" aria-label="anchor" href="#code-the-methods-or-other-functions"></a>
 </h3>
-<p>With <strong>SimEngine</strong>, any functions that you declare (or
-load via <code>source</code>) are automatically added to your simulation
-object when the simulation runs. In this example, we test two different
-estimators of the average treatment effect. For simplicity, we code this
-as a single function and use the <code>type</code> argument to specify
-which estimator we want to use, but you could also write two separate
-functions. The first estimator uses the known probability of being
-assigned to the treatment group (0.5), whereas the second estimator uses
-an estimate of this probability based on the observed data. Don’t worry
-too much about the mathematical details; the important thing is that
-both methods attempt to take in the dataset generated by the
-<code>create_rct_data</code> function and return an estimate of the
-treatment effect, which in this case is <em>-7</em>.</p>
+<p>With <strong>SimEngine</strong>, any functions declared (or loaded
+via <code><a href="https://rdrr.io/r/base/source.html" class="external-link">source()</a></code>) are automatically stored in the simulation
+object when the simulation runs. In this example, we test the sample
+mean and sample variance estimators of the <span class="math inline">\(\lambda\)</span> parameter. For simplicity, we
+write this as a single function and use the <code>type</code> argument
+to specify which estimator to use.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Code up the estimators</span></span>
-<span><span class="va">est_tx_effect</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span>, <span class="va">type</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
-<span>  <span class="va">sum_t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">outcome</span> <span class="op">*</span> <span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">group</span><span class="op">==</span><span class="st">"treatment"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">sum_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">outcome</span> <span class="op">*</span> <span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">group</span><span class="op">==</span><span class="st">"control"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">type</span><span class="op">==</span><span class="st">"est1"</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">true_prob</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span>
-<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span> <span class="op">(</span> <span class="va">sum_t</span><span class="op">/</span><span class="op">(</span><span class="va">n</span><span class="op">*</span><span class="va">true_prob</span><span class="op">)</span> <span class="op">-</span> <span class="va">sum_c</span><span class="op">/</span><span class="op">(</span><span class="va">n</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">true_prob</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span></span>
-<span>  <span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">type</span><span class="op">==</span><span class="st">"est2"</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">est_prob</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">group</span><span class="op">==</span><span class="st">"treatment"</span><span class="op">)</span> <span class="op">/</span> <span class="va">n</span></span>
-<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span> <span class="op">(</span> <span class="va">sum_t</span><span class="op">/</span><span class="op">(</span><span class="va">n</span><span class="op">*</span><span class="va">est_prob</span><span class="op">)</span> <span class="op">-</span> <span class="va">sum_c</span><span class="op">/</span><span class="op">(</span><span class="va">n</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">est_prob</span><span class="op">)</span><span class="op">)</span> <span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
+<code class="sourceCode R"><span><span class="va">est_lambda</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">type</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">type</span><span class="op">==</span><span class="st">"M"</span><span class="op">)</span> <span class="op">{</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span><span class="op">)</span> <span class="op">}</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">type</span><span class="op">==</span><span class="st">"V"</span><span class="op">)</span> <span class="op">{</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span><span class="op">)</span> <span class="op">}</span></span>
 <span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Test out the estimators</span></span>
-<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">create_rct_data</span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span></span>
-<span><span class="fu">est_tx_effect</span><span class="op">(</span><span class="va">df</span>, <span class="st">"est1"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] -4.927496</span></span>
-<span><span class="fu">est_tx_effect</span><span class="op">(</span><span class="va">df</span>, <span class="st">"est2"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] -6.952363</span></span></code></pre></div>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">create_data</span><span class="op">(</span>n<span class="op">=</span><span class="fl">1000</span><span class="op">)</span></span>
+<span><span class="fu">est_lambda</span><span class="op">(</span>dat<span class="op">=</span><span class="va">dat</span>, type<span class="op">=</span><span class="st">"M"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 19.783</span></span>
+<span><span class="fu">est_lambda</span><span class="op">(</span>dat<span class="op">=</span><span class="va">dat</span>, type<span class="op">=</span><span class="st">"V"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 18.05797</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="set-the-simulation-levels">4) Set the simulation levels<a class="anchor" aria-label="anchor" href="#set-the-simulation-levels"></a>
 </h3>
-<p>Often, we want to run the same simulation multiple times (with each
-run referred to as a “simulation replicate”), but with certain things
-changed. In this example, perhaps we want to vary the number of patients
-and the method used to estimate the average treatment effect. We refer
-to the things that vary as “simulation levels”. By default,
-<strong>SimEngine</strong> will run our simulation 10 times for each
-level combination. Below, since there are two methods and three values
-of num_patients, we have six level combinations and so
-<strong>SimEngine</strong> will run a total of 60 simulation replicates.
-Note that we make extensive use of the pipe operators
-(<code>%&gt;%</code> and <code>%&lt;&gt;%</code>) from the
-<strong>magrittr</strong> package; if you have never used pipes, check
-out the <a href="https://magrittr.tidyverse.org" class="external-link">magrittr
-documentation</a>.</p>
+<p>Often, we wish to run the same simulation multiple times. We refer to
+each run as a <em>simulation replicate</em>. We may wish to vary certain
+features of the simulation between replicates. In this example, perhaps
+we choose to vary the sample size and the estimator used to estimate
+<span class="math inline">\(\lambda\)</span>. We refer to the features
+that vary as <em>simulation levels</em>; in the example below, the
+simulation levels are the sample size (<code>n</code>) and the estimator
+(<code>estimator</code>). We refer to the values that each simulation
+level can take on as <em>level values</em>; in the example below, the
+<code>n</code> level values are <code>10</code>, <code>100</code>, and
+<code>1000</code>, and the <code>estimator</code> level values are
+<code>"M"</code> (for “sample mean”) and <code>"V"</code> (for “sample
+variance”). By default, <strong>SimEngine</strong> runs one simulation
+replicate for each combination of level values — in this case, six
+combinations — although the user will typically want to increase this;
+1,000 or 10,000 replicates per combination is typical.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_levels.html">set_levels</a></span><span class="op">(</span></span>
-<span>  estimator <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"est1"</span>, <span class="st">"est2"</span><span class="op">)</span>,</span>
-<span>  num_patients <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">200</span>, <span class="fl">1000</span><span class="op">)</span></span>
+<span>  estimator <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"M"</span>, <span class="st">"V"</span><span class="op">)</span>,</span>
+<span>  n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">100</span>, <span class="fl">1000</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p>Note that we make extensive use of the pipe operators
+(<code>%&gt;%</code> and <code>%&lt;&gt;%</code>) from the
+<strong>magrittr</strong> package; if you have never used pipes, see the
+<a href="https://magrittr.tidyverse.org" class="external-link">magrittr documentation</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="create-a-simulation-script">5) Create a simulation script<a class="anchor" aria-label="anchor" href="#create-a-simulation-script"></a>
 </h3>
-<p>The simulation script is a function that runs a single simulation
-replicate and returns the results. Within a script, you can reference
-the current simulation level values using the variable <em>L</em>. For
-example, when the first simulation replicate is running,
-<code>L$estimator</code> will equal “est1” and
-<code>L$num_patients</code> will equal 50. In the last simulation
-replicate, <code>L$estimator</code> will equal “est2” and
-<code>L$num_patients</code> will equal 1,000. Your script will
-automatically have access to any functions that you created earlier.</p>
+<p>The simulation script is a user-written function that assembles the
+pieces above (generating data, analyzing the data, and returning
+results) to code the flow of a single simulation replicate. Within a
+script, the current simulation level values can be referenced using the
+special variable <code>L</code>. For instance, in the running example,
+when the first simulation replicate is running, <code>L$estimator</code>
+will equal <code>"M"</code> and <code>L$n</code> will equal
+<code>10</code>. In the next replicate, <code>L$estimator</code> will
+equal <code>"M"</code> and <code>L$n</code> will equal <code>100</code>,
+and so on, until all level value combinations are run. The simulation
+script will automatically have access to any functions or objects that
+have been declared in the global environment.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_script.html">set_script</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">create_rct_data</span><span class="op">(</span><span class="va">L</span><span class="op">$</span><span class="va">num_patients</span><span class="op">)</span></span>
-<span>  <span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">est_tx_effect</span><span class="op">(</span><span class="va">df</span>, <span class="va">L</span><span class="op">$</span><span class="va">estimator</span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="st">"est"</span> <span class="op">=</span> <span class="va">est</span>,</span>
-<span>    <span class="st">"mean_t"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">outcome</span><span class="op">[</span><span class="va">df</span><span class="op">$</span><span class="va">group</span><span class="op">==</span><span class="st">"treatment"</span><span class="op">]</span><span class="op">)</span>,</span>
-<span>    <span class="st">"mean_c"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">outcome</span><span class="op">[</span><span class="va">df</span><span class="op">$</span><span class="va">group</span><span class="op">==</span><span class="st">"control"</span><span class="op">]</span><span class="op">)</span></span>
-<span>  <span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">create_data</span><span class="op">(</span>n<span class="op">=</span><span class="va">L</span><span class="op">$</span><span class="va">n</span><span class="op">)</span></span>
+<span>  <span class="va">lambda_hat</span> <span class="op">&lt;-</span> <span class="fu">est_lambda</span><span class="op">(</span>dat<span class="op">=</span><span class="va">dat</span>, type<span class="op">=</span><span class="va">L</span><span class="op">$</span><span class="va">estimator</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"lambda_hat"</span><span class="op">=</span><span class="va">lambda_hat</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
-<p>Your script should always return a list containing key-value pairs,
-where the keys are character strings and the values are simple data
-types (numbers, character strings, or boolean values). If you need to
-return more complex data types (e.g. lists or dataframes), see the
-<a href="https://avi-kenny.github.io/SimEngine/advanced-usage/">Advanced
-usage</a> documentation page. Note that in this example, you could have
-alternatively coded your estimators as separate functions and called
-them from within the script using the
-<a href="https://avi-kenny.github.io/SimEngine/function-reference/use_method/"><code>use_method</code></a>
-function.</p>
+<p>The simulation script should always return a list containing one or
+more key-value pairs, where the keys are syntactically valid names. The
+values may be simple data types (numbers, character strings, or boolean
+values) or more complex data types (lists, dataframes, model objects,
+etc.); see the Advanced Usage documentation for how to handle complex
+data types. Note that in this example, the estimators could have been
+coded instead as two different functions and then called from within the
+script using the <code><a href="../reference/use_method.html">use_method()</a></code> function.</p>
 </div>
 <div class="section level3">
 <h3 id="set-the-simulation-configuration">6) Set the simulation configuration<a class="anchor" aria-label="anchor" href="#set-the-simulation-configuration"></a>
 </h3>
-<p>This controls options related to your entire simulation, such as the
-number of simulation replicates to run for each level combination and
-how to
-<a href="https://avi-kenny.github.io/SimEngine/parallelization/">parallelize</a>
-your code. This is also where you should specify any packages your
-simulation needs (instead of using <code>library</code> or
-<code>require</code>). See the
-<a href="https://avi-kenny.github.io/SimEngine/function-reference/set_config/"><code>set_config</code></a>
-docs for more info. We set <code>num_sim</code> to 100, and so
+<p>The <code><a href="../reference/set_config.html">set_config()</a></code> function controls options related to
+the entire simulation, such as the number of simulation replicates to
+run for each level value combination and the parallelization type, if
+desired (see the Parallelization documentation). Packages needed for the
+simulation should be specified using the <code>packages</code> argument
+of <code><a href="../reference/set_config.html">set_config()</a></code> (rather than using <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code>
+or <code><a href="https://rdrr.io/r/base/library.html" class="external-link">require()</a></code>). We set <code>num_sim</code> to 100, and so
 <strong>SimEngine</strong> will run a total of 600 simulation replicates
-(100 for each of the six level combinations).</p>
+(100 for each of the six level value combinations).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_config.html">set_config</a></span><span class="op">(</span></span>
 <span>  num_sim <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  n_cores <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, <span class="st">"stringr"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -295,45 +268,84 @@ simulation object.</p>
 <div class="section level3">
 <h3 id="view-and-summarize-results">8) View and summarize results<a class="anchor" aria-label="anchor" href="#view-and-summarize-results"></a>
 </h3>
-<p>Once the simulations have finished, use the <code>summarize</code>
-function to calculate common summary statistics, such as bias, variance,
-MSE, and coverage.</p>
+<p>Once the simulation replicates have finished running, the
+<code><a href="../reference/summarize.html">summarize()</a></code> function can be used to calculate common
+summary statistics, such as bias, variance, mean squared error (MSE),
+and confidence interval coverage.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/summarize.html">summarize</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>stat<span class="op">=</span><span class="st">"bias"</span>, truth<span class="op">=</span><span class="op">-</span><span class="fl">7</span>, estimate<span class="op">=</span><span class="st">"est"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>stat<span class="op">=</span><span class="st">"mse"</span>, truth<span class="op">=</span><span class="op">-</span><span class="fl">7</span>, estimate<span class="op">=</span><span class="st">"est"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>stat<span class="op">=</span><span class="st">"bias"</span>, name<span class="op">=</span><span class="st">"bias_lambda"</span>, estimate<span class="op">=</span><span class="st">"lambda_hat"</span>, truth<span class="op">=</span><span class="fl">20</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>stat<span class="op">=</span><span class="st">"mse"</span>, name<span class="op">=</span><span class="st">"mse_lambda"</span>, estimate<span class="op">=</span><span class="st">"lambda_hat"</span>, truth<span class="op">=</span><span class="fl">20</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;   level_id estimator num_patients n_reps     bias_est      MSE_est</span></span>
-<span><span class="co">#&gt; 1        1      est1           50    100  6.418188113 1.077005e+03</span></span>
-<span><span class="co">#&gt; 2        2      est2           50    100  0.018094321 2.465174e-01</span></span>
-<span><span class="co">#&gt; 3        3      est1          200    100  2.769202905 3.269523e+02</span></span>
-<span><span class="co">#&gt; 4        4      est2          200    100 -0.028473934 8.180629e-02</span></span>
-<span><span class="co">#&gt; 5        5      est1         1000    100 -0.753638763 6.933522e+01</span></span>
-<span><span class="co">#&gt; 6        6      est2         1000    100  0.001642093 1.428018e-02</span></span></code></pre></div>
-<p>In this example, we see that the MSE of estimator 1 is much higher
-than that of estimator 2 and that MSE decreases with increasing sample
-size for both estimators, as expected. You can also directly access the
-results for individual simulation replicates.</p>
+<span><span class="co">#&gt;   level_id estimator    n n_reps bias_lambda   mse_lambda</span></span>
+<span><span class="co">#&gt; 1        1         M   10    100  0.06000000   1.83480000</span></span>
+<span><span class="co">#&gt; 2        2         V   10    100  1.50911111 123.80381975</span></span>
+<span><span class="co">#&gt; 3        3         M  100    100 -0.04470000   0.18840300</span></span>
+<span><span class="co">#&gt; 4        4         V  100    100  0.25631515   9.72822449</span></span>
+<span><span class="co">#&gt; 5        5         M 1000    100  0.00220000   0.02113776</span></span>
+<span><span class="co">#&gt; 6        6         V 1000    100  0.06556606   1.08651579</span></span></code></pre></div>
+<p>In this example, we see that the MSE of the sample variance is much
+higher than that of the sample mean and that MSE decreases with
+increasing sample size for both estimators, as expected. From the
+<code>n_reps</code> column, we see that 100 replicates were successfully
+run for each level value combination. Results for individual simulation
+replicates can also be directly accessed via the
+<code>sim$results</code> dataframe.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   sim_uid level_id rep_id estimator num_patients     runtime        est</span></span>
-<span><span class="co">#&gt; 1       1        1      1      est1           50 0.007924080  43.269468</span></span>
-<span><span class="co">#&gt; 2       7        1      2      est1           50 0.003438234 -57.976935</span></span>
-<span><span class="co">#&gt; 3       8        1      3      est1           50 0.005650759  13.321342</span></span>
-<span><span class="co">#&gt; 4       9        1      4      est1           50 0.003311634  -7.143766</span></span>
-<span><span class="co">#&gt; 5      10        1      5      est1           50 0.003889084 -37.621939</span></span>
-<span><span class="co">#&gt; 6      11        1      6      est1           50 0.007233143  23.887477</span></span>
-<span><span class="co">#&gt;     mean_t   mean_c</span></span>
-<span><span class="co">#&gt; 1 122.8879 130.2450</span></span>
-<span><span class="co">#&gt; 2 122.6176 130.0592</span></span>
-<span><span class="co">#&gt; 3 123.0807 130.0063</span></span>
-<span><span class="co">#&gt; 4 123.0387 130.1825</span></span>
-<span><span class="co">#&gt; 5 122.9546 130.1982</span></span>
-<span><span class="co">#&gt; 6 123.5164 130.0578</span></span></code></pre></div>
+<span><span class="co">#&gt;   sim_uid level_id rep_id estimator  n      runtime lambda_hat</span></span>
+<span><span class="co">#&gt; 1       1        1      1         M 10 0.0069944859       18.6</span></span>
+<span><span class="co">#&gt; 2       7        1      2         M 10 0.0002896786       18.7</span></span>
+<span><span class="co">#&gt; 3       8        1      3         M 10 0.0002939701       21.2</span></span>
+<span><span class="co">#&gt; 4       9        1      4         M 10 0.0002954006       19.4</span></span>
+<span><span class="co">#&gt; 5      10        1      5         M 10 0.0002965927       20.9</span></span>
+<span><span class="co">#&gt; 6      11        1      6         M 10 0.0002906322       20.5</span></span></code></pre></div>
 <p>Above, the <code>sim_uid</code> uniquely identifies a single
 simulation replicate and the <code>level_id</code> uniquely identifies a
-level combination. The rep_id is unique within a given level combination
-and identifies the replicate.</p>
+level value combination. The <code>rep_id</code> is unique within a
+given level value combination and identifies the index of that replicate
+within the level value combination. The <code>runtime</code> column
+shows the runtime of each replicate (in seconds).</p>
+</div>
+<div class="section level3">
+<h3 id="update-a-simulation">9) Update a simulation<a class="anchor" aria-label="anchor" href="#update-a-simulation"></a>
+</h3>
+<p>After running a simulation, a user may want to update it by adding
+additional level values or replicates; this can be done with the
+<code><a href="../reference/update_sim.html">update_sim()</a></code> function. Prior to running
+<code><a href="../reference/update_sim.html">update_sim()</a></code>, the functions <code><a href="../reference/set_levels.html">set_levels()</a></code>
+and/or <code><a href="../reference/set_config.html">set_config()</a></code> are used to declare the updates that
+should be performed. For example, the following code sets the total
+number of replicates to 200 (i.e., adding 100 replicates to those that
+have already been run) for each level value combination, and adds one
+additional level value for <code>n</code>.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_config.html">set_config</a></span><span class="op">(</span>num_sim <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
+<span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_levels.html">set_levels</a></span><span class="op">(</span></span>
+<span>  estimator <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"M"</span>, <span class="st">"V"</span><span class="op">)</span>,</span>
+<span>  n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">100</span>, <span class="fl">1000</span>, <span class="fl">10000</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>After the levels and/or configuration are updated,
+<code><a href="../reference/update_sim.html">update_sim()</a></code> is called.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/update_sim.html">update_sim</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Done. No errors or warnings detected.</span></span></code></pre></div>
+<p>Another call to <code><a href="../reference/summarize.html">summarize()</a></code> shows that the additional
+replicates were successfully:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/summarize.html">summarize</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>stat<span class="op">=</span><span class="st">"bias"</span>, name<span class="op">=</span><span class="st">"bias_lambda"</span>, estimate<span class="op">=</span><span class="st">"lambda_hat"</span>, truth<span class="op">=</span><span class="fl">20</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>stat<span class="op">=</span><span class="st">"mse"</span>, name<span class="op">=</span><span class="st">"mse_lambda"</span>, estimate<span class="op">=</span><span class="st">"lambda_hat"</span>, truth<span class="op">=</span><span class="fl">20</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;   level_id estimator     n n_reps bias_lambda   mse_lambda</span></span>
+<span><span class="co">#&gt; 1        1         M    10    200 -0.06150000 2.026750e+00</span></span>
+<span><span class="co">#&gt; 2        2         V    10    200  0.31200000 1.120690e+02</span></span>
+<span><span class="co">#&gt; 3        3         M   100    200 -0.05835000 1.838215e-01</span></span>
+<span><span class="co">#&gt; 4        4         V   100    200  0.44929293 9.880836e+00</span></span>
+<span><span class="co">#&gt; 5        5         M  1000    200  0.00560000 2.005186e-02</span></span>
+<span><span class="co">#&gt; 6        6         V  1000    200  0.05237474 9.022492e-01</span></span>
+<span><span class="co">#&gt; 7        7         M 10000    200 -0.00131350 1.926201e-03</span></span>
+<span><span class="co">#&gt; 8        8         V 10000    200  0.01255142 8.679514e-02</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
