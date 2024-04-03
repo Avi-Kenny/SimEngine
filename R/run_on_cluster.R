@@ -2,9 +2,14 @@
 #'
 #' @description This function allows for simulations to be run in parallel on a
 #'     cluster computing system (CCS). It acts as a wrapper for the code in your
-#'     simulation script, organizing the code into three sections, labeled
-#'     "first" (code that is run once at the start of the simulation, e.g.
-#'     setting simulation levels), "main" (running the simulation script via
+#'     simulation, organizing the code into three sections, labeled "first"
+#'     (code that is run once at the start of the simulation), "main"
+#'     (running the simulation script repeatedly), and "last" (code to process
+#'     or summarize simulation results). This function is to be used in
+#'     conjunction with job scheduler software (e.g., Slurm or Oracle Grid
+#'     Engine) to divide the simulation into tasks that are run in parallel on
+#'     the CCS. See the Parallelization documentation for a detailed overview of
+#'     how CCS parallelization works in \pkg{SimEngine}.
 #'     \code{\link{run}})), and "last" (usually code to process or summarize
 #'     simulation results). This function interacts with cluster job scheduler
 #'     software (e.g. Slurm or Oracle Grid Engine) to divide parallel tasks over
@@ -13,71 +18,63 @@
 #'     for a detailed overview of how CCS parallelization works in
 #'     \pkg{SimEngine}.
 #' @param first Code to run at the start of a simulation. This should be a block
-#'     of code enclosed by curly braces {} that creates a simulation object. Put
-#'     everything you need in the simulation object, since global variables
-#'     declared in this block will not be available when the 'main' and 'last'
-#'     code blocks run.
+#'     of code enclosed by curly braces {} that creates and sets up a simulation
+#'     object.
 #' @param main Code that will run for every simulation replicate. This should be
-#'     a block of code enclosed by curly braces {}, and will almost always
-#'     contain only a single call to the \code{\link{run}}) function. This code
+#'     a block of code enclosed by curly braces {}, and will typically be a
+#'     single line of code calling the \code{\link{run}}) function. This code
 #'     block will have access to the simulation object you created in the
 #'     'first' code block, but any changes made here to the simulation object
 #'     will not be saved.
 #' @param last Code that will run after all simulation replicates have been run.
-#'     This should be a block of code enclosed by curly braces {} that takes
-#'     your simulation object (which at this point will contain your results)
-#'     and do something with it, such as display your results on a graph.
+#'     This should be a block of code enclosed by curly braces {} that processes
+#'     your simulation object (which at this point will contain your results),
+#'     which may involve calls to \code{\link{summarize}}, creation of plots,
+#'     and so on.
 #' @param cluster_config A list of configuration options. You must specify
 #'     either \code{js} (the job scheduler you are using) or \code{tid_var} (the
-#'     name of the environment variable that your task ID is stored in). Run
-#'     \code{js_support()} to see a list of job schedulers that are currently
-#'     supported. You can optionally also specify \code{dir}, which is a
-#'     character string representing a path to a directory; this directory will
-#'     serve as your working directory and hold your simulation object,
-#'     temporary \pkg{SimEngine} objects, and simulation results (this defaults
-#'     to the working directory of the R script that contains your simulation
-#'     code).
+#'     name of the environment variable that your task ID is stored in); see
+#'     examples. Run \code{js_support()} to see a list of job schedulers that
+#'     are currently supported. You can optionally also specify \code{dir},
+#'     which is a character string representing a path to a directory on the
+#'     CCS; this directory will serve as your working directory and hold your
+#'     simulation object and all temporary objects created by \pkg{SimEngine}.
+#'     If unspecified, this defaults to the working directory of the R script
+#'     that contains your simulation code).
 #' @examples
 #' \dontrun{
-#' # The following is a toy simulation that could be run on a cluster computing
-#' # environment. It runs 10 replicates of 2 simulation levels as 20 separate
-#' # cluster jobs, and then summarizes the results. This function is designed to
-#' # be used in conjunction with cluster job scheduler software (e.g. Slurm or
-#' # Oracle Grid Engine). We include both the R code as well as sample BASH code
-#' # for running the simulation using Slurm.
-#'
-#' # This code is saved in a file called my_simulation.R
+#' # The following code is saved in a file called my_simulation.R:
 #' library(SimEngine)
 #' run_on_cluster(
-#'
 #'   first = {
 #'     sim <- new_sim()
-#'     create_data <- function(n) { rnorm(n) }
+#'     create_data <- function(n) { return(rpois(n=n, lambda=20)) }
+#'     est_lambda <- function(dat, type) {
+#'       if (type=="M") { return(mean(dat)) }
+#'       if (type=="V") { return(var(dat)) }
+#'     }
+#'     sim %<>% set_levels(estimator = c("M","V"), n = c(10,100,1000))
 #'     sim %<>% set_script(function() {
-#'       data <- create_data(L$n)
-#'       return(list("x"=mean(data)))
+#'       dat <- create_data(L$n)
+#'       lambda_hat <- est_lambda(dat=dat, type=L$estimator)
+#'       return(list("lambda_hat"=lambda_hat))
 #'     })
-#'     sim %<>% set_levels(n=c(100,1000))
-#'     sim %<>% set_config(num_sim=10)
+#'     sim %<>% set_config(num_sim=100, n_cores=20)
 #'   },
-#'
 #'   main = {
 #'     sim %<>% run()
 #'   },
-#'
 #'   last = {
 #'     sim %>% summarize()
 #'   },
-#'
-#'   cluster_config = list(js="ge")
-#'
+#'   cluster_config = list(js="slurm")
 #' )
 #'
-#' # This code is saved in a file called run_sim.sh
+#' # The following code is saved in a file called run_sim.sh:
 #' # #!/bin/bash
 #' # Rscript my_simulation.R
 #'
-#' # The following lines of code are run on the cluster head node.
+#' # The following lines of code are run on the CCS head node:
 #' # sbatch --export=sim_run='first' run_sim.sh
 #' # sbatch --export=sim_run='main' --array=1-20 --depend=afterok:101 run_sim.sh
 #' # sbatch --export=sim_run='last' --depend=afterok:102 run_sim.sh

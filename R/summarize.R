@@ -120,8 +120,6 @@
 #'     as a column, for each of the simulation levels. The column \code{n_reps}
 #'     returns the number of successful simulation replicates within each level.
 #' @examples
-#' # The following is a toy example of a simulation, illustrating the use of
-#' # the summarize function.
 #' sim <- new_sim()
 #' create_data <- function(n) { rpois(n, lambda=5) }
 #' est_mean <- function(dat, type) {

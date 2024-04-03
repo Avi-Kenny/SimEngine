@@ -76,7 +76,7 @@ sim %<>% run()
 sim %>% summarize()
 ```
 
-To run this code on a CCS, we simply wrap it in the `run_on_cluster()` function. To use this function, we must break the code into three blocks, called `first`, `main`, and `last`. The code in the `first` block will run only once, and will set up the simulation object. When this is finished, **SimEngine** will save the simulation object in the filesystem of the CCS. The code in the `main` block will then run once for each simulation replicate, and will have access to the simulation object created in the `first` block. In most cases, the code in the `main` block will simply include a single call to `run()` (or to `update_sim()`, as detailed below). Finally, the code in the `last` block will run after all simulation replicates have finished running, and after **SimEngine** has automatically compiled the results into the simulation object. Use of the `run_on_cluster()` function is illustrated below:
+To run this code on a CCS, we simply wrap it in the `run_on_cluster()` function. To use this function, we must break the code into three blocks, called `first`, `main`, and `last`. The code in the `first` block will run only once, and will set up the simulation object. When this is finished, **SimEngine** will save the simulation object in the filesystem of the CCS. The code in the `main` block will then run once for each simulation replicate, and will have access to the simulation object created in the `first` block. In most cases, the code in the `main` block will simply include a single call to `run()`. Finally, the code in the `last` block will run after all simulation replicates have finished running, and after **SimEngine** has automatically compiled the results into the simulation object. Use of the `run_on_cluster()` function is illustrated below:
 
 ```r
 run_on_cluster(
@@ -132,15 +132,6 @@ In the second line, we submit the `run_sim.sh` script using the `sim_run='main'`
 Also note that we included the option `--depend=afterok:101`, which instructs the job scheduler to wait until the first job finishes before starting the job array. (In practice, the number 101 must be replaced with whatever job ID Slurm assigned to the first job.) Once this command is submitted, the code in the `main` block will be run for each replicate. A temporary folder called `sim_results` will be created and filled with temporary objects containing data on the results and/or errors for each replicate.
 
 In the third line, we submit the `run_sim.sh` script using the `sim_run='last'` environment variable. Again, we use `--depend=afterok:102` to ensure this code does not run until all tasks in the job array have finished. When this job runs, **SimEngine** will compile the results from the `main` block, run the code in the `last` block, save the simulation object to the filesystem, and delete the temporary `sim_results` folder and its contents. If desired, the user can leave the `last` block empty, but this third `sbatch` command should be run anyways to compile the results and save the simulation object for further analysis. 
-
-As mentioned above, the default **SimEngine** behavior is to run each replicate on its own core. However, it can sometimes be advantageous to run multiple replicates per core (e.g., if a single replicate has a short runtime, or if the job scheduler limits how many job array tasks can be submitted at one time). To do this, we first specify the `n_cores` option using `set_config()`, e.g., `sim %<>% set_config(n_cores = 5)`. Second, we change the second `sbatch` command to match the value used for `n_cores`:
-
-```bash
-sbatch --export=sim_run='main' --array=1-5 --depend=afterok:101 run_sim.sh
-#> Submitted batch job 102
-```
-
-Here, only five cores will be used to run the 20 simulation replicates, and so only five job array tasks are needed.
 
 ## Additional cluster parallelization functionality
 

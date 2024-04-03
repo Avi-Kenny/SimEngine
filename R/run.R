@@ -11,8 +11,6 @@
 #'     errors are stored in \code{sim$errors}, and warnings are stored in
 #'     \code{sim$warnings}.
 #' @examples
-#' # The following is a toy example of a simulation, illustrating the use of
-#' # the run function.
 #' sim <- new_sim()
 #' create_data <- function(n) { rpois(n, lambda=5) }
 #' est_mean <- function(dat, type) {

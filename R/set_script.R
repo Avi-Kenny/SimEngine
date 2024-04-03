@@ -9,16 +9,15 @@
 #'     results. The results must be a list of key-value pairs. Values are
 #'     categorized as simple (a number, a character string, etc.) or complex
 #'     (vectors, dataframes, lists, etc.). Complex data must go inside a key
-#'     called ".complex" and the associated value must be a list (see examples).
-#'     The function body can contain references to the special object \code{L}
-#'     that stores the current set of simulation levels (see examples).
-#'     The keys must be valid R names (see ?make.names). Any functions used
-#'     within the script must be declared before \code{set_script} is called.
+#'     called ".complex" and the associated value must be a list (see Advanced
+#'     Functionality documentation and examples). The function body can contain
+#'     references to the special object \code{L} that stores the current set of
+#'     simulation levels (see examples). The keys must be valid R names (see
+#'     ?make.names). Any functions used within the script must be declared
+#'     before \code{set_script} is called.
 #' @return The original simulation object with the new "simulation script"
 #'     function added.
 #' @examples
-#' # The following is a toy example of a simulation, illustrating the use of
-#' # the set_script function.
 #' sim <- new_sim()
 #' create_data <- function(n) { rpois(n, lambda=5) }
 #' est_mean <- function(dat, type) {
@@ -33,24 +32,28 @@
 #'   return (list("lambda_hat"=lambda_hat))
 #' })
 #' sim %<>% run()
-#' sim$results
+#' sim$results %>% print()
 #'
-#' # If you need to return complex result data (vectors, dataframes, lists,
-#' # etc.), use the construct ".complex"=list().
+#' # To return complex result data, use the special key ".complex".
 #' sim <- new_sim()
-#' sim %<>% set_levels(n=c(4,9))
+#' create_data <- function(n) {
+#'   x <- runif(n)
+#'   y <- 3 + 2*x + rnorm(n)
+#'   return(data.frame("x"=x, "y"=y))
+#' }
+#' sim %<>% set_levels("n"=c(10, 100, 1000))
 #' sim %<>% set_config(num_sim=1)
 #' sim %<>% set_script(function() {
-#'   dat <- rnorm(L$n)
-#'   mtx <- matrix(dat, nrow=sqrt(length(dat)))
+#'   dat <- create_data(L$n)
+#'   model <- lm(y~x, data=dat)
 #'   return (list(
-#'     "mean" = mean(dat),
-#'     "det" = det(mtx),
-#'     ".complex" = list(dat=dat, mtx=mtx)
+#'     "beta1_hat" = model$coefficients[[2]],
+#'     ".complex" = model
 #'   ))
 #' })
 #' sim %<>% run()
-#'
+#' sim$results %>% print()
+#' get_complex(sim, 1) %>% print()
 #' @export
 set_script <- function(sim, fn) {
   UseMethod("set_script")
@@ -66,9 +69,9 @@ set_script.sim_obj <- function(sim, fn) {
                "simulation has been run."))
   }
 
-  # Add "global" objects to simulation object run environment (excluding
-  #     simulation object); these are not necessarily in the global environment,
-  #     but are in the environment the new_sim() call is executed within.
+  # Add objects to simulation object run environment (excluding simulation
+  #   object); these are not necessarily in the global environment, but are in
+  #   the environment the new_sim() call is executed within.
   for (obj_name in ls(sim$internals$env_calling, all.names=T)) {
     obj <- get(x=obj_name, envir=sim$internals$env_calling)
     if (!methods::is(obj,"sim_obj") && obj_name!="L") {

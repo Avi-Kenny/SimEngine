@@ -28,21 +28,18 @@
 #'     errors), "run, all errors" (the simulation ran and all replicates had
 #'     errors).}
 #'
+#'     \item{\code{session_info}: The results of a call to utils::sessionInfo()
+#'     that occures when \link{new_sim} is called.}
+#'
 #'    }
-#' @details \itemize{
-#'   \item{You can also access simulation variables through sim$vars, where
-#'     \code{sim} is your simulation object (see examples).}
-#' }
 #' @return The value of the internal variable.
 #' @examples
 #' sim <- new_sim()
-#' sim %<>% set_levels(
-#'   "n" = c(10, 100, 1000)
-#' )
+#' sim %<>% set_levels(n = c(10, 100, 1000))
 #' sim %<>% set_config(num_sim=10)
-#' vars(sim, "num_sim_total") %>% print()
-#' sim$vars$num_sim_total %>% print()
-#' vars(sim) %>% print()
+#' print(vars(sim, "seed"))
+#' print(vars(sim, "env"))
+#' print(vars(sim, "num_sim_total"))
 #' @export
 vars <- function(sim, var) {
   UseMethod("vars")

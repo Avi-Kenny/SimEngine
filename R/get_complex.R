@@ -9,24 +9,29 @@
 #'     supplied \code{sim_uid}
 #' @examples
 #' sim <- new_sim()
+#' sim %<>% set_levels(n=c(10, 100, 1000))
 #' create_data <- function(n) {
 #'   x <- runif(n)
 #'   y <- 3 + 2*x + rnorm(n)
 #'   return(data.frame("x"=x, "y"=y))
 #' }
-#' sim %<>% set_levels("n"=c(10, 100, 1000))
-#' sim %<>% set_config(num_sim=1)
+#' sim %<>% set_config(num_sim=2)
 #' sim %<>% set_script(function() {
 #'   dat <- create_data(L$n)
 #'   model <- lm(y~x, data=dat)
-#'   return (list(
+#'   return(list(
+#'     "beta0_hat" = model$coefficients[[1]],
 #'     "beta1_hat" = model$coefficients[[2]],
-#'     ".complex" = model
+#'     ".complex" = list(
+#'       "model" = model,
+#'       "cov_mtx" = vcov(model)
+#'     )
 #'   ))
 #' })
 #' sim %<>% run()
-#' sim$results %>% print()
-#' get_complex(sim, 1) %>% print()
+#' c5 <- get_complex(sim, sim_uid=5)
+#' print(summary(c5$model))
+#' print(c5$cov_mtx)
 #' @export
 
 #' @export

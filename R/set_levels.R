@@ -7,52 +7,28 @@
 #' @param ... One or more key-value pairs representing simulation levels. Each
 #'     value can either be a vector (for simple levels) or a list of lists (for
 #'     more complex levels). See examples.
-#' @param .keep An integer vector specifying which level combinations to keep;
-#'     see examples.
+#' @param .keep An integer vector of level_id values specifying which level
+#'     combinations to keep; see the Advanced Functionality documentation.
 #' @return The original simulation object with the old set of levels replaced
 #'     with the new set
 #' @examples
-#' # Basic usage is as follows:
+#' # Basic simulation levels are numeric or character vectors
 #' sim <- new_sim()
 #' sim %<>% set_levels(
-#'   "n" = c(10, 100, 1000),
-#'   "theta" = c(2, 3)
+#'   n = c(10, 100, 1000),
+#'   est = c("M", "V")
 #' )
-#' sim$levels
 #'
-#' # More complex levels can be set using lists:
+#' # Complex simulation levels can be set using named lists of lists
 #' sim <- new_sim()
 #' sim %<>% set_levels(
-#'   "n" = c(10, 100, 1000),
-#'   "theta" = c(2, 3),
-#'   "method" = list(
-#'     "spline1" = list(knots=c(2,4), slopes=c(0.1,0.4)),
-#'     "spline2" = list(knots=c(1,5), slopes=c(0.2,0.3))
+#'   n = c(10, 100, 1000),
+#'   distribution = list(
+#'     "Beta 1" = list(type="Beta", params=c(0.3, 0.7)),
+#'     "Beta 2" = list(type="Beta", params=c(1.5, 0.4)),
+#'     "Normal" = list(type="Normal", params=c(3.0, 0.2))
 #'   )
 #' )
-#' sim$levels
-#'
-#' # If you don't want to run simulations for all level combinations, use the
-#' # .keep option. First, set the levels normally. Second, view the
-#' # sim$levels_grid dataframe to examine the level combinations and the
-#' # associated level_id values. Third, call set_levels again with the .keep
-#' # option to specify which levels to keep (via a vector of level_id values).
-#' sim <- new_sim()
-#' sim %<>% set_levels(alpha=c(1,2,3), beta=c(5,6))
-#' sim$levels_grid
-#' #>   level_id alpha beta
-#' #> 1        1     1    5
-#' #> 2        2     2    5
-#' #> 3        3     3    5
-#' #> 4        4     1    6
-#' #> 5        5     2    6
-#' #> 6        6     3    6
-#' sim %<>% set_levels(.keep=c(1,2,6))
-#' sim$levels_grid
-#' #>   level_id alpha beta
-#' #> 1        1     1    5
-#' #> 2        2     2    5
-#' #> 6        6     3    6
 #' @export
 set_levels <- function(sim, ..., .keep=NA) {
   UseMethod("set_levels")

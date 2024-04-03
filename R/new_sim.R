@@ -10,7 +10,7 @@
 #'     use the \pkg{SimEngine} simulation framework.
 #' @examples
 #' sim <- new_sim()
-#' sim
+#' print(sim)
 #' @export
 new_sim <- function() {
 

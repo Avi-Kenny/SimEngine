@@ -56,6 +56,16 @@ Note that the list names (`"Beta 1"`, `"Beta 2"`, and `"Normal"`) become the ent
 sim %>% summarize(list(stat="mean", x="y"))
 ```
 
+Sometimes, it may be the case that you want to run simulations only for a subset of level combinations. In these cases, use the `.keep` option of `set_levels()` . First, set the levels normally. Second, view the `sim$levels_grid` dataframe to examine the level combinations and the associated `level_id` values. Third, call `set_levels()` again with the `.keep` option to specify which level combinations to keep. This is demonstrated below:
+
+```{r}
+sim <- new_sim()
+sim %<>% set_levels(alpha=c(2,3,4), beta=c(50,60))
+print(sim$levels_grid)
+sim %<>% set_levels(.keep=c(1,2,6))
+print(sim$levels_grid)
+```
+
 ## Complex return data
 
 In most situations, the results of simulations are numeric. However, we may want to return more complex data, such as matrices, lists, or model objects. To do this, we add a key-value pair to the list returned by the simulation script with the special key `".complex"` and a list (containing the complex data) as the value. This is illustrated in the toy example below. Here, the simulation script estimates the parameters of a linear regression and returns these as numeric, but also returns the estimated covariance matrix and the entire model object.

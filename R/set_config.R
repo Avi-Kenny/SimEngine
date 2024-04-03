@@ -58,7 +58,7 @@
 #'   num_sim = 10,
 #'   seed = 2112
 #' )
-#' sim
+#' print(sim)
 #' @export
 set_config <- function(
   sim, num_sim=1000, parallel=FALSE, n_cores=NA, packages=NULL,
