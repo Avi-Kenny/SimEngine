@@ -96,6 +96,8 @@
     and had no errors), "run, some errors" (the simulation ran and had some
     errors), "run, all errors" (the simulation ran and all replicates had
     errors).</p></li>
+<li><p><code>session_info</code>: The results of a call to utils::sessionInfo()
+    that occures when <a href="new_sim.html">new_sim</a> is called.</p></li>
 </ul></dd>
 
 </dl></div>
@@ -105,23 +107,15 @@
 
 <p>The value of the internal variable.</p>
     </div>
-    <div class="section level2">
-    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    
-<ul><li><p>You can also access simulation variables through sim$vars, where
-    <code>sim</code> is your simulation object (see examples).</p></li>
-</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="set_levels.html">set_levels</a></span><span class="op">(</span></span>
-<span>  <span class="st">"n"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">100</span>, <span class="fl">1000</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="set_levels.html">set_levels</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">100</span>, <span class="fl">1000</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="set_config.html">set_config</a></span><span class="op">(</span>num_sim<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
-<span><span class="fu">vars</span><span class="op">(</span><span class="va">sim</span>, <span class="st">"num_sim_total"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="va">vars</span><span class="op">$</span><span class="va">num_sim_total</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">vars</span><span class="op">(</span><span class="va">sim</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">vars</span><span class="op">(</span><span class="va">sim</span>, <span class="st">"seed"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">vars</span><span class="op">(</span><span class="va">sim</span>, <span class="st">"env"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">vars</span><span class="op">(</span><span class="va">sim</span>, <span class="st">"num_sim_total"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
