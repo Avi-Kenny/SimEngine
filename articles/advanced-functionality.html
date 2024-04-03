@@ -136,12 +136,37 @@ returned by <code><a href="../reference/summarize.html">summarize()</a></code>.<
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/summarize.html">summarize</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>stat<span class="op">=</span><span class="st">"mean"</span>, x<span class="op">=</span><span class="st">"y"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   level_id   n distribution n_reps    mean_y</span></span>
-<span><span class="co">#&gt; 1        1  10       Beta 1      1 0.1846923</span></span>
-<span><span class="co">#&gt; 2        2 100       Beta 1      1 0.2883987</span></span>
-<span><span class="co">#&gt; 3        3  10       Beta 2      1 0.8364958</span></span>
-<span><span class="co">#&gt; 4        4 100       Beta 2      1 0.8298825</span></span>
-<span><span class="co">#&gt; 5        5  10       Normal      1 2.9379640</span></span>
-<span><span class="co">#&gt; 6        6 100       Normal      1 3.0312071</span></span></code></pre></div>
+<span><span class="co">#&gt; 1        1  10       Beta 1      1 0.3531981</span></span>
+<span><span class="co">#&gt; 2        2 100       Beta 1      1 0.2680930</span></span>
+<span><span class="co">#&gt; 3        3  10       Beta 2      1 0.7690508</span></span>
+<span><span class="co">#&gt; 4        4 100       Beta 2      1 0.8055131</span></span>
+<span><span class="co">#&gt; 5        5  10       Normal      1 2.9472303</span></span>
+<span><span class="co">#&gt; 6        6 100       Normal      1 2.9890286</span></span></code></pre></div>
+<p>Sometimes, it may be the case that you want to run simulations only
+for a subset of level combinations. In these cases, use the
+<code>.keep</code> option of <code><a href="../reference/set_levels.html">set_levels()</a></code> . First, set the
+levels normally. Second, view the <code>sim$levels_grid</code> dataframe
+to examine the level combinations and the associated
+<code>level_id</code> values. Third, call <code><a href="../reference/set_levels.html">set_levels()</a></code>
+again with the <code>.keep</code> option to specify which level
+combinations to keep. This is demonstrated below:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_levels.html">set_levels</a></span><span class="op">(</span>alpha<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span>, beta<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>,<span class="fl">60</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">levels_grid</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   level_id alpha beta</span></span>
+<span><span class="co">#&gt; 1        1     2   50</span></span>
+<span><span class="co">#&gt; 2        2     3   50</span></span>
+<span><span class="co">#&gt; 3        3     4   50</span></span>
+<span><span class="co">#&gt; 4        4     2   60</span></span>
+<span><span class="co">#&gt; 5        5     3   60</span></span>
+<span><span class="co">#&gt; 6        6     4   60</span></span>
+<span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_levels.html">set_levels</a></span><span class="op">(</span>.keep<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">6</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">levels_grid</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   level_id alpha beta</span></span>
+<span><span class="co">#&gt; 1        1     2   50</span></span>
+<span><span class="co">#&gt; 2        2     3   50</span></span>
+<span><span class="co">#&gt; 6        6     4   60</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="complex-return-data">Complex return data<a class="anchor" aria-label="anchor" href="#complex-return-data"></a>
@@ -155,7 +180,7 @@ illustrated in the toy example below. Here, the simulation script
 estimates the parameters of a linear regression and returns these as
 numeric, but also returns the estimated covariance matrix and the entire
 model object.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_levels.html">set_levels</a></span><span class="op">(</span>n<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">100</span>, <span class="fl">1000</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">create_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span></span>
@@ -181,18 +206,18 @@ model object.</p>
 <p>After running this simulation, the numeric results can be accessed
 directly via <code>sim$results</code> or using the
 <code><a href="../reference/summarize.html">summarize()</a></code> function, as usual:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id    n     runtime beta0_hat beta1_hat</span></span>
-<span><span class="co">#&gt; 1       1        1      1   10 0.003706455  1.673491  2.833248</span></span>
-<span><span class="co">#&gt; 2       4        1      2   10 0.001086473  2.354271  2.151976</span></span>
-<span><span class="co">#&gt; 3       2        2      1  100 0.004477262  3.125403  2.026515</span></span>
-<span><span class="co">#&gt; 4       5        2      2  100 0.001110077  2.983541  1.842945</span></span>
-<span><span class="co">#&gt; 5       3        3      1 1000 0.001531839  2.965298  2.089548</span></span>
-<span><span class="co">#&gt; 6       6        3      2 1000 0.001270533  2.956888  2.062009</span></span></code></pre></div>
+<span><span class="co">#&gt; 1       1        1      1   10 0.003705025  1.344483  5.179433</span></span>
+<span><span class="co">#&gt; 2       4        1      2   10 0.001273632  2.480852  2.683755</span></span>
+<span><span class="co">#&gt; 3       2        2      1  100 0.004469633  3.134543  1.909415</span></span>
+<span><span class="co">#&gt; 4       5        2      2  100 0.001126051  2.835687  2.322350</span></span>
+<span><span class="co">#&gt; 5       3        3      1 1000 0.001422882  2.910619  2.177161</span></span>
+<span><span class="co">#&gt; 6       6        3      2 1000 0.004528046  3.031714  1.920955</span></span></code></pre></div>
 <p>To examine the complex return data, we can use the function
 <code><a href="../reference/get_complex.html">get_complex()</a></code>, as illustrated below:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">c5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_complex.html">get_complex</a></span><span class="op">(</span><span class="va">sim</span>, sim_uid<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">c5</span><span class="op">$</span><span class="va">model</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -201,22 +226,22 @@ directly via <code>sim$results</code> or using the
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Residuals:</span></span>
 <span><span class="co">#&gt;      Min       1Q   Median       3Q      Max </span></span>
-<span><span class="co">#&gt; -2.32309 -0.52981  0.06056  0.54091  2.89418 </span></span>
+<span><span class="co">#&gt; -2.50801 -0.48608  0.06012  0.51739  2.69296 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    </span></span>
-<span><span class="co">#&gt; (Intercept)   2.9835     0.1857  16.070  &lt; 2e-16 ***</span></span>
-<span><span class="co">#&gt; x             1.8429     0.3277   5.623 1.77e-07 ***</span></span>
+<span><span class="co">#&gt; (Intercept)   2.8357     0.1888  15.021  &lt; 2e-16 ***</span></span>
+<span><span class="co">#&gt; x             2.3224     0.3129   7.423 4.23e-11 ***</span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Residual standard error: 0.9593 on 98 degrees of freedom</span></span>
-<span><span class="co">#&gt; Multiple R-squared:  0.244,  Adjusted R-squared:  0.2362 </span></span>
-<span><span class="co">#&gt; F-statistic: 31.62 on 1 and 98 DF,  p-value: 1.769e-07</span></span>
+<span><span class="co">#&gt; Residual standard error: 0.9116 on 98 degrees of freedom</span></span>
+<span><span class="co">#&gt; Multiple R-squared:  0.3599, Adjusted R-squared:  0.3533 </span></span>
+<span><span class="co">#&gt; F-statistic:  55.1 on 1 and 98 DF,  p-value: 4.232e-11</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">c5</span><span class="op">$</span><span class="va">cov_mtx</span><span class="op">)</span></span>
 <span><span class="co">#&gt;             (Intercept)           x</span></span>
-<span><span class="co">#&gt; (Intercept)  0.03446789 -0.05209128</span></span>
-<span><span class="co">#&gt; x           -0.05209128  0.10740353</span></span></code></pre></div>
+<span><span class="co">#&gt; (Intercept)  0.03564050 -0.05172405</span></span>
+<span><span class="co">#&gt; x           -0.05172405  0.09788948</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="using-the-batch-function">Using the <code>batch</code> function<a class="anchor" aria-label="anchor" href="#using-the-batch-function"></a>
@@ -231,7 +256,7 @@ This may be of interest if, for example, it is computationally expensive
 to generate a simulated dataset.</p>
 <p>To illustrate the use of <code><a href="../reference/batch.html">batch()</a></code> using this example, we
 first consider the following simulation:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">create_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n<span class="op">=</span><span class="va">n</span>, mean<span class="op">=</span><span class="fl">3</span><span class="op">)</span> <span class="op">}</span></span>
 <span><span class="va">est_mean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">type</span><span class="op">)</span> <span class="op">{</span></span>
@@ -254,21 +279,21 @@ first consider the following simulation:</p>
 the first element of the <code>dat</code> vector created in the
 simulation script), we see that a unique dataset was created for each
 simulation replicate:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">rep_id</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span><span class="op">!=</span><span class="fl">5</span><span class="op">]</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id        est mu_hat dat_1</span></span>
-<span><span class="co">#&gt; 1       1        1      1   est_mean   3.06  3.25</span></span>
-<span><span class="co">#&gt; 4       2        2      1 est_median   3.03  6.22</span></span>
-<span><span class="co">#&gt; 2       3        1      2   est_mean   2.95  1.80</span></span>
-<span><span class="co">#&gt; 5       5        2      2 est_median   3.05  1.67</span></span>
-<span><span class="co">#&gt; 3       4        1      3   est_mean   2.58  3.01</span></span>
-<span><span class="co">#&gt; 6       6        2      3 est_median   3.22  2.29</span></span></code></pre></div>
+<span><span class="co">#&gt; 1       1        1      1   est_mean   2.84  3.83</span></span>
+<span><span class="co">#&gt; 4       2        2      1 est_median   3.16  3.89</span></span>
+<span><span class="co">#&gt; 2       3        1      2   est_mean   2.96  3.85</span></span>
+<span><span class="co">#&gt; 5       5        2      2 est_median   2.82  3.47</span></span>
+<span><span class="co">#&gt; 3       4        1      3   est_mean   3.08  3.12</span></span>
+<span><span class="co">#&gt; 6       6        2      3 est_median   3.10  3.25</span></span></code></pre></div>
 <p>Suppose that instead, we wish to analyze each simulated dataset using
 multiple methods (in this case corresponding to <code>"est_mean"</code>
 and <code>"est_median"</code>), and repeat this procedure a total of
 three times. We can do this using the <code><a href="../reference/batch.html">batch()</a></code> function, as
 follows:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">create_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n<span class="op">=</span><span class="va">n</span>, mean<span class="op">=</span><span class="fl">3</span><span class="op">)</span> <span class="op">}</span></span>
 <span><span class="va">est_mean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">type</span><span class="op">)</span> <span class="op">{</span></span>
@@ -296,15 +321,15 @@ this will be explained below. Second, we wrapped the code line
 <code><a href="../reference/batch.html">batch()</a></code> function. Whatever code goes inside the
 <code><a href="../reference/batch.html">batch()</a></code> function will produce the same output for all
 simulations in a batch.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">rep_id</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span><span class="op">!=</span><span class="fl">5</span><span class="op">]</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id        est mu_hat dat_1</span></span>
-<span><span class="co">#&gt; 1       1        1      1   est_mean   3.00  4.80</span></span>
-<span><span class="co">#&gt; 4       2        2      1 est_median   2.94  4.80</span></span>
-<span><span class="co">#&gt; 2       3        1      2   est_mean   2.93  2.67</span></span>
-<span><span class="co">#&gt; 5       5        2      2 est_median   3.05  2.67</span></span>
-<span><span class="co">#&gt; 3       4        1      3   est_mean   3.01  1.35</span></span>
-<span><span class="co">#&gt; 6       6        2      3 est_median   2.94  1.35</span></span></code></pre></div>
+<span><span class="co">#&gt; 1       1        1      1   est_mean   3.12  2.73</span></span>
+<span><span class="co">#&gt; 4       2        2      1 est_median   3.15  2.73</span></span>
+<span><span class="co">#&gt; 2       3        1      2   est_mean   3.05  2.56</span></span>
+<span><span class="co">#&gt; 5       5        2      2 est_median   3.03  2.56</span></span>
+<span><span class="co">#&gt; 3       4        1      3   est_mean   3.07  4.82</span></span>
+<span><span class="co">#&gt; 6       6        2      3 est_median   3.06  4.82</span></span></code></pre></div>
 <p>In this case, from the <code>"dat_1"</code> column of the results
 object, we see that one dataset was created and shared by the batch
 corresponding to <code>sim_uids</code> 1 and 2 (likewise for
@@ -319,7 +344,7 @@ variable <code>L</code>) from within a <code><a href="../reference/batch.html">b
 the example below, the levels <code>n</code> and <code>mu</code> are
 used within the <code><a href="../reference/batch.html">batch()</a></code> call, while the level
 <code>est</code> is not.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">create_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span>, <span class="va">mu</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n<span class="op">=</span><span class="va">n</span>, mean<span class="op">=</span><span class="va">mu</span><span class="op">)</span> <span class="op">}</span></span>
 <span><span class="va">est_mean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">type</span><span class="op">)</span> <span class="op">{</span></span>
@@ -343,22 +368,22 @@ used within the <code><a href="../reference/batch.html">batch()</a></code> call,
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">batch_id</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">!=</span><span class="fl">8</span><span class="op">]</span></span>
 <span><span class="co">#&gt;    sim_uid level_id rep_id batch_id   n mu        est mu_hat dat_1</span></span>
-<span><span class="co">#&gt; 1        1        1      1        1  10  3   est_mean   3.28  3.19</span></span>
-<span><span class="co">#&gt; 9        5        5      1        1  10  3 est_median   3.33  3.19</span></span>
-<span><span class="co">#&gt; 2        9        1      2        2  10  3   est_mean   3.22  3.48</span></span>
-<span><span class="co">#&gt; 10      13        5      2        2  10  3 est_median   3.29  3.48</span></span>
-<span><span class="co">#&gt; 3        2        2      1        3 100  3   est_mean   3.07  3.43</span></span>
-<span><span class="co">#&gt; 11       6        6      1        3 100  3 est_median   3.13  3.43</span></span>
-<span><span class="co">#&gt; 4       10        2      2        4 100  3   est_mean   3.03  2.82</span></span>
-<span><span class="co">#&gt; 12      14        6      2        4 100  3 est_median   3.12  2.82</span></span>
-<span><span class="co">#&gt; 5        3        3      1        5  10  5   est_mean   4.47  4.45</span></span>
-<span><span class="co">#&gt; 13       7        7      1        5  10  5 est_median   4.52  4.45</span></span>
-<span><span class="co">#&gt; 6       11        3      2        6  10  5   est_mean   4.65  5.70</span></span>
-<span><span class="co">#&gt; 14      15        7      2        6  10  5 est_median   4.79  5.70</span></span>
-<span><span class="co">#&gt; 7        4        4      1        7 100  5   est_mean   5.02  4.92</span></span>
-<span><span class="co">#&gt; 15       8        8      1        7 100  5 est_median   4.87  4.92</span></span>
-<span><span class="co">#&gt; 8       12        4      2        8 100  5   est_mean   4.94  3.81</span></span>
-<span><span class="co">#&gt; 16      16        8      2        8 100  5 est_median   5.03  3.81</span></span></code></pre></div>
+<span><span class="co">#&gt; 1        1        1      1        1  10  3   est_mean   3.13  2.27</span></span>
+<span><span class="co">#&gt; 9        5        5      1        1  10  3 est_median   3.34  2.27</span></span>
+<span><span class="co">#&gt; 2        9        1      2        2  10  3   est_mean   3.20  2.44</span></span>
+<span><span class="co">#&gt; 10      13        5      2        2  10  3 est_median   3.01  2.44</span></span>
+<span><span class="co">#&gt; 3        2        2      1        3 100  3   est_mean   3.05  3.40</span></span>
+<span><span class="co">#&gt; 11       6        6      1        3 100  3 est_median   3.04  3.40</span></span>
+<span><span class="co">#&gt; 4       10        2      2        4 100  3   est_mean   3.05  3.57</span></span>
+<span><span class="co">#&gt; 12      14        6      2        4 100  3 est_median   3.20  3.57</span></span>
+<span><span class="co">#&gt; 5        3        3      1        5  10  5   est_mean   4.61  4.28</span></span>
+<span><span class="co">#&gt; 13       7        7      1        5  10  5 est_median   4.68  4.28</span></span>
+<span><span class="co">#&gt; 6       11        3      2        6  10  5   est_mean   5.23  4.84</span></span>
+<span><span class="co">#&gt; 14      15        7      2        6  10  5 est_median   5.19  4.84</span></span>
+<span><span class="co">#&gt; 7        4        4      1        7 100  5   est_mean   4.98  1.94</span></span>
+<span><span class="co">#&gt; 15       8        8      1        7 100  5 est_median   4.99  1.94</span></span>
+<span><span class="co">#&gt; 8       12        4      2        8 100  5   est_mean   4.92  4.43</span></span>
+<span><span class="co">#&gt; 16      16        8      2        8 100  5 est_median   4.96  4.43</span></span></code></pre></div>
 <p>The batches were created such that each batch contained two
 replicates, one for each level value of <code>est</code>. For expository
 purposes, we also specified the <code>return_batch_id=T</code> option in
@@ -414,13 +439,13 @@ are being run in parallel locally or on a cluster computing system. In
 different seed for each simulation replicate. The
 <code><a href="../reference/set_config.html">set_config()</a></code> function is used to set or change this global
 seed:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_config.html">set_config</a></span><span class="op">(</span>seed<span class="op">=</span><span class="fl">123</span><span class="op">)</span></span></code></pre></div>
 <p>If a seed is not set using <code><a href="../reference/set_config.html">set_config()</a></code>,
 <strong>SimEngine</strong> will set a random seed automatically so that
 the results can be replicated if desired. To view this seed, we use the
 <code><a href="../reference/vars.html">vars()</a></code> function:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/vars.html">vars</a></span><span class="op">(</span><span class="va">sim</span>, <span class="st">"seed"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 287577520</span></span></code></pre></div>
@@ -436,7 +461,7 @@ errors are logged and stored in a dataframe along with information about
 the simulation replicates that resulted in those errors. Examining this
 dataframe by typing <code>print(sim$errors)</code> can sometimes help to
 quickly pinpoint the issue. This is demonstrated below:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_config.html">set_config</a></span><span class="op">(</span>num_sim<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_levels.html">set_levels</a></span><span class="op">(</span></span>
@@ -455,8 +480,8 @@ quickly pinpoint the issue. This is demonstrated below:</p>
 <span><span class="co">#&gt; Done. Errors detected in 25% of simulation replicates. Warnings detected in 0% of simulation replicates.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">errors</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id Sigma      runtime                          message</span></span>
-<span><span class="co">#&gt; 1       5        3      1    s2 0.0004236698 'Sigma' is not positive definite</span></span>
-<span><span class="co">#&gt; 2       6        3      2    s2 0.0003781319 'Sigma' is not positive definite</span></span>
+<span><span class="co">#&gt; 1       5        3      1    s2 0.0003812313 'Sigma' is not positive definite</span></span>
+<span><span class="co">#&gt; 2       6        3      2    s2 0.0003628731 'Sigma' is not positive definite</span></span>
 <span><span class="co">#&gt;                                                      call</span></span>
 <span><span class="co">#&gt; 1 MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma$mtx)</span></span>
 <span><span class="co">#&gt; 2 MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma$mtx)</span></span></code></pre></div>
@@ -475,7 +500,7 @@ exactly what caused an error without making use of more advanced
 debugging tools. For both of these situations,
 <strong>SimEngine</strong> includes the following configuration
 option:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_config.html">set_config</a></span><span class="op">(</span>stop_at_error<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Setting <code>stop_at_error=TRUE</code> will stop the simulation when
 it encounters any error. Furthermore, the error will be thrown by R in
@@ -507,7 +532,7 @@ the option <code>mc_se</code> is set to <code>TRUE</code>, estimates of
 Monte Carlo standard error will be included in the summary data frame,
 along with associated 95% confidence intervals based on a normal
 approximation.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">create_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="va">n</span>, lambda<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">}</span></span>
 <span><span class="va">est_mean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span> <span class="op">{</span></span>
