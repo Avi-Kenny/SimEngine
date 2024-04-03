@@ -1,3 +1,14 @@
+# SimEngine 1.4.0
+
+### Major changes
+
+- Substantial updates to the package documentation, including both the vignettes and the function reference.
+
+### Minor changes
+
+- Deprecated the use of the `add_to_tid` environment variable in `run_on_cluster()`.
+- Additional error handling to prevent invalid names.
+
 # SimEngine 1.3.0
 
 ### Major changes
