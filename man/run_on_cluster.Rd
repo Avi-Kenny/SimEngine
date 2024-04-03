@@ -51,10 +51,7 @@ This function allows for simulations to be run in parallel on a
     \code{\link{run}})), and "last" (usually code to process or summarize
     simulation results). This function interacts with cluster job scheduler
     software (e.g. Slurm or Oracle Grid Engine) to divide parallel tasks over
-    cluster nodes. See
-    \url{https://avi-kenny.github.io/SimEngine/articles/parallelization.html}
-    for a detailed overview of how CCS parallelization works in
-    \pkg{SimEngine}.
+    cluster nodes.
 }
 \examples{
 \dontrun{

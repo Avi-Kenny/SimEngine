@@ -26,10 +26,8 @@ level combination}
 
 \item{parallel}{Boolean; if set to TRUE, \pkg{SimEngine} will run one
 simulation per core. if set to FALSE, code will not be parallelized. See
-\url{https://avi-kenny.github.io/SimEngine/parallelization/} for an
-overview of how parallelization works in \pkg{SimEngine}. This option
-will be automatically set to TRUE if the simulation is being run on a
-cluster computing system.}
+the \href{https://avi-kenny.github.io/SimEngine/articles/parallelization.html}{Parallelization}
+vignette for an overview of how parallelization works in \pkg{SimEngine}.}
 
 \item{n_cores}{An integer; determines the number of cores on which the
 simulation will run if using parallelization. Defaults to one fewer than
