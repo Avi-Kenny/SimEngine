@@ -17,7 +17,7 @@ Create a new simulation object. This is typically the first
 }
 \examples{
 sim <- new_sim()
-sim
+print(sim)
 }
 \seealso{
 Visit \url{https://avi-kenny.github.io/SimEngine/} for more information on how to

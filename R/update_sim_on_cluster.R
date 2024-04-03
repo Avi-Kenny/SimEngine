@@ -1,15 +1,16 @@
 #' Framework for updating simulations on a cluster computing system
 #'
 #' @description This function allows for simulations to be updated in parallel
-#'     on a cluster computing system (CCS). Like \code{\link{run_on_cluster}},
-#'     it acts as a wrapper for the code in your simulation, organizing the code
-#'     into three sections, labeled "first" (code that is run once at the start
-#'     of the simulation), "main" (running the simulation script repeatedly),
-#'     and "last" (code to process or summarize simulation results). This
-#'     function is to be used in conjunction with job scheduler software (e.g.,
-#'     Slurm or Oracle Grid Engine) to divide the simulation into tasks that are
-#'     run in parallel on the CCS. See the Parallelization documentation for a
-#'     detailed overview of how CCS parallelization works in \pkg{SimEngine}.
+#'     on a cluster computing system (CCS). See the \href{https://avi-kenny.github.io/SimEngine/articles/parallelization.html}{Parallelization}
+#'     vignette for a detailed overview of how CCS parallelization works in
+#'     \pkg{SimEngine}. Like \code{\link{run_on_cluster}}, the
+#'     \code{update_sim_on_cluster} function acts as a wrapper for the code in
+#'     your simulation, organizing the code into three sections, labeled "first"
+#'     (code that is run once at the start of the simulation), "main" (running
+#'     the simulation script repeatedly), and "last" (code to process or
+#'     summarize simulation results). This function is to be used in conjunction
+#'     with job scheduler software (e.g., Slurm or Oracle Grid Engine) to divide
+#'     the simulation into tasks that are run in parallel on the CCS.
 #' @param first Code to run at the start of a simulation. This should be a block
 #'     of code enclosed by curly braces {} that reads in a previously-run
 #'     simulation object via \code{readRDS} and makes changes to it via

@@ -1,8 +1,10 @@
 #' Framework for running simulations on a cluster computing system
 #'
 #' @description This function allows for simulations to be run in parallel on a
-#'     cluster computing system (CCS). It acts as a wrapper for the code in your
-#'     simulation, organizing the code into three sections, labeled "first"
+#'     cluster computing system (CCS). See the \href{https://avi-kenny.github.io/SimEngine/articles/parallelization.html}{Parallelization}
+#'     vignette for a detailed overview of how CCS parallelization works in
+#'     \pkg{SimEngine}. \code{run_on_cluster} acts as a wrapper for the code in
+#'     your simulation, organizing the code into three sections, labeled "first"
 #'     (code that is run once at the start of the simulation), "main"
 #'     (running the simulation script repeatedly), and "last" (code to process
 #'     or summarize simulation results). This function is to be used in

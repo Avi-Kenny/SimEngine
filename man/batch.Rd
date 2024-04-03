@@ -10,16 +10,13 @@ batch(code)
 \item{code}{A block of code enclosed by curly braces \{\}; see examples.}
 }
 \description{
-This function is designed to be used within a simulation script
-    to leverage "replicate batches". This is useful if you want to share data
-    or objects between simulation replicates. Essentially, it allows you to
-    take your simulation replicates and divide them into "batches"; all
-    replicates in a given batch will then share a single set of objects. The
-    most common use case for this is if you have a simulation that involves
-    generating one dataset, analyzing it using multiple methods, and then
-    repeating this a number of times. See
-    \url{https://avi-kenny.github.io/SimEngine/advanced-usage/#using-the-batch-function}
-    for a thorough overview of how this function is used.
+This function is useful for sharing data or objects between
+    simulation replicates. Essentially, it allows simulation replicates to be
+    divided into “batches”; all replicates in a given batch will then share a
+    certain set of objects. A common use case for this is a simulation that
+    involves using multiple methods to analyze a shared dataset, and
+    repeating this process over a number of dataset replicates. See the \href{https://avi-kenny.github.io/SimEngine/articles/advanced-functionality.html#using-the-batch-function}{Advanced Functionality}
+    vignette for a detailed overview of how this function is used.
 }
 \examples{
 sim <- new_sim()

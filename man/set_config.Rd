@@ -92,5 +92,5 @@ sim \%<>\% set_config(
   num_sim = 10,
   seed = 2112
 )
-sim
+print(sim)
 }
