@@ -15,10 +15,7 @@
 #'     \code{\link{run}})), and "last" (usually code to process or summarize
 #'     simulation results). This function interacts with cluster job scheduler
 #'     software (e.g. Slurm or Oracle Grid Engine) to divide parallel tasks over
-#'     cluster nodes. See
-#'     \url{https://avi-kenny.github.io/SimEngine/articles/parallelization.html}
-#'     for a detailed overview of how CCS parallelization works in
-#'     \pkg{SimEngine}.
+#'     cluster nodes.
 #' @param first Code to run at the start of a simulation. This should be a block
 #'     of code enclosed by curly braces {} that creates and sets up a simulation
 #'     object.

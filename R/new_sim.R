@@ -1,9 +1,9 @@
 #' Create a new simulation object
 #'
 #' @description Create a new simulation object. This is typically the first
-#'     function to be called when running a simulation using \pkg{SimEngine}. Most
-#'     other \pkg{SimEngine} functions take a simulation object as their first
-#'     argument.
+#'     function to be called when running a simulation using \pkg{SimEngine}.
+#'     Most other \pkg{SimEngine} functions take a simulation object as their
+#'     first argument.
 #' @return A simulation object, of class \code{sim_obj}
 #' @seealso
 #' Visit \url{https://avi-kenny.github.io/SimEngine/} for more information on how to
