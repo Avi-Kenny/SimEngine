@@ -168,6 +168,9 @@ new_sim <- function() {
   class(..sim) <- "sim_obj"
   rm(..e, ..seed)
 
+  # Prevent R CMD CHECK note
+  if (F) { MASS::mvrnorm() }
+
   return (..sim)
 
 }
