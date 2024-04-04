@@ -149,6 +149,7 @@ Sys.setenv(SLURM_ARRAY_TASK_ID="")
 Sys.setenv(sim_run="")
 
 # Test set #1
+set.seed(1)
 run_and_test(which="01", parallel=FALSE, n_cores=NA)
 # run_and_test(which="02", parallel="outer", n_cores=NA) # Causes error, since this may call >2 cores
 run_and_test(which="03", parallel=TRUE, n_cores=1)
@@ -317,7 +318,7 @@ sim %<>% set_config(num_sim=3, batch_levels=NULL)
 sim %<>% set_script(function() {
   batch({ dat <- rnorm(n=10, mean=3) })
   mu_hat <- mean(dat)
-  return(list("dat1"=round(dat[1],2)))
+  return(list("dat1"=round(dat[1],8)))
 })
 sim %<>% run()
 r1 <- sim$results[which(sim$results$rep_id==1),"dat1"]
