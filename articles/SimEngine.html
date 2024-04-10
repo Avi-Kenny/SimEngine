@@ -152,7 +152,7 @@ from a Poisson distribution with <span class="math inline">\(\lambda =
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu">create_data</span><span class="op">(</span>n<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] 14 23 19 21 13 10 16 23 22 21</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] 16 19 27 19 23 20 21 22 28 21</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="code-the-methods-or-other-functions">3) Code the methods (or other functions)<a class="anchor" aria-label="anchor" href="#code-the-methods-or-other-functions"></a>
@@ -170,9 +170,9 @@ to specify which estimator to use.</p>
 <span><span class="op">}</span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">create_data</span><span class="op">(</span>n<span class="op">=</span><span class="fl">1000</span><span class="op">)</span></span>
 <span><span class="fu">est_lambda</span><span class="op">(</span>dat<span class="op">=</span><span class="va">dat</span>, type<span class="op">=</span><span class="st">"M"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 20.175</span></span>
+<span><span class="co">#&gt; [1] 19.993</span></span>
 <span><span class="fu">est_lambda</span><span class="op">(</span>dat<span class="op">=</span><span class="va">dat</span>, type<span class="op">=</span><span class="st">"V"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 21.29367</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 19.83879</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="set-the-simulation-levels">4) Set the simulation levels<a class="anchor" aria-label="anchor" href="#set-the-simulation-levels"></a>
@@ -277,13 +277,13 @@ and confidence interval coverage.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>stat<span class="op">=</span><span class="st">"bias"</span>, name<span class="op">=</span><span class="st">"bias_lambda"</span>, estimate<span class="op">=</span><span class="st">"lambda_hat"</span>, truth<span class="op">=</span><span class="fl">20</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>stat<span class="op">=</span><span class="st">"mse"</span>, name<span class="op">=</span><span class="st">"mse_lambda"</span>, estimate<span class="op">=</span><span class="st">"lambda_hat"</span>, truth<span class="op">=</span><span class="fl">20</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;   level_id estimator    n n_reps bias_lambda  mse_lambda</span></span>
-<span><span class="co">#&gt; 1        1         M   10    100  -0.1840000  1.76300000</span></span>
-<span><span class="co">#&gt; 2        2         V   10    100   0.9140000 61.81164198</span></span>
-<span><span class="co">#&gt; 3        3         M  100    100   0.0216000  0.21096200</span></span>
-<span><span class="co">#&gt; 4        4         V  100    100  -0.3422182  8.64735400</span></span>
-<span><span class="co">#&gt; 5        5         M 1000    100  -0.0019400  0.02277224</span></span>
-<span><span class="co">#&gt; 6        6         V 1000    100  -0.1109037  0.79699590</span></span></code></pre></div>
+<span><span class="co">#&gt;   level_id estimator    n n_reps  bias_lambda   mse_lambda</span></span>
+<span><span class="co">#&gt; 1        1         M   10    100  0.015000000   2.41490000</span></span>
+<span><span class="co">#&gt; 2        2         V   10    100  0.514555556 111.58383086</span></span>
+<span><span class="co">#&gt; 3        3         M  100    100 -0.023900000   0.14574900</span></span>
+<span><span class="co">#&gt; 4        4         V  100    100  0.004749495   7.84890234</span></span>
+<span><span class="co">#&gt; 5        5         M 1000    100  0.006750000   0.01842501</span></span>
+<span><span class="co">#&gt; 6        6         V 1000    100 -0.018046476   0.92617666</span></span></code></pre></div>
 <p>In this example, we see that the MSE of the sample variance is much
 higher than that of the sample mean and that MSE decreases with
 increasing sample size for both estimators, as expected. From the
@@ -294,12 +294,12 @@ replicates can also be directly accessed via the
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id estimator  n      runtime lambda_hat</span></span>
-<span><span class="co">#&gt; 1       1        1      1         M 10 0.0071136951       19.7</span></span>
-<span><span class="co">#&gt; 2       7        1      2         M 10 0.0002887249       19.2</span></span>
-<span><span class="co">#&gt; 3       8        1      3         M 10 0.0003283024       17.7</span></span>
-<span><span class="co">#&gt; 4       9        1      4         M 10 0.0002975464       20.9</span></span>
-<span><span class="co">#&gt; 5      10        1      5         M 10 0.0002989769       21.3</span></span>
-<span><span class="co">#&gt; 6      11        1      6         M 10 0.0002999306       19.4</span></span></code></pre></div>
+<span><span class="co">#&gt; 1       1        1      1         M 10 0.0004467964       19.7</span></span>
+<span><span class="co">#&gt; 2       7        1      2         M 10 0.0002985001       21.4</span></span>
+<span><span class="co">#&gt; 3       8        1      3         M 10 0.0003328323       18.6</span></span>
+<span><span class="co">#&gt; 4       9        1      4         M 10 0.0002946854       18.4</span></span>
+<span><span class="co">#&gt; 5      10        1      5         M 10 0.0003032684       20.5</span></span>
+<span><span class="co">#&gt; 6      11        1      6         M 10 0.0002934933       20.0</span></span></code></pre></div>
 <p>Above, the <code>sim_uid</code> uniquely identifies a single
 simulation replicate and the <code>level_id</code> uniquely identifies a
 level value combination. The <code>rep_id</code> is unique within a
@@ -337,15 +337,15 @@ replicates were successfully:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>stat<span class="op">=</span><span class="st">"bias"</span>, name<span class="op">=</span><span class="st">"bias_lambda"</span>, estimate<span class="op">=</span><span class="st">"lambda_hat"</span>, truth<span class="op">=</span><span class="fl">20</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>stat<span class="op">=</span><span class="st">"mse"</span>, name<span class="op">=</span><span class="st">"mse_lambda"</span>, estimate<span class="op">=</span><span class="st">"lambda_hat"</span>, truth<span class="op">=</span><span class="fl">20</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;   level_id estimator     n n_reps  bias_lambda   mse_lambda</span></span>
-<span><span class="co">#&gt; 1        1         M    10    200 -0.000500000  1.886350000</span></span>
-<span><span class="co">#&gt; 2        2         V    10    200  0.221333333 63.136106173</span></span>
-<span><span class="co">#&gt; 3        3         M   100    200  0.036900000  0.208471000</span></span>
-<span><span class="co">#&gt; 4        4         V   100    200 -0.381815152  7.940187591</span></span>
-<span><span class="co">#&gt; 5        5         M  1000    200 -0.010460000  0.021948130</span></span>
-<span><span class="co">#&gt; 6        6         V  1000    200 -0.064050766  0.784613477</span></span>
-<span><span class="co">#&gt; 7        7         M 10000    200  0.003298500  0.001971825</span></span>
-<span><span class="co">#&gt; 8        8         V 10000    200 -0.009137092  0.081245782</span></span></code></pre></div>
+<span><span class="co">#&gt;   level_id estimator     n n_reps bias_lambda   mse_lambda</span></span>
+<span><span class="co">#&gt; 1        1         M    10    200  0.08400000  2.429500000</span></span>
+<span><span class="co">#&gt; 2        2         V    10    200 -0.47072222 97.413727778</span></span>
+<span><span class="co">#&gt; 3        3         M   100    200  0.01380000  0.151118000</span></span>
+<span><span class="co">#&gt; 4        4         V   100    200 -0.10791768  8.388445284</span></span>
+<span><span class="co">#&gt; 5        5         M  1000    200  0.00074500  0.019340615</span></span>
+<span><span class="co">#&gt; 6        6         V  1000    200 -0.03401542  0.943098313</span></span>
+<span><span class="co">#&gt; 7        7         M 10000    200 -0.00081550  0.002220393</span></span>
+<span><span class="co">#&gt; 8        8         V 10000    200  0.02300492  0.062550704</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
