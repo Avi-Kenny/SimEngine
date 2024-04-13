@@ -1,13 +1,13 @@
 pandoc: 3.1.11
-pkgdown: 2.0.7
+pkgdown: 2.0.8
 pkgdown_sha: ~
 articles:
-  SimEngine: SimEngine.html
   advanced-functionality: advanced-functionality.html
   example_1: example_1.html
   example_2: example_2.html
   parallelization: parallelization.html
-last_built: 2024-04-10T16:32Z
+  SimEngine: SimEngine.html
+last_built: 2024-04-13T13:27Z
 urls:
   reference: https://avi-kenny.github.io/SimEngine/reference
   article: https://avi-kenny.github.io/SimEngine/articles
