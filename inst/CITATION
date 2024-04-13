@@ -1,0 +1,8 @@
+bibentry(
+  bibtype  = "Article",
+  title    = "SimEngine: A Modular Framework for Statistical Simulations in R",
+  author   = "Kenny, Avi and Wolock, Charles",
+  journal  = "arXiv preprint arXiv:2403.05698",
+  year     = "2024",
+  doi      = "https://doi.org/10.48550/arXiv.2403.05698"
+)
