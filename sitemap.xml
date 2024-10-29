@@ -1,84 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/404.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/articles/SimEngine.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/articles/advanced-functionality.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/articles/example_1.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/articles/example_2.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/articles/parallelization.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/index.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/reference/SimEngine-package.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/reference/batch.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/reference/get_complex.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/reference/js_support.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/reference/new_sim.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/reference/run.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/reference/run_on_cluster.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/reference/set_config.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/reference/set_levels.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/reference/set_script.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/reference/summarize.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/reference/update_sim.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/reference/update_sim_on_cluster.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/reference/use_method.html</loc>
-  </url>
-  <url>
-    <loc>https://avi-kenny.github.io/SimEngine/reference/vars.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://avi-kenny.github.io/SimEngine/404.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/LICENSE.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/articles/SimEngine.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/articles/advanced-functionality.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/articles/example_1.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/articles/example_2.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/articles/index.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/articles/parallelization.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/authors.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/index.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/news/index.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/reference/SimEngine-package.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/reference/batch.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/reference/get_complex.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/reference/index.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/reference/js_support.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/reference/new_sim.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/reference/run.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/reference/run_on_cluster.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/reference/set_config.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/reference/set_levels.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/reference/set_script.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/reference/summarize.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/reference/update_sim.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/reference/update_sim_on_cluster.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/reference/use_method.html</loc></url>
+<url><loc>https://avi-kenny.github.io/SimEngine/reference/vars.html</loc></url>
 </urlset>
+

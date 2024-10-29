@@ -5,7 +5,6 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="SimEngine">
 <title>Introduction to SimEngine • SimEngine</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -15,68 +14,50 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Introduction to SimEngine">
-<meta property="og:description" content="SimEngine">
-<meta property="og:image" content="https://avi-kenny.github.io/SimEngine/logo.png">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-primary" data-bs-theme="light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">SimEngine</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="active nav-item">
-  <a class="nav-link" href="../articles/SimEngine.html">Get started</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="active nav-item"><a class="nav-link" href="../articles/SimEngine.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/advanced-functionality.html">Advanced functionality</a>
-    <a class="dropdown-item" href="../articles/example_1.html">Example 1: Simulation-based power calculation</a>
-    <a class="dropdown-item" href="../articles/example_2.html">Example 2: Comparing two standard error estimators</a>
-    <a class="dropdown-item" href="../articles/parallelization.html">Parallelization</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/advanced-functionality.html">Advanced functionality</a></li>
+    <li><a class="dropdown-item" href="../articles/example_1.html">Example 1: Simulation-based power calculation</a></li>
+    <li><a class="dropdown-item" href="../articles/example_2.html">Example 2: Comparing two standard error estimators</a></li>
+    <li><a class="dropdown-item" href="../articles/parallelization.html">Parallelization</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/Avi-Kenny/SimEngine/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/Avi-Kenny/SimEngine/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -88,7 +69,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Introduction to SimEngine</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/Avi-Kenny/SimEngine/blob/HEAD/vignettes/SimEngine.Rmd" class="external-link"><code>vignettes/SimEngine.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Avi-Kenny/SimEngine/blob/master/vignettes/SimEngine.Rmd" class="external-link"><code>vignettes/SimEngine.Rmd</code></a></small>
       <div class="d-none name"><code>SimEngine.Rmd</code></div>
     </div>
 
@@ -111,19 +92,31 @@ this type include three basic phases: (1) generate data, (2) run one or
 more methods using the generated data, and (3) compare the performance
 of the methods.</p>
 <p>To briefly illustrate how these phases are implemented using , we use
-a simple example of estimating the rate parameter <span class="math inline">\(\lambda\)</span> of a <span class="math inline">\(\text{Poisson}(\lambda)\)</span> distribution. To
-anchor the simulation in a real-world situation, one can imagine that a
-sample of size <span class="math inline">\(n\)</span> from this Poisson
-distribution models the number of patients admitted daily to a hospital
-over the course of <span class="math inline">\(n\)</span> consecutive
-days. Suppose that the data consist of <span class="math inline">\(n\)</span> independent and identically distributed
-observations <span class="math inline">\(X_1, X_2, \ldots, X_n\)</span>
-drawn from a Poisson(<span class="math inline">\(\lambda\)</span>)
-distribution. Since the <span class="math inline">\(\lambda\)</span>
+a simple example of estimating the rate parameter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
+of a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">Poisson</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>λ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\text{Poisson}(\lambda)</annotation></semantics></math>
+distribution. To anchor the simulation in a real-world situation, one
+can imagine that a sample of size
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+from this Poisson distribution models the number of patients admitted
+daily to a hospital over the course of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+consecutive days. Suppose that the data consist of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+independent and identically distributed observations
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>,</mo><msub><mi>X</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>X</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">X_1, X_2, \ldots, X_n</annotation></semantics></math>
+drawn from a
+Poisson(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>)
+distribution. Since the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
 parameter of the Poisson distribution is equal to both the mean and the
-variance, one may ask whether the sample mean (denoted <span class="math inline">\(\hat{\lambda}_{M,n}\)</span>) or the sample
-variance (denoted <span class="math inline">\(\hat{\lambda}_{V,n}\)</span>) is a better
-estimator of <span class="math inline">\(\lambda\)</span>.</p>
+variance, one may ask whether the sample mean (denoted
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>λ</mi><mo accent="true">̂</mo></mover><mrow><mi>M</mi><mo>,</mo><mi>n</mi></mrow></msub><annotation encoding="application/x-tex">\hat{\lambda}_{M,n}</annotation></semantics></math>)
+or the sample variance (denoted
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>λ</mi><mo accent="true">̂</mo></mover><mrow><mi>V</mi><mo>,</mo><mi>n</mi></mrow></msub><annotation encoding="application/x-tex">\hat{\lambda}_{V,n}</annotation></semantics></math>)
+is a better estimator of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>.</p>
 <div class="section level3">
 <h3 id="load-the-package-and-create-a-simulation-object">1) Load the package and create a simulation object<a class="anchor" aria-label="anchor" href="#load-the-package-and-create-a-simulation-object"></a>
 </h3>
@@ -144,8 +137,8 @@ data, functions, and results related to the simulation.</p>
 <p>Many simulations involve a function that creates a dataset designed
 to mimic a real-world data-generating mechanism. Here, we write and test
 a simple function to generate a sample of <code>n</code> observations
-from a Poisson distribution with <span class="math inline">\(\lambda =
-20\)</span>.</p>
+from a Poisson distribution with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">\lambda = 20</annotation></semantics></math>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">create_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span>n<span class="op">=</span><span class="va">n</span>, lambda<span class="op">=</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span></span>
@@ -160,9 +153,10 @@ from a Poisson distribution with <span class="math inline">\(\lambda =
 <p>With <strong>SimEngine</strong>, any functions declared (or loaded
 via <code><a href="https://rdrr.io/r/base/source.html" class="external-link">source()</a></code>) are automatically stored in the simulation
 object when the simulation runs. In this example, we test the sample
-mean and sample variance estimators of the <span class="math inline">\(\lambda\)</span> parameter. For simplicity, we
-write this as a single function and use the <code>type</code> argument
-to specify which estimator to use.</p>
+mean and sample variance estimators of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
+parameter. For simplicity, we write this as a single function and use
+the <code>type</code> argument to specify which estimator to use.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">est_lambda</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">type</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="va">type</span><span class="op">==</span><span class="st">"M"</span><span class="op">)</span> <span class="op">{</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span><span class="op">)</span> <span class="op">}</span></span>
@@ -181,18 +175,19 @@ to specify which estimator to use.</p>
 each run as a <em>simulation replicate</em>. We may wish to vary certain
 features of the simulation between replicates. In this example, perhaps
 we choose to vary the sample size and the estimator used to estimate
-<span class="math inline">\(\lambda\)</span>. We refer to the features
-that vary as <em>simulation levels</em>; in the example below, the
-simulation levels are the sample size (<code>n</code>) and the estimator
-(<code>estimator</code>). We refer to the values that each simulation
-level can take on as <em>level values</em>; in the example below, the
-<code>n</code> level values are <code>10</code>, <code>100</code>, and
-<code>1000</code>, and the <code>estimator</code> level values are
-<code>"M"</code> (for “sample mean”) and <code>"V"</code> (for “sample
-variance”). By default, <strong>SimEngine</strong> runs one simulation
-replicate for each combination of level values — in this case, six
-combinations — although the user will typically want to increase this;
-1,000 or 10,000 replicates per combination is typical.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>.
+We refer to the features that vary as <em>simulation levels</em>; in the
+example below, the simulation levels are the sample size
+(<code>n</code>) and the estimator (<code>estimator</code>). We refer to
+the values that each simulation level can take on as <em>level
+values</em>; in the example below, the <code>n</code> level values are
+<code>10</code>, <code>100</code>, and <code>1000</code>, and the
+<code>estimator</code> level values are <code>"M"</code> (for “sample
+mean”) and <code>"V"</code> (for “sample variance”). By default,
+<strong>SimEngine</strong> runs one simulation replicate for each
+combination of level values — in this case, six combinations — although
+the user will typically want to increase this; 1,000 or 10,000
+replicates per combination is typical.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_levels.html">set_levels</a></span><span class="op">(</span></span>
 <span>  estimator <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"M"</span>, <span class="st">"V"</span><span class="op">)</span>,</span>
@@ -294,12 +289,12 @@ replicates can also be directly accessed via the
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id estimator  n      runtime lambda_hat</span></span>
-<span><span class="co">#&gt; 1       1        1      1         M 10 0.0005021095       21.2</span></span>
-<span><span class="co">#&gt; 2       7        1      2         M 10 0.0003035069       19.8</span></span>
-<span><span class="co">#&gt; 3       8        1      3         M 10 0.0002942085       19.0</span></span>
-<span><span class="co">#&gt; 4       9        1      4         M 10 0.0003216267       22.3</span></span>
-<span><span class="co">#&gt; 5      10        1      5         M 10 0.0002961159       21.2</span></span>
-<span><span class="co">#&gt; 6      11        1      6         M 10 0.0003046989       20.0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1       1        1      1         M 10 0.0004534721       21.2</span></span>
+<span><span class="co">#&gt; 2       7        1      2         M 10 0.0002906322       19.8</span></span>
+<span><span class="co">#&gt; 3       8        1      3         M 10 0.0002887249       19.0</span></span>
+<span><span class="co">#&gt; 4       9        1      4         M 10 0.0002915859       22.3</span></span>
+<span><span class="co">#&gt; 5      10        1      5         M 10 0.0002856255       21.2</span></span>
+<span><span class="co">#&gt; 6      11        1      6         M 10 0.0002868176       20.0</span></span></code></pre></div>
 <p>Above, the <code>sim_uid</code> uniquely identifies a single
 simulation replicate and the <code>level_id</code> uniquely identifies a
 level value combination. The <code>rep_id</code> is unique within a
@@ -348,28 +343,26 @@ replicates were successfully:</p>
 <span><span class="co">#&gt; 8        8         V 10000    200 -0.01427990   0.08795799</span></span></code></pre></div>
 </div>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Avi Kenny, Charles Wolock.</p>
+  <p>Developed by Avi Kenny, Charles Wolock.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.8.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>
