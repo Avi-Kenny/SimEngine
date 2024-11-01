@@ -189,13 +189,13 @@ directly via <code>sim$results</code> or using the
 <code><a href="../reference/summarize.html">summarize()</a></code> function, as usual:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   sim_uid level_id rep_id    n     runtime beta0_hat  beta1_hat</span></span>
-<span><span class="co">#&gt; 1       1        1      1   10 0.003248930  4.357518 -0.8661117</span></span>
-<span><span class="co">#&gt; 2       4        1      2   10 0.001021624  1.796235  3.7833815</span></span>
-<span><span class="co">#&gt; 3       2        2      1  100 0.004066467  2.648096  2.2148375</span></span>
-<span><span class="co">#&gt; 4       5        2      2  100 0.001041889  3.095621  1.7386195</span></span>
-<span><span class="co">#&gt; 5       3        3      1 1000 0.001434565  3.076829  1.9557942</span></span>
-<span><span class="co">#&gt; 6       6        3      2 1000 0.001287937  2.964774  2.0288481</span></span></code></pre></div>
+<span><span class="co">#&gt;   sim_uid level_id rep_id    n      runtime beta0_hat  beta1_hat</span></span>
+<span><span class="co">#&gt; 1       1        1      1   10 0.0031394958  4.357518 -0.8661117</span></span>
+<span><span class="co">#&gt; 2       4        1      2   10 0.0009953976  1.796235  3.7833815</span></span>
+<span><span class="co">#&gt; 3       2        2      1  100 0.0039949417  2.648096  2.2148375</span></span>
+<span><span class="co">#&gt; 4       5        2      2  100 0.0010457039  3.095621  1.7386195</span></span>
+<span><span class="co">#&gt; 5       3        3      1 1000 0.0014052391  3.076829  1.9557942</span></span>
+<span><span class="co">#&gt; 6       6        3      2 1000 0.0012352467  2.964774  2.0288481</span></span></code></pre></div>
 <p>To examine the complex return data, we can use the function
 <code><a href="../reference/get_complex.html">get_complex()</a></code>, as illustrated below:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -461,8 +461,8 @@ quickly pinpoint the issue. This is demonstrated below:</p>
 <span><span class="co">#&gt; Done. Errors detected in 25% of simulation replicates. Warnings detected in 0% of simulation replicates.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">errors</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id Sigma      runtime                          message</span></span>
-<span><span class="co">#&gt; 1       5        3      1    s2 0.0003728867 'Sigma' is not positive definite</span></span>
-<span><span class="co">#&gt; 2       6        3      2    s2 0.0003585815 'Sigma' is not positive definite</span></span>
+<span><span class="co">#&gt; 1       5        3      1    s2 0.0003793240 'Sigma' is not positive definite</span></span>
+<span><span class="co">#&gt; 2       6        3      2    s2 0.0003471375 'Sigma' is not positive definite</span></span>
 <span><span class="co">#&gt;                                                      call</span></span>
 <span><span class="co">#&gt; 1 MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma$mtx)</span></span>
 <span><span class="co">#&gt; 2 MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma$mtx)</span></span></code></pre></div>
