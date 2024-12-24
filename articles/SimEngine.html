@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Introduction to SimEngine">
 </head>
@@ -192,7 +192,9 @@ replicates per combination is typical.</p>
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_levels.html">set_levels</a></span><span class="op">(</span></span>
 <span>  estimator <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"M"</span>, <span class="st">"V"</span><span class="op">)</span>,</span>
 <span>  n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">100</span>, <span class="fl">1000</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
+<span><span class="co">#&gt;   object 'type_sum.accel' not found</span></span></code></pre></div>
 <p>Note that we make extensive use of the pipe operators
 (<code>%&gt;%</code> and <code>%&lt;&gt;%</code>) from the
 <strong>magrittr</strong> package; if you have never used pipes, see the
@@ -289,12 +291,12 @@ replicates can also be directly accessed via the
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id estimator  n      runtime lambda_hat</span></span>
-<span><span class="co">#&gt; 1       1        1      1         M 10 0.0004301071       21.2</span></span>
-<span><span class="co">#&gt; 2       7        1      2         M 10 0.0002913475       19.8</span></span>
-<span><span class="co">#&gt; 3       8        1      3         M 10 0.0002927780       19.0</span></span>
-<span><span class="co">#&gt; 4       9        1      4         M 10 0.0002868176       22.3</span></span>
-<span><span class="co">#&gt; 5      10        1      5         M 10 0.0002839565       21.2</span></span>
-<span><span class="co">#&gt; 6      11        1      6         M 10 0.0002782345       20.0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1       1        1      1         M 10 0.0005078316       21.2</span></span>
+<span><span class="co">#&gt; 2       7        1      2         M 10 0.0003595352       19.8</span></span>
+<span><span class="co">#&gt; 3       8        1      3         M 10 0.0003080368       19.0</span></span>
+<span><span class="co">#&gt; 4       9        1      4         M 10 0.0002927780       22.3</span></span>
+<span><span class="co">#&gt; 5      10        1      5         M 10 0.0002868176       21.2</span></span>
+<span><span class="co">#&gt; 6      11        1      6         M 10 0.0002920628       20.0</span></span></code></pre></div>
 <p>Above, the <code>sim_uid</code> uniquely identifies a single
 simulation replicate and the <code>level_id</code> uniquely identifies a
 level value combination. The <code>rep_id</code> is unique within a

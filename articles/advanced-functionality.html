@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Advanced functionality">
 </head>
@@ -82,7 +82,9 @@
 sizes:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_levels.html">set_levels</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>,<span class="fl">400</span>,<span class="fl">800</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_levels.html">set_levels</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>,<span class="fl">400</span>,<span class="fl">800</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
+<span><span class="co">#&gt;   object 'type_sum.accel' not found</span></span></code></pre></div>
 <p>However, there are many instances in which more complex objects are
 needed. For these cases, instead of a vector of numbers or character
 strings, a named list of lists can be used. The toy example below
@@ -189,13 +191,13 @@ directly via <code>sim$results</code> or using the
 <code><a href="../reference/summarize.html">summarize()</a></code> function, as usual:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   sim_uid level_id rep_id    n      runtime beta0_hat  beta1_hat</span></span>
-<span><span class="co">#&gt; 1       1        1      1   10 0.0031394958  4.357518 -0.8661117</span></span>
-<span><span class="co">#&gt; 2       4        1      2   10 0.0009953976  1.796235  3.7833815</span></span>
-<span><span class="co">#&gt; 3       2        2      1  100 0.0039949417  2.648096  2.2148375</span></span>
-<span><span class="co">#&gt; 4       5        2      2  100 0.0010457039  3.095621  1.7386195</span></span>
-<span><span class="co">#&gt; 5       3        3      1 1000 0.0014052391  3.076829  1.9557942</span></span>
-<span><span class="co">#&gt; 6       6        3      2 1000 0.0012352467  2.964774  2.0288481</span></span></code></pre></div>
+<span><span class="co">#&gt;   sim_uid level_id rep_id    n     runtime beta0_hat  beta1_hat</span></span>
+<span><span class="co">#&gt; 1       1        1      1   10 0.003383875  4.357518 -0.8661117</span></span>
+<span><span class="co">#&gt; 2       4        1      2   10 0.001339912  1.796235  3.7833815</span></span>
+<span><span class="co">#&gt; 3       2        2      1  100 0.004197598  2.648096  2.2148375</span></span>
+<span><span class="co">#&gt; 4       5        2      2  100 0.001064539  3.095621  1.7386195</span></span>
+<span><span class="co">#&gt; 5       3        3      1 1000 0.001469612  3.076829  1.9557942</span></span>
+<span><span class="co">#&gt; 6       6        3      2 1000 0.001250267  2.964774  2.0288481</span></span></code></pre></div>
 <p>To examine the complex return data, we can use the function
 <code><a href="../reference/get_complex.html">get_complex()</a></code>, as illustrated below:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -461,8 +463,8 @@ quickly pinpoint the issue. This is demonstrated below:</p>
 <span><span class="co">#&gt; Done. Errors detected in 25% of simulation replicates. Warnings detected in 0% of simulation replicates.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">errors</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id Sigma      runtime                          message</span></span>
-<span><span class="co">#&gt; 1       5        3      1    s2 0.0003793240 'Sigma' is not positive definite</span></span>
-<span><span class="co">#&gt; 2       6        3      2    s2 0.0003471375 'Sigma' is not positive definite</span></span>
+<span><span class="co">#&gt; 1       5        3      1    s2 0.0003817081 'Sigma' is not positive definite</span></span>
+<span><span class="co">#&gt; 2       6        3      2    s2 0.0003457069 'Sigma' is not positive definite</span></span>
 <span><span class="co">#&gt;                                                      call</span></span>
 <span><span class="co">#&gt; 1 MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma$mtx)</span></span>
 <span><span class="co">#&gt; 2 MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma$mtx)</span></span></code></pre></div>
