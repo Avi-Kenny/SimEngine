@@ -7,7 +7,5 @@ template:
     navbar-light-hover-color: "#EA8D00"
     nav-link-font-size: 30
   theme: gruvbox-dark
-navbar:
-  type: light
 
 # Full list of bslib variables: https://rstudio.github.io/bslib/articles/bs5-variables/index.html
