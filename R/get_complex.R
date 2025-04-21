@@ -6,7 +6,8 @@
 #' @param sim_uid The unique identifier of a single simulation replicate. This
 #'     corresponds to the \code{sim_uid} column in \code{sim$results}.
 #' @return The value of the complex simulation result data corresponding to the
-#'     supplied \code{sim_uid}
+#'     supplied \code{sim_uid}, as well as the \code{rep_id}, \code{level_id},
+#'     and associated level variables.
 #' @examples
 #' sim <- new_sim()
 #' sim %<>% set_levels(n=c(10, 100, 1000))

@@ -108,6 +108,15 @@ print(summary(c5$model))
 print(c5$cov_mtx)
 ```
 
+To process all complex data, loop through the `sim_uids`, as follows:
+
+```{r}
+for (i in sim$results$sim_uid) {
+  cmplx <- get_complex(sim, sim_uid=i)
+  print(as.numeric(diag(vcov(cmplx$model))))
+}
+```
+
 ## Using the `batch` function
 
 The `batch()` function is useful for sharing data or objects between simulation replicates. Essentially, it allows simulation replicates to be divided into "batches"; all replicates in a given batch will then share a certain set of objects. A common use case for this is a simulation that involves using multiple methods to analyze a shared dataset, and repeating this process over a number of dataset replicates. This may be of interest if, for example, it is computationally expensive to generate a simulated dataset.

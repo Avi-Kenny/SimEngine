@@ -15,7 +15,8 @@ corresponds to the \code{sim_uid} column in \code{sim$results}.}
 }
 \value{
 The value of the complex simulation result data corresponding to the
-    supplied \code{sim_uid}
+    supplied \code{sim_uid}, as well as the \code{rep_id}, \code{level_id},
+    and associated level variables.
 }
 \description{
 Extract complex simulation data from a simulation object
