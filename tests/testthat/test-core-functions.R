@@ -419,3 +419,37 @@ test_that("Simulation ran and all objects were accessible (serial)", {
   expect_equal(sim$results[1,"val"], 11)
   expect_equal(sim$results[2,"val"], 22)
 })
+
+# get_complex
+sim <- new_sim()
+sim %<>% set_levels(n=c(10, 100))
+sim %<>% set_config(num_sim=2)
+sim %<>% set_script(function() {
+  return(list(
+    "alpha" = 1,
+    ".complex" = list("beta" = matrix(rep(2,4), ncol=2),
+                      "gamma" = list("delta"=3))
+  ))
+})
+sim %<>% run()
+c1 <- get_complex(sim, sim_uid=1)
+test_that("get_complex operates correctly", {
+  expect_equal(class(c1$beta)[1], "matrix")
+  expect_equal(class(c1$gamma)[1], "list")
+  expect_equal(c1$gamma$delta, 3)
+  expect_equal(c1$level_id, 1)
+  expect_equal(c1$rep_id, 1)
+  expect_equal(c1$n, 10)
+  expect_error(get_complex(sim, sim_uid=5),
+               "There is no result corresponding to sim_uid=5.")
+})
+
+# get_complex (no complex return data)
+sim <- new_sim()
+sim %<>% set_config(num_sim=2)
+sim %<>% set_script(function() { return(list("alpha"=1)) })
+sim %<>% run()
+test_that("get_complex returns correct error message", {
+  expect_error(get_complex(sim, sim_uid=1),
+               "This simulation does not have any complex return data.")
+})
