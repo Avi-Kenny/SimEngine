@@ -234,27 +234,42 @@ run.sim_obj <- function(sim) {
   num_warn <- length(results_lists_warn)
 
   # Helper function to add level variables to results/errors/warnings dataframes
-  add_level_vars <- function(df, return_batch_id) {
+  add_level_vars <- function(df, return_batch_id, complex=F) {
 
     # Add level_id (and possibly batch_id)
     sim_uid_grid_vars <- c("sim_uid", "level_id", "rep_id")
     if (return_batch_id) { sim_uid_grid_vars[4] <- "batch_id" }
-    df <- dplyr::inner_join(
-      df,
-      sim$internals$sim_uid_grid[,sim_uid_grid_vars],
-      by = "sim_uid"
-    )
 
-    # Add level variables
-    df <- dplyr::inner_join(df, sim$levels_grid, by="level_id")
+    if (complex) {
 
-    # Reorder columns and sort result
-    df %<>% dplyr::relocate(
-      c(sim_uid_grid_vars[sim_uid_grid_vars!="sim_uid"],
-        sim$internals$level_names),
-      .after = "sim_uid"
-    )
-    df %<>% dplyr::arrange(.data$level_id, .data$rep_id)
+      df <- lapply(df, function(x) {
+        row <- which(sim$internals$sim_uid_grid$sim_uid==x$sim_uid)
+        vars <- as.list(sim$internals$sim_uid_grid[row,sim_uid_grid_vars[-1]])
+        row2 <- which(sim$levels_grid$level_id==vars$level_id)
+        level_vars <- as.list(sim$levels_grid[row2,])[-1]
+        return(c(x, vars, level_vars))
+      })
+
+    } else {
+
+      df <- dplyr::inner_join(
+        df,
+        sim$internals$sim_uid_grid[,sim_uid_grid_vars],
+        by = "sim_uid"
+      )
+
+      # Add level variables
+      df <- dplyr::inner_join(df, sim$levels_grid, by="level_id")
+
+      # Reorder columns and sort result
+      df %<>% dplyr::relocate(
+        c(sim_uid_grid_vars[sim_uid_grid_vars!="sim_uid"],
+          sim$internals$level_names),
+        .after = "sim_uid"
+      )
+      df %<>% dplyr::arrange(.data$level_id, .data$rep_id)
+
+    }
 
     return(df)
 
@@ -288,9 +303,11 @@ run.sim_obj <- function(sim) {
       r_sim_uids <- results_df$sim_uid
       names(results_lists_ok) <- as.character(paste0("sim_uid_",r_sim_uids))
       sim$results_complex <- lapply(results_lists_ok, function(r) {
-        r$results$.complex
+        c(sim_uid=r$sim_uid, r$results$.complex)
       })
     }
+    sim$results_complex <- add_level_vars(sim$results_complex,
+                                          sim$config$return_batch_id, complex=T)
 
     # Add levels variables and attach to sim
     results_df <- add_level_vars(results_df, sim$config$return_batch_id)

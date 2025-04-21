@@ -49,8 +49,17 @@ get_complex.sim_obj <- function(sim, sim_uid) {
   if (sim$vars$run_state == "run, all errors") {
     stop("100% of simulations had errors.")
   }
+  if (length(sim$results_complex)==0) {
+    stop("This simulation does not have any complex return data.")
+  }
   handle_errors(sim_uid, "is.numeric")
 
-  return (sim$results_complex[[paste0("sim_uid_",sim_uid)]])
+  res <- sim$results_complex[[paste0("sim_uid_",sim_uid)]]
+
+  if (is.null(res)) {
+    stop(paste0("There is no result corresponding to sim_uid=", sim_uid, "."))
+  } else {
+    return (res)
+  }
 
 }
