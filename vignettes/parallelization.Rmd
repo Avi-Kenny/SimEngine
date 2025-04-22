@@ -135,7 +135,7 @@ In the third line, we submit the `run_sim.sh` script using the `sim_run='last'` 
 
 ### Further automating job submission
 
-Advanced users may want to automatically capture the job IDs so that they don't need to be entered manually; sample code showing how this can be done is shown below:
+Advanced users may wish to automatically capture the job IDs so that they don't need to be entered manually; sample code showing how this can be done is shown below:
 
 ```bash
 jid1=$(sbatch --export=sim_run='first' run_sim.sh | sed 's/Submitted batch job //')

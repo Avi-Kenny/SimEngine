@@ -20,7 +20,7 @@
 #'     the number of available cores.
 #' @param packages A character vector of packages to load and attach
 #' @param stop_at_error Boolean; if set to TRUE, the simulation will stop if it
-#'     encounters an error in any single replicate Useful for debugging.
+#'     encounters an error in any single replicate. Useful for debugging.
 #' @param progress_bar Boolean; if set to FALSE, the progress bar that is
 #'     normally displayed while the simulation is running is suppressed.
 #' @param seed An integer; seeds allow for reproducible simulation results. If a
