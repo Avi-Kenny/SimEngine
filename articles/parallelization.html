@@ -315,7 +315,7 @@ and save the simulation object for further analysis.</p>
 <div class="section level3">
 <h3 id="further-automating-job-submission">Further automating job submission<a class="anchor" aria-label="anchor" href="#further-automating-job-submission"></a>
 </h3>
-<p>Advanced users may want to automatically capture the job IDs so that
+<p>Advanced users may wish to automatically capture the job IDs so that
 they don’t need to be entered manually; sample code showing how this can
 be done is shown below:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="va">jid1</span><span class="op">=</span><span class="va">$(</span><span class="ex">sbatch</span> <span class="at">--export</span><span class="op">=</span>sim_run=<span class="st">'first'</span> run_sim.sh <span class="kw">|</span> <span class="fu">sed</span> <span class="st">'s/Submitted batch job //'</span><span class="va">)</span></span>
