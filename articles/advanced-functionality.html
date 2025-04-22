@@ -189,13 +189,13 @@ directly via <code>sim$results</code> or using the
 <code><a href="../reference/summarize.html">summarize()</a></code> function, as usual:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   sim_uid level_id rep_id    n     runtime beta0_hat  beta1_hat</span></span>
-<span><span class="co">#&gt; 1       1        1      1   10 0.003203392  4.357518 -0.8661117</span></span>
-<span><span class="co">#&gt; 2       4        1      2   10 0.001143217  1.796235  3.7833815</span></span>
-<span><span class="co">#&gt; 3       2        2      1  100 0.004289627  2.648096  2.2148375</span></span>
-<span><span class="co">#&gt; 4       5        2      2  100 0.001090050  3.095621  1.7386195</span></span>
-<span><span class="co">#&gt; 5       3        3      1 1000 0.001437664  3.076829  1.9557942</span></span>
-<span><span class="co">#&gt; 6       6        3      2 1000 0.001268864  2.964774  2.0288481</span></span></code></pre></div>
+<span><span class="co">#&gt;   sim_uid level_id rep_id    n      runtime beta0_hat  beta1_hat</span></span>
+<span><span class="co">#&gt; 1       1        1      1   10 0.0028331280  4.357518 -0.8661117</span></span>
+<span><span class="co">#&gt; 2       4        1      2   10 0.0010249615  1.796235  3.7833815</span></span>
+<span><span class="co">#&gt; 3       2        2      1  100 0.0041310787  2.648096  2.2148375</span></span>
+<span><span class="co">#&gt; 4       5        2      2  100 0.0009865761  3.095621  1.7386195</span></span>
+<span><span class="co">#&gt; 5       3        3      1 1000 0.0014092922  3.076829  1.9557942</span></span>
+<span><span class="co">#&gt; 6       6        3      2 1000 0.0011632442  2.964774  2.0288481</span></span></code></pre></div>
 <p>To examine the complex return data, we can use the function
 <code><a href="../reference/get_complex.html">get_complex()</a></code>, as illustrated below:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -223,6 +223,19 @@ directly via <code>sim$results</code> or using the
 <span><span class="co">#&gt;             (Intercept)           x</span></span>
 <span><span class="co">#&gt; (Intercept)  0.04356769 -0.06834654</span></span>
 <span><span class="co">#&gt; x           -0.06834654  0.14182987</span></span></code></pre></div>
+<p>To process all complex data, loop through the <code>sim_uids</code>,
+as follows:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">sim_uid</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">cmplx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_complex.html">get_complex</a></span><span class="op">(</span><span class="va">sim</span>, sim_uid<span class="op">=</span><span class="va">i</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">cmplx</span><span class="op">$</span><span class="va">model</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt; [1] 0.4885532 1.4577681</span></span>
+<span><span class="co">#&gt; [1] 0.1322510 0.4510751</span></span>
+<span><span class="co">#&gt; [1] 0.02732735 0.08726350</span></span>
+<span><span class="co">#&gt; [1] 0.04356769 0.14182987</span></span>
+<span><span class="co">#&gt; [1] 0.004105276 0.012528273</span></span>
+<span><span class="co">#&gt; [1] 0.004032338 0.012030212</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="using-the-batch-function">Using the <code>batch</code> function<a class="anchor" aria-label="anchor" href="#using-the-batch-function"></a>
@@ -237,7 +250,7 @@ This may be of interest if, for example, it is computationally expensive
 to generate a simulated dataset.</p>
 <p>To illustrate the use of <code><a href="../reference/batch.html">batch()</a></code> using this example, we
 first consider the following simulation:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">create_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n<span class="op">=</span><span class="va">n</span>, mean<span class="op">=</span><span class="fl">3</span><span class="op">)</span> <span class="op">}</span></span>
 <span><span class="va">est_mean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">type</span><span class="op">)</span> <span class="op">{</span></span>
@@ -260,7 +273,7 @@ first consider the following simulation:</p>
 the first element of the <code>dat</code> vector created in the
 simulation script), we see that a unique dataset was created for each
 simulation replicate:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">rep_id</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span><span class="op">!=</span><span class="fl">5</span><span class="op">]</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id        est mu_hat dat_1</span></span>
 <span><span class="co">#&gt; 1       1        1      1   est_mean   2.97  1.49</span></span>
@@ -274,7 +287,7 @@ multiple methods (in this case corresponding to <code>"est_mean"</code>
 and <code>"est_median"</code>), and repeat this procedure a total of
 three times. We can do this using the <code><a href="../reference/batch.html">batch()</a></code> function, as
 follows:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">create_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n<span class="op">=</span><span class="va">n</span>, mean<span class="op">=</span><span class="fl">3</span><span class="op">)</span> <span class="op">}</span></span>
 <span><span class="va">est_mean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">type</span><span class="op">)</span> <span class="op">{</span></span>
@@ -302,7 +315,7 @@ this will be explained below. Second, we wrapped the code line
 <code><a href="../reference/batch.html">batch()</a></code> function. Whatever code goes inside the
 <code><a href="../reference/batch.html">batch()</a></code> function will produce the same output for all
 simulations in a batch.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">rep_id</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span><span class="op">!=</span><span class="fl">5</span><span class="op">]</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id        est mu_hat dat_1</span></span>
 <span><span class="co">#&gt; 1       1        1      1   est_mean   2.85  3.58</span></span>
@@ -325,7 +338,7 @@ variable <code>L</code>) from within a <code><a href="../reference/batch.html">b
 the example below, the levels <code>n</code> and <code>mu</code> are
 used within the <code><a href="../reference/batch.html">batch()</a></code> call, while the level
 <code>est</code> is not.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">create_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span>, <span class="va">mu</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n<span class="op">=</span><span class="va">n</span>, mean<span class="op">=</span><span class="va">mu</span><span class="op">)</span> <span class="op">}</span></span>
 <span><span class="va">est_mean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">type</span><span class="op">)</span> <span class="op">{</span></span>
@@ -420,13 +433,13 @@ are being run in parallel locally or on a cluster computing system. In
 different seed for each simulation replicate. The
 <code><a href="../reference/set_config.html">set_config()</a></code> function is used to set or change this global
 seed:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_config.html">set_config</a></span><span class="op">(</span>seed<span class="op">=</span><span class="fl">123</span><span class="op">)</span></span></code></pre></div>
 <p>If a seed is not set using <code><a href="../reference/set_config.html">set_config()</a></code>,
 <strong>SimEngine</strong> will set a random seed automatically so that
 the results can be replicated if desired. To view this seed, we use the
 <code><a href="../reference/vars.html">vars()</a></code> function:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/vars.html">vars</a></span><span class="op">(</span><span class="va">sim</span>, <span class="st">"seed"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 287577520</span></span></code></pre></div>
@@ -442,7 +455,7 @@ errors are logged and stored in a dataframe along with information about
 the simulation replicates that resulted in those errors. Examining this
 dataframe by typing <code>print(sim$errors)</code> can sometimes help to
 quickly pinpoint the issue. This is demonstrated below:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_config.html">set_config</a></span><span class="op">(</span>num_sim<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_levels.html">set_levels</a></span><span class="op">(</span></span>
@@ -461,8 +474,8 @@ quickly pinpoint the issue. This is demonstrated below:</p>
 <span><span class="co">#&gt; Done. Errors detected in 25% of simulation replicates. Warnings detected in 0% of simulation replicates.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">errors</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id Sigma      runtime                          message</span></span>
-<span><span class="co">#&gt; 1       5        3      1    s2 0.0003721714 'Sigma' is not positive definite</span></span>
-<span><span class="co">#&gt; 2       6        3      2    s2 0.0003559589 'Sigma' is not positive definite</span></span>
+<span><span class="co">#&gt; 1       5        3      1    s2 0.0003778934 'Sigma' is not positive definite</span></span>
+<span><span class="co">#&gt; 2       6        3      2    s2 0.0003919601 'Sigma' is not positive definite</span></span>
 <span><span class="co">#&gt;                                                      call</span></span>
 <span><span class="co">#&gt; 1 MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma$mtx)</span></span>
 <span><span class="co">#&gt; 2 MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma$mtx)</span></span></code></pre></div>
@@ -481,7 +494,7 @@ exactly what caused an error without making use of more advanced
 debugging tools. For both of these situations,
 <strong>SimEngine</strong> includes the following configuration
 option:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_config.html">set_config</a></span><span class="op">(</span>stop_at_error<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Setting <code>stop_at_error=TRUE</code> will stop the simulation when
 it encounters any error. Furthermore, the error will be thrown by R in
@@ -513,7 +526,7 @@ the option <code>mc_se</code> is set to <code>TRUE</code>, estimates of
 Monte Carlo standard error will be included in the summary data frame,
 along with associated 95% confidence intervals based on a normal
 approximation.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_sim.html">new_sim</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">create_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="va">n</span>, lambda<span class="op">=</span><span class="fl">5</span><span class="op">)</span> <span class="op">}</span></span>
 <span><span class="va">est_mean</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span> <span class="op">{</span></span>

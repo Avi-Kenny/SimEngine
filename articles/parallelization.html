@@ -312,6 +312,20 @@ save the simulation object to the filesystem, and delete the temporary
 can leave the <code>last</code> block empty, but this third
 <code>sbatch</code> command should be run anyways to compile the results
 and save the simulation object for further analysis.</p>
+<div class="section level3">
+<h3 id="further-automating-job-submission">Further automating job submission<a class="anchor" aria-label="anchor" href="#further-automating-job-submission"></a>
+</h3>
+<p>Advanced users may want to automatically capture the job IDs so that
+they don’t need to be entered manually; sample code showing how this can
+be done is shown below:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="va">jid1</span><span class="op">=</span><span class="va">$(</span><span class="ex">sbatch</span> <span class="at">--export</span><span class="op">=</span>sim_run=<span class="st">'first'</span> run_sim.sh <span class="kw">|</span> <span class="fu">sed</span> <span class="st">'s/Submitted batch job //'</span><span class="va">)</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="va">jid2</span><span class="op">=</span><span class="va">$(</span><span class="ex">sbatch</span> <span class="at">--export</span><span class="op">=</span>sim_run=<span class="st">'main'</span> <span class="at">--array</span><span class="op">=</span>1-20 <span class="at">--depend</span><span class="op">=</span>afterok:<span class="va">$jid1</span> run_sim.sh <span class="kw">|</span> <span class="fu">sed</span> <span class="st">'s/Submitted batch job //'</span><span class="va">)</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="ex">sbatch</span> <span class="at">--export</span><span class="op">=</span>sim_run=<span class="st">'last'</span> <span class="at">--depend</span><span class="op">=</span>afterok:<span class="va">$jid2</span> run_sim.sh</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; Submitted batch job 103</span></span></code></pre></div>
+<p>While this is slightly more complicated, this code allows all three
+lines to be submitted simultaneously without the need to copy and paste
+the job IDs manually every time.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="additional-cluster-parallelization-functionality">Additional cluster parallelization functionality<a class="anchor" aria-label="anchor" href="#additional-cluster-parallelization-functionality"></a>
@@ -338,7 +352,7 @@ tasks within a job array. For example, Slurm uses the variable
 <code>"SLURM_ARRAY_TASK_ID"</code> and Grid Engine uses the variable
 <code>"SGE_TASK_ID"</code>. Once this variable is identified, it can be
 specified in the <code>cluster_config</code> block, as follows:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/run_on_cluster.html">run_on_cluster</a></span><span class="op">(</span></span>
 <span>  first <span class="op">=</span> <span class="op">{</span><span class="va">...</span><span class="op">}</span>,</span>
 <span>  main <span class="op">=</span> <span class="op">{</span><span class="va">...</span><span class="op">}</span>,</span>
@@ -362,7 +376,7 @@ updates. In the <code>main</code> block, <code><a href="../reference/update_sim.
 called (instead of <code><a href="../reference/run.html">run()</a></code>). In the <code>last</code> block,
 code can remain the same or change as needed. These differences are
 illustrated in the code below.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/update_sim_on_cluster.html">update_sim_on_cluster</a></span><span class="op">(</span></span>
 <span>  first <span class="op">=</span> <span class="op">{</span></span>
 <span>    <span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"sim.rds"</span><span class="op">)</span></span>
