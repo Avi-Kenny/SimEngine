@@ -255,7 +255,11 @@ sim %<>% run()
 print(sim$errors)
 ```
 
-From the output above, we see that the code fails for the simulation replicates that use the level with `Sigma="s2"` because it uses an invalid (not positive definite) covariance matrix. Similarly, if a simulation involves replicates that throw warnings, all warnings are logged and stored in the dataframe `sim$warnings`.
+From the output above, we see that the code fails for the simulation replicates that use the level with `Sigma="s2"` because it uses an invalid (not positive definite) covariance matrix. Similarly, if a simulation involves replicates that throw warnings, all warnings are logged and stored in the dataframe `sim$warnings`. If an error occurs for a subset of simulation replicates and that error is fixed, it is possible to rerun the replicates that had errors, as follows:
+
+```{r}
+sim %<>% update_sim(keep_errors=FALSE)
+```
 
 The workflow demonstrated above can be useful to pinpoint errors, but it has two main drawbacks. First, it is undesirable to run a time-consuming simulation involving hundreds or thousands of replicates, only to find at the end that every replicate failed because of a typo. It may therefore useful to stop an entire simulation after a single error has occurred. Second, it can sometimes be difficult to determine exactly what caused an error without making use of more advanced debugging tools. For both of these situations, **SimEngine** includes the following configuration option:
 

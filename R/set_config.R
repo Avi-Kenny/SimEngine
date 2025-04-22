@@ -99,6 +99,13 @@ set_config.sim_obj <- function(
 
   if (!missing(n_cores)) {
     handle_errors(n_cores, "is.numeric")
+    n_available_cores <- parallel::detectCores()
+    if (n_cores>n_available_cores) {
+      warning(paste(n_cores, "cores requested but only", n_available_cores,
+                    "cores available. Proceeding with", n_available_cores,
+                    "cores."))
+      n_cores <- n_available_cores
+    }
     sim$config[["n_cores"]] <- n_cores
   }
 
@@ -139,7 +146,12 @@ set_config.sim_obj <- function(
     sim$config[["return_batch_id"]] <- return_batch_id
   }
 
-  if (!missing(num_sim) || !missing(n_cores) || !missing(batch_levels)) {
+  if (!missing(num_sim) || !missing(parallel) ||
+      !missing(n_cores) || !missing(batch_levels)) {
+
+    if (parallel && is.na(n_cores)) {
+      sim$config$n_cores <- parallel::detectCores() - 1
+    }
     sim$internals$level_batch_map <- update_level_batch_map(sim)
     sim$internals$sim_uid_grid <- update_sim_uid_grid(sim)
     sim$vars$num_sim_total <- num_sim_total(sim)

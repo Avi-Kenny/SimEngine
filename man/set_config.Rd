@@ -36,7 +36,7 @@ the number of available cores.}
 \item{packages}{A character vector of packages to load and attach}
 
 \item{stop_at_error}{Boolean; if set to TRUE, the simulation will stop if it
-encounters an error in any single replicate Useful for debugging.}
+encounters an error in any single replicate. Useful for debugging.}
 
 \item{progress_bar}{Boolean; if set to FALSE, the progress bar that is
 normally displayed while the simulation is running is suppressed.}

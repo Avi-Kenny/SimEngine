@@ -56,18 +56,6 @@ run.sim_obj <- function(sim) {
 
   } else if (sim$config$parallel) {
 
-    n_available_cores <- parallel::detectCores()
-    if (is.na(sim$config$n_cores)) {
-      sim$config$n_cores <- n_available_cores - 1
-    } else {
-      if (sim$config$n_cores>n_available_cores) {
-        warning(paste(sim$config$n_cores, "cores requested but only",
-                      n_available_cores, "cores available. Proceeding with",
-                      n_available_cores, "cores."))
-        sim$config$n_cores <- n_available_cores
-      }
-    }
-
     # Create cluster and export everything in env
     ..cl <- parallel::makeCluster(sim$config$n_cores)
     parallel::clusterExport(..cl, ls(sim$vars$env, all.names=T), sim$vars$env)
