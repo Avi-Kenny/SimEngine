@@ -131,7 +131,20 @@ In the second line, we submit the `run_sim.sh` script using the `sim_run='main'`
 
 Also note that we included the option `--depend=afterok:101`, which instructs the job scheduler to wait until the first job finishes before starting the job array. (In practice, the number 101 must be replaced with whatever job ID Slurm assigned to the first job.) Once this command is submitted, the code in the `main` block will be run for each replicate. A temporary folder called `sim_results` will be created and filled with temporary objects containing data on the results and/or errors for each replicate.
 
-In the third line, we submit the `run_sim.sh` script using the `sim_run='last'` environment variable. Again, we use `--depend=afterok:102` to ensure this code does not run until all tasks in the job array have finished. When this job runs, **SimEngine** will compile the results from the `main` block, run the code in the `last` block, save the simulation object to the filesystem, and delete the temporary `sim_results` folder and its contents. If desired, the user can leave the `last` block empty, but this third `sbatch` command should be run anyways to compile the results and save the simulation object for further analysis. 
+In the third line, we submit the `run_sim.sh` script using the `sim_run='last'` environment variable. Again, we use `--depend=afterok:102` to ensure this code does not run until all tasks in the job array have finished. When this job runs, **SimEngine** will compile the results from the `main` block, run the code in the `last` block, save the simulation object to the filesystem, and delete the temporary `sim_results` folder and its contents. If desired, the user can leave the `last` block empty, but this third `sbatch` command should be run anyways to compile the results and save the simulation object for further analysis.
+
+### Further automating job submission
+
+Advanced users may want to automatically capture the job IDs so that they don't need to be entered manually; sample code showing how this can be done is shown below:
+
+```bash
+jid1=$(sbatch --export=sim_run='first' run_sim.sh | sed 's/Submitted batch job //')
+jid2=$(sbatch --export=sim_run='main' --array=1-20 --depend=afterok:$jid1 run_sim.sh | sed 's/Submitted batch job //')
+sbatch --export=sim_run='last' --depend=afterok:$jid2 run_sim.sh
+#> Submitted batch job 103
+```
+
+While this is slightly more complicated, this code allows all three lines to be submitted simultaneously without the need to copy and paste the job IDs manually every time.
 
 ## Additional cluster parallelization functionality
 
