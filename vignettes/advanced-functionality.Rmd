@@ -56,7 +56,7 @@ Note that the list names (`"Beta 1"`, `"Beta 2"`, and `"Normal"`) become the ent
 sim %>% summarize(list(stat="mean", x="y"))
 ```
 
-Sometimes, it may be the case that you want to run simulations only for a subset of level combinations. In these cases, use the `.keep` option of `set_levels()` . First, set the levels normally. Second, view the `sim$levels_grid` dataframe to examine the level combinations and the associated `level_id` values. Third, call `set_levels()` again with the `.keep` option to specify which level combinations to keep. This is demonstrated below:
+Sometimes, it may be the case that you want to run simulations only for a subset of scenarios (i.e., not for all combinations of level values). In these cases, use the `.keep` option of `set_levels()` . First, set the levels normally. Second, view the `sim$levels_grid` dataframe to examine the scenarios and the associated `level_id` values. Third, call `set_levels()` again with the `.keep` option to specify which scenarios to keep. This is demonstrated below:
 
 ```{r}
 sim <- new_sim()

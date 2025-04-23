@@ -22,7 +22,7 @@ set_config(
 \code{\link{new_sim}}}
 
 \item{num_sim}{An integer; the number of simulations to conduct for each
-level combination}
+scenario}
 
 \item{parallel}{Boolean; if set to TRUE, \pkg{SimEngine} will run one
 simulation per core. if set to FALSE, code will not be parallelized. See

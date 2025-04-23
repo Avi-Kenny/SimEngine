@@ -61,7 +61,7 @@ est_lambda(dat=dat, type="V")
 
 ### 4) Set the simulation levels
 
-Often, we wish to run the same simulation multiple times. We refer to each run as a *simulation replicate*. We may wish to vary certain features of the simulation between replicates. In this example, perhaps we choose to vary the sample size and the estimator used to estimate $\lambda$. We refer to the features that vary as *simulation levels*; in the example below, the simulation levels are the sample size (`n`) and the estimator (`estimator`). We refer to the values that each simulation level can take on as *level values*; in the example below, the `n` level values are `10`, `100`, and `1000`, and the `estimator` level values are `"M"` (for "sample mean") and `"V"` (for "sample variance"). By default, **SimEngine** runs one simulation replicate for each combination of level values --- in this case, six combinations --- although the user will typically want to increase this; 1,000 or 10,000 replicates per combination is typical.
+Often, we wish to run the same simulation multiple times. We refer to each run as a *simulation replicate*. We may wish to vary certain features of the simulation between replicates. In this example, perhaps we choose to vary the sample size and the estimator used to estimate $\lambda$. We refer to the features that vary as *simulation levels*; in the example below, the simulation levels are the sample size (`n`) and the estimator (`estimator`). We refer to the values that each simulation level can take on as *level values*; in the example below, the `n` level values are `10`, `100`, and `1000`, and the `estimator` level values are `"M"` (for "sample mean") and `"V"` (for "sample variance"). We also refer to a combination of level values as a *scenario*; in this example, the combination of `n=10` and `estimator="M"` is one of the six possible scenarios defined by the two values of `n` and the three values of `estimator`. By default, **SimEngine** runs one simulation replicate for each scenario, although the user will typically want to increase this; 1,000 or 10,000 replicates per scenario is common.
 
 ```{r}
 sim %<>% set_levels(
@@ -74,7 +74,7 @@ Note that we make extensive use of the pipe operators (`%>%` and `%<>%`) from th
 
 ### 5) Create a simulation script
 
-The simulation script is a user-written function that assembles the pieces above (generating data, analyzing the data, and returning results) to code the flow of a single simulation replicate. Within a script, the current simulation level values can be referenced using the special variable `L`. For instance, in the running example, when the first simulation replicate is running, `L$estimator` will equal `"M"` and `L$n` will equal `10`. In the next replicate, `L$estimator` will equal `"M"` and `L$n` will equal `100`, and so on, until all level value combinations are run. The simulation script will automatically have access to any functions or objects that have been declared in the global environment.
+The simulation script is a user-written function that assembles the pieces above (generating data, analyzing the data, and returning results) to code the flow of a single simulation replicate. Within a script, the level values for the current scenario can be referenced using the special variable `L`. For instance, in the running example, when the first simulation replicate is running, `L$estimator` will equal `"M"` and `L$n` will equal `10`. In the next replicate, `L$estimator` will equal `"M"` and `L$n` will equal `100`, and so on. The simulation script will automatically have access to any functions or objects that have been declared in the global environment.
 
 ```{r}
 sim %<>% set_script(function() {
@@ -88,7 +88,7 @@ The simulation script should always return a list containing one or more key-val
 
 ### 6) Set the simulation configuration
 
-The `set_config()` function controls options related to the entire simulation, such as the number of simulation replicates to run for each level value combination and the parallelization type, if desired (see the Parallelization documentation). Packages needed for the simulation should be specified using the `packages` argument of `set_config()` (rather than using `library()` or `require()`). We set `num_sim` to 100, and so **SimEngine** will run a total of 600 simulation replicates (100 for each of the six level value combinations).
+The `set_config()` function controls options related to the entire simulation, such as the number of simulation replicates to run for each scenario and the parallelization type, if desired (see the Parallelization documentation). Packages needed for the simulation should be specified using the `packages` argument of `set_config()` (rather than using `library()` or `require()`). We set `num_sim` to 100, and so **SimEngine** will run a total of 600 simulation replicates (100 for each of the six scenarios).
 
 ```{r}
 sim %<>% set_config(
@@ -116,17 +116,17 @@ sim %>% summarize(
 )
 ```
 
-In this example, we see that the MSE of the sample variance is much higher than that of the sample mean and that MSE decreases with increasing sample size for both estimators, as expected. From the `n_reps` column, we see that 100 replicates were successfully run for each level value combination. Results for individual simulation replicates can also be directly accessed via the `sim$results` dataframe.
+In this example, we see that the MSE of the sample variance is much higher than that of the sample mean and that MSE decreases with increasing sample size for both estimators, as expected. From the `n_reps` column, we see that 100 replicates were successfully run for each scenario. Results for individual simulation replicates can also be directly accessed via the `sim$results` dataframe.
 
 ```{r}
 head(sim$results)
 ```
 
-Above, the `sim_uid` uniquely identifies a single simulation replicate and the `level_id` uniquely identifies a level value combination. The `rep_id` is unique within a given level value combination and identifies the index of that replicate within the level value combination. The `runtime` column shows the runtime of each replicate (in seconds).
+Above, the `sim_uid` uniquely identifies a single simulation replicate and the `level_id` uniquely identifies a scenario (i.e., a combination of level values). The `rep_id` is unique within a given scenario and identifies the index of that replicate within the scenario. The `runtime` column shows the runtime of each replicate (in seconds).
 
 ### 9) Update a simulation
 
-After running a simulation, a user may want to update it by adding additional level values or replicates; this can be done with the `update_sim()` function. Prior to running `update_sim()`, the functions `set_levels()` and/or `set_config()` are used to declare the updates that should be performed. For example, the following code sets the total number of replicates to 200 (i.e., adding 100 replicates to those that have already been run) for each level value combination, and adds one additional level value for `n`.
+After running a simulation, a user may want to update it by adding additional level values or replicates; this can be done with the `update_sim()` function. Prior to running `update_sim()`, the functions `set_levels()` and/or `set_config()` are used to declare the updates that should be performed. For example, the following code sets the total number of replicates to 200 (i.e., adding 100 replicates to those that have already been run) for each scenario, and adds one additional level value for `n`.
 
 ```{r}
 sim %<>% set_config(num_sim = 200)

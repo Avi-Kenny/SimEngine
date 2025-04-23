@@ -14,8 +14,8 @@ set_levels(sim, ..., .keep = NA)
 value can either be a vector (for simple levels) or a list of lists (for
 more complex levels). See examples.}
 
-\item{.keep}{An integer vector of level_id values specifying which level
-combinations to keep; see the Advanced Functionality documentation.}
+\item{.keep}{An integer vector of level_id values specifying which scenarios
+to keep; see the Advanced Functionality documentation.}
 }
 \value{
 The original simulation object with the old set of levels replaced

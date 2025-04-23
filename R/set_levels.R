@@ -7,8 +7,8 @@
 #' @param ... One or more key-value pairs representing simulation levels. Each
 #'     value can either be a vector (for simple levels) or a list of lists (for
 #'     more complex levels). See examples.
-#' @param .keep An integer vector of level_id values specifying which level
-#'     combinations to keep; see the Advanced Functionality documentation.
+#' @param .keep An integer vector of level_id values specifying which scenarios
+#'     to keep; see the Advanced Functionality documentation.
 #' @return The original simulation object with the old set of levels replaced
 #'     with the new set
 #' @examples

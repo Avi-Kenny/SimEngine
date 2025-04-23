@@ -10,7 +10,7 @@
 #' @param sim A simulation object of class \code{sim_obj}, usually created by
 #'     \code{\link{new_sim}}
 #' @param num_sim An integer; the number of simulations to conduct for each
-#'     level combination
+#'     scenario
 #' @param parallel Boolean; if set to TRUE, \pkg{SimEngine} will run one
 #'     simulation per core. if set to FALSE, code will not be parallelized. See
 #'     the \href{https://avi-kenny.github.io/SimEngine/articles/parallelization.html}{Parallelization}

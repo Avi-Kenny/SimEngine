@@ -22,8 +22,8 @@ summarize(sim, ..., mc_se = FALSE)
     \itemize{
 
     \item{\code{list(stat="mean", x="col_1", name="mean_col", na.rm=F)}
-    computes the mean of column \code{sim$results$col_1} for each level
-    combination and creates a summary column named \code{"mean_col"}. Other
+    computes the mean of column \code{sim$results$col_1} for each scenario
+    and creates a summary column named \code{"mean_col"}. Other
     single-column summary statistics (see the next few items) work
     analogously. \code{name} is optional.}
 
@@ -45,13 +45,13 @@ summarize(sim, ..., mc_se = FALSE)
 
     \item{\code{list(stat="correlation", x="col_1", y="col_2",
     name="cor_12")} computes the (Pearson's) correlation coefficient between
-    \code{sim$results$col_1} and \code{sim$results$col_2} for each level
-    combination and creates a summary column named \code{"cor_12"}.}
+    \code{sim$results$col_1} and \code{sim$results$col_2} for each scenario
+    and creates a summary column named \code{"cor_12"}.}
 
     \item{\code{list(stat="covariance", x="col_1", y="col_2",
     name="cov_12")} computes the covariance between \code{sim$results$col_1}
-    and \code{sim$results$col_2} for each level combination and creates a
-    summary column named \code{"cov_12"}.}
+    and \code{sim$results$col_2} for each scenario and creates a summary
+    column named \code{"cov_12"}.}
 
     \item{\code{list(stat="quantile", x="col_1", prob=0.8, name="q_col_1")}
     computes the 0.8 quantile of column \code{sim$results$col_1} and creates
@@ -131,8 +131,8 @@ This function calculates summary statistics for simulation
     alternative is to provide \code{lower} and \code{upper} bounds, which
     should also be variables in \code{sim$results}. In this case, the
     confidence interval is (\code{lower}, \code{upper}). The coverage is the
-    proportion of simulation replicates for a given level combination in
-    which \code{truth} lies within the interval.}
+    proportion of simulation replicates for a given scenario in which
+    \code{truth} lies within the interval.}
 }
 }
 \examples{
