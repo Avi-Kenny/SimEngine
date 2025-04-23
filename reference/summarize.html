@@ -80,8 +80,8 @@
     is optional, if it is not provided, a name will be formed from the type
     of summary and the column on which the summary is performed. Additional
     required items are detailed below for each <code>stat</code> type.</p><ul><li><p><code>list(stat="mean", x="col_1", name="mean_col", na.rm=F)</code>
-    computes the mean of column <code>sim$results$col_1</code> for each level
-    combination and creates a summary column named <code>"mean_col"</code>. Other
+    computes the mean of column <code>sim$results$col_1</code> for each scenario
+    and creates a summary column named <code>"mean_col"</code>. Other
     single-column summary statistics (see the next few items) work
     analogously. <code>name</code> is optional.</p></li>
 <li><p><code>list(stat="median", ...)</code> computes the median.</p></li>
@@ -94,12 +94,12 @@
 <li><p><code>list(stat="is_na", ...)</code> computes the number of NA values.</p></li>
 <li><p><code>list(stat="correlation", x="col_1", y="col_2",
     name="cor_12")</code> computes the (Pearson's) correlation coefficient between
-    <code>sim$results$col_1</code> and <code>sim$results$col_2</code> for each level
-    combination and creates a summary column named <code>"cor_12"</code>.</p></li>
+    <code>sim$results$col_1</code> and <code>sim$results$col_2</code> for each scenario
+    and creates a summary column named <code>"cor_12"</code>.</p></li>
 <li><p><code>list(stat="covariance", x="col_1", y="col_2",
     name="cov_12")</code> computes the covariance between <code>sim$results$col_1</code>
-    and <code>sim$results$col_2</code> for each level combination and creates a
-    summary column named <code>"cov_12"</code>.</p></li>
+    and <code>sim$results$col_2</code> for each scenario and creates a summary
+    column named <code>"cov_12"</code>.</p></li>
 <li><p><code>list(stat="quantile", x="col_1", prob=0.8, name="q_col_1")</code>
     computes the 0.8 quantile of column <code>sim$results$col_1</code> and creates
     a summary column named <code>"q_col_1"</code>. <code>prob</code> can be any number in
@@ -168,8 +168,8 @@ statistics.  This applies only to the <code>bias</code>, <code>bias_pct</code>,
     alternative is to provide <code>lower</code> and <code>upper</code> bounds, which
     should also be variables in <code>sim$results</code>. In this case, the
     confidence interval is (<code>lower</code>, <code>upper</code>). The coverage is the
-    proportion of simulation replicates for a given level combination in
-    which <code>truth</code> lies within the interval.</p></li>
+    proportion of simulation replicates for a given scenario in which
+    <code>truth</code> lies within the interval.</p></li>
 </ul></div>
 
     <div class="section level2">

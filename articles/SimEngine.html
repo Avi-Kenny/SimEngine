@@ -183,11 +183,14 @@ the values that each simulation level can take on as <em>level
 values</em>; in the example below, the <code>n</code> level values are
 <code>10</code>, <code>100</code>, and <code>1000</code>, and the
 <code>estimator</code> level values are <code>"M"</code> (for “sample
-mean”) and <code>"V"</code> (for “sample variance”). By default,
-<strong>SimEngine</strong> runs one simulation replicate for each
-combination of level values — in this case, six combinations — although
-the user will typically want to increase this; 1,000 or 10,000
-replicates per combination is typical.</p>
+mean”) and <code>"V"</code> (for “sample variance”). We also refer to a
+combination of level values as a <em>scenario</em>; in this example, the
+combination of <code>n=10</code> and <code>estimator="M"</code> is one
+of the six possible scenarios defined by the two values of
+<code>n</code> and the three values of <code>estimator</code>. By
+default, <strong>SimEngine</strong> runs one simulation replicate for
+each scenario, although the user will typically want to increase this;
+1,000 or 10,000 replicates per scenario is common.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_levels.html">set_levels</a></span><span class="op">(</span></span>
 <span>  estimator <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"M"</span>, <span class="st">"V"</span><span class="op">)</span>,</span>
@@ -204,13 +207,13 @@ replicates per combination is typical.</p>
 <p>The simulation script is a user-written function that assembles the
 pieces above (generating data, analyzing the data, and returning
 results) to code the flow of a single simulation replicate. Within a
-script, the current simulation level values can be referenced using the
-special variable <code>L</code>. For instance, in the running example,
-when the first simulation replicate is running, <code>L$estimator</code>
-will equal <code>"M"</code> and <code>L$n</code> will equal
-<code>10</code>. In the next replicate, <code>L$estimator</code> will
-equal <code>"M"</code> and <code>L$n</code> will equal <code>100</code>,
-and so on, until all level value combinations are run. The simulation
+script, the level values for the current scenario can be referenced
+using the special variable <code>L</code>. For instance, in the running
+example, when the first simulation replicate is running,
+<code>L$estimator</code> will equal <code>"M"</code> and
+<code>L$n</code> will equal <code>10</code>. In the next replicate,
+<code>L$estimator</code> will equal <code>"M"</code> and
+<code>L$n</code> will equal <code>100</code>, and so on. The simulation
 script will automatically have access to any functions or objects that
 have been declared in the global environment.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -233,13 +236,13 @@ script using the <code><a href="../reference/use_method.html">use_method()</a></
 </h3>
 <p>The <code><a href="../reference/set_config.html">set_config()</a></code> function controls options related to
 the entire simulation, such as the number of simulation replicates to
-run for each level value combination and the parallelization type, if
-desired (see the Parallelization documentation). Packages needed for the
-simulation should be specified using the <code>packages</code> argument
-of <code><a href="../reference/set_config.html">set_config()</a></code> (rather than using <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code>
-or <code><a href="https://rdrr.io/r/base/library.html" class="external-link">require()</a></code>). We set <code>num_sim</code> to 100, and so
+run for each scenario and the parallelization type, if desired (see the
+Parallelization documentation). Packages needed for the simulation
+should be specified using the <code>packages</code> argument of
+<code><a href="../reference/set_config.html">set_config()</a></code> (rather than using <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> or
+<code><a href="https://rdrr.io/r/base/library.html" class="external-link">require()</a></code>). We set <code>num_sim</code> to 100, and so
 <strong>SimEngine</strong> will run a total of 600 simulation replicates
-(100 for each of the six level value combinations).</p>
+(100 for each of the six scenarios).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_config.html">set_config</a></span><span class="op">(</span></span>
 <span>  num_sim <span class="op">=</span> <span class="fl">100</span>,</span>
@@ -283,24 +286,24 @@ and confidence interval coverage.</p>
 higher than that of the sample mean and that MSE decreases with
 increasing sample size for both estimators, as expected. From the
 <code>n_reps</code> column, we see that 100 replicates were successfully
-run for each level value combination. Results for individual simulation
-replicates can also be directly accessed via the
-<code>sim$results</code> dataframe.</p>
+run for each scenario. Results for individual simulation replicates can
+also be directly accessed via the <code>sim$results</code>
+dataframe.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">results</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   sim_uid level_id rep_id estimator  n      runtime lambda_hat</span></span>
-<span><span class="co">#&gt; 1       1        1      1         M 10 0.0005121231       21.2</span></span>
-<span><span class="co">#&gt; 2       7        1      2         M 10 0.0002973080       19.8</span></span>
-<span><span class="co">#&gt; 3       8        1      3         M 10 0.0003125668       19.0</span></span>
-<span><span class="co">#&gt; 4       9        1      4         M 10 0.0002994537       22.3</span></span>
-<span><span class="co">#&gt; 5      10        1      5         M 10 0.0003006458       21.2</span></span>
-<span><span class="co">#&gt; 6      11        1      6         M 10 0.0003421307       20.0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1       1        1      1         M 10 0.0004768372       21.2</span></span>
+<span><span class="co">#&gt; 2       7        1      2         M 10 0.0003242493       19.8</span></span>
+<span><span class="co">#&gt; 3       8        1      3         M 10 0.0002961159       19.0</span></span>
+<span><span class="co">#&gt; 4       9        1      4         M 10 0.0003051758       22.3</span></span>
+<span><span class="co">#&gt; 5      10        1      5         M 10 0.0003271103       21.2</span></span>
+<span><span class="co">#&gt; 6      11        1      6         M 10 0.0003268719       20.0</span></span></code></pre></div>
 <p>Above, the <code>sim_uid</code> uniquely identifies a single
 simulation replicate and the <code>level_id</code> uniquely identifies a
-level value combination. The <code>rep_id</code> is unique within a
-given level value combination and identifies the index of that replicate
-within the level value combination. The <code>runtime</code> column
-shows the runtime of each replicate (in seconds).</p>
+scenario (i.e., a combination of level values). The <code>rep_id</code>
+is unique within a given scenario and identifies the index of that
+replicate within the scenario. The <code>runtime</code> column shows the
+runtime of each replicate (in seconds).</p>
 </div>
 <div class="section level3">
 <h3 id="update-a-simulation">9) Update a simulation<a class="anchor" aria-label="anchor" href="#update-a-simulation"></a>
@@ -312,8 +315,8 @@ additional level values or replicates; this can be done with the
 and/or <code><a href="../reference/set_config.html">set_config()</a></code> are used to declare the updates that
 should be performed. For example, the following code sets the total
 number of replicates to 200 (i.e., adding 100 replicates to those that
-have already been run) for each level value combination, and adds one
-additional level value for <code>n</code>.</p>
+have already been run) for each scenario, and adds one additional level
+value for <code>n</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_config.html">set_config</a></span><span class="op">(</span>num_sim <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
 <span><span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/compound.html" class="external-link">%&lt;&gt;%</a></span> <span class="fu"><a href="../reference/set_levels.html">set_levels</a></span><span class="op">(</span></span>
