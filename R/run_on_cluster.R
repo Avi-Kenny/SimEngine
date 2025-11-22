@@ -10,8 +10,7 @@
 #'     or summarize simulation results). This function is to be used in
 #'     conjunction with job scheduler software (e.g., Slurm or Oracle Grid
 #'     Engine) to divide the simulation into tasks that are run in parallel on
-#'     the CCS. See the Parallelization documentation for a detailed overview of
-#'     how CCS parallelization works in \pkg{SimEngine}.
+#'     the CCS.
 #'     \code{\link{run}})), and "last" (usually code to process or summarize
 #'     simulation results). This function interacts with cluster job scheduler
 #'     software (e.g. Slurm or Oracle Grid Engine) to divide parallel tasks over
@@ -77,6 +76,9 @@
 #' # sbatch --export=sim_run='first' run_sim.sh
 #' # sbatch --export=sim_run='main' --array=1-20 --depend=afterok:101 run_sim.sh
 #' # sbatch --export=sim_run='last' --depend=afterok:102 run_sim.sh
+#'
+#' # Note: some users may need to use --export=ALL,sim_run='first' and so on for
+#' #   the above three commands for code to run properly.
 #' }
 #' @export
 run_on_cluster <- function(first, main, last, cluster_config) {

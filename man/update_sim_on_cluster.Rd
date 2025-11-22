@@ -79,5 +79,8 @@ update_sim_on_cluster(
 # sbatch --export=sim_run='first' run_sim.sh
 # sbatch --export=sim_run='main' --array=1-20 --depend=afterok:101 run_sim.sh
 # sbatch --export=sim_run='last' --depend=afterok:102 run_sim.sh
+
+# Note: some users may need to use --export=ALL,sim_run='first' and so on for
+#   the above three commands for code to run properly.
 }
 }

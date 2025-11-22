@@ -133,6 +133,8 @@ Also note that we included the option `--depend=afterok:101`, which instructs th
 
 In the third line, we submit the `run_sim.sh` script using the `sim_run='last'` environment variable. Again, we use `--depend=afterok:102` to ensure this code does not run until all tasks in the job array have finished. When this job runs, **SimEngine** will compile the results from the `main` block, run the code in the `last` block, save the simulation object to the filesystem, and delete the temporary `sim_results` folder and its contents. If desired, the user can leave the `last` block empty, but this third `sbatch` command should be run anyways to compile the results and save the simulation object for further analysis.
 
+Note that some Slurm users may need to instead run `--export=ALL,sim_run='first'`, `--export=ALL,sim_run='main'`, and `--export=ALL,sim_run='last'` for code to run properly; this seems to be an issue with newer versions of Slurm.
+
 ### Further automating job submission
 
 Advanced users may wish to automatically capture the job IDs so that they don't need to be entered manually; sample code showing how this can be done is shown below:
