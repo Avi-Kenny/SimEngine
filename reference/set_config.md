@@ -1,0 +1,122 @@
+# Modify the simulation configuration
+
+This function sets configuration options for the simulation. If the
+'packages' argument is specified, all packages will be loaded and
+attached via `library` when `set_config` is called. Multiple calls to
+`set_config` will only overwrite configuration options that are
+specified in the subsequent calls, leaving others in place. You can see
+the current configuration via `print(sim)`, where `sim` is your
+simulation object.
+
+## Usage
+
+``` r
+set_config(
+  sim,
+  num_sim = 1000,
+  parallel = FALSE,
+  n_cores = NA,
+  packages = NULL,
+  stop_at_error = FALSE,
+  progress_bar = TRUE,
+  seed = as.integer(1e+09 * runif(1)),
+  batch_levels = NA,
+  return_batch_id = FALSE
+)
+```
+
+## Arguments
+
+- sim:
+
+  A simulation object of class `sim_obj`, usually created by
+  [`new_sim`](https://avi-kenny.github.io/SimEngine/reference/new_sim.md)
+
+- num_sim:
+
+  An integer; the number of simulations to conduct for each scenario
+
+- parallel:
+
+  Boolean; if set to TRUE, SimEngine will run one simulation per core.
+  if set to FALSE, code will not be parallelized. See the
+  [Parallelization](https://avi-kenny.github.io/SimEngine/articles/parallelization.html)
+  vignette for an overview of how parallelization works in SimEngine.
+
+- n_cores:
+
+  An integer; determines the number of cores on which the simulation
+  will run if using parallelization. Defaults to one fewer than the
+  number of available cores.
+
+- packages:
+
+  A character vector of packages to load and attach
+
+- stop_at_error:
+
+  Boolean; if set to TRUE, the simulation will stop if it encounters an
+  error in any single replicate. Useful for debugging.
+
+- progress_bar:
+
+  Boolean; if set to FALSE, the progress bar that is normally displayed
+  while the simulation is running is suppressed.
+
+- seed:
+
+  An integer; seeds allow for reproducible simulation results. If a seed
+  is specified, then consecutive runs of the same simulation with the
+  same seed will lead to identical results (under normal circumstances).
+  If a seed was not set in advance by the user, SimEngine will set a
+  random seed, which can later be retrieved using the
+  [`vars`](https://avi-kenny.github.io/SimEngine/reference/vars.md)
+  function. See details for further info.
+
+- batch_levels:
+
+  Either NULL or a character vector. If the
+  [`batch`](https://avi-kenny.github.io/SimEngine/reference/batch.md)
+  function is being used within the simulation script, this should
+  contain the names of the simulation levels that are used within the
+  [`batch`](https://avi-kenny.github.io/SimEngine/reference/batch.md)
+  function code block. If no simulation levels are used within the
+  [`batch`](https://avi-kenny.github.io/SimEngine/reference/batch.md)
+  function code block, specify NULL. See the documentation for the
+  [`batch`](https://avi-kenny.github.io/SimEngine/reference/batch.md)
+  function.
+
+- return_batch_id:
+
+  Boolean. If set to TRUE, the batch_id will be included as part of the
+  simulation results
+
+## Value
+
+The original simulation object with a modified configuration
+
+## Details
+
+- If a user specifies, for example, `set_config(seed=4)`, this seed is
+  used twice by SimEngine. First, SimEngine executes `set.seed(4)` at
+  the end of the `set_config` call. Second, this seed is used to
+  generate a new set of seeds, one for each simulation replicate. Each
+  of these seeds is set in turn (or in parallel) when
+  [`run`](https://avi-kenny.github.io/SimEngine/reference/run.md) is
+  called.
+
+- Even if seeds are used, not all code will be reproducible. For
+  example, a simulation that involves getting the current date/time with
+  `Sys.time` or dynamically retrieving external data may produce
+  different results on different runs.
+
+## Examples
+
+``` r
+sim <- new_sim()
+sim %<>% set_config(
+  num_sim = 10,
+  seed = 2112
+)
+print(sim)
+```

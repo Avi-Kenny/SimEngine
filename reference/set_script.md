@@ -1,0 +1,77 @@
+# Set the "simulation script"
+
+Specify a function to be used as the "simulation script". The simulation
+script is a function that runs a single simulation replicate and returns
+the results.
+
+## Usage
+
+``` r
+set_script(sim, fn)
+```
+
+## Arguments
+
+- sim:
+
+  A simulation object of class `sim_obj`, usually created by
+  [`new_sim`](https://avi-kenny.github.io/SimEngine/reference/new_sim.md)
+
+- fn:
+
+  A function that runs a single simulation replicate and returns the
+  results. The results must be a list of key-value pairs. Values are
+  categorized as simple (a number, a character string, etc.) or complex
+  (vectors, dataframes, lists, etc.). Complex data must go inside a key
+  called ".complex" and the associated value must be a list (see
+  Advanced Functionality documentation and examples). The function body
+  can contain references to the special object `L` that stores the
+  current set of simulation levels (see examples). The keys must be
+  valid R names (see ?make.names). Any functions used within the script
+  must be declared before `set_script` is called.
+
+## Value
+
+The original simulation object with the new "simulation script" function
+added.
+
+## Examples
+
+``` r
+sim <- new_sim()
+create_data <- function(n) { rpois(n, lambda=5) }
+est_mean <- function(dat, type) {
+  if (type=="M") { return(mean(dat)) }
+  if (type=="V") { return(var(dat)) }
+}
+sim %<>% set_levels(n=c(10,100,1000), est=c("M","V"))
+sim %<>% set_config(num_sim=1)
+sim %<>% set_script(function() {
+  dat <- create_data(L$n)
+  lambda_hat <- est_mean(dat=dat, type=L$est)
+  return (list("lambda_hat"=lambda_hat))
+})
+sim %<>% run()
+sim$results %>% print()
+
+# To return complex result data, use the special key ".complex".
+sim <- new_sim()
+create_data <- function(n) {
+  x <- runif(n)
+  y <- 3 + 2*x + rnorm(n)
+  return(data.frame("x"=x, "y"=y))
+}
+sim %<>% set_levels("n"=c(10, 100, 1000))
+sim %<>% set_config(num_sim=1)
+sim %<>% set_script(function() {
+  dat <- create_data(L$n)
+  model <- lm(y~x, data=dat)
+  return (list(
+    "beta1_hat" = model$coefficients[[2]],
+    ".complex" = model
+  ))
+})
+sim %<>% run()
+sim$results %>% print()
+get_complex(sim, 1) %>% print()
+```

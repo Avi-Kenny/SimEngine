@@ -1,0 +1,83 @@
+# SimEngine
+
+A modular framework for statistical simulations in R
+
+## Overview
+
+**SimEngine** is an open-source R package for structuring, maintaining,
+running, and debugging statistical simulations on both local and
+cluster-based computing environments.
+
+## Installation
+
+The latest stable version of **SimEngine** can be installed from CRAN
+using
+[`install.packages()`](https://rdrr.io/r/utils/install.packages.html):
+
+``` r
+install.packages("SimEngine")
+```
+
+The current development version can be installed using
+`devtools::install_github()`:
+
+``` r
+devtools::install_github(repo="Avi-Kenny/SimEngine")
+```
+
+## Documentation
+
+The full package documentation can be found at
+<https://avi-kenny.github.io/SimEngine/>.
+
+## Bugs reports and feature requests
+
+To submit a bug report or request a new feature, please submit a new
+[GitHub Issue](https://github.com/Avi-Kenny/SimEngine/issues).
+
+# Package index
+
+## All functions
+
+- [`batch()`](https://avi-kenny.github.io/SimEngine/reference/batch.md)
+  : Run a block of code as part of a batch
+- [`get_complex()`](https://avi-kenny.github.io/SimEngine/reference/get_complex.md)
+  : Access internal simulation variables
+- [`js_support()`](https://avi-kenny.github.io/SimEngine/reference/js_support.md)
+  : Display information about currently-supported job schedulers
+- [`new_sim()`](https://avi-kenny.github.io/SimEngine/reference/new_sim.md)
+  : Create a new simulation object
+- [`run()`](https://avi-kenny.github.io/SimEngine/reference/run.md) :
+  Run the simulation
+- [`run_on_cluster()`](https://avi-kenny.github.io/SimEngine/reference/run_on_cluster.md)
+  : Framework for running simulations on a cluster computing system
+- [`set_config()`](https://avi-kenny.github.io/SimEngine/reference/set_config.md)
+  : Modify the simulation configuration
+- [`set_levels()`](https://avi-kenny.github.io/SimEngine/reference/set_levels.md)
+  : Set simulation levels
+- [`set_script()`](https://avi-kenny.github.io/SimEngine/reference/set_script.md)
+  : Set the "simulation script"
+- [`summarize()`](https://avi-kenny.github.io/SimEngine/reference/summarize.md)
+  : Summarize simulation results
+- [`update_sim()`](https://avi-kenny.github.io/SimEngine/reference/update_sim.md)
+  : Update a simulation
+- [`update_sim_on_cluster()`](https://avi-kenny.github.io/SimEngine/reference/update_sim_on_cluster.md)
+  : Framework for updating simulations on a cluster computing system
+- [`use_method()`](https://avi-kenny.github.io/SimEngine/reference/use_method.md)
+  : Use a method
+- [`vars()`](https://avi-kenny.github.io/SimEngine/reference/vars.md) :
+  Access internal simulation variables
+
+# Articles
+
+### All vignettes
+
+- [Advanced
+  functionality](https://avi-kenny.github.io/SimEngine/articles/advanced-functionality.md):
+- [Example 1: Simulation-based power
+  calculation](https://avi-kenny.github.io/SimEngine/articles/example_1.md):
+- [Example 2: Comparing two standard error
+  estimators](https://avi-kenny.github.io/SimEngine/articles/example_2.md):
+- [Parallelization](https://avi-kenny.github.io/SimEngine/articles/parallelization.md):
+- [Introduction to
+  SimEngine](https://avi-kenny.github.io/SimEngine/articles/SimEngine.md):

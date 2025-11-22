@@ -1,0 +1,52 @@
+# Run a block of code as part of a batch
+
+This function is useful for sharing data or objects between simulation
+replicates. Essentially, it allows simulation replicates to be divided
+into “batches”; all replicates in a given batch will then share a
+certain set of objects. A common use case for this is a simulation that
+involves using multiple methods to analyze a shared dataset, and
+repeating this process over a number of dataset replicates. See the
+[Advanced
+Functionality](https://avi-kenny.github.io/SimEngine/articles/advanced-functionality.html#using-the-batch-function)
+vignette for a detailed overview of how this function is used.
+
+## Usage
+
+``` r
+batch(code)
+```
+
+## Arguments
+
+- code:
+
+  A block of code enclosed by curly braces {}; see examples.
+
+## Examples
+
+``` r
+sim <- new_sim()
+create_data <- function(n, mu) { rnorm(n=n, mean=mu) }
+est_mean <- function(dat, type) {
+  if (type=="est_mean") { return(mean(dat)) }
+  if (type=="est_median") { return(median(dat)) }
+}
+sim %<>% set_levels(n=c(10,100), mu=c(3,5), est=c("est_mean","est_median"))
+sim %<>% set_config(
+  num_sim = 2,
+  batch_levels = c("n","mu"),
+  return_batch_id = TRUE
+)
+sim %<>% set_script(function() {
+  batch({
+    dat <- create_data(n=L$n, mu=L$mu)
+  })
+  mu_hat <- est_mean(dat=dat, type=L$est)
+  return(list(
+    "mu_hat" = round(mu_hat,2),
+    "dat_1" = round(dat[1],2)
+  ))
+})
+sim %<>% run()
+sim$results[order(sim$results$batch_id),]
+```
