@@ -333,3 +333,4 @@ test_that("batch() works with batch_levels=NULL", {
   expect_false(r1[1]==r2[1])
 })
 rm(sim,r1,r2)
+
