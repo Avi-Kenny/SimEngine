@@ -16,12 +16,15 @@ necessary to reject the null hypothesis under certain assumptions around
 the distribution of your outcome, the effect size, etc. For example, in
 an experiment comparing means between two groups, the following formula
 is used to calculate the necessary sample size to reject a null
-hypothesis with power $1 - \beta$ and type I error rate $\alpha$, where
-the outcome variable has means $\mu_{0},\mu_{1}$ and standard deviations
-$\sigma_{0}^{2},\sigma_{1}^{2}$ in the two groups and $z_{\alpha/2}$ and
-$z_{\beta}$ represent quantiles of the standard normal distribution:
+hypothesis with power $`1-\beta`$ and type I error rate $`\alpha`$,
+where the outcome variable has means $`\mu_0,\mu_1`$ and standard
+deviations $`\sigma_0^2,\sigma_1^2`$ in the two groups and
+$`z_{\alpha/2}`$ and $`z_\beta`$ represent quantiles of the standard
+normal distribution:
 
-$$n = \frac{\left( z_{\alpha/2} + z_{\beta} \right)^{2}\left( \sigma_{0}^{2} + \sigma_{1}^{2} \right)}{\left( \mu_{0} - \mu_{1} \right)^{2}}$$
+``` math
+n = \frac{(z_{\alpha/2}+z_\beta)^2(\sigma_0^2+\sigma_1^2)}{(\mu_0-\mu_1)^2}
+```
 
 However, for more complex study designs or analysis plans, formulas may
 not exist or may be very difficult to adapt to a particular setting. In
@@ -40,9 +43,9 @@ correlation structure) of your real dataset.
 
 If you want to calculate sample size at a fixed power level (e.g. 90%),
 you can use a “guess and check” approach. With this approach, you select
-a sample size $n_{1}$ and run the simulation to estimate your power. If
-power is estimated to be lower than 90%, you select a new value $n_{2}$
-that is larger than $n_{1}$ and run the simulation again. You repeat
+a sample size $`n_1`$ and run the simulation to estimate your power. If
+power is estimated to be lower than 90%, you select a new value $`n_2`$
+that is larger than $`n_1`$ and run the simulation again. You repeat
 this procedure until the estimated power is roughly 90%.
 
 We illustrate this process by simulating a randomized controlled trial
@@ -54,6 +57,7 @@ First, we declare a new simulation object and write a function to
 generate data:
 
 ``` r
+
 sim <- new_sim()
 
 create_rct_data <- function(n, mu_0, mu_1, sigma_0, sigma_1) {
@@ -79,6 +83,7 @@ and runs a statistical test to decide whether to reject the null
 hypothesis:
 
 ``` r
+
 run_test <- function(data) {
   test_result <- t.test(outcome~group, data=data)
   return(as.integer(test_result$p.value<0.05))
@@ -89,6 +94,7 @@ Next, we write the simulation script and tell SimEngine to run 1,000
 simulation replicates each for four sample sizes.
 
 ``` r
+
 sim %<>% set_script(function() {
   data <- create_rct_data(n=L$n, mu_0=17, mu_1=18, sigma_0=2, sigma_1=2)
   reject <- run_test(data)
@@ -105,6 +111,7 @@ function, which tells us the percentage of simulations in which the null
 hypothesis was rejected.
 
 ``` r
+
 sim %<>% run()
 #> Done. No errors or warnings detected.
 
@@ -123,6 +130,7 @@ We can compare our results to what we obtain by using the formula stated
 earlier.
 
 ``` r
+
 power_formula <- sapply(c(20,40,60,80), function(n) {
   pnorm(sqrt((n*(17-18)^2)/(2^2+2^2)) - qnorm(0.025, lower.tail=F))
 })

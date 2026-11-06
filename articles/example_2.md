@@ -12,23 +12,24 @@ variance-covariance matrix of the least-squares estimator in linear
 regression. We assume the reader has some familiarity with linear
 regression.
 
-Suppose our dataset consists of $n$ independent observations
-$\{\left( Y_{1},X_{1} \right),\ldots,\left( Y_{n},X_{n} \right)\}$,
-where $X$ and $Y$ are both scalar variables. A general linear regression
-model posits that
+Suppose our dataset consists of $`n`$ independent observations
+$`\{(Y_1, X_1), \dots, (Y_n, X_n)\}`$, where $`X`$ and $`Y`$ are both
+scalar variables. A general linear regression model posits that
 
-$$Y_{i} = \beta_{0} + \beta_{1}X_{i} + \epsilon_{i}$$
+``` math
+Y_i = \beta_0 + \beta_1 X_i + \epsilon_i
+```
 
-where $\epsilon_{i}$ is a mean-zero noise term with variance
-$\sigma_{i}^{2}$. We refer to this as a heteroskedastic model, since the
-variances need not be equal across all $i$. This is the true
+where $`\epsilon_i`$ is a mean-zero noise term with variance
+$`\sigma^2_i`$. We refer to this as a heteroskedastic model, since the
+variances need not be equal across all $`i`$. This is the true
 data-generating model. (Note: A more restrictive (but misspecified)
-model assumes that there is a common variance $\sigma^{2}$ such that
-$\sigma_{i}^{2} = \sigma^{2}$ for all $i$. We refer to this incorrect
+model assumes that there is a common variance $`\sigma^2`$ such that
+$`\sigma^2_i = \sigma^2`$ for all $`i`$. We refer to this incorrect
 model as the homoskedastic model.)
 
 In linear regression, we use least-squares to estimate the coefficient
-vector $\beta$. For the purposes of building confidence intervals and
+vector $`\beta`$. For the purposes of building confidence intervals and
 performing hypothesis tests, we need to also estimate the standard error
 of the least squares estimator. There are two common ways to do this:
 (1) Use a model-based standard error that assume homoskedasticity. This
@@ -42,9 +43,10 @@ estimators.
 
 We start by declaring a new simulation object and writing a function
 that generates some data according to our model. For this simulation, we
-will make $\sigma_{i}^{2}$ larger for larger values of $X_{i}$.
+will make $`\sigma^2_i`$ larger for larger values of $`X_i`$.
 
 ``` r
+
 sim <- new_sim()
 
 create_regression_data <- function(n) {
@@ -58,9 +60,10 @@ create_regression_data <- function(n) {
 
 To get a sense of what heteroskedasticity looks like in practice, we can
 generate a dataset, fit a linear regression model, and make a
-scatterplot of the residuals against $X$.
+scatterplot of the residuals against $`X`$.
 
 ``` r
+
 dat <- create_regression_data(n=500)
 linear_model <- lm(y~x, data=dat)
 dat$residuals <- linear_model$residuals
@@ -76,10 +79,11 @@ ggplot(dat, aes(x=x, y=residuals)) +
 
 Now we declare two methods: one returns the least squares estimate and
 model-based estimator of the variance-covariance matrix of
-$\widehat{\beta}$, and the other returns the least squares estimate and
+$`\hat{\beta}`$, and the other returns the least squares estimate and
 sandwich estimator (using the sandwich package).
 
 ``` r
+
 model_vcov <- function(data) {
   mod <- lm(y~x, data=data)
   return(list("coef"=mod$coefficients, "vcov"=diag(vcov(mod))))
@@ -93,17 +97,18 @@ sandwich_vcov <- function(data) {
 
 Next, we write the simulation script. This script returns a point
 estimate and a standard error estimate for both the intercept parameter
-$\beta_{0}$ and the slope parameter $\beta_{1}$. We will tell SimEngine
+$`\beta_0`$ and the slope parameter $`\beta_1`$. We will tell SimEngine
 to run 500 simulation replicates for each of four sample sizes. It is
 important to use the `seed` argument in `set_config` so that our results
 will be reproducible. In addition, we will use the `packages` option to
 load the sandwich package. Loading packages via `set_config` (as opposed
 to running
-[`library(sandwich)`](https://sandwich.R-Forge.R-project.org/)) is
+[`library(sandwich)`](https://zeileis.codeberg.page/sandwich/)) is
 required if running simulations in parallel. Finally, we run the
 simulation.
 
 ``` r
+
 sim %<>% set_script(function() {
   data <- create_regression_data(n=L$n)
   estimates <- use_method(L$estimator, list(data))
@@ -132,15 +137,16 @@ sim %<>% run()
 
 Now we can summarize the results using `summarize`. There are two main
 quantities of interest for us. The primary purpose of the standard error
-estimate for $\widehat{\beta}$ is to form confidence intervals, so we
-will look at (1) the average width of the resulting interval (simply
-1.96 times the average standard error estimate across simulation
-replicates), and (2) the estimated coverage of the interval, which is
-simply the proportion of simulation replicates in which the interval
-contains the true value of $\beta$. We will focus on 95% confidence
-intervals in this simulation.
+estimate for $`\hat{\beta}`$ is to form confidence intervals, so we will
+look at (1) the average width of the resulting interval (simply 1.96
+times the average standard error estimate across simulation replicates),
+and (2) the estimated coverage of the interval, which is simply the
+proportion of simulation replicates in which the interval contains the
+true value of $`\beta`$. We will focus on 95% confidence intervals in
+this simulation.
 
 ``` r
+
 summarized_results <- sim %>% summarize(
   list(stat="mean", name="mean_se_beta0", x="beta0_se_est"),
   list(stat="mean", name="mean_se_beta1", x="beta1_se_est"),
@@ -174,6 +180,7 @@ print(summarized_results)
 To visualize our results, we set up a plotting function.
 
 ``` r
+
 library(tidyr)
 #> 
 #> Attaching package: 'tidyr'
@@ -246,21 +253,23 @@ plot_results <- function(which_graph, n_est) {
 We then use the plotting function to make our figures.
 
 ``` r
+
 plot_results("width", 2)
 ```
 
 ![](example_2_files/figure-html/unnamed-chunk-8-1.png)
 
 ``` r
+
 plot_results("coverage", 2)
 ```
 
 ![](example_2_files/figure-html/unnamed-chunk-8-2.png)
 
 Looking at these plots, we can see that the sandwich method results in a
-wider interval, on average, for $\beta_{1}$. In terms of coverage, the
+wider interval, on average, for $`\beta_1`$. In terms of coverage, the
 sandwich estimator achieves near nominal coverage for both parameters,
-while there is moderate undercoverage for $\beta_{1}$ using the
+while there is moderate undercoverage for $`\beta_1`$ using the
 model-based estimator.
 
 The bootstrap is another popular approach to estimating standard errors.
@@ -273,6 +282,7 @@ option `parallel = TRUE` in `set_config`. (Even with parallelization,
 `update_sim` will likely take a few minutes to run.)
 
 ``` r
+
 bootstrap_vcov <- function(data) {
   mod <- lm(y~x, data=data)
   boot_ests <- matrix(NA, nrow=100, ncol=2)
@@ -308,6 +318,7 @@ Now that we have the bootstrap results included in our simulation
 object, we can look at the updated results.
 
 ``` r
+
 summarized_results <- sim %>% summarize(
   list(stat="mean", name="mean_se_beta0", x="beta0_se_est"),
   list(stat="mean", name="mean_se_beta1", x="beta1_se_est"),
@@ -323,52 +334,53 @@ plot_results("width", 3)
 ![](example_2_files/figure-html/unnamed-chunk-10-1.png)
 
 ``` r
+
 plot_results("coverage", 3)
 ```
 
 ![](example_2_files/figure-html/unnamed-chunk-10-2.png)
 
 Like the sandwich estimator, the bootstrap results in wider intervals
-for $\beta_{1}$, but is much closer to achieving 95% coverage compared
+for $`\beta_1`$, but is much closer to achieving 95% coverage compared
 to the model-based estimator.
 
 ------------------------------------------------------------------------
 
 ## Statistical appendix
 
-For notational simplicity, we build a matrix $\mathbb{X}$, whose first
+For notational simplicity, we build a matrix $`\mathbb{X}`$, whose first
 column is all 1’s (the intercept column) and whose second column is
-$\left( X_{1},\ldots,X_{n} \right)^{T}$. We also define a matrix
+$`(X_1, \dots, X_n)^T`$. We also define a matrix
 
-$$\Sigma = \begin{pmatrix}
-\sigma_{1}^{2} & \ldots & 0 \\
-\vdots & \ddots & \vdots \\
-0 & \ldots & \sigma_{n}^{2}
-\end{pmatrix}$$
+``` math
+ \Sigma = \begin{pmatrix}\sigma^2_1 &\dots& 0 \\ \vdots &\ddots& \vdots \\ 0 & \dots & \sigma^2_n\end{pmatrix}
+```
 
-The ordinary least squares estimator of $\beta$ is
-$\widehat{\beta} = \left( {\mathbb{X}}^{T}{\mathbb{X}} \right)^{- 1}{\mathbb{X}}^{T}{\mathbb{Y}}$.
-The variance of this estimator, which we call $\mathbb{V}$ is
+The ordinary least squares estimator of $`\beta`$ is
+$`\hat{\beta} = (\mathbb{X}^T\mathbb{X})^{-1}\mathbb{X}^T\mathbb{Y}`$.
+The variance of this estimator, which we call $`\mathbb{V}`$ is
 
-$$\text{Var}\left( \widehat{\beta} \right) = \left( {\mathbb{X}}^{T}{\mathbb{X}} \right)^{- 1}{\mathbb{X}}^{T}\Sigma{\mathbb{X}}\left( {\mathbb{X}}^{T}{\mathbb{X}} \right)^{- 1}$$
+``` math
+\text{Var}(\hat{\beta}) = (\mathbb{X}^T\mathbb{X})^{-1}\mathbb{X}^T\Sigma\mathbb{X}(\mathbb{X}^T\mathbb{X})^{-1}
+```
 
-The usual estimator of $\mathbb{V}$ is the model-based standard error
-$s^{2}\left( {\mathbb{X}}^{T}{\mathbb{X}} \right)^{- 1}$, where
-$s^{2} = \frac{\sum_{i}\left( Y_{i} - \left( {\widehat{\beta}}_{0} + {\widehat{\beta}}_{1}X_{i} \right) \right)^{2}}{n - 1}$.
-However, under our heteroskedastic model where the $\sigma_{i}^{2}$ are
-not all equal, this is not a consistent estimator of $\mathbb{V}$! That
-is to say, even in large samples, we cannot generally expect this
+The usual estimator of $`\mathbb{V}`$ is the model-based standard error
+$`s^2(\mathbb{X}^T\mathbb{X})^{-1}`$, where
+$`s^2 = \frac{\sum_i (Y_i - (\hat{\beta}_0 + \hat{\beta}_1X_i))^2}{n-1}`$.
+However, under our heteroskedastic model where the $`\sigma^2_i`$ are
+not all equal, this is not a consistent estimator of $`\mathbb{V}`$!
+That is to say, even in large samples, we cannot generally expect this
 estimator to be close to the truth.
 
 A better estimator for our setting is the sandwich standard error, or
 Huber-White standard error, given by
 
-$$\left( {\mathbb{X}}^{T}{\mathbb{X}} \right)^{- 1}{\mathbb{X}}^{T}\widehat{\Sigma}{\mathbb{X}}\left( {\mathbb{X}}^{T}{\mathbb{X}} \right)^{- 1}$$
+``` math
+(\mathbb{X}^T\mathbb{X})^{-1}\mathbb{X}^T\hat{\Sigma}\mathbb{X}(\mathbb{X}^T\mathbb{X})^{-1}
+```
 
 where
 
-$$\widehat{\Sigma} = \begin{pmatrix}
-\left( Y_{1} - \left( {\widehat{\beta}}_{0} + {\widehat{\beta}}_{1}X_{1} \right) \right)^{2} & \ldots & 0 \\
-\vdots & \ddots & \vdots \\
-0 & \ldots & \left( Y_{n} - \left( {\widehat{\beta}}_{0} + {\widehat{\beta}}_{1}X_{n} \right) \right)^{2}
-\end{pmatrix}$$
+``` math
+\hat{\Sigma} = \begin{pmatrix}(Y_1 - (\hat{\beta}_0 + \hat{\beta}_1X_1))^2  &\dots& 0 \\ \vdots &\ddots& \vdots \\ 0 & \dots & (Y_n - (\hat{\beta}_0 + \hat{\beta}_1X_n))^2\end{pmatrix}
+```

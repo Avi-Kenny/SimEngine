@@ -6,6 +6,7 @@ Often, simulation levels will be simple, such as a vector of sample
 sizes:
 
 ``` r
+
 sim <- new_sim()
 sim %<>% set_levels(n = c(200,400,800))
 ```
@@ -16,6 +17,7 @@ strings, a named list of lists can be used. The toy example below
 illustrates this.
 
 ``` r
+
 sim <- new_sim()
 sim %<>% set_levels(
   n = c(10,100),
@@ -46,6 +48,7 @@ returned by
 [`summarize()`](https://avi-kenny.github.io/SimEngine/reference/summarize.md).
 
 ``` r
+
 sim %>% summarize(list(stat="mean", x="y"))
 #>   level_id   n distribution n_reps    mean_y
 #> 1        1  10       Beta 1      1 0.3974106
@@ -68,6 +71,7 @@ again with the `.keep` option to specify which scenarios to keep. This
 is demonstrated below:
 
 ``` r
+
 sim <- new_sim()
 sim %<>% set_levels(alpha=c(2,3,4), beta=c(50,60))
 print(sim$levels_grid)
@@ -98,6 +102,7 @@ of a linear regression and returns these as numeric, but also returns
 the estimated covariance matrix and the entire model object.
 
 ``` r
+
 sim <- new_sim()
 sim %<>% set_levels(n=c(10, 100, 1000))
 create_data <- function(n) {
@@ -128,14 +133,15 @@ directly via `sim$results` or using the
 function, as usual:
 
 ``` r
+
 head(sim$results)
 #>   sim_uid level_id rep_id    n     runtime beta0_hat  beta1_hat
-#> 1       1        1      1   10 0.003092051  4.357518 -0.8661117
-#> 2       4        1      2   10 0.001080513  1.796235  3.7833815
-#> 3       2        2      1  100 0.004112959  2.648096  2.2148375
-#> 4       5        2      2  100 0.001054525  3.095621  1.7386195
-#> 5       3        3      1 1000 0.001422644  3.076829  1.9557942
-#> 6       6        3      2 1000 0.001262665  2.964774  2.0288481
+#> 1       1        1      1   10 0.003075123  4.357518 -0.8661117
+#> 2       4        1      2   10 0.001016855  1.796235  3.7833815
+#> 3       2        2      1  100 0.004051924  2.648096  2.2148375
+#> 4       5        2      2  100 0.001017094  3.095621  1.7386195
+#> 5       3        3      1 1000 0.001361847  3.076829  1.9557942
+#> 6       6        3      2 1000 0.001375675  2.964774  2.0288481
 ```
 
 To examine the complex return data, we can use the function
@@ -143,6 +149,7 @@ To examine the complex return data, we can use the function
 as illustrated below:
 
 ``` r
+
 c5 <- get_complex(sim, sim_uid=5)
 print(summary(c5$model))
 #> 
@@ -172,6 +179,7 @@ print(c5$cov_mtx)
 To process all complex data, loop through the `sim_uids`, as follows:
 
 ``` r
+
 for (i in sim$results$sim_uid) {
   cmplx <- get_complex(sim, sim_uid=i)
   print(as.numeric(diag(vcov(cmplx$model))))
@@ -202,6 +210,7 @@ To illustrate the use of
 using this example, we first consider the following simulation:
 
 ``` r
+
 sim <- new_sim()
 create_data <- function(n) { rnorm(n=n, mean=3) }
 est_mean <- function(dat, type) {
@@ -227,6 +236,7 @@ element of the `dat` vector created in the simulation script), we see
 that a unique dataset was created for each simulation replicate:
 
 ``` r
+
 sim$results[order(sim$results$rep_id),c(1:7)!=5]
 #>   sim_uid level_id rep_id        est mu_hat dat_1
 #> 1       1        1      1   est_mean   2.97  1.49
@@ -245,6 +255,7 @@ can do this using the
 function, as follows:
 
 ``` r
+
 sim <- new_sim()
 create_data <- function(n) { rnorm(n=n, mean=3) }
 est_mean <- function(dat, type) {
@@ -278,6 +289,7 @@ function. Whatever code goes inside the
 function will produce the same output for all simulations in a batch.
 
 ``` r
+
 sim$results[order(sim$results$rep_id),c(1:7)!=5]
 #>   sim_uid level_id rep_id        est mu_hat dat_1
 #> 1       1        1      1   est_mean   2.85  3.58
@@ -306,6 +318,7 @@ block. In the example below, the levels `n` and `mu` are used within the
 call, while the level `est` is not.
 
 ``` r
+
 sim <- new_sim()
 create_data <- function(n, mu) { rnorm(n=n, mean=mu) }
 est_mean <- function(dat, type) {
@@ -415,6 +428,7 @@ seed for each simulation replicate. The
 function is used to set or change this global seed:
 
 ``` r
+
 sim %<>% set_config(seed=123)
 ```
 
@@ -426,6 +440,7 @@ can be replicated if desired. To view this seed, we use the
 function:
 
 ``` r
+
 sim <- new_sim()
 print(vars(sim, "seed"))
 #> [1] 287577520
@@ -443,6 +458,7 @@ dataframe by typing `print(sim$errors)` can sometimes help to quickly
 pinpoint the issue. This is demonstrated below:
 
 ``` r
+
 sim <- new_sim()
 sim %<>% set_config(num_sim=2)
 sim %<>% set_levels(
@@ -461,8 +477,8 @@ sim %<>% run()
 #> Done. Errors detected in 25% of simulation replicates. Warnings detected in 0% of simulation replicates.
 print(sim$errors)
 #>   sim_uid level_id rep_id Sigma      runtime                          message
-#> 1       5        3      1    s2 0.0003919601 'Sigma' is not positive definite
-#> 2       6        3      2    s2 0.0003745556 'Sigma' is not positive definite
+#> 1       5        3      1    s2 0.0003890991 'Sigma' is not positive definite
+#> 2       6        3      2    s2 0.0004167557 'Sigma' is not positive definite
 #>                                                      call
 #> 1 MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma$mtx)
 #> 2 MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma$mtx)
@@ -477,6 +493,7 @@ for a subset of simulation replicates and that error is fixed, it is
 possible to rerun the replicates that had errors, as follows:
 
 ``` r
+
 sim %<>% update_sim(keep_errors=FALSE)
 ```
 
@@ -491,6 +508,7 @@ tools. For both of these situations, **SimEngine** includes the
 following configuration option:
 
 ``` r
+
 sim %<>% set_config(stop_at_error=TRUE)
 ```
 
@@ -526,6 +544,7 @@ summary data frame, along with associated 95% confidence intervals based
 on a normal approximation.
 
 ``` r
+
 sim <- new_sim()
 create_data <- function(n) { rpois(n, lambda=5) }
 est_mean <- function(dat) {

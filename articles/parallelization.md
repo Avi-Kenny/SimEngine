@@ -65,6 +65,7 @@ computer. This mode is activated using
 as follows.
 
 ``` r
+
 sim <- new_sim()
 sim %<>% set_config(parallel = TRUE)
 ```
@@ -88,6 +89,7 @@ If the user’s computer has `n` cores available, **SimEngine** will use
 can be used to manually specify the number of cores to use, as follows.
 
 ``` r
+
 sim %<>% set_config(n_cores = 2)
 ```
 
@@ -112,6 +114,7 @@ To illustrate the cluster parallelization workflow, consider the
 following simulation:
 
 ``` r
+
 sim <- new_sim()
 create_data <- function(n) { return(rpois(n=n, lambda=20)) }
 est_lambda <- function(dat, type) {
@@ -148,6 +151,7 @@ the
 function is illustrated below:
 
 ``` r
+
 run_on_cluster(
   first = {
     sim <- new_sim()
@@ -299,6 +303,7 @@ identified, it can be specified in the `cluster_config` block, as
 follows:
 
 ``` r
+
 run_on_cluster(
   first = {...},
   main = {...},
@@ -332,6 +337,7 @@ the `last` block, code can remain the same or change as needed. These
 differences are illustrated in the code below.
 
 ``` r
+
 update_sim_on_cluster(
   first = {
     sim <- readRDS("sim.rds")

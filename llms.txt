@@ -15,6 +15,7 @@ using
 [`install.packages()`](https://rdrr.io/r/utils/install.packages.html):
 
 ``` r
+
 install.packages("SimEngine")
 ```
 
@@ -22,6 +23,7 @@ The current development version can be installed using
 `devtools::install_github()`:
 
 ``` r
+
 devtools::install_github(repo="Avi-Kenny/SimEngine")
 ```
 

@@ -16,17 +16,18 @@ methods using the generated data, and (3) compare the performance of the
 methods.
 
 To briefly illustrate how these phases are implemented using , we use a
-simple example of estimating the rate parameter $\lambda$ of a
-$\text{Poisson}(\lambda)$ distribution. To anchor the simulation in a
-real-world situation, one can imagine that a sample of size $n$ from
+simple example of estimating the rate parameter $`\lambda`$ of a
+$`\text{Poisson}(\lambda)`$ distribution. To anchor the simulation in a
+real-world situation, one can imagine that a sample of size $`n`$ from
 this Poisson distribution models the number of patients admitted daily
-to a hospital over the course of $n$ consecutive days. Suppose that the
-data consist of $n$ independent and identically distributed observations
-$X_{1},X_{2},\ldots,X_{n}$ drawn from a Poisson($\lambda$) distribution.
-Since the $\lambda$ parameter of the Poisson distribution is equal to
-both the mean and the variance, one may ask whether the sample mean
-(denoted ${\widehat{\lambda}}_{M,n}$) or the sample variance (denoted
-${\widehat{\lambda}}_{V,n}$) is a better estimator of $\lambda$.
+to a hospital over the course of $`n`$ consecutive days. Suppose that
+the data consist of $`n`$ independent and identically distributed
+observations $`X_1, X_2, \ldots, X_n`$ drawn from a Poisson($`\lambda`$)
+distribution. Since the $`\lambda`$ parameter of the Poisson
+distribution is equal to both the mean and the variance, one may ask
+whether the sample mean (denoted $`\hat{\lambda}_{M,n}`$) or the sample
+variance (denoted $`\hat{\lambda}_{V,n}`$) is a better estimator of
+$`\lambda`$.
 
 ### 1) Load the package and create a simulation object
 
@@ -37,6 +38,7 @@ function. The simulation object contains all data, functions, and
 results related to the simulation.
 
 ``` r
+
 library(SimEngine)
 #> Loading required package: magrittr
 #> Welcome to SimEngine! Full package documentation can be found at:
@@ -49,9 +51,10 @@ sim <- new_sim()
 Many simulations involve a function that creates a dataset designed to
 mimic a real-world data-generating mechanism. Here, we write and test a
 simple function to generate a sample of `n` observations from a Poisson
-distribution with $\lambda = 20$.
+distribution with $`\lambda = 20`$.
 
 ``` r
+
 create_data <- function(n) {
   return(rpois(n=n, lambda=20))
 }
@@ -66,10 +69,11 @@ With **SimEngine**, any functions declared (or loaded via
 [`source()`](https://rdrr.io/r/base/source.html)) are automatically
 stored in the simulation object when the simulation runs. In this
 example, we test the sample mean and sample variance estimators of the
-$\lambda$ parameter. For simplicity, we write this as a single function
-and use the `type` argument to specify which estimator to use.
+$`\lambda`$ parameter. For simplicity, we write this as a single
+function and use the `type` argument to specify which estimator to use.
 
 ``` r
+
 est_lambda <- function(dat, type) {
   if (type=="M") { return(mean(dat)) }
   if (type=="V") { return(var(dat)) }
@@ -87,20 +91,22 @@ Often, we wish to run the same simulation multiple times. We refer to
 each run as a *simulation replicate*. We may wish to vary certain
 features of the simulation between replicates. In this example, perhaps
 we choose to vary the sample size and the estimator used to estimate
-$\lambda$. We refer to the features that vary as *simulation levels*; in
-the example below, the simulation levels are the sample size (`n`) and
-the estimator (`estimator`). We refer to the values that each simulation
-level can take on as *level values*; in the example below, the `n` level
-values are `10`, `100`, and `1000`, and the `estimator` level values are
-`"M"` (for “sample mean”) and `"V"` (for “sample variance”). We also
-refer to a combination of level values as a *scenario*; in this example,
-the combination of `n=10` and `estimator="M"` is one of the six possible
-scenarios defined by the two values of `n` and the three values of
-`estimator`. By default, **SimEngine** runs one simulation replicate for
-each scenario, although the user will typically want to increase this;
-1,000 or 10,000 replicates per scenario is common.
+$`\lambda`$. We refer to the features that vary as *simulation levels*;
+in the example below, the simulation levels are the sample size (`n`)
+and the estimator (`estimator`). We refer to the values that each
+simulation level can take on as *level values*; in the example below,
+the `n` level values are `10`, `100`, and `1000`, and the `estimator`
+level values are `"M"` (for “sample mean”) and `"V"` (for “sample
+variance”). We also refer to a combination of level values as a
+*scenario*; in this example, the combination of `n=10` and
+`estimator="M"` is one of the six possible scenarios defined by the two
+values of `n` and the three values of `estimator`. By default,
+**SimEngine** runs one simulation replicate for each scenario, although
+the user will typically want to increase this; 1,000 or 10,000
+replicates per scenario is common.
 
 ``` r
+
 sim %<>% set_levels(
   estimator = c("M", "V"),
   n = c(10, 100, 1000)
@@ -125,6 +131,7 @@ script will automatically have access to any functions or objects that
 have been declared in the global environment.
 
 ``` r
+
 sim %<>% set_script(function() {
   dat <- create_data(n=L$n)
   lambda_hat <- est_lambda(dat=dat, type=L$estimator)
@@ -159,6 +166,7 @@ using the `packages` argument of
 (100 for each of the six scenarios).
 
 ``` r
+
 sim %<>% set_config(
   num_sim = 100,
   packages = c("ggplot2", "stringr")
@@ -176,6 +184,7 @@ All 600 replicates are run at once and results are stored in the
 simulation object.
 
 ``` r
+
 sim %<>% run()
 #> Done. No errors or warnings detected.
 ```
@@ -189,6 +198,7 @@ bias, variance, mean squared error (MSE), and confidence interval
 coverage.
 
 ``` r
+
 sim %>% summarize(
   list(stat="bias", name="bias_lambda", estimate="lambda_hat", truth=20),
   list(stat="mse", name="mse_lambda", estimate="lambda_hat", truth=20)
@@ -210,14 +220,15 @@ each scenario. Results for individual simulation replicates can also be
 directly accessed via the `sim$results` dataframe.
 
 ``` r
+
 head(sim$results)
 #>   sim_uid level_id rep_id estimator  n      runtime lambda_hat
-#> 1       1        1      1         M 10 0.0004756451       21.2
-#> 2       7        1      2         M 10 0.0002944469       19.8
-#> 3       8        1      3         M 10 0.0807914734       19.0
-#> 4       9        1      4         M 10 0.0004608631       22.3
-#> 5      10        1      5         M 10 0.0003521442       21.2
-#> 6      11        1      6         M 10 0.0003054142       20.0
+#> 1       1        1      1         M 10 0.0004992485       21.2
+#> 2       7        1      2         M 10 0.0002870560       19.8
+#> 3       8        1      3         M 10 0.0003173351       19.0
+#> 4       9        1      4         M 10 0.0002870560       22.3
+#> 5      10        1      5         M 10 0.0002853870       21.2
+#> 6      11        1      6         M 10 0.0003030300       20.0
 ```
 
 Above, the `sim_uid` uniquely identifies a single simulation replicate
@@ -243,6 +254,7 @@ adding 100 replicates to those that have already been run) for each
 scenario, and adds one additional level value for `n`.
 
 ``` r
+
 sim %<>% set_config(num_sim = 200)
 sim %<>% set_levels(
   estimator = c("M", "V"),
@@ -255,6 +267,7 @@ After the levels and/or configuration are updated,
 is called.
 
 ``` r
+
 sim %<>% update_sim()
 #> Done. No errors or warnings detected.
 ```
@@ -264,6 +277,7 @@ Another call to
 shows that the additional replicates were successfully:
 
 ``` r
+
 sim %>% summarize(
   list(stat="bias", name="bias_lambda", estimate="lambda_hat", truth=20),
   list(stat="mse", name="mse_lambda", estimate="lambda_hat", truth=20)
