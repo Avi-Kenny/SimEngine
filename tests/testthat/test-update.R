@@ -208,3 +208,109 @@ test_that("Correct handling of updated levels", {
                paste0("You cannot change the level variables after they are in",
                       "itially set"))
 })
+
+
+### update_sim() when the newly-added replicates are 100% errors ###
+# (the original run has some successful results)
+sim <- new_sim()
+sim %<>% set_script(function() {
+  if (L$index > 2) { stop("Error in new levels.") }
+  return(list("x" = L$index))
+})
+sim %<>% set_levels(index=1:2)
+sim %<>% set_config(num_sim=2, parallel=FALSE)
+sim %<>% run()
+prev_results <- sim$results
+
+sim %<>% set_levels(index=1:4)
+sim %<>% update_sim()
+
+test_that("update_sim() works when new replicates all have errors", {
+  expect_true(is.data.frame(sim$results))
+  expect_equal(nrow(sim$results), 4)
+  expect_equal(sim$results, prev_results)
+  expect_true(is.data.frame(sim$errors))
+  expect_equal(nrow(sim$errors), 4)
+  expect_equal(sim$vars$run_state, "run, some errors")
+})
+
+### update_sim() when the newly-added replicates have no errors/warnings ###
+# (the original run has both errors and warnings)
+sim <- new_sim()
+sim %<>% set_script(function() {
+  if (L$index <= 2) {
+    warning("Early warning.")
+    stop("Early error.")
+  }
+  return(list("x" = L$index))
+})
+sim %<>% set_levels(index=1:3)
+sim %<>% set_config(num_sim=2, parallel=FALSE)
+suppressWarnings({ sim %<>% run() })
+prev_errors <- sim$errors
+prev_warnings <- sim$warnings
+
+sim %<>% set_levels(index=1:5)
+sim %<>% update_sim()
+
+test_that("update_sim() works when new replicates have no errors/warnings", {
+  expect_true(is.data.frame(sim$results))
+  expect_equal(nrow(sim$results), 6)
+  expect_true(is.data.frame(sim$errors))
+  expect_equal(sim$errors, prev_errors)
+  expect_true(is.data.frame(sim$warnings))
+  expect_equal(sim$warnings, prev_warnings)
+  expect_equal(sim$vars$run_state, "run, some errors")
+})
+
+### update_sim() when previous results are all errors and new reps succeed ###
+sim <- new_sim()
+sim %<>% set_script(function() {
+  if (L$index <= 2) { stop("Early error.") }
+  return(list("x" = L$index))
+})
+sim %<>% set_levels(index=1:2)
+sim %<>% set_config(num_sim=2, parallel=FALSE)
+sim %<>% run()
+
+sim %<>% set_levels(index=1:4)
+sim %<>% update_sim()
+
+test_that("update_sim() works when original run was 100% errors", {
+  expect_true(is.data.frame(sim$results))
+  expect_equal(nrow(sim$results), 4)
+  expect_true(is.data.frame(sim$errors))
+  expect_equal(nrow(sim$errors), 4)
+  expect_equal(sim$vars$run_state, "run, some errors")
+})
+
+### update_sim() when original and new replicates are both 100% errors ###
+sim <- new_sim()
+sim %<>% set_script(function() { stop("Always an error.") })
+sim %<>% set_levels(index=1:2)
+sim %<>% set_config(num_sim=2, parallel=FALSE)
+sim %<>% run()
+
+sim %<>% set_levels(index=1:4)
+sim %<>% update_sim()
+
+test_that("update_sim() works when all replicates have errors", {
+  expect_true(is.character(sim$results))
+  expect_true(is.data.frame(sim$errors))
+  expect_equal(nrow(sim$errors), 8)
+  expect_equal(sim$vars$run_state, "run, all errors")
+})
+
+### update_run_state() ###
+test_that("update_run_state() returns the correct state", {
+  df <- data.frame(sim_uid=1:2, x=c("a","b"), stringsAsFactors=FALSE)
+  state <- function(results, errors) {
+    SimEngine:::update_run_state(list(results=results, errors=errors))
+  }
+  expect_equal(state(df, "No errors"), "run, no errors")
+  expect_equal(state("Errors detected in 100% of simulation replicates", df),
+               "run, all errors")
+  expect_equal(state(df, df), "run, some errors")
+  expect_error(state(df[0,], df), "CODE 105")
+  expect_error(state(df, df[0,]), "CODE 105")
+})

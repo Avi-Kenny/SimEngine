@@ -293,7 +293,10 @@ combine_original_with_update <- function(
   sim, results_new, results_complex_new, errors_new, warnings_new
 ) {
 
-  if (!is.null(results_new)) {
+  # Note: a character string (e.g. "No errors") in the "new" objects is a
+  #     placeholder denoting that there is nothing new to add, so it is treated
+  #     the same as NULL
+  if (!is.null(results_new) && !is.character(results_new)) {
     if (!is.character(sim$results)) {
       sim$results <- rbind(sim$results, results_new)
     } else {
@@ -305,20 +308,28 @@ combine_original_with_update <- function(
       sim$results_complex <- results_complex_new
     }
   }
-  if (!is.null(errors_new)) {
+  if (!is.null(errors_new) && !is.character(errors_new)) {
     if (!is.character(sim$errors)) {
       sim$errors <- rbind(sim$errors, errors_new)
     } else {
       sim$errors <- errors_new
     }
   }
-  if (!is.null(warnings_new)) {
+  if (!is.null(warnings_new) && !is.character(warnings_new)) {
     if (!is.character(sim$warnings)) {
       sim$warnings <- rbind(sim$warnings, warnings_new)
     } else {
       sim$warnings <- warnings_new
     }
   }
+
+  # If there was nothing to combine (e.g. sim$results/errors/warnings were reset
+  #     to NULL when running on a cluster), set the character placeholders
+  if (is.null(sim$results)) {
+    sim$results <- "Errors detected in 100% of simulation replicates"
+  }
+  if (is.null(sim$errors)) { sim$errors <- "No errors" }
+  if (is.null(sim$warnings)) { sim$warnings <- "No warnings" }
 
   return(sim)
 
@@ -338,7 +349,7 @@ update_run_state <- function(sim) {
     return("run, no errors")
   } else if (is.character(sim$results)) {
     return("run, all errors")
-  } else if (nrow(sim$results>0) && nrow(sim$errors>0)) {
+  } else if (nrow(sim$results)>0 && nrow(sim$errors)>0) {
     return("run, some errors")
   } else {
     stop("An unknown error occurred (CODE 105)")

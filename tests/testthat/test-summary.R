@@ -997,3 +997,49 @@ test_that("cov summary with MC SE and CI", {
                               "my_summary_mc_ci_u"))
   expect_equal(summ$my_summary_mc_se, sqrt((1/nrow(sim$results))*summ$my_summary*(1 - summ$my_summary)))
 })
+
+
+### bias_pct with Monte Carlo SE and CIs (multiple bias_pct stats)
+sim <- new_sim()
+sim %<>% set_script(function() {
+  return (list("x" = c(1,2,3,4,5,NA), "y" = c(6,7,8,9,10,11)))
+})
+sim %<>% set_config(num_sim = 1)
+sim %<>% run()
+
+summ <- sim %>% summarize(mc_se = TRUE,
+  list(stat = "bias_pct", name="my_summary", estimate="x", truth=7, na.rm=TRUE),
+  list(stat = "bias_pct", estimate="y", truth=10)
+)
+
+# Expected Monte Carlo SE of percent bias: (1/|truth|) * SE of the raw bias
+x <- c(1,2,3,4,5)
+y <- c(6,7,8,9,10,11)
+mc_se_x <- (1/7)*sqrt(sum((x-7-mean(x-7))^2)/(length(x)*(length(x)-1)))
+mc_se_y <- (1/10)*sqrt(sum((y-10-mean(y-10))^2)/(length(y)*(length(y)-1)))
+
+test_that("bias_pct summary of two variables with MC SE and CIs", {
+  expect_type(summ, "list")
+  expect_equal(dim(summ), c(1, 10))
+  expect_equal(names(summ), c("level_id", "n_reps", "my_summary", "bias_pct_y",
+                              "my_summary_mc_se", "bias_pct_y_mc_se",
+                              "my_summary_mc_ci_l", "bias_pct_y_mc_ci_l",
+                              "my_summary_mc_ci_u", "bias_pct_y_mc_ci_u"))
+  expect_equal(summ$my_summary, mean(x-7)/7)
+  expect_equal(summ$bias_pct_y, mean(y-10)/10)
+  expect_equal(summ$my_summary_mc_se, mc_se_x)
+  expect_equal(summ$bias_pct_y_mc_se, mc_se_y)
+  expect_equal(summ$my_summary_mc_ci_l, summ$my_summary - 1.96*mc_se_x)
+  expect_equal(summ$bias_pct_y_mc_ci_u, summ$bias_pct_y + 1.96*mc_se_y)
+})
+
+# bias and bias_pct together should not interfere with each other
+summ <- sim %>% summarize(mc_se = TRUE,
+  list(stat = "bias", name="b", estimate="y", truth=10),
+  list(stat = "bias_pct", name="bp", estimate="y", truth=10)
+)
+
+test_that("bias and bias_pct can be combined with MC SE", {
+  expect_equal(summ$b_mc_se, sqrt(sum((y-10-mean(y-10))^2)/(6*5)))
+  expect_equal(summ$bp_mc_se, mc_se_y)
+})

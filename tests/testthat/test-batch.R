@@ -334,3 +334,55 @@ test_that("batch() works with batch_levels=NULL", {
 })
 rm(sim,r1,r2)
 
+
+
+# Test set #12: batch() objects are freed once a batch is finished
+run_cache_test <- function(parallel, n_cores) {
+  sim <- new_sim()
+  sim %<>% set_levels(estimator=c("mean","sd","max"), n=c(10,20))
+  sim %<>% set_config(
+    num_sim = 6, batch_levels = "n", parallel = parallel, seed = 123,
+    progress_bar = FALSE
+  )
+  if (!is.na(n_cores)) { sim %<>% set_config(n_cores = n_cores) }
+  sim %<>% set_script(function() {
+    batch({ dat <- rnorm(L$n) })
+    cache <- get("..batch_cache", envir=get("..env", envir=.GlobalEnv))
+    return(list(
+      "dat1" = dat[1],
+      # Number of batches currently cached (excluding the "batch_levels" entry)
+      "n_cached" = length(setdiff(ls(cache, all.names=TRUE), "batch_levels"))
+    ))
+  })
+  sim %<>% run()
+  return(sim)
+}
+
+for (cfg in list(c(FALSE, NA_real_), c(TRUE, 2))) {
+  sim <- run_cache_test(parallel=as.logical(cfg[1]), n_cores=cfg[2])
+  test_that(paste0("batch() frees cached objects after each batch (parallel=",
+                   cfg[1], ")"), {
+    expect_equal(nrow(sim$results), 36)
+    # Only the current batch should ever be cached
+    expect_true(all(sim$results$n_cached==1))
+    # Replicates in a batch share data; different batches do not
+    n_batches <- length(unique(paste(sim$results$n, sim$results$rep_id)))
+    expect_equal(n_batches, 12)
+    expect_equal(
+      length(unique(paste(sim$results$n, sim$results$rep_id,
+                          round(sim$results$dat1, 10)))),
+      12
+    )
+    expect_equal(length(unique(round(sim$results$dat1, 10))), 12)
+  })
+  rm(sim)
+}
+
+# The batch cache is empty after run(), and results are unaffected by cleanup
+sim <- run_cache_test(parallel=FALSE, n_cores=NA_real_)
+test_that("batch cache is empty after run()", {
+  cache <- get("..batch_cache", envir=sim$vars$env)
+  expect_equal(setdiff(ls(cache, all.names=TRUE), "batch_levels"),
+               character(0))
+})
+rm(sim)

@@ -549,10 +549,13 @@ summarize.sim_obj <- function(sim, ..., mc_se = FALSE) {
         } else {
           na_1 <- ")"
         }
-        code_bias_pct_mc_se <- c(code_bias_mc_se, paste0(
+        # Note: pre+arg$name is the percent bias, so it is converted back to the
+        #     (raw) bias by multiplying by abs(truth[1]) before centering
+        code_bias_pct_mc_se <- c(code_bias_pct_mc_se, paste0(
           pre, arg$name, "_mc_se = (1/abs(", arg$truth,
           "[1]))*sqrt((1/(sum(!is.na(", arg$estimate,"))-1))*mean((",
-          arg$estimate, "-", arg$truth, "-", pre, arg$name, ")^2", na_1, "),"
+          arg$estimate, "-", arg$truth, "-", pre, arg$name, "*abs(", arg$truth,
+          "[1]))^2", na_1, "),"
         ))
         code_bias_pct_mc_cil <- c(code_bias_pct_mc_cil, paste0(
           pre, arg$name, "_mc_ci_l = ", pre, arg$name, "- 1.96*", pre, arg$name,
