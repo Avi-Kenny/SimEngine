@@ -453,3 +453,29 @@ test_that("get_complex returns correct error message", {
   expect_error(get_complex(sim, sim_uid=1),
                "This simulation does not have any complex return data.")
 })
+
+
+### set_config(n_cores=NA) restores the default ###
+test_that("set_config() accepts n_cores=NA", {
+
+  # Non-parallel simulation
+  for (na_val in list(NA, NA_real_, NA_integer_)) {
+    sim <- new_sim()
+    sim %<>% set_config(num_sim=2)
+    expect_error(sim %<>% set_config(n_cores=na_val), NA)
+    expect_true(is.na(sim$config$n_cores))
+  }
+
+  # Parallel simulation: default is one fewer than the number of cores
+  sim <- new_sim()
+  sim %<>% set_config(num_sim=2, parallel=TRUE, n_cores=1)
+  expect_equal(sim$config$n_cores, 1)
+  sim %<>% set_config(n_cores=NA)
+  expect_equal(sim$config$n_cores, parallel::detectCores()-1)
+
+  # Invalid values are still rejected
+  expect_error(set_config(new_sim(), n_cores="a"),
+               "`n_cores` must be numeric, of length 1")
+  expect_error(set_config(new_sim(), n_cores=c(1,2)),
+               "`n_cores` must be numeric, of length 1")
+})
