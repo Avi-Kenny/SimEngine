@@ -223,12 +223,12 @@ directly accessed via the `sim$results` dataframe.
 
 head(sim$results)
 #>   sim_uid level_id rep_id estimator  n      runtime lambda_hat
-#> 1       1        1      1         M 10 0.0004992485       21.2
-#> 2       7        1      2         M 10 0.0002870560       19.8
-#> 3       8        1      3         M 10 0.0003173351       19.0
-#> 4       9        1      4         M 10 0.0002870560       22.3
-#> 5      10        1      5         M 10 0.0002853870       21.2
-#> 6      11        1      6         M 10 0.0003030300       20.0
+#> 1       1        1      1         M 10 0.0004205704       21.2
+#> 2       7        1      2         M 10 0.0002191067       19.8
+#> 3       8        1      3         M 10 0.0002000332       19.0
+#> 4       9        1      4         M 10 0.0001952648       22.3
+#> 5      10        1      5         M 10 0.0002000332       21.2
+#> 6      11        1      6         M 10 0.0002171993       20.0
 ```
 
 Above, the `sim_uid` uniquely identifies a single simulation replicate

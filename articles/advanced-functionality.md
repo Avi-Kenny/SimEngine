@@ -135,13 +135,13 @@ function, as usual:
 ``` r
 
 head(sim$results)
-#>   sim_uid level_id rep_id    n     runtime beta0_hat  beta1_hat
-#> 1       1        1      1   10 0.003075123  4.357518 -0.8661117
-#> 2       4        1      2   10 0.001016855  1.796235  3.7833815
-#> 3       2        2      1  100 0.004051924  2.648096  2.2148375
-#> 4       5        2      2  100 0.001017094  3.095621  1.7386195
-#> 5       3        3      1 1000 0.001361847  3.076829  1.9557942
-#> 6       6        3      2 1000 0.001375675  2.964774  2.0288481
+#>   sim_uid level_id rep_id    n      runtime beta0_hat  beta1_hat
+#> 1       1        1      1   10 0.0025813580  4.357518 -0.8661117
+#> 2       4        1      2   10 0.0007359982  1.796235  3.7833815
+#> 3       2        2      1  100 0.0031394958  2.648096  2.2148375
+#> 4       5        2      2  100 0.0007543564  3.095621  1.7386195
+#> 5       3        3      1 1000 0.0010848045  3.076829  1.9557942
+#> 6       6        3      2 1000 0.0010306835  2.964774  2.0288481
 ```
 
 To examine the complex return data, we can use the function
@@ -477,8 +477,8 @@ sim %<>% run()
 #> Done. Errors detected in 25% of simulation replicates. Warnings detected in 0% of simulation replicates.
 print(sim$errors)
 #>   sim_uid level_id rep_id Sigma      runtime                          message
-#> 1       5        3      1    s2 0.0003890991 'Sigma' is not positive definite
-#> 2       6        3      2    s2 0.0004167557 'Sigma' is not positive definite
+#> 1       5        3      1    s2 0.0002861023 'Sigma' is not positive definite
+#> 2       6        3      2    s2 0.0002768040 'Sigma' is not positive definite
 #>                                                      call
 #> 1 MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma$mtx)
 #> 2 MASS::mvrnorm(n = 1, mu = c(0, 0), Sigma = L$Sigma$mtx)
