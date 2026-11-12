@@ -81,6 +81,25 @@ run.sim_obj <- function(sim) {
                   sim$internals$sim_uid_grid$to_run==T)
     sim_uids_to_run <- sim$internals$sim_uid_grid$sim_uid[ind0]
 
+    # Group replicates so that all replicates in a batch run consecutively
+    #     (batches are ordered by first appearance, so the order is unchanged if
+    #     there are no shared batches). This allows objects created by batch()
+    #     to be freed from the batch cache as soon as the batch is finished,
+    #     rather than retaining them until the end of run().
+    batch_ids_to_run <- sim$internals$sim_uid_grid$batch_id[ind0]
+    ord <- order(match(batch_ids_to_run, batch_ids_to_run))
+    sim_uids_to_run <- sim_uids_to_run[ord]
+    batch_ids_to_run <- batch_ids_to_run[ord]
+
+    # Flag (indexed by row of sim_uid_grid) the last replicate of each batch
+    is_last_in_batch <- rep(FALSE, nrow(sim$internals$sim_uid_grid))
+    last_uids <- sim_uids_to_run[
+      c(batch_ids_to_run[-1]!=batch_ids_to_run[-length(batch_ids_to_run)], TRUE)
+    ]
+    is_last_in_batch[
+      match(last_uids, sim$internals$sim_uid_grid$sim_uid)
+    ] <- TRUE
+
     run_sim_uids <- function(i) {
 
       ..start_time <- Sys.time()
@@ -137,6 +156,20 @@ run.sim_obj <- function(sim) {
       }
 
       runtime <- as.numeric(difftime(Sys.time(), ..start_time), units="secs")
+
+      # If this was the last replicate in its batch, free the objects that were
+      #     cached by batch() (this uses the same lookup as batch())
+      if (is_last_in_batch[ind1]) {
+        ..env_batch <- get0("..env", envir=.GlobalEnv)
+        if (is.environment(..env_batch)) {
+          ..cache <- get0("..batch_cache", envir=..env_batch, inherits=FALSE)
+          ..key <- as.character(sim$internals$sim_uid_grid$batch_id[ind1])
+          if (is.environment(..cache) &&
+              exists(..key, envir=..cache, inherits=FALSE)) {
+            rm(list=..key, envir=..cache)
+          }
+        }
+      }
 
       return(list(
         "sim_uid" = i,

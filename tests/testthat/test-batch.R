@@ -361,7 +361,7 @@ run_cache_test <- function(parallel, n_cores) {
 for (cfg in list(c(FALSE, NA_real_), c(TRUE, 2))) {
   sim <- run_cache_test(parallel=as.logical(cfg[1]), n_cores=cfg[2])
   test_that(paste0("batch() frees cached objects after each batch (parallel=",
-                   cfg[1], ")"), {
+                   as.logical(cfg[1]), ")"), {
     expect_equal(nrow(sim$results), 36)
     # Only the current batch should ever be cached
     expect_true(all(sim$results$n_cached==1))
